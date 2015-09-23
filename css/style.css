@@ -1,0 +1,352 @@
+#erp-wrapper {
+    margin: 10px 20px 0 2px;
+    position: relative;
+}
+#erp-content {
+    border: 1px solid #e5e5e5;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    background: #fff;
+    min-height: 500px;
+    padding: 8px 12px;
+    z-index: 1000;
+}
+#erp-content.busy {
+    opacity: 0.5;
+}
+#spinner {
+    background: url('../images/spinner.gif') no-repeat;
+    background-size: 30px 30px;
+    filter: alpha(opacity=70);
+    width: 30px;
+    height: 30px;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+}
+#erp-content .loading-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+}
+.form-control{
+    border-radius: 0!important;
+}
+h1#erp-header {
+    font-size: 30px;
+}
+/*--------------- referral style ----------------*/
+span.top-leaf {
+    font-size: 28px;
+}
+span.new-referal {
+    font-size: 28px;
+    float: right;
+    margin-right: 70px;
+}
+
+#erp-wrapper .header-fixed {
+    width: 100%
+}
+#erp-wrapper table.table.table-striped.table-fixed.header-fixed thead {
+    background-color: #E4E0E0;
+}
+#erp-wrapper .dropdown-menu {
+    min-width: 0 !important;
+    border-radius: 0 !important;
+    outline: none !important;
+}
+#erp-wrapper .dropdown-menu > li, #erp-wrapper .dropdown-menu > li:focus  {
+    outline: none !important;
+}
+#erp-wrapper button.btn.btn-default.dropdown-toggle {
+    border-radius: 0 !important;
+}
+.space_nomal{
+    margin-top: 20px;
+}
+.space_big{
+    margin-top: 80px;
+}
+.textarea_size{
+    height: 180px !important;
+    resize: none;
+}
+.logo_upload{
+    width: 100%;
+}
+.logo_upload > img{
+    max-height: 120px;
+    border: 2px solid #eee;
+}
+.logo_upload input[type=file] {
+    margin: 10px 0 0 0;
+    padding: 2px 3px;
+}
+.center_nomal{
+    margin: 0 auto;
+}
+.text-nomal{
+    font-size: 16px;
+    float: none !important;
+    margin: 0;
+    padding: 5px 0;
+}
+.text-bold {
+    font-weight: 600;
+}
+.table-tools {
+    margin-bottom: 10px;
+}
+/*--------------- estimates style ----------------*/
+#erp-wrapper .service-argreement.pull-right {
+    margin-right: 10px;
+    font-size: 28px;
+}
+#erp-wrapper .row.form-estimates {
+    margin-top: 20px;
+}
+#erp-wrapper .location-notes {
+    width: 95%;
+    margin-left: 3%;
+}
+#erp-wrapper table.table.table-striped.table-fixed.header-fixed.wpt-table {
+    width: 97.5% !important;
+    margin-left: 1.8%;
+}
+#erp-wrapper .btn {
+    border-radius: 0 !important;
+}
+#erp-wrapper .col-sm-12.cl-lines {
+    width: 90%;
+    margin-left: 0.5%;
+}
+#erp-wrapper .date-of-signature {
+    margin-top: 80px;
+}
+#erp-wrapper .customer-signature {
+    margin-left: 2%;
+}
+.div-customer-signature.ng-pristine {
+    height: 115px;
+}
+#erp-wrapper .upload {
+    border: 2px solid;
+}
+
+/* style for .form-control error state */
+#erp-wrapper .ng-dirty.ng-invalid {
+    border-color: #a94442;
+}
+
+/* NgView animation */
+#erp-view.ng-enter {
+  -webkit-transition: .5s linear all; /* Safari/Chrome */
+  -moz-transition: .5s linear all; /* Firefox */
+  -o-transition: .5s linear all; /* Opera */
+  transition: .5s linear all; /* IE10+ and Future Browsers */
+}
+
+#erp-view.ng-enter{
+  opacity: 0;
+}
+
+#erp-view.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+#erp-wrapper input[type=file] {
+  border: 1px solid #dadada;
+}
+
+.estimate-logo{
+    max-width: 120px;
+}
+
+.div-customer-signature {
+    border: 1px solid #ccc;
+    width: 300px;
+    height: 150px;
+}
+.space-30 {
+    clear: both;
+    margin: 30px 0;
+}
+
+/*--------------- referral route style ---------------*/
+.assigned-routes {
+    border: 2px solid #B6B6B6;
+    padding: 10px;
+    height: 400px;
+    overflow-y: scroll;
+}
+.box-assign {
+    border: 2px solid #B6B6B6;
+    margin-top: 10px;
+    padding: 5px;
+    min-height: 150px;
+    max-height: 150px;
+}
+.sort-by {
+    margin-bottom: 40px;
+}
+.gmap-container {
+    width: 100%;
+    border: 2px solid #B6B6B6;
+}
+.gmap-container .angular-google-map {
+    height: 500px;
+}
+.gmap-container .angular-google-map-container {
+    height: 100%;
+    width: 100%;
+}
+.btn-action.text-right {
+    margin-bottom: 10px;
+}
+.tbl-referral-route {
+    border: 2px solid;
+    padding: 10px;
+}
+
+/*------------ setting and sync style ---------------*/
+.last-synced.col-xs-4.text-center {
+    border: 2px solid;
+    border-radius: 15px;
+}
+.as-sortable-item-handle {
+    cursor: move;
+}
+.lines-table .glyphicon-trash {
+    cursor: pointer;
+}
+.lines-table tbody tr {
+    cursor: pointer;
+}
+.lines-table tbody tr input {
+    max-width: 100% !important;
+    width: 100%;
+}
+.lines-table tbody tr select {
+    width: 100%;
+}
+.lines-table tbody td {
+    vertical-align: middle !important;
+}
+/* Remove spinner in input numbers */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Dropzone style */
+.drop-clickable {
+    cursor: pointer;
+}
+#drop-container {
+    min-height: 50px;
+}
+.estimate-attachments-list .remove-attachment{
+    cursor: pointer;
+    font-weight: 600;
+    margin: 0;
+}
+/* For drag and drop with angular dnd list */
+[dnd-list] > [dnd-draggable] {
+    position: relative;
+}
+[dnd-list] li {
+    /*list-style: none;*/
+}
+.dndDragover {
+    /*border: 1px dashed #B6B6B6;*/
+}
+.assigned-routes > ul{
+    min-height: 100%;
+    margin-bottom: 0;
+}
+.dndPlaceholder {
+    background-color: #eee !important;
+    display: block;
+    min-height: 150px;
+}
+.dndDraggingSource{
+    display: none;
+}
+/* bootbox modal */
+.modal {
+    top: 15px;
+}
+
+
+ul.dropdown-menu.ng-pristine.ng-untouched.ng-valid.ng-scope.ng-valid-date-disabled {
+    left: -84px !important;
+}
+@media(max-width:768px) {
+    ul.dropdown-menu.ng-pristine.ng-untouched.ng-valid.ng-scope.ng-valid-date-disabled {
+        left: 15px !important;
+    }
+}
+/* Config form */
+.config-form label.control-label{
+    text-align: left;
+
+}
+
+input .tooltip.customClass .tooltip-inner {
+    color: #880000 !important;
+    background-color: #ffff66 !important;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175) !important;
+}
+/* Hide arrow */
+input .tooltip.customClass .tooltip-arrow {
+    /*display: none !important;*/
+}
+
+.form-control.inline {
+    width: auto;
+    display: inline-block;
+}
+select.form-control {
+    height: 34px;
+}
+label.required {
+   white-space: nowrap;
+}
+
+label.required span {
+    font-size: 0.7em;
+    vertical-align: super;
+}
+/* Override selectize style */
+.selectize-input {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+.selectize-input.dropdown-active {
+  -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+}
+.selectize-dropdown,
+.selectize-dropdown.form-control {
+  -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+}
+.intuitPlatformConnectButton {
+    background-position: 0 -39px !important;
+}
+#erp-content select[disabled] {
+    color: #333;
+    background-color: #eee;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    line-height: 22px;
+}

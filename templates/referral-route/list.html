@@ -1,0 +1,45 @@
+<div id="list-referral" ng-controller="ListReferralRouteCtrl">
+  <div class="table-tools" ng-if="hasCap('erpp_create_referral_routes')">
+    <a href="#/new-referral-route" class="btn btn-success">Add new</a>
+  </div>
+
+  <table class="table table-bordered table-hover table-fixed header-fixed">
+    <thead>
+      <tr>
+        <th style="width: 50px">ID</th>
+        <th>Title</th>
+        <th style="width: 155px">Date</th>
+        <th style="width: 130px">Status</th>
+        <th style="width: 120px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="route in referralRoutes">
+        <td>
+          <a href="#/edit-referral-route/{{::route.id}}" ng-if="hasCap('erpp_edit_referral_routes')"><span>{{::route.id}}</span></a>
+          <span ng-if="!hasCap('erpp_edit_referral_routes')">{{::route.id}}</span>
+        </td>
+
+        <td>
+          <a href="#/edit-referral-route/{{::route.id}}" ng-if="hasCap('erpp_edit_referral_routes')"><span>{{route.title}}</span></a>
+          <span ng-if="!hasCap('erpp_edit_referral_routes')">{{::route.title}}</span>
+        </td>
+
+        <td><span>{{route.created_at}}</span></td>
+        <td>
+          <select 
+            ng-if="hasCap('erpp_edit_referral_routes')"
+            ng-init="route.new_status = route.status"
+            ng-model="route.new_status"
+            ng-options="status.value as status.label for status in $root.routeStatuses"
+            ng-change="saveRouteStatus(route)">
+          </select>
+          <span ng-if="!hasCap('erpp_edit_referral_routes')">{{route.status}}</span>
+        </td>
+        <td>
+          <a href="#/edit-referral-route/{{::route.id}}" ng-if="hasCap('erpp_edit_referral_routes')">Edit</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

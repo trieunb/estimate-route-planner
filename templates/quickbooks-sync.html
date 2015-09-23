@@ -1,0 +1,77 @@
+<div>
+    <div>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs">
+        <li><a href="#company-info">Company Info</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li class="active"><a href="#quickbooks-sync">Quickbooks Synchronize</a></li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <!-- Content of Sync -->
+        <div role="tabpanel" class="tab-pane active" id="gmap_api" ng-controller="QuickbooksSyncCtrl">
+            <div class="row">
+                    <!-- Content left of Company Info-->
+                <div class="col-md-5">
+                    <div class="space_nomal">
+                        <legend>Information </legend>
+                        <ul>
+                            <li>Consumer Key: <span class="text-info" ng-bind="info.qbo_consumer_key"></span></li>
+                            <li>Consumer Secret: <span class="text-info" ng-bind="info.qbo_consumer_secret"></span></li>
+                            <li>Company ID: <span class="text-info" ng-bind="info.qbo_company_id"></span></li>
+                            <li>Auth tokens expiration: <span class="text-info" ng-bind="info.qbo_token_expires_at"></span></li>
+                        </ul>
+                        <button class="btn btn-danger" ng-click="reconnect()">Reset & Reconnect</button>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="space_nomal">
+                        <legend>Synchronize</legend>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                Last synced: <time-ago ng-if="info.last_sync_at" from-time='{{ info.last_sync_at }}'></time-ago>
+                                <br>
+                                <br>
+                                <button type="button" class="btn btn-success" ng-click="startSync()" ng-disabled="isBusy">Sync Now</button>
+                            </div>
+                            <div class="col-md-12">
+                                <br>
+                                Sync histories:
+                                <br>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th style="width: 100px">
+                                                Status
+                                            </th>
+                                            <th style="width: 185px">
+                                                Start at
+                                            </th>
+                                            <th>
+                                                Note
+                                            </th>
+                                        </tr>
+                                        <tr ng-repeat="sync in info.sync_histories" ng-class="{'text-danger': sync.status == 'Error', 'text-success': sync.status == 'Success',  'text-warning': sync.status == 'In-progress'}">
+                                            <td>
+                                                {{::sync.status}}
+                                            </td>
+                                            <td>
+                                                {{::sync.start_at}} UTC
+                                            </td>
+                                            <td>
+                                                {{::sync.note}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Content of Sync-->
+      </div>
+    </div>
+</div>

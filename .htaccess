@@ -1,0 +1,3 @@
+<Files init.php>
+    Deny from all
+</Files>

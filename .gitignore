@@ -1,0 +1,16 @@
+js/lib*.min.js
+js/app*.min.js
+lib/quickbooks-sdk/executionlog.txt
+
+log/*
+!log/.gitignore
+!log/.htaccess
+
+tmp/*
+!tmp/.gitignore
+!tmp/.htaccess
+
+uploads/*
+!uploads/.keep
+.DS_Store
+node_modules
