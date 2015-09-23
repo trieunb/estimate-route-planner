@@ -677,20 +677,41 @@ class Asynchronzier {
     }
 
     public function parseCustomer($data) {
+        // Parse billing address
         $billAddress = $data->BillAddr;
-        $bill_address
+        $bill_address_id
+            = $bill_address
             = $bill_city
             = $bill_state
             = $bill_zip_code
             = $bill_country
             = null;
-        if (null != ($billAddress)) {
+        if (null != $billAddress) {
+            $bill_address_id = $billAddress->Id;
             $bill_address = $billAddress->Line1;
             $bill_city = $billAddress->City;
             $bill_state = $billAddress->CountrySubDivisionCode;
             $bill_zip_code = $billAddress->PostalCode;
             $bill_country = $billAddress->Country;
         }
+        // Parse shipping address
+        $shipAddr = $data->ShipAddr;
+        $shipAddressId
+            = $shipAddress
+            = $shipCity
+            = $shipState
+            = $shipZipCode
+            = $shipCountry
+            = null;
+        if (null != $shipAddr) {
+            $shipAddressId = $shipAddr->Id;
+            $shipAddress = $shipAddr->Line1;
+            $shipCity = $shipAddr->City;
+            $shipState = $shipAddr->CountrySubDivisionCode;
+            $shipZipCode = $shipAddr->PostalCode;
+            $shipCountry = $shipAddr->Country;
+        }
+
         $primary_phone_number
             = $mobile_phone_number
             = $alternate_phone_number
@@ -698,27 +719,27 @@ class Asynchronzier {
             = $email
             = $parentId
             = null;
-        if (null != ($data->PrimaryPhone)) {
+        if (null != $data->PrimaryPhone) {
             $primary_phone_number = $data->PrimaryPhone->FreeFormNumber;
         }
-        if (null != ($data->Mobile)) {
+        if (null != $data->Mobile) {
             $mobile_phone_number = $data->Mobile->FreeFormNumber;
         }
-        if (null != ($data->AlternatePhone)) {
+        if (null != $data->AlternatePhone) {
             $alternate_phone_number = $data->AlternatePhone->FreeFormNumber;
         }
-        if (null != ($data->Fax)) {
+        if (null != $data->Fax) {
             $fax = $data->Fax->FreeFormNumber;
         }
-        if (null != ($data->PrimaryEmailAddr)) {
+        if (null != $data->PrimaryEmailAddr) {
             $email = $data->PrimaryEmailAddr->Address;
         }
         if (null != $data->ParentRef) {
             $parentId = $data->ParentRef->value;
         }
-        $last_updated_at = date("Y-m-d H:i:s",  strtotime($data->MetaData->LastUpdatedTime));
+        $last_updated_at = date("Y-m-d H:i:s", strtotime($data->MetaData->LastUpdatedTime));
         $created_at = date("Y-m-d H:i:s", strtotime($data->MetaData->CreateTime));
-        $active  = $data->Active == 'true';
+        $active = $data->Active == 'true';
         return [
             'id'                    => $data->Id,
             'sync_token'            => $data->SyncToken,
@@ -736,11 +757,21 @@ class Asynchronzier {
             'mobile_phone_number'   => $mobile_phone_number,
             'alternate_phone_number'=> $alternate_phone_number,
             'fax'                   => $fax,
+
+            'bill_address_id'       => $bill_address_id,
             'bill_address'          => $bill_address,
             'bill_city'             => $bill_city,
             'bill_state'            => $bill_state,
             'bill_zip_code'         => $bill_zip_code,
             'bill_country'          => $bill_country,
+
+            'ship_address_id'       => $shipAddressId,
+            'ship_address'          => $shipAddress,
+            'ship_city'             => $shipCity,
+            'ship_state'            => $shipState,
+            'ship_zip_code'         => $shipZipCode,
+            'ship_country'          => $shipCountry,
+
             'active'                => $active,
             'created_at'            => $created_at,
             'last_updated_at'       => $last_updated_at
