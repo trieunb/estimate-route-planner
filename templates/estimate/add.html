@@ -71,6 +71,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row form-estimate">
             <div class="col-sm-6">
                 <div class="billing-info">
@@ -83,7 +84,7 @@
                             </selectize>
                             <div class="help-block"
                                 ng-messages="estimateForm.customer_id.$error"
-                                ng-if="estimateForm.customer_id.$touched">
+                                ng-if="estimateForm.customer_id.$touched && !estimateForm.customer_id.$valid">
                                 <p ng-message="required" class="text-danger">
                                     This field is required!
                                 </p>
@@ -92,14 +93,14 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2 required" for="bill_address">
-                            Address <span>(*)</span></label>
+                            Address<span>(*)</span></label>
                         <div class="col-sm-10">
                             <input class="form-control" name="bill_address"
                                 ng-model="estimate.bill_address" ng-required="true"
                                 ng-maxlength="100">
                             <div class="help-block"
                                 ng-messages="estimateForm.bill_address.$error"
-                                ng-if="estimateForm.bill_address.$touched">
+                                ng-if="estimateForm.bill_address.$touched && !estimateForm.bill_address.$valid">
                                 <p ng-message="maxlength" class="text-danger">
                                     Please enter less than 100 characters!
                                 </p>
@@ -113,58 +114,64 @@
                         <label class="control-label col-sm-2" for="bill_city">
                             City</label>
                         <div class="col-sm-4">
-                            <input class="form-control" name="bill_city" ng-maxlength="true"
-                                ng-model="estimate.bill_city" ng-required="true">
+                            <input class="form-control" name="bill_city" ng-maxlength="255"
+                                ng-model="estimate.bill_city">
                             <div class="help-block"
                                 ng-messages="estimateForm.bill_city.$error"
-                                ng-if="estimateForm.bill_city.$touched">
+                                ng-if="estimateForm.bill_city.$touched && !estimateForm.bill_city.$valid">
                                 <p ng-message="maxlength" class="text-danger">
                                     Please enter less than 255 characters!
                                 </p>
                             </div>
                         </div>
-                        <label class="control-label col-sm-1" for="bill_state">
+                        <label class="control-label col-sm-2" for="bill_state">
                             State</label>
-                        <div class="col-sm-2">
+                        <div class="col-sm-4">
                             <input class="form-control" name="bill_state"
-                                ng-maxlength="100"
+                                ng-maxlength="255"
                                 ng-model="estimate.bill_state">
                             <div class="help-block"
                                 ng-messages="estimateForm.bill_state.$error"
-                                ng-if="estimateForm.bill_state.$touched">
+                                ng-if="estimateForm.bill_state.$touched && !estimateForm.bill_state.$valid">
                                 <p ng-message="maxlength" class="text-danger">
-                                    Please enter less than 100 characters!
-                                </p>
-                            </div>
-                        </div>
-                        <label class="control-label col-sm-1" for="bill_zip_code">
-                            Zip</label>
-                        <div class="col-sm-2">
-                            <input class="form-control" name="bill_zip_code"
-                                ng-maxlength="31"
-                                ng-model="estimate.bill_zip_code">
-                            <div class="help-block"
-                                ng-messages="estimateForm.bill_zip_code.$error"
-                                ng-if="estimateForm.bill_zip_code.$touched">
-                                <p ng-message="maxlength" class="text-danger">
-                                    Please enter less than 32 characters!
+                                    Please enter less than 255 characters!
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" 
+                        <label class="control-label col-sm-2" for="bill_zip_code">
+                            Zip</label>
+                        <div class="col-sm-4">
+                            <input class="form-control" name="bill_zip_code"
+                                ng-maxlength="31"
+                                ng-model="estimate.bill_zip_code">
+                            <div class="help-block"
+                                ng-messages="estimateForm.bill_zip_code.$error"
+                                ng-if="estimateForm.bill_zip_code.$touched && !estimateForm.bill_zip_code.$valid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Please enter less than 32 characters!
+                                </p>
+                            </div>
+                        </div>
+                        <label class="control-label col-sm-2"
                             for="bill_country">
-                        Country
+                            Country
                         </label>
-                        <div class="col-sm-10">
-                            <input name="bill_country"
-                                class="form-control"
-                                ng-model="estimate.bill_country"
-                                ng-maxlength="100">
+                        <div class="col-sm-4">
+                            <input class="form-control"
+                            name="bill_country"
+                            ng-model="estimate.bill_country"
+                            ng-maxlength="255">
+                            <div class="help-block"
+                                ng-messages="estimateForm.bill_country.$error"
+                                ng-if="estimateForm.bill_country.$touched && !estimateForm.bill_country.$valid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Please enter less than 255 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="col-sm-6">
@@ -179,7 +186,7 @@
                             </selectize>
                             <div class="help-block"
                                 ng-messages="estimateForm.job_customer_id.$error"
-                                ng-if="estimateForm.job_customer_id.$touched">
+                                ng-if="estimateForm.job_customer_id.$touched && !estimateForm.job_customer_id.$valid">
                                 <p ng-message="required" class="text-danger">
                                     This field is required!
                                 </p>
@@ -195,7 +202,7 @@
                                 ng-maxlength="255">
                             <div class="help-block"
                                 ng-messages="estimateForm.job_address.$error"
-                                ng-if="estimateForm.job_address.$touched">
+                                ng-if="estimateForm.job_address.$touched && !estimateForm.job_address.$valid">
                                 <p ng-message="maxlength" class="text-danger">
                                     Please enter less than 255 characters!
                                 </p>
@@ -210,57 +217,61 @@
                             City</label>
                         <div class="col-sm-4">
                             <input class="form-control" type="text" name="job_city"
-                                ng-model="estimate.job_city" ng-maxlength="100">
+                                ng-model="estimate.job_city" ng-maxlength="255">
                             <div class="help-block"
                                 ng-messages="estimateForm.job_city.$error"
-                                ng-if="estimateForm.job_city.$touched">
+                                ng-if="estimateForm.job_city.$touched && !estimateForm.job_city.$valid">
                                 <p ng-message="maxlength" class="text-danger">
                                     Please enter less than 255 characters!
                                 </p>
                             </div>
                         </div>
-                        <label class="control-label col-sm-1" for="job_state">
+                        <label class="control-label col-sm-2" for="job_state">
                             State</label>
-                        <div class="col-sm-2">
+                        <div class="col-sm-4">
                             <input class="form-control" type="text" name="job_state"
-                                ng-model="estimate.job_state" ng-maxlength="100">
+                                ng-model="estimate.job_state" ng-maxlength="255">
                             <div class="help-block"
                                 ng-messages="estimateForm.job_state.$error"
-                                ng-if="estimateForm.job_state.$touched">
+                                ng-if="estimateForm.job_state.$touched && !estimateForm.job_state.$valid">
                                 <p ng-message="maxlength" class="text-danger">
-                                    Please enter less than 100 characters!
-                                </p>
-                            </div>
-                        </div>
-                        <label class="control-label col-sm-1" for="job_zip_code">
-                            Zip</label>
-                        <div class="col-sm-2">
-                            <input class="form-control" type="text" name="job_zip_code"
-                                ng-model="estimate.job_zip_code" ng-maxlength="31">
-                            <div class="help-block"
-                                ng-messages="estimateForm.job_zip_code.$error"
-                                ng-if="estimateForm.job_zip_code.$touched">
-                                <p ng-message="maxlength" class="text-danger">
-                                    Please enter less than 31 characters!
+                                    Please enter less than 255 characters!
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-2" 
-                            for="job_country">
-                        Country
-                        </label>
-                        <div class="col-sm-10">
+                        <label class="control-label col-sm-2" for="job_zip_code">Zip</label>
+                        <div class="col-sm-4">
+                            <input class="form-control" type="text" name="job_zip_code"
+                                ng-model="estimate.job_zip_code" ng-maxlength="31">
+                            <div class="help-block"
+                                ng-messages="estimateForm.job_zip_code.$error"
+                                ng-if="estimateForm.job_zip_code.$touched && !estimateForm.job_zip_code.$valid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Please enter less than 32 characters!
+                                </p>
+                            </div>
+                        </div>
+                        <label class="control-label col-sm-2"for="job_country">Country</label>
+                        <div class="col-sm-4">
                             <input name="job_country"
                                 class="form-control"
                                 ng-model="estimate.job_country"
-                                ng-maxlength="100">
+                                ng-maxlength="255">
+                            <div class="help-block"
+                                ng-messages="estimateForm.job_country.$error"
+                                ng-if="estimateForm.job_country.$touched && !estimateForm.job_country.$valid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Please enter less than 255 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group">
@@ -424,8 +435,15 @@
                             Estimate Footer</label>
                         <div class="col-sm-12">
                             <textarea class="form-control" rows="5"
+                                ng-maxlength="1000"
                                 ng-model="estimate.estimate_footer" name="estimate_footer">
                             </textarea>
+                            <div class="help-block" ng-messages="estimateForm.estimate_footer.$error"
+                                ng-if="estimateForm.estimate_footer.$touched">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 1000 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

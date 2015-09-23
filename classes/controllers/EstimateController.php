@@ -293,7 +293,6 @@ class EstimateController extends BaseController {
                 throw $e;
             }
         }
-
         $data_result = $sync->parseEstimate($result, $updateData);
 
         // Start sync lines

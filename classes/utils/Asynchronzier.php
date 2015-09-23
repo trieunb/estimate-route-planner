@@ -1,5 +1,7 @@
 <?php
-class Asynchronzier {
+
+class Asynchronzier
+{
     public $access_token;
     public $access_token_secret;
     public $consumer_key;
@@ -22,7 +24,8 @@ class Asynchronzier {
             'realmId' => 'value'
             ]
     */
-    public function __construct($data) {
+    public function __construct($data)
+    {
         $this->access_token = $data['access_token'];
         $this->access_token_secret = $data['access_token_secret'];
         $this->consumer_key = $data['consumer_key'];
@@ -41,32 +44,40 @@ class Asynchronzier {
                 $this->serviceType,
                 $this->requestValidator
             );
-        if (!$this->serviceContext) exit("Problem while initializing ServiceContext.\n");
+        if (!$this->serviceContext) {
+            exit("Problem while initializing ServiceContext.\n");
+        }
 
         $this->dataService = new DataService($this->serviceContext);
-        if (!$this->dataService) exit("Problem while initializing ServiceContext.\n");
+        if (!$this->dataService) {
+            exit("Problem while initializing ServiceContext.\n");
+        }
     }
 
     /**
-     * Sync all customers
+     * Sync all customers.
+     *
      * @param $lastSyncedTime the time in ISO 8601 format
      */
-    public function syncCustomer($lastSyncedTime = null) {
+    public function syncCustomer($lastSyncedTime = null)
+    {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
-        $loger->log("== Sync customer started");
+        $loger->log('== Sync customer started');
         $maxResults = 1000;
         $startPos = 1;
         $localCus = ORM::forTable('customers')->select('id')->findArray();
         $localCusIds = [];
-        foreach ($localCus as $cus) { $localCusIds[] = $cus['id']; }
+        foreach ($localCus as $cus) {
+            $localCusIds[] = $cus['id'];
+        }
         while (true) {
             if ($lastSyncedTime) {
                 $query
-                    = "SELECT * FROM Customer WHERE Active IN (true, false)"
-                    . " AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
+                    = 'SELECT * FROM Customer WHERE Active IN (true, false)'
+                    ." AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
             } else {
-                $query = "SELECT * FROM Customer WHERE Active IN (true, false)";
+                $query = 'SELECT * FROM Customer WHERE Active IN (true, false)';
             }
             $query .= " startPosition $startPos maxResults $maxResults";
             $res = $this->Query($query);
@@ -86,19 +97,21 @@ class Asynchronzier {
                 }
                 ORM::getDB()->commit();
             } else {
-                $loger->log("End of data.");
+                $loger->log('End of data.');
                 break;
             }
             $startPos += $maxResults;
         }
-        $loger->log("== Sync customer done, taken: " . (time() - $startedAt) . " secs\n");
+        $loger->log('== Sync customer done, taken: '.(time() - $startedAt)." secs\n");
     }
 
     /**
-     * Sync all employees
+     * Sync all employees.
+     *
      * @param $lastSyncedTime the time in ISO 8601 format
      */
-    public function syncEmployee($lastSyncedTime = null) {
+    public function syncEmployee($lastSyncedTime = null)
+    {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync employee started");
@@ -106,14 +119,16 @@ class Asynchronzier {
         $startPos = 1;
         $localEmps = ORM::forTable('employees')->select('id')->findArray();
         $localEmpIds = [];
-        foreach ($localEmps as $emp) { $localEmpIds[] = $emp['id']; }
+        foreach ($localEmps as $emp) {
+            $localEmpIds[] = $emp['id'];
+        }
         while (true) {
             if ($lastSyncedTime) {
                 $query
-                    = "SELECT * FROM Employee WHERE Active IN (true, false)"
-                    . " AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
+                    = 'SELECT * FROM Employee WHERE Active IN (true, false)'
+                    ." AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
             } else {
-                $query = "SELECT * FROM Employee WHERE Active IN (true, false)";
+                $query = 'SELECT * FROM Employee WHERE Active IN (true, false)';
             }
             $query .= " startPosition $startPos maxResults $maxResults";
             $res = $this->Query($query);
@@ -133,16 +148,17 @@ class Asynchronzier {
                 }
                 ORM::getDB()->commit();
             } else {
-                $loger->log("End of data.");
+                $loger->log('End of data.');
                 break;
             }
             $startPos += $maxResults;
         }
         $endAt = time();
-        $loger->log("= Sync employee done, taken: " . ($endAt - $startedAt) . " secs\n");
+        $loger->log('= Sync employee done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function parseEmployee($data) {
+    public function parseEmployee($data)
+    {
         $primary_address
             = $primary_city
             = $primary_state
@@ -165,33 +181,35 @@ class Asynchronzier {
             $email = $data->PrimaryEmailAddr->Address;
         }
 
-        $last_updated_at = date("Y-m-d H:i:s",  strtotime($data->MetaData->LastUpdatedTime));
-        $created_at = date("Y-m-d H:i:s", strtotime($data->MetaData->CreateTime));
-        $active  = $data->Active == 'true';
+        $last_updated_at = date('Y-m-d H:i:s',  strtotime($data->MetaData->LastUpdatedTime));
+        $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
+        $active = $data->Active == 'true';
+
         return [
-            'id'                    => $data->Id,
-            'sync_token'            => $data->SyncToken,
-            'primary_address'       => $primary_address,
-            'primary_city'          => $primary_city,
-            'primary_state'         => $primary_state,
-            'primary_zip_code'      => $primary_zip_code,
-            'primary_country'       => $primary_country,
-            'given_name'            => $data->GivenName,
-            'middle_name'           => $data->MiddleName,
-            'family_name'           => $data->FamilyName,
-            'suffix'                => $data->Suffix,
-            'display_name'          => $data->DisplayName,
-            'print_name'            => $data->PrintOnCheckName,
-            'email'                 => $email,
-            'primary_phone_number'  => $primary_phone_number,
-            'ssn'                   => $data->SSN,
-            'active'                => $active,
-            'created_at'            => $created_at,
-            'last_updated_at'       => $last_updated_at
+            'id' => $data->Id,
+            'sync_token' => $data->SyncToken,
+            'primary_address' => $primary_address,
+            'primary_city' => $primary_city,
+            'primary_state' => $primary_state,
+            'primary_zip_code' => $primary_zip_code,
+            'primary_country' => $primary_country,
+            'given_name' => $data->GivenName,
+            'middle_name' => $data->MiddleName,
+            'family_name' => $data->FamilyName,
+            'suffix' => $data->Suffix,
+            'display_name' => $data->DisplayName,
+            'print_name' => $data->PrintOnCheckName,
+            'email' => $email,
+            'primary_phone_number' => $primary_phone_number,
+            'ssn' => $data->SSN,
+            'active' => $active,
+            'created_at' => $created_at,
+            'last_updated_at' => $last_updated_at,
         ];
     }
 
-    public function syncEstimate($lastSyncedTime = null) {
+    public function syncEstimate($lastSyncedTime = null)
+    {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync estimate started");
@@ -199,10 +217,10 @@ class Asynchronzier {
         $startPos = 1;
         $localEstimates = ORM::forTable('estimates')->findMany();
         $localLines = ORM::forTable('estimate_lines')->findMany();
-        $loger->log("Local count: " . count($localEstimates));
+        $loger->log('Local count: '.count($localEstimates));
         $updateCount = $createCount = 0;
         while (true) {
-            $query = "SELECT * FROM Estimate";
+            $query = 'SELECT * FROM Estimate';
             if ($lastSyncedTime) {
                 $query .= " WHERE MetaData.LastUpdatedTime >= '$lastSyncedTime'";
             }
@@ -215,19 +233,19 @@ class Asynchronzier {
                 foreach ($res as $estimateObj) {
                     $estRecord = ORM::forTable('estimates')->create();
                     $localEstimateData = null;
-                    $createCount++;
+                    ++$createCount;
                     // Estimate data
                     foreach ($localEstimates as $index => $estimate) {
                         if ($estimateObj->Id == $estimate->id) {
                             if ($estimateObj->SyncToken != $estimate->sync_token) {
                                 $localEstimateData = $estimate->asArray();
                                 $estRecord = ORM::forTable('estimates')->hydrate();
-                                $updateCount++;
+                                ++$updateCount;
                             } else {
                                 $estRecord = null;
                             }
                             unset($localEstimates[$index]);
-                            $createCount--;
+                            --$createCount;
                             break;
                         }
                     }
@@ -237,7 +255,7 @@ class Asynchronzier {
 
                         // Sync lines
                         $data_line_sync = [];
-                        $estimateLineModel = new EstimateLineModel;
+                        $estimateLineModel = new EstimateLineModel();
                         $localEstLines = $remoteLines = [];
                         foreach ($localLines as $index => $localLine) {
                             if ($localLine->estimate_id == $estimateObj->Id) {
@@ -272,7 +290,7 @@ class Asynchronzier {
                 }
                 ORM::getDB()->commit();
             } else {
-                $loger->log("End of data.");
+                $loger->log('End of data.');
                 break;
             }
             $startPos += $maxResults;
@@ -295,17 +313,18 @@ class Asynchronzier {
         // }
         // ORM::getDB()->commit();
         $endAt = time();
-        $loger->log("= Sync estimate done, taken: " . ($endAt - $startedAt) . " secs\n");
+        $loger->log('= Sync estimate done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function parseEstimate($data, $data_local = null) {
+    public function parseEstimate($data, $data_local = null)
+    {
         $txn_date = $expiration_date = null;
         if ($data->TxnDate) {
             $txn_date = $data->TxnDate;
         }
         $expiration_date = $data_local['expiration_date'];
         if ($data->ExpirationDate) {
-            $expiration_date = date("Y-m-d H:i:s",  strtotime($data->ExpirationDate));
+            $expiration_date = date('Y-m-d H:i:s',  strtotime($data->ExpirationDate));
         }
         $billAddress = $data->BillAddr;
         $bill_address_id
@@ -323,63 +342,95 @@ class Asynchronzier {
             $bill_zip_code = $billAddress->PostalCode;
             $bill_country = $billAddress->Country;
         }
+
+        $shipAddress = $data->ShipAddr;
+        $job_address_id
+            = $job_address
+            = $job_city
+            = $job_state
+            = $job_zip_code
+            = $job_country
+            = null;
+        if (null != $shipAddress) {
+            $job_address_id = $shipAddress->Id;
+            $job_address = $shipAddress->Line1;
+            $job_city = $shipAddress->City;
+            $job_state = $shipAddress->CountrySubDivisionCode;
+            $job_zip_code = $shipAddress->PostalCode;
+            $job_country = $shipAddress->Country;
+        }
+
         $email = null;
         if (null != ($data->BillEmail)) {
             $email = $data->BillEmail->Address;
         }
         $estimate_footer = $data->CustomerMemo;
-        $last_updated_at = date("Y-m-d H:i:s",  strtotime($data->MetaData->LastUpdatedTime));
-        $created_at = date("Y-m-d H:i:s", strtotime($data->MetaData->CreateTime));
+        $last_updated_at = date('Y-m-d H:i:s',  strtotime($data->MetaData->LastUpdatedTime));
+        $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
 
-        if (($data_local != null) && ($data->TxnStatus == 'Accepted') && ($data_local['status'] == 'Completed')) {
+        if (($data_local != null) && ($data->TxnStatus == 'Accepted') &&
+            ($data_local['status'] == 'Completed')) {
             $status = 'Completed';
         } else {
             $status = $data->TxnStatus;
         }
-
+        if ($data_local['job_customer_id']) {
+            $job_customer_id = $data_local['job_customer_id'];
+        } else {
+            $job_customer_id = $data->CustomerRef;
+        }
+        // TODO: issue on address lines vs country/city/state
         return [
-            'id'                    => $data->Id,
-            'customer_id'           => $data->CustomerRef,
-            'sync_token'            => $data->SyncToken,
-            'doc_number'            => $data->DocNumber,
-            'estimate_footer'       => $estimate_footer,
-            'txn_date'              => $txn_date,
-            'expiration_date'       => $expiration_date,
-            'email'                 => $email,
-            'bill_address_id'       => $bill_address_id,
-            'bill_address'          => $bill_address,
-            'bill_city'             => $bill_city,
-            'bill_state'            => $bill_state,
-            'bill_zip_code'         => $bill_zip_code,
-            'bill_country'          => $bill_country,
-            'status'                => $status,
-            'created_at'            => $created_at,
-            'last_updated_at'       => $last_updated_at,
-            'total'                 => $data->TotalAmt,
-            'primary_phone_number'  => $data_local['primary_phone_number'],
-            'alternate_phone_number'=> $data_local['alternate_phone_number'],
-            'due_date'              => $data_local['due_date'],
-            'estimate_route_id'     => $data_local['estimate_route_id'],
-            'source'                => $data_local['source'],
-            'customer_signature'    => $data_local['customer_signature'],
-            'location_notes'        => $data_local['location_notes'],
-            'date_of_signature'     => $data_local['date_of_signature'],
-            'sold_by_1'             => $data_local['sold_by_1'],
-            'sold_by_2'             => $data_local['sold_by_2'],
-            'job_customer_id'       => $data_local['job_customer_id'],
-            'job_address'           => $data_local['job_address'],
-            'job_city'              => $data_local['job_city'],
-            'job_state'             => $data_local['job_state'],
-            'job_zip_code'          => $data_local['job_zip_code'],
-            'job_lat'               => $data_local['job_lat'],
-            'job_lng'               => $data_local['job_lng']
+            'id' => $data->Id,
+            'customer_id' => $data->CustomerRef,
+            'sync_token' => $data->SyncToken,
+            'doc_number' => $data->DocNumber,
+            'estimate_footer' => $estimate_footer,
+            'txn_date' => $txn_date,
+            'expiration_date' => $expiration_date,
+            'email' => $email,
+
+            'bill_address_id' => $bill_address_id,
+            'bill_address' => $bill_address,
+            'bill_city' => $bill_city,
+            'bill_state' => $bill_state,
+            'bill_zip_code' => $bill_zip_code,
+            'bill_country' => $bill_country,
+
+            'status' => $status,
+            'created_at' => $created_at,
+            'last_updated_at' => $last_updated_at,
+            'total' => $data->TotalAmt,
+            'primary_phone_number' => $data_local['primary_phone_number'],
+            'alternate_phone_number' => $data_local['alternate_phone_number'],
+            'due_date' => $data_local['due_date'],
+            'estimate_route_id' => $data_local['estimate_route_id'],
+            'source' => $data_local['source'],
+            'customer_signature' => $data_local['customer_signature'],
+            'location_notes' => $data_local['location_notes'],
+            'date_of_signature' => $data_local['date_of_signature'],
+            'sold_by_1' => $data_local['sold_by_1'],
+            'sold_by_2' => $data_local['sold_by_2'],
+
+            'job_customer_id'   => $job_customer_id,
+            'job_address_id'    => $job_address_id,
+            'job_address'       => $job_address,
+            'job_city'          => $job_city,
+            'job_state'         => $job_state,
+            'job_zip_code'      => $job_zip_code,
+            'job_country'       => $job_country,
+
+            'job_lat' => $data_local['job_lat'],
+            'job_lng' => $data_local['job_lng'],
         ];
     }
     /**
-     * Sync all employees
+     * Sync all employees.
+     *
      * @param $lastSyncedTime the time in ISO 8601 format
      */
-    public function syncProductService($lastSyncedTime = null) {
+    public function syncProductService($lastSyncedTime = null)
+    {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync product/services started");
@@ -387,14 +438,16 @@ class Asynchronzier {
         $startPos = 1;
         $localPDs = ORM::forTable('products_and_services')->select('id')->findArray();
         $localPDIds = [];
-        foreach ($localPDs as $item) { $localPDIds[] = $item['id']; }
+        foreach ($localPDs as $item) {
+            $localPDIds[] = $item['id'];
+        }
         while (true) {
             if ($lastSyncedTime) {
                 $query
-                    = "SELECT * FROM Item WHERE Active IN (true, false)"
-                    . " AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
+                    = 'SELECT * FROM Item WHERE Active IN (true, false)'
+                    ." AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
             } else {
-                $query = "SELECT * FROM Item WHERE Active IN (true, false)";
+                $query = 'SELECT * FROM Item WHERE Active IN (true, false)';
             }
             $query .= " startPosition $startPos maxResults $maxResults";
             $res = $this->Query($query);
@@ -414,16 +467,17 @@ class Asynchronzier {
                 }
                 ORM::getDB()->commit();
             } else {
-                $loger->log("End of data.");
+                $loger->log('End of data.');
                 break;
             }
             $startPos += $maxResults;
         }
         $endAt = time();
-        $loger->log("= Sync product/services done, taken: " . ($endAt - $startedAt) . " secs\n");
+        $loger->log('= Sync product/services done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function syncAttachment($lastSyncedTime = null) {
+    public function syncAttachment($lastSyncedTime = null)
+    {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync attachments started");
@@ -431,12 +485,14 @@ class Asynchronzier {
         $startPos = 1;
         $localAts = ORM::forTable('estimate_attachments')->select('id')->findArray();
         $localAtIds = [];
-        foreach ($localAts as $at) { $localAtIds[] = $at['id']; }
+        foreach ($localAts as $at) {
+            $localAtIds[] = $at['id'];
+        }
         while (true) {
             if ($lastSyncedTime) {
                 $query
                     = "SELECT * FROM Attachable WHERE ContentType LIKE '%image%'"
-                    . " AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
+                    ." AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
             } else {
                 $query = "SELECT * FROM Attachable WHERE ContentType LIKE '%image%'";
             }
@@ -460,16 +516,17 @@ class Asynchronzier {
                 }
                 ORM::getDB()->commit();
             } else {
-                $loger->log("End of data.");
+                $loger->log('End of data.');
                 break;
             }
             $startPos += $maxResults;
         }
         $endAt = time();
-        $loger->log("= Sync attachments done, taken: " . ($endAt - $startedAt) . " secs\n");
+        $loger->log('= Sync attachments done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function mergeData($dataGet, $dataLocal) {
+    public function mergeData($dataGet, $dataLocal)
+    {
         $diff = [];
         foreach ($dataLocal as $l) {
             $exist = false;
@@ -491,7 +548,8 @@ class Asynchronzier {
         $positionStart is Integer,
         $maxResult is Integer
     */
-    public function findAll($name, $postionStart, $maxResult) {
+    public function findAll($name, $postionStart, $maxResult)
+    {
         return $this->dataService->FindAll($name, $postionStart, $maxResult);
     }
 
@@ -502,7 +560,8 @@ class Asynchronzier {
             'IPPCustomer': [{Taxable: true},{IPPPhysicalAddress: [{id:2, }]}]
         }
     */
-    public function findById($entity) {
+    public function findById($entity)
+    {
         return $this->dataService->FindById($entity);
     }
 
@@ -510,7 +569,8 @@ class Asynchronzier {
         $Query is String
         Ex: "SECLECT * FROM Customer"
     */
-    public function Query($query) {
+    public function Query($query)
+    {
         return $this->dataService->Query($query);
     }
 
@@ -563,7 +623,8 @@ class Asynchronzier {
             )
         );
     */
-    public function Create($entity) {
+    public function Create($entity)
+    {
         $object = new $entity['name']();
         foreach ($entity['attributes'] as $key => $value) {
             if (!is_array($entity['attributes'][$key])) {
@@ -609,6 +670,7 @@ class Asynchronzier {
                 }
             }
         }
+
         return $this->dataService->Add($object);
     }
 
@@ -616,7 +678,8 @@ class Asynchronzier {
         Param $object of function Update is object
         Ex: $entity = Customer
     */
-    public function Update($entity) {
+    public function Update($entity)
+    {
         $object = new $entity['name']();
         foreach ($entity['attributes'] as $key => $value) {
             if (!is_array($entity['attributes'][$key])) {
@@ -641,7 +704,7 @@ class Asynchronzier {
                         }
                         array_push($object->$key, $sub_object);
                     }
-                }else {
+                } else {
                     foreach ($entity['attributes'][$key] as $sub) {
                         $sub_object = new $sub['name']();
                         $object->$key = $sub_object;
@@ -662,6 +725,7 @@ class Asynchronzier {
                 }
             }
         }
+
         return $this->dataService->Add($object);
     }
 
@@ -669,14 +733,17 @@ class Asynchronzier {
         Param $object of function Update is object
         Ex: $entity = Customer
     */
-    public function Delete($object) {
+    public function Delete($object)
+    {
         return $this->dataService->Delete($object);
     }
-    public function Edit($object){
+    public function Edit($object)
+    {
         return $this->dataService->Add($object);
     }
 
-    public function parseCustomer($data) {
+    public function parseCustomer($data)
+    {
         // Parse billing address
         $billAddress = $data->BillAddr;
         $bill_address_id
@@ -737,49 +804,50 @@ class Asynchronzier {
         if (null != $data->ParentRef) {
             $parentId = $data->ParentRef->value;
         }
-        $last_updated_at = date("Y-m-d H:i:s", strtotime($data->MetaData->LastUpdatedTime));
-        $created_at = date("Y-m-d H:i:s", strtotime($data->MetaData->CreateTime));
+        $last_updated_at = date('Y-m-d H:i:s', strtotime($data->MetaData->LastUpdatedTime));
+        $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
         $active = $data->Active == 'true';
+
         return [
-            'id'                    => $data->Id,
-            'sync_token'            => $data->SyncToken,
-            'parent_id'             => $parentId,
-            'title'                 => $data->Title,
-            'given_name'            => $data->GivenName,
-            'middle_name'           => $data->MiddleName,
-            'family_name'           => $data->FamilyName,
-            'suffix'                => $data->Suffix,
-            'display_name'          => $data->DisplayName,
-            'print_name'            => $data->PrintOnCheckName,
-            'company_name'          => $data->CompanyName,
-            'email'                 => $email,
-            'primary_phone_number'  => $primary_phone_number,
-            'mobile_phone_number'   => $mobile_phone_number,
-            'alternate_phone_number'=> $alternate_phone_number,
-            'fax'                   => $fax,
+            'id' => $data->Id,
+            'sync_token' => $data->SyncToken,
+            'parent_id' => $parentId,
+            'title' => $data->Title,
+            'given_name' => $data->GivenName,
+            'middle_name' => $data->MiddleName,
+            'family_name' => $data->FamilyName,
+            'suffix' => $data->Suffix,
+            'display_name' => $data->DisplayName,
+            'print_name' => $data->PrintOnCheckName,
+            'company_name' => $data->CompanyName,
+            'email' => $email,
+            'primary_phone_number' => $primary_phone_number,
+            'mobile_phone_number' => $mobile_phone_number,
+            'alternate_phone_number' => $alternate_phone_number,
+            'fax' => $fax,
 
-            'bill_address_id'       => $bill_address_id,
-            'bill_address'          => $bill_address,
-            'bill_city'             => $bill_city,
-            'bill_state'            => $bill_state,
-            'bill_zip_code'         => $bill_zip_code,
-            'bill_country'          => $bill_country,
+            'bill_address_id' => $bill_address_id,
+            'bill_address' => $bill_address,
+            'bill_city' => $bill_city,
+            'bill_state' => $bill_state,
+            'bill_zip_code' => $bill_zip_code,
+            'bill_country' => $bill_country,
 
-            'ship_address_id'       => $shipAddressId,
-            'ship_address'          => $shipAddress,
-            'ship_city'             => $shipCity,
-            'ship_state'            => $shipState,
-            'ship_zip_code'         => $shipZipCode,
-            'ship_country'          => $shipCountry,
+            'ship_address_id' => $shipAddressId,
+            'ship_address' => $shipAddress,
+            'ship_city' => $shipCity,
+            'ship_state' => $shipState,
+            'ship_zip_code' => $shipZipCode,
+            'ship_country' => $shipCountry,
 
-            'active'                => $active,
-            'created_at'            => $created_at,
-            'last_updated_at'       => $last_updated_at
+            'active' => $active,
+            'created_at' => $created_at,
+            'last_updated_at' => $last_updated_at,
         ];
     }
 
-
-    public function parseEstimateLine($data, $estimateId) {
+    public function parseEstimateLine($data, $estimateId)
+    {
         if (null != $data->SalesItemLineDetail) {
             $qty = $rate = 0;
             if ($data->SalesItemLineDetail->Qty) {
@@ -791,60 +859,65 @@ class Asynchronzier {
             $product_service_id = $data->SalesItemLineDetail->ItemRef;
 
             return [
-                'line_id'               => $data->Id,
-                'line_num'              => $data->LineNum,
-                'estimate_id'           => $estimateId,
-                'product_service_id'    => $product_service_id,
-                'qty'                   => $qty,
-                'rate'                  => $rate,
-                'description'           => $data->Description
+                'line_id' => $data->Id,
+                'line_num' => $data->LineNum,
+                'estimate_id' => $estimateId,
+                'product_service_id' => $product_service_id,
+                'qty' => $qty,
+                'rate' => $rate,
+                'description' => $data->Description,
             ];
         } else {
-            return null;
+            return;
         }
     }
 
-    public function parseAttachment($data) {
+    public function parseAttachment($data)
+    {
         if (null != $data->AttachableRef) {
             $estimate_id = $data->AttachableRef->EntityRef;
-            $last_updated_at = date("Y-m-d H:i:s",  strtotime($data->MetaData->LastUpdatedTime));
-            $created_at = date("Y-m-d H:i:s", strtotime($data->MetaData->CreateTime));
+            $last_updated_at = date('Y-m-d H:i:s',  strtotime($data->MetaData->LastUpdatedTime));
+            $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
+
             return [
-                'id'                    => $data->Id,
-                'sync_token'            => $data->SyncToken,
-                'estimate_id'           => $estimate_id,
-                'size'                  => $data->Size,
-                'content_type'          => $data->ContentType,
-                'access_uri'            => $data->FileAccessUri,
-                'tmp_download_uri'      => $data->TempDownloadUri,
-                'file_name'             => $data->FileName,
-                'created_at'            => $created_at,
-                'last_updated_at'       => $last_updated_at
+                'id' => $data->Id,
+                'sync_token' => $data->SyncToken,
+                'estimate_id' => $estimate_id,
+                'size' => $data->Size,
+                'content_type' => $data->ContentType,
+                'access_uri' => $data->FileAccessUri,
+                'tmp_download_uri' => $data->TempDownloadUri,
+                'file_name' => $data->FileName,
+                'created_at' => $created_at,
+                'last_updated_at' => $last_updated_at,
             ];
         } else {
-            return null;
+            return;
         }
     }
 
-    public function parseProductService($data) {
+    public function parseProductService($data)
+    {
         $active = $data->Active == 'true';
         $taxable = $data->Taxable == 'true';
-        $last_updated_at = date("Y-m-d H:i:s", strtotime($data->MetaData->LastUpdatedTime));
-        $created_at = date("Y-m-d H:i:s", strtotime($data->MetaData->CreateTime));
+        $last_updated_at = date('Y-m-d H:i:s', strtotime($data->MetaData->LastUpdatedTime));
+        $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
+
         return [
-            'id'                    => $data->Id,
-            'sync_token'            => $data->SyncToken,
-            'name'                  => $data->Name,
-            'description'           => $data->Description,
-            'rate'                  => $data->UnitPrice,
-            'active'                => $active,
-            'taxable'               => $taxable,
-            'created_at'            => $created_at,
-            'last_updated_at'       => $last_updated_at
+            'id' => $data->Id,
+            'sync_token' => $data->SyncToken,
+            'name' => $data->Name,
+            'description' => $data->Description,
+            'rate' => $data->UnitPrice,
+            'active' => $active,
+            'taxable' => $taxable,
+            'created_at' => $created_at,
+            'last_updated_at' => $last_updated_at,
         ];
     }
 
-    public function createCustomer($data) {
+    public function createCustomer($data)
+    {
         $customerObj = new IPPCustomer();
         $customerObj->DisplayName = $data['display_name'];
         if (isset($data['bill_address'])) {
@@ -872,94 +945,112 @@ class Asynchronzier {
             $primaryEmail->Address = $data['email'];
             $customerObj->PrimaryEmailAddr = $primaryEmail;
         }
+
         return $this->dataService->Add($customerObj);
     }
 
-    public function decodeCustomer($data) {
+    public function decodeCustomer($data)
+    {
         $value = [
-            'name'                                      => 'IPPCustomer',
+            'name' => 'IPPCustomer',
             'attributes' => [
-                'DisplayName'                           => $data['display_name'],
+                'DisplayName' => $data['display_name'],
                 'BillAddr' => [
-                    'name'                                  => 'IPPPhysicalAddress',
+                    'name' => 'IPPPhysicalAddress',
                     'attributes' => [
-                        'Line1'                             => $data['bill_address'],
-                        'City'                              => $data['bill_city'],
-                        'Country'                           => $data['bill_country'],
-                        'CountrySubDivisionCode'            => $data['bill_state'],
-                        'PostalCode'                        => $data['bill_zip_code']
-                    ]
+                        'Line1' => $data['bill_address'],
+                        'City' => $data['bill_city'],
+                        'Country' => $data['bill_country'],
+                        'CountrySubDivisionCode' => $data['bill_state'],
+                        'PostalCode' => $data['bill_zip_code'],
+                    ],
                 ],
                 'PrimaryPhone' => [
-                    'name'  => 'IPPTelephoneNumber',
+                    'name' => 'IPPTelephoneNumber',
                     'attributes' => [
-                        'FreeFormNumber'                    => $data['primary_phone_number']
-                    ]
+                        'FreeFormNumber' => $data['primary_phone_number'],
+                    ],
                 ],
                 'PrimaryEmailAddr' => [
                     'name' => 'IPPEmailAddress',
                     'attributes' => [
-                        'Address'                           => $data['email']
-                    ]
-                ]
-            ]
+                        'Address' => $data['email'],
+                    ],
+                ],
+            ],
         ];
+
         return $value;
     }
 
-    public function decodeEstimate($data) {
+    public function decodeEstimate($data)
+    {
         $value = array(
             'name' => 'IPPEstimate',
-            'attributes'                                => array(
-                'CustomerRef'                           => $data['customer_id'],
-                'SyncToken'                             => $data['sync_token'],
-                'DocNumber'                             => $data['doc_number'],
-                'TxnDate'                               => $data['txn_date'],
-                'DueDate'                               => $data['due_date'],
-                'CustomerMemo'                          => $data['estimate_footer'],
-                'BillAddr'                              => array(
+            'attributes' => [
+                'CustomerRef' => $data['customer_id'],
+                'SyncToken' => $data['sync_token'],
+                'DocNumber' => $data['doc_number'],
+                'TxnDate' => $data['txn_date'],
+                'DueDate' => $data['due_date'],
+                'CustomerMemo' => $data['estimate_footer'],
+                'BillAddr' => [
                     [
-                        'name'                          => 'IPPPhysicalAddress',
-                        'attributes'                    => array(
-                            'Id'                        => $data['bill_address_id'],
-                            'Line1'                     => $data['bill_address'],
-                            'City'                      => $data['bill_city'],
-                            'CountrySubDivisionCode'    => $data['bill_state'],
-                            'PostalCode'                => $data['bill_zip_code']
-                        )
-                    ]
-                ),
-                'BillEmail'                             => array(
+                        'name' => 'IPPPhysicalAddress',
+                        'attributes' => [
+                            'Id' => $data['bill_address_id'],
+                            'Line1' => $data['bill_address'],
+                            'City' => $data['bill_city'],
+                            'CountrySubDivisionCode' => $data['bill_state'],
+                            'PostalCode' => $data['bill_zip_code'],
+                            'Country' => $data['bill_country'],
+                        ],
+                    ],
+                ],
+                'ShipAddr' => [
                     [
-                        'name'                          => 'IPPEmailAddress',
-                        'attributes'                    => array(
-                            'Address'                   => $data['email']
-                        )
-                    ]
-                )
-            )
+                        'name' => 'IPPPhysicalAddress',
+                        'attributes' => [
+                            'Id' => $data['job_address_id'],
+                            'Line1' => $data['job_address'],
+                            'City' => $data['job_city'],
+                            'CountrySubDivisionCode' => $data['job_state'],
+                            'PostalCode' => $data['job_zip_code'],
+                            'Country' => $data['job_country'],
+                        ],
+                    ],
+                ],
+                'BillEmail' => [
+                    [
+                        'name' => 'IPPEmailAddress',
+                        'attributes' => [
+                            'Address' => $data['email'],
+                        ],
+                    ],
+                ],
+            ],
         );
-        $value['attributes']['Line'] = array();
+        $value['attributes']['Line'] = [];
         foreach ($data['lines'] as $line) {
-            $value_line = array(
-                'name'                              => 'IPPLine',
-                'attributes'                        => array(
-                    'Id'                                    => $line['line_id'],
-                    'Description'                           => $line['description'],
-                    'DetailType'                            => 'SalesItemLineDetail',
-                    'Amount'                                => (float)$line['qty'] * (float)$line['rate'],
-                    'SalesItemLineDetail'                   => array(
+            $value_line = [
+                'name' => 'IPPLine',
+                'attributes' => [
+                    'Id' => $line['line_id'],
+                    'Description' => $line['description'],
+                    'DetailType' => 'SalesItemLineDetail',
+                    'Amount' => (float) $line['qty'] * (float) $line['rate'],
+                    'SalesItemLineDetail' => [
                         [
-                            'name'                          => 'IPPSalesItemLineDetail',
-                            'attributes'                    => array(
-                                'ItemRef'                   => $line['product_service_id'],
-                                'Qty'                       => $line['qty'],
-                                'UnitPrice'                 => $line['rate']
-                            )
-                        ]
-                    )
-                )
-            );
+                            'name' => 'IPPSalesItemLineDetail',
+                            'attributes' => [
+                                'ItemRef' => $line['product_service_id'],
+                                'Qty' => $line['qty'],
+                                'UnitPrice' => $line['rate'],
+                            ],
+                        ],
+                    ],
+                ],
+            ];
             array_push($value['attributes']['Line'], $value_line);
         }
         if (isset($data['id'])) {
@@ -970,6 +1061,7 @@ class Asynchronzier {
         } else {
             $value['attributes']['TxnStatus'] = $data['status'];
         }
+
         return $value;
     }
 
@@ -977,18 +1069,21 @@ class Asynchronzier {
      * Returns an entity under the specified realm. The realm must be set in the context.
      *
      * @param object $entity Entity to Find
+     *
      * @return IPPIntuitEntity Returns an entity of specified Id.
      */
-    public function Retrieve($entity) {
+    public function Retrieve($entity)
+    {
         return $this->dataService->Retrieve($entity);
     }
 
-    public function Add($entity) {
+    public function Add($entity)
+    {
         return $this->dataService->Add($entity);
     }
 
-    public function upload($fileContent, $fileName, $mimeType, $objAttachable) {
+    public function upload($fileContent, $fileName, $mimeType, $objAttachable)
+    {
         return $this->dataService->Upload($fileContent, $fileName, $mimeType, $objAttachable);
     }
 }
-?>
