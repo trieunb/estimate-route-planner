@@ -13,7 +13,7 @@
 
 function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFactory, $ngBootbox) {
     $scope.setPageTitle('Estimate routes list');
-    $scope.estimateRoutes = {};
+    $scope.estimateRoutes = [];
 
     // estimateRouteFactory.all()
     //     .success(function(response) {

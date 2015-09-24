@@ -48,6 +48,11 @@
           <a href="#/edit-referral-route/{{::route.id}}" ng-if="hasCap('erpp_edit_referral_routes')">Edit</a>
         </td>
       </tr>
+      <tr ng-if="!$root.isBusy && referralRoutes.length == 0">
+        <td colspan="5" class="text-center">
+          No result found!
+        </td>
+      </tr>
     </tbody>
   </table>
   <pagination ng-show="total"

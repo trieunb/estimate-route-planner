@@ -44,6 +44,11 @@
             <a href="#/edit-estimate-route/{{::route.id}}" ng-if="hasCap('erpp_edit_estimate_routes')">Edit</a>
           </td>
         </tr>
+        <tr ng-if="!$root.isBusy && estimateRoutes.length == 0">
+          <td colspan="5" class="text-center">
+            No result found!
+          </td>
+        </tr> 
     </tbody>
   </table>
   <pagination ng-show="total"
