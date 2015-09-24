@@ -1,6 +1,14 @@
 <div id="list-referral" ng-controller="ListEstimateRouteCtrl">
   <div class="table-tools" ng-if="hasCap('erpp_create_estimate_routes')">
     <a href="#/new-estimate-route" class="btn btn-success">Add new</a>
+    <form name="searchRouteForm" class="form-inline pull-right" 
+      ng-submit="searchRoute()">
+      <div class="form-group">
+        <input class="form-control" name="title" type="text"
+          ng-model="estimateRoutes.title">
+        <button class="btn btn-info" name="search">Search</button>
+      </div>
+    </form>
   </div>
 
   <table class="table table-bordered table-hover table-fixed header-fixed">
@@ -35,7 +43,20 @@
           <td>
             <a href="#/edit-estimate-route/{{::route.id}}" ng-if="hasCap('erpp_edit_estimate_routes')">Edit</a>
           </td>
-        </tr>
+        </tr> 
     </tbody>
   </table>
+  <p ng-if="!$root.isBusy && estimateRoutes.length == 0"
+    class="text-center">
+    No results were found!
+  </p>
+  <pagination ng-show="total"
+    rotate="true"
+    boundary-links="true"
+    max-size="10" class="pagination-md"
+    total-items="total"
+    items-per-page="10"
+    ng-model="currentPage"
+    ng-change="pageChanged()">
+  </pagination>
 </div>
