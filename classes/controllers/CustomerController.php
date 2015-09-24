@@ -5,8 +5,12 @@ class CustomerController extends BaseController {
         $customers = ORM::forTable('customers')
             ->selectMany(
                 'id', 'display_name', 'email',
-                'primary_phone_number', 'alternate_phone_number', 'mobile_phone_number',
-                'bill_address', 'bill_city', 'bill_state', 'bill_zip_code'
+                'primary_phone_number', 'alternate_phone_number',
+                'mobile_phone_number',
+                'bill_address', 'bill_city', 'bill_state', 'bill_zip_code',
+                'bill_country',
+                'ship_address', 'ship_city', 'ship_state', 'ship_zip_code',
+                'ship_country'
             )->findArray();
         $this->renderJson($customers);
     }

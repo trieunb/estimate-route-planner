@@ -13,7 +13,7 @@ angular
     );
 
 function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $filter) {
-    $scope.setPageTitle('Edit Referral');
+    $scope.setPageTitle('Edit Job Request');
     $scope.companyInfo = {};
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
@@ -27,10 +27,10 @@ function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $fi
 
     $scope.submitForm = function() {
         // Check address files changed to regeolocation
-        if ($scope.referralForm.address.$dirty
-                || $scope.referralForm.city.$dirty
-                    || $scope.referralForm.state.$dirty
-                        || $scope.referralForm.zip_code.$dirty
+        if ($scope.referralForm.address.$dirty ||
+                $scope.referralForm.city.$dirty ||
+                $scope.referralForm.state.$dirty ||
+                $scope.referralForm.zip_code.$dirty
             ) {
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode( { address: getFullAddress() }, function(results, status) {
@@ -40,7 +40,7 @@ function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $fi
                     $scope.referral.lng = location.lng();
                     doSubmit();
                 } else {
-                    toastr['error']('Could not find geo location. Please check the address!');
+                    toastr.error('Could not find geo location. Please check the address!');
                 }
             });
         } else {
@@ -50,11 +50,11 @@ function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $fi
 
 
     function getFullAddress() {
-        return $scope.referral.address + ' '
-            + $scope.referral.city + ' '
-            + $scope.referral.state + ' '
-            + $scope.referral.zip_code;
-    };
+        return $scope.referral.address + ' ' +
+            $scope.referral.city + ' ' +
+            $scope.referral.state + ' ' +
+            $scope.referral.zip_code;
+    }
 
     function doSubmit() {
         var referral = {};
@@ -64,11 +64,11 @@ function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $fi
         referralFactory.update(referral)
             .success(function(response) {
                 if (response.success) {
-                    toastr['success'](response.message);
+                    toastr.success(response.message);
                     $scope.referralForm.$setPristine();
                 } else {
                     var msg = response.message || 'An error occurred while saving referral';
-                    toastr['error'](msg);
+                    toastr.error(msg);
                 }
             });
     }

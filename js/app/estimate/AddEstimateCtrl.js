@@ -13,7 +13,6 @@ angular
             'estimateFactory',
             'employeeFactory',
             '$ngBootbox',
-            'customerFactory',
             'sharedData',
             AddEstimateCtrl
         ]
@@ -21,7 +20,7 @@ angular
 
 function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
     $location, customerFactory, estimateFactory, employeeFactory, $ngBootbox,
-    customerFactory, sharedData) {
+    sharedData) {
     $scope.setPageTitle('New estimate');
     $scope.customers = [];
     $scope.jobCustomers = [];
@@ -32,8 +31,22 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
     $scope.companyInfo = {};
     $scope.productServices = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
-    angular.copy(sharedData.productServices, $scope.productServices);
+    // Auto fill estimate footer
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
+
+    // Filter active product services
+    angular.forEach(sharedData.productServices, function(pd) {
+        if (pd.active == 1) {
+            $scope.productServices.push(pd);
+        }
+    });
+
+    $scope.soldBySelectConfig = {
+        valueField: 'display_name',
+        labelField: 'display_name',
+        searchField: 'display_name',
+        maxItems: 1
+    };
 
     var selectOptions = {
         valueField: 'id',
@@ -108,7 +121,7 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
     }
 
     $scope.clearCustomerSignature = function() {
-        var signaturePad =  $scope.signature_pad;
+        var signaturePad = $scope.signature_pad;
         signaturePad.clear();
     };
 
@@ -176,6 +189,7 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
                         $scope.estimate.bill_city = cus.bill_city;
                         $scope.estimate.bill_state = cus.bill_state;
                         $scope.estimate.bill_zip_code = cus.bill_zip_code;
+                        $scope.estimate.bill_country = cus.bill_country;
                         $scope.estimate.primary_phone_number = cus.primary_phone_number;
                         $scope.estimate.alternate_phone_number = cus.alternate_phone_number;
                         $scope.estimate.email = cus.email;
@@ -192,10 +206,11 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
             angular.forEach($scope.jobCustomers, function(cus) {
                 if (cus.id == newVal) {
                     if (newVal != 0) { // Keep entered info if new client
-                        $scope.estimate.job_address = cus.bill_address;
-                        $scope.estimate.job_city = cus.bill_city;
-                        $scope.estimate.job_state = cus.bill_state;
-                        $scope.estimate.job_zip_code = cus.bill_zip_code;
+                        $scope.estimate.job_address = cus.ship_address;
+                        $scope.estimate.job_city = cus.ship_city;
+                        $scope.estimate.job_state = cus.ship_state;
+                        $scope.estimate.job_zip_code = cus.ship_zip_code;
+                        $scope.estimate.job_country = cus.ship_country;
                     }
                     $scope.estimate.job_customer_display_name = cus.display_name;
                     return;
@@ -208,7 +223,8 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
         var total = 0.0;
         if ($scope.estimate.lines.length > 0) {
             angular.forEach($scope.estimate.lines, function(line) {
-                var rate = qty = 0;
+                var rate = 0;
+                var qty = 0;
                 if (line.qty) {
                     qty = parseInt(line.qty);
                 }
@@ -234,7 +250,7 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
 
     $scope.submitForm = function() {
         if (isEmptyLines()) {
-            toastr['error']('You must fill out at least one split line.');
+            toastr.error('You must fill out at least one split line.');
         } else {
             // Get geolocation from job info
             var geocoder = new google.maps.Geocoder();
@@ -262,27 +278,32 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
                     estimateFactory.save(estimate)
                         .success(function(response) {
                             if (response.success) {
-                                toastr['success'](response.message);
+                                toastr.success(response.message);
+                                if ($scope.estimate.customer_id == 0 ||
+                                    $scope.estimate.job_customer_id == 0) {
+                                    // To force reload customer list
+                                    $rootScope.customers = undefined;
+                                }
                                 $location.path('/edit-estimate/' + response.data.id);
                             } else {
                                 var msg = response.message || 'An error occurred while saving estimate';
-                                toastr['error'](msg);
+                                toastr.error(msg);
                             }
                         })
                         .error(function() {
-                            toastr['error']('An error occurred while saving estimate');
+                            toastr.error('An error occurred while saving estimate');
                         });
                 } else {
-                    toastr['error']('Could not find geo location of job info. Please check the job address!');
+                    toastr.error('Could not find geo location of job info. Please check the job address!');
                 }
             });
         }
     };
 
     var getJobFullAddress = function() {
-        return $scope.estimate.job_address + ' '
-            + $scope.estimate.job_city + ' '
-            + $scope.estimate.job_state + ' '
-            + $scope.estimate.job_zip_code;
+        return $scope.estimate.job_address + ' ' +
+            $scope.estimate.job_city + ' ' +
+            $scope.estimate.job_state + ' ' +
+            $scope.estimate.job_zip_code;
     };
 }
