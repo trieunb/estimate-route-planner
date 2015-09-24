@@ -1012,17 +1012,17 @@ class Asynchronzier
         return $value;
     }
 
-    public function decodeEstimate($data)
+    public function decodeEstimate($localData)
     {
         $value = [
             'name' => 'IPPEstimate',
             'attributes' => [
-                'CustomerRef'   => $data['customer_id'],
-                'SyncToken'     => $data['sync_token'],
-                'DocNumber'     => $data['doc_number'],
-                'TxnDate'       => $data['txn_date'],
-                'DueDate'       => $data['due_date'],
-                'CustomerMemo'  => $data['estimate_footer'],
+                'CustomerRef'   => $localData['customer_id'],
+                'SyncToken'     => $localData['sync_token'],
+                'DocNumber'     => $localData['doc_number'],
+                'TxnDate'       => $localData['txn_date'],
+                'DueDate'       => $localData['due_date'],
+                'CustomerMemo'  => $localData['estimate_footer'],
                 'CustomField'   => [
                     // Sold by 1
                     [
@@ -1031,7 +1031,7 @@ class Asynchronzier
                             'DefinitionId' => '2',
                             'Type' => 'StringType',
                             'Name' => 'Sales Rep',
-                            'StringValue' => 'zolo'
+                            'StringValue' => @$localData['sold_by_1'] . ''
                         ]
                     ],
                     // Sold by 2
@@ -1041,7 +1041,7 @@ class Asynchronzier
                             'DefinitionId' => '3',
                             'Type' => 'StringType',
                             'Name' => 'Sales Rep',
-                            'StringValue' => 'yahoo'
+                            'StringValue' => @$localData['sold_by_2'] . ''
                         ]
                     ]
                 ],
@@ -1049,12 +1049,12 @@ class Asynchronzier
                     [
                         'name' => 'IPPPhysicalAddress',
                         'attributes' => [
-                            'Id' => $data['bill_address_id'],
-                            'Line1' => $data['bill_address'],
-                            'City' => $data['bill_city'],
-                            'CountrySubDivisionCode' => $data['bill_state'],
-                            'PostalCode' => $data['bill_zip_code'],
-                            'Country' => $data['bill_country'],
+                            'Id' => $localData['bill_address_id'],
+                            'Line1' => $localData['bill_address'],
+                            'City' => $localData['bill_city'],
+                            'CountrySubDivisionCode' => $localData['bill_state'],
+                            'PostalCode' => $localData['bill_zip_code'],
+                            'Country' => $localData['bill_country'],
                         ],
                     ],
                 ],
@@ -1062,12 +1062,12 @@ class Asynchronzier
                     [
                         'name' => 'IPPPhysicalAddress',
                         'attributes' => [
-                            'Id' => $data['job_address_id'],
-                            'Line1' => $data['job_address'],
-                            'City' => $data['job_city'],
-                            'CountrySubDivisionCode' => $data['job_state'],
-                            'PostalCode' => $data['job_zip_code'],
-                            'Country' => $data['job_country'],
+                            'Id' => $localData['job_address_id'],
+                            'Line1' => $localData['job_address'],
+                            'City' => $localData['job_city'],
+                            'CountrySubDivisionCode' => $localData['job_state'],
+                            'PostalCode' => $localData['job_zip_code'],
+                            'Country' => $localData['job_country'],
                         ],
                     ],
                 ],
@@ -1075,14 +1075,15 @@ class Asynchronzier
                     [
                         'name' => 'IPPEmailAddress',
                         'attributes' => [
-                            'Address' => $data['email'],
+                            'Address' => $localData['email'],
                         ],
                     ],
                 ],
             ],
         ];
+
         $value['attributes']['Line'] = [];
-        foreach ($data['lines'] as $line) {
+        foreach ($localData['lines'] as $line) {
             $value_line = [
                 'name' => 'IPPLine',
                 'attributes' => [
@@ -1104,15 +1105,14 @@ class Asynchronzier
             ];
             array_push($value['attributes']['Line'], $value_line);
         }
-        if (isset($data['id'])) {
-            $value['attributes']['Id'] = $data['id'];
+        if (isset($localData['id'])) {
+            $value['attributes']['Id'] = $localData['id'];
         }
-        if ($data['status'] == 'Completed') {
+        if ($localData['status'] == 'Completed') {
             $value['attributes']['TxnStatus'] = 'Accepted';
         } else {
-            $value['attributes']['TxnStatus'] = $data['status'];
+            $value['attributes']['TxnStatus'] = $localData['status'];
         }
-
         return $value;
     }
 

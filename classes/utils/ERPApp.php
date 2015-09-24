@@ -2,9 +2,14 @@
 class ERPApp {
 
     protected $routes = [];
+    protected $errorHandler;
 
     public function __construct() {
         $this->routes = include_once ERP_ROOT_DIR . '/config/routes.php';
+        $this->errorHandler = new ErrorHandler();
+        // set_error_handler([$this->errorHandler, 'handleError']);
+        // set_exception_handler([$this->errorHandler, 'handleException']);
+        // register_shutdown_function([$this->errorHandler, 'handleShutdown']);
     }
 
     public function letGo() {
