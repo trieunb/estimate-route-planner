@@ -22,7 +22,7 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
         currentPage = $routeParams.pageNumber;
     }
     $scope.currentPage = currentPage;
-    var pagiate = function() {
+    var paginate = function() {
         var query = {
             _do: 'getReferrals',
             page: $scope.currentPage
@@ -39,9 +39,9 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
     };
 
     $scope.pageChanged = function() {
-        pagiate();
+        paginate();
     }
-    pagiate();
+    paginate();
 
     $scope.showModalUpdateStatus = function(referral) {
         $scope.currentReferral = {};
