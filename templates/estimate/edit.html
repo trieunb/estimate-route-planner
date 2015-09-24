@@ -383,19 +383,18 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="row">
-                <div class="col-sm-12 cl-lines">
-                    <div class="col-sm-6">
-                        <div ng-if="hasCap('erpp_view_estimate_total')">
-                            <button type="button" class="btn btn-default btn-lines" ng-click="addLine()">Add Line</button>
-                            <button type="button" class="btn btn-default btn-lines" ng-click="removeAllLines()">Clean All Lines</button>
-                        </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="col-sm-6">
+                    <div ng-if="hasCap('erpp_view_estimate_total')">
+                        <button type="button" class="btn btn-default btn-lines" ng-click="addLine()">Add Line</button>
+                        <button type="button" class="btn btn-default btn-lines" ng-click="removeAllLines()">Clean All Lines</button>
                     </div>
-                    <div class="col-sm-6">
-                        <span class="pull-right" ng-if="hasCap('erpp_view_estimate_total')">Estimate total: $<span ng-bind="estimate.total"></span></span></br>
-                        <span class="pull-right">Quoted Prices Good for 30 Days</span>
-                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <span class="pull-right" ng-if="hasCap('erpp_view_estimate_total')">Estimate total: $<span ng-bind="estimate.total"></span></span></br>
+                    <span class="pull-right">Quoted Prices Good for 30 Days</span>
                 </div>
             </div>
         </div>
@@ -416,7 +415,7 @@
         </div>
         <div class="space-30"></div>
         <div class="row">
-            <div class="customer-signature">
+            <div class="col-md-12">
                 <div class="col-sm-5">
                     <div class="form-group">
                         <label for="customer_signature" class="col-sm-5">Customer Signature</label>
