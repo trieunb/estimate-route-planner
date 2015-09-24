@@ -7,7 +7,7 @@
  */
 var ERPApp = ERPApp || {};
 
-function convertImgToBase64URL(url, callback, outputFormat){
+function convertImgToBase64URL(url, callback, outputFormat) {
     var img = new Image();
     img.crossOrigin = 'Anonymous';
     img.onload = function() {
@@ -22,6 +22,14 @@ function convertImgToBase64URL(url, callback, outputFormat){
     };
     img.src = url;
 }
+
+/* Toastr plugin config */
+toastr.options = {
+  "closeButton": true,
+  "debug": false,
+  "positionClass": "toast-bottom-right",
+  "timeOut": "7000"
+};
 
 angular
     .module('Erp', [
@@ -142,7 +150,7 @@ angular
         /* Authorize current user capibilities */
         $rootScope.$on("$routeChangeStart", function(event, current, prev) {
             var requestPath = $location.path();
-            if (requestPath == '') {
+            if (requestPath === '') {
                 requestPath = '/';
             }
             if (!userPermission.canAccessTo(requestPath)) {
@@ -154,66 +162,18 @@ angular
 
 angular
     .module('Erp')
-    .factory('erpHttpInterceptor', ['$q', '$rootScope', '$injector',
-        function ($q, $rootScope, $injector) {
-            $rootScope.http = null;
-            return {
-                'request': function (config) {
-                    $rootScope.loadingOn();
-                    if (config.data && (typeof config.data === 'object') && !(config.data instanceof FormData)) {
-                        config.data = jQuery.param(config.data);
-                    }
-                    return config || $q.when(config);
-                },
-                'requestError': function (rejection) {
-                    $rootScope.http = $rootScope.http || $injector.get('$http');
-                    if ($rootScope.http.pendingRequests.length < 1) {
-                        $rootScope.loadingOff();
-                    }
-                    return $q.reject(rejection);
-                },
-                'response': function (response) {
-                    $rootScope.http = $rootScope.http || $injector.get('$http');
-                    if ($rootScope.http.pendingRequests.length < 1) {
-                        $rootScope.loadingOff();
-                    }
-                    return response || $q.when(response);
-                },
-                'responseError': function (rejection) {
-                    $rootScope.http = $rootScope.http || $injector.get('$http');
-                    if ($rootScope.http.pendingRequests.length < 1) {
-                        $rootScope.loadingOff();
-                    }
-                    if (rejection.status == 404) {
-                        $rootScope.$broadcast('notFound');
-                    }
-                    return $q.reject(rejection);
-                }
-            };
-        }
-    ]);
-
-angular
-    .module('Erp')
     .config(['$httpProvider', 'uiGmapGoogleMapApiProvider',
         function($httpProvider, uiGmapGoogleMapApiProvider) {
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+        $httpProvider.defaults.headers.post['Content-Type'] =
+            'application/x-www-form-urlencoded; charset=UTF-8';
         $httpProvider.interceptors.push('erpHttpInterceptor');
         uiGmapGoogleMapApiProvider.configure({
             key: '',
             v: '3.17',
-            libraries: 'weather, geometry, visualization'
+            libraries: 'geometry, visualization'
         });
     }]);
-
-/* Toastr plugin config */
-toastr.options = {
-  "closeButton": true,
-  "debug": false,
-  "positionClass": "toast-bottom-right",
-  "timeOut": "7000"
-}
 
 var initInjector = angular.injector(['ng']);
 var $http = initInjector.get('$http');
@@ -235,6 +195,6 @@ $http.get(ERPApp.baseAPIPath, {
         });
     },
     function() {
-        toastr['error']("An error has occurred, could not start the app!");
+        toastr.error("An error has occurred, could not start the app!");
     }
 );
