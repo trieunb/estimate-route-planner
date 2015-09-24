@@ -10,7 +10,7 @@ angular
     ]);
 
 function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFactory, $ngBootbox) {
-    $scope.setPageTitle('List Referrals');
+    $scope.setPageTitle('List Job Requests');
     $scope.referrals = {};
     $scope.date = new Date();
     $scope.referralRoutes = [];
@@ -32,7 +32,7 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
         if (referral.new_status == 'Assigned') {
             $scope.showAssignModal = true;
         } else {
-            $ngBootbox.confirm("Do you want to save referral status?")
+            $ngBootbox.confirm("Do you want to save job request status?")
                 .then(function() {
                     $scope.showAssignModal = false;
                     $scope.updateReferralStatus();

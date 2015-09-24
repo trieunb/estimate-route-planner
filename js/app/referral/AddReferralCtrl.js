@@ -37,7 +37,7 @@ function AddReferralCtrl($scope, referralFactory, sharedData, $location, $filter
                             toastr['success'](response.message);
                             $location.path('/edit-referral/' + response.data.id);
                         } else {
-                            var msg = response.message || 'An error occurred while saving referral';
+                            var msg = response.message || 'An error occurred while saving job request';
                             toastr['error'](msg);
                         }
                     });
