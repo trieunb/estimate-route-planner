@@ -156,17 +156,15 @@ class EstimateController extends BaseController {
 
     public function show() {
         // TODO: add check for Sales Rep permission
-        $cons = [
-            'id' => $this->data['id']
-        ];
-        $estimateModel = new EstimateModel();
-        $estimate = $estimateModel->findBy($cons);
-        $estimateLineM = new EstimateLineModel;
-        $estimateAttachmentM = new AttachmentModel;
-        $lines = $estimateLineM->where(['estimate_id' => $estimate['id']]);
-        $attachments = $estimateAttachmentM->where(['estimate_id' => $estimate['id']]);
-        $estimate['lines'] = $lines;
-        $estimate['attachments'] = $attachments;
+        $id = $this->data['id'];
+        $estimate = ORM::forTable('estimates')->findOne($id);
+        $estimate = $estimate->asArray();
+        $estimate['lines'] = ORM::forTable('estimate_lines')
+            ->where('estimate_id', $estimate['id'])
+            ->findArray();
+        $estimate['attachments'] = ORM::forTable('estimate_attachments')
+            ->where('estimate_id', $estimate['id'])
+            ->findArray();
         $this->renderJson($estimate);
     }
 

@@ -31,6 +31,7 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
     $scope.companyInfo = {};
     $scope.productServices = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
+    // Auto fill estimate footer
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
 
     // Filter active product services
@@ -39,6 +40,14 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
             $scope.productServices.push(pd);
         }
     });
+
+    $scope.soldBySelectConfig = {
+        valueField: 'display_name',
+        labelField: 'display_name',
+        searchField: 'display_name',
+        maxItems: 1
+    };
+
     var selectOptions = {
         valueField: 'id',
         labelField: 'display_name',

@@ -32,12 +32,23 @@ toastr.options = {
 };
 
 angular
-    .module('Erp', [
-        'ngRoute', 'selectize', 'ngSanitize', 'ngAnimate',
-        'ngSignaturePad', 'as.sortable', 'ngDropzone',
-        'uiGmapgoogle-maps', 'dndLists', 'ngBootbox', 'ui.bootstrap',
-        'ngMessages', 'yaru22.angular-timeago'
-    ]).run(['$rootScope', 'dataFactory', 'sharedData', '$location', 'userPermission',
+    .module('Erp',
+        [
+            'ngRoute',
+            'selectize',
+            'ngSanitize',
+            'ngAnimate',
+            'ngSignaturePad',
+            'as.sortable',
+            'ngDropzone',
+            'uiGmapgoogle-maps',
+            'dndLists',
+            'ngBootbox',
+            'ui.bootstrap',
+            'ngMessages',
+            'yaru22.angular-timeago'
+        ]
+    ).run(['$rootScope', 'dataFactory', 'sharedData', '$location', 'userPermission',
         function($rootScope, dataFactory, sharedData, $location, userPermission) {
         $rootScope.pageTitle = 'ER Planner Pro';
         $rootScope.isBusy = true;

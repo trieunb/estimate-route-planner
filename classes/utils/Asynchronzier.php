@@ -386,6 +386,20 @@ class Asynchronzier
         } else {
             $job_customer_id = $data->CustomerRef;
         }
+        $sold_by_1 = $sold_by_2 = null;
+        try {
+            if (null != $data->CustomField && is_array($data->CustomField)) {
+                foreach ($data->CustomField as $customField) {
+                    if ($customField->DefinitionId == 2) {
+                        $sold_by_1 = $customField->StringValue;
+                    }
+                    if ($customField->DefinitionId == 3) {
+                        $sold_by_2 = $customField->StringValue;
+                    }
+                }
+            }
+        } catch(Exception $e) {}
+
         // TODO: issue on address lines vs country/city/state
         return [
             'id' => $data->Id,
@@ -416,8 +430,8 @@ class Asynchronzier
             'customer_signature' => $data_local['customer_signature'],
             'location_notes' => $data_local['location_notes'],
             'date_of_signature' => $data_local['date_of_signature'],
-            'sold_by_1' => $data_local['sold_by_1'],
-            'sold_by_2' => $data_local['sold_by_2'],
+            'sold_by_1' => $sold_by_1,
+            'sold_by_2' => $sold_by_2,
 
             'job_customer_id'   => $job_customer_id,
             'job_address_id'    => $job_address_id,
@@ -637,7 +651,7 @@ class Asynchronzier
             if (!is_array($entity['attributes'][$key])) {
                 $object->$key = $value;
             } else {
-                if ($key == 'Line') {
+                if ($key == 'Line' || $key == 'CustomField') {
                     $object->$key = [];
                     foreach ($entity['attributes'][$key] as $sub) {
                         $sub_object = new $sub['name']();
@@ -677,7 +691,6 @@ class Asynchronzier
                 }
             }
         }
-
         return $this->dataService->Add($object);
     }
 
@@ -692,7 +705,7 @@ class Asynchronzier
             if (!is_array($entity['attributes'][$key])) {
                 $object->$key = $value;
             } else {
-                if ($key == 'Line') {
+                if ($key == 'Line' || $key == 'CustomField') {
                     $object->$key = [];
                     foreach ($entity['attributes'][$key] as $sub) {
                         $sub_object = new $sub['name']();
@@ -732,7 +745,6 @@ class Asynchronzier
                 }
             }
         }
-
         return $this->dataService->Add($object);
     }
 
@@ -1002,15 +1014,37 @@ class Asynchronzier
 
     public function decodeEstimate($data)
     {
-        $value = array(
+        $value = [
             'name' => 'IPPEstimate',
             'attributes' => [
-                'CustomerRef' => $data['customer_id'],
-                'SyncToken' => $data['sync_token'],
-                'DocNumber' => $data['doc_number'],
-                'TxnDate' => $data['txn_date'],
-                'DueDate' => $data['due_date'],
-                'CustomerMemo' => $data['estimate_footer'],
+                'CustomerRef'   => $data['customer_id'],
+                'SyncToken'     => $data['sync_token'],
+                'DocNumber'     => $data['doc_number'],
+                'TxnDate'       => $data['txn_date'],
+                'DueDate'       => $data['due_date'],
+                'CustomerMemo'  => $data['estimate_footer'],
+                'CustomField'   => [
+                    // Sold by 1
+                    [
+                        'name' => 'IPPCustomField',
+                        'attributes' => [
+                            'DefinitionId' => '2',
+                            'Type' => 'StringType',
+                            'Name' => 'Sales Rep',
+                            'StringValue' => 'zolo'
+                        ]
+                    ],
+                    // Sold by 2
+                    [
+                        'name' => 'IPPCustomField',
+                        'attributes' => [
+                            'DefinitionId' => '3',
+                            'Type' => 'StringType',
+                            'Name' => 'Sales Rep',
+                            'StringValue' => 'yahoo'
+                        ]
+                    ]
+                ],
                 'BillAddr' => [
                     [
                         'name' => 'IPPPhysicalAddress',
@@ -1046,7 +1080,7 @@ class Asynchronzier
                     ],
                 ],
             ],
-        );
+        ];
         $value['attributes']['Line'] = [];
         foreach ($data['lines'] as $line) {
             $value_line = [
