@@ -32,7 +32,7 @@ class ReferralController extends BaseController {
         $ref->save();
         $this->renderJson([
             'success'  => true,
-            'message'  => 'Referral created successfully',
+            'message'  => 'Job request created successfully',
             'data'     => $ref->asArray()
         ]);
     }
@@ -58,7 +58,7 @@ class ReferralController extends BaseController {
             $ref->save();
             $this->renderJson([
                 'success' => true,
-                'message' => 'Referral updated successfully',
+                'message' => 'Job request updated successfully',
                 'data'    => $ref->asArray()
             ]);
         } else {
