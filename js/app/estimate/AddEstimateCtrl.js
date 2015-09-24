@@ -31,9 +31,14 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
     $scope.companyInfo = {};
     $scope.productServices = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
-    angular.copy(sharedData.productServices, $scope.productServices);
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
 
+    // Filter active product services
+    angular.forEach(sharedData.productServices, function(pd) {
+        if (pd.active == 1) {
+            $scope.productServices.push(pd);
+        }
+    });
     var selectOptions = {
         valueField: 'id',
         labelField: 'display_name',
@@ -107,7 +112,7 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
     }
 
     $scope.clearCustomerSignature = function() {
-        var signaturePad =  $scope.signature_pad;
+        var signaturePad = $scope.signature_pad;
         signaturePad.clear();
     };
 

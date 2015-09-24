@@ -34,7 +34,13 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
     $scope.companyInfo = {};
     $scope.productServices = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
-    angular.copy(sharedData.productServices, $scope.productServices);
+
+    // Filter active product services
+    angular.forEach(sharedData.productServices, function(pd) {
+        if (pd.active == 1) {
+            $scope.productServices.push(pd);
+        }
+    });
 
     var selectOptions = {
         valueField: 'id',
@@ -114,7 +120,9 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
         },
         init: function() {
             this.on("processing", function(file) {
-               this.options.url = ERPApp.baseAPIPath + '&_do=uploadAttachment&data[id]=' + $scope.estimate.id;
+                this.options.url = ERPApp.baseAPIPath +
+                    '&_do=uploadAttachment&data[id]=' +
+                    $scope.estimate.id;
             });
         }
     };
@@ -144,6 +152,7 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
             });
     }
 
+    // Get estimate data
     estimateFactory.show($routeParams.id)
         .success(function(response) {
             var estimate = response;
@@ -154,6 +163,7 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
             }
 
             // Assign line_num for the empty line as length of estimate lines
+            var linePDIds = [];
             angular.forEach(estimate.lines, function(line) {
                 if (line.line_num == null) {
                     line.line_num = estimate.lines.length;
@@ -168,16 +178,32 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                 if (line.qty != null) {
                     line.qty = parseInt(line.qty);
                 }
+                // Check for add inactive products to the selections
+                // if a line has assigned with inactive product
+                if (line.product_service_id) {
+                    angular.forEach(sharedData.productServices, function(pd) {
+                        if ((pd.id == line.product_service_id) &&
+                            (pd.active == '0') &&
+                            (linePDIds.indexOf(pd.id) === -1)) {
+                            $scope.productServices.push(pd);
+                        }
+                    });
+                    linePDIds.push(line.product_service_id);
+                }
             });
+
             // Order lines by line_num
             estimate.lines = $filter('orderBy')(estimate.lines, 'line_num', false);
             // Load signature to canvas if exists
             setTimeout(function() {
                 var signaturePad = $scope.signature_pad;
                 if (estimate.customer_signature) {
-                    convertImgToBase64URL($rootScope.baseERPPluginUrl + estimate.customer_signature, function(encoded) {
-                        signaturePad.fromDataURL(encoded);
-                    });
+                    convertImgToBase64URL(
+                        $rootScope.baseERPPluginUrl + estimate.customer_signature,
+                        function(encoded) {
+                            signaturePad.fromDataURL(encoded);
+                        }
+                    );
                 }
                 signaturePad.onBegin = function() {
                     $scope.isChangedSignature = true;
@@ -193,7 +219,9 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                 function() {
                     attachmentUploader.destroy(attachment.id)
                         .success(function(response) {
-                            $scope.estimate.attachments.splice($scope.estimate.attachments.indexOf(attachment), 1);
+                            $scope.estimate.attachments.splice(
+                                $scope.estimate.attachments.indexOf(attachment),
+                                1);
                             toastr.success(response.message);
                         })
                         .error(function() {
@@ -363,13 +391,17 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                     var estimate = {};
                     angular.copy($scope.estimate, estimate);
                     if (estimate.txn_date) {
-                        estimate.txn_date = ($filter('date')(estimate.txn_date, "yyyy-MM-dd"));
+                        estimate.txn_date = $filter('date')(
+                            estimate.txn_date,
+                            "yyyy-MM-dd");
                     }
                     if (estimate.due_date) {
-                        estimate.due_date = ($filter('date')(estimate.due_date, "yyyy-MM-dd"));
+                        estimate.due_date = $filter('date')(
+                            estimate.due_date, "yyyy-MM-dd");
                     }
                     if (estimate.date_of_signature) {
-                        estimate.date_of_signature = ($filter('date')(estimate.date_of_signature, "yyyy-MM-dd"));
+                        estimate.date_of_signature = $filter('date')(
+                            estimate.date_of_signature, "yyyy-MM-dd");
                     }
 
                     if ($scope.isChangedSignature) {
@@ -396,7 +428,8 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                                     $scope.showSendModal = true;
                                 } else {
                                     // Reload to get refresh customer
-                                    if ($scope.estimate.customer_id == 0 || $scope.estimate.job_customer_id == 0) {
+                                    if ($scope.estimate.customer_id == 0 ||
+                                        $scope.estimate.job_customer_id == 0) {
                                         $window.location.reload();
                                     }
                                 }

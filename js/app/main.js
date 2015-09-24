@@ -181,12 +181,15 @@ angular
                 },
                 'responseError': function (rejection) {
                     $rootScope.http = $rootScope.http || $injector.get('$http');
-                    if (rejection.status = 404) {
+                    if ($rootScope.http.pendingRequests.length < 1) {
+                        $rootScope.loadingOff();
+                    }
+                    if (rejection.status == 404) {
                         $rootScope.$broadcast('notFound');
                     }
                     return $q.reject(rejection);
                 }
-            }
+            };
         }
     ]);
 

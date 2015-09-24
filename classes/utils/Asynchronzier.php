@@ -14,6 +14,7 @@ class Asynchronzier
     public $serviceContext;
     public $dataService;
 
+    static $instance;
     /*
         param $data of function construct is array
         $data = [
@@ -54,6 +55,12 @@ class Asynchronzier
         }
     }
 
+    public static function getInstance() {
+        if (!$instance) {
+            self::$instance = new static(PreferenceModel::getQuickbooksCreds());
+        }
+        return self::$instance;
+    }
     /**
      * Sync all customers.
      *
@@ -922,12 +929,22 @@ class Asynchronzier
         $customerObj->DisplayName = $data['display_name'];
         if (isset($data['bill_address'])) {
             $billAddr = new IPPPhysicalAddress();
-            $billAddr->Line1 = $data['bill_address'];
-            $billAddr->City = $data['bill_city'];
-            $billAddr->Country = $data['bill_country'];
-            $billAddr->CountrySubDivisionCode = $data['bill_state'];
-            $billAddr->PostalCode = $data['bill_zip_code'];
+            $billAddr->Line1                    = @$data['bill_address'];
+            $billAddr->City                     = @$data['bill_city'];
+            $billAddr->Country                  = @$data['bill_country'];
+            $billAddr->CountrySubDivisionCode   = @$data['bill_state'];
+            $billAddr->PostalCode               = @$data['bill_zip_code'];
             $customerObj->BillAddr = $billAddr;
+        }
+
+        if (isset($data['ship_address'])) {
+            $shipAddr = new IPPPhysicalAddress();
+            $shipAddr->Line1                    = @$data['ship_address'];
+            $shipAddr->City                     = @$data['ship_city'];
+            $shipAddr->Country                  = @$data['ship_country'];
+            $shipAddr->CountrySubDivisionCode   = @$data['ship_state'];
+            $shipAddr->PostalCode               = @$data['ship_zip_code'];
+            $customerObj->ShipAddr = $shipAddr;
         }
 
         if (isset($data['primary_phone_number'])) {
