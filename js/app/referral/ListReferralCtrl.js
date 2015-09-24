@@ -16,14 +16,32 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
     $scope.referralRoutes = [];
     $scope.showAssignModal = false;
 
-    referralFactory.list()
-        .success(function(response) {
-            $scope.referrals = response;
-            referralRouteFactory.all()
-                .success(function(response) {
-                    $scope.referralRoutes = response;
-                });
-        });
+    $scope.total = 0;
+    var currentPage = 1;
+    if ('undefined' != typeof($routeParams.pageNumber)) {
+        currentPage = $routeParams.pageNumber;
+    }
+    $scope.currentPage = currentPage;
+    var paginate = function() {
+        var query = {
+            _do: 'getReferrals',
+            page: $scope.currentPage
+        }
+        referralFactory.list(query)
+            .success(function(response){
+                $scope.referrals = response.data;
+                $scope.total = parseInt(response.total);
+                referralRouteFactory.all(query)
+                    .success(function(response){
+                        $scope.referralRoutes = response.routes;
+                    });
+            });
+    };
+
+    $scope.pageChanged = function() {
+        paginate();
+    }
+    paginate();
 
     $scope.showModalUpdateStatus = function(referral) {
         $scope.currentReferral = {};

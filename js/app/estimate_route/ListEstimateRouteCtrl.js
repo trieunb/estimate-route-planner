@@ -4,20 +4,16 @@
         [
             '$scope',
             '$rootScope',
+            '$routeParams',
             'estimateRouteFactory',
             '$ngBootbox',
             ListEstimateRouteCtrl
         ]
     );
 
-function ListEstimateRouteCtrl($scope, $rootScope, estimateRouteFactory, $ngBootbox) {
+function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFactory, $ngBootbox) {
     $scope.setPageTitle('Estimate routes list');
     $scope.estimateRoutes = [];
-
-    estimateRouteFactory.all()
-        .success(function(response) {
-            $scope.estimateRoutes = response;
-        });
 
     $scope.saveRouteStatus = function(route) {
         $ngBootbox.confirm("Do want to save this route?")
@@ -43,4 +39,35 @@ function ListEstimateRouteCtrl($scope, $rootScope, estimateRouteFactory, $ngBoot
                 }
             );
     };
+
+    //pagination
+    $scope.total = 0;
+    var currentPage = 1;
+    if ('undefined' != typeof($routeParams.pageNumber)) {
+        currentPage = $routeParams.pageNumber;
+    }
+    $scope.currentPage = currentPage;
+    var paginate = function() {
+        var query = {
+            _do: 'getEstimateRoutes',
+            page: $scope.currentPage,
+            keyword: $scope.estimateRoutes.title
+        }
+        estimateRouteFactory.all(query)
+            .success(function(response) {
+                $scope.estimateRoutes = response.routes;
+                $scope.estimateRoutes.title = response.keyword;
+                $scope.total = parseInt(response.total);
+            });
+    };
+
+    $scope.pageChanged = function() {
+        paginate();
+    };
+    paginate();
+
+    $scope.searchRoute = function() {
+        $scope.currentPage = 1;
+        paginate();
+    }
 }

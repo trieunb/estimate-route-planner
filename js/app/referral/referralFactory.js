@@ -10,11 +10,9 @@ function referralFactory($http) {
                 data: referral
             });
         },
-        list: function() {
+        list: function(query) {
             return $http.get(ERPApp.baseAPIPath, {
-                params: {
-                    _do: 'getReferrals'
-                }
+                params: query
             });
         },
         listPending: function() {

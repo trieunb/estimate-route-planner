@@ -2,14 +2,28 @@
 class ReferralController extends BaseController {
 
     public function index() {
+        $pageSize = 2;
+        if (isset($_REQUEST['page'])) {
+            $page = $_REQUEST['page'];
+        } else {
+            $page = 1;
+        }
         $refs = ORM::forTable('referrals')
             ->selectMany(
                 'id', 'name', 'address', 'primary_phone',
                 'date_service', 'status', 'date_requested'
             )
             ->orderByDesc('date_requested')
+            ->limit($pageSize)
+            ->offset(($page - 1) * $pageSize)
             ->findArray();
-        $this->renderJson($refs);
+        $counter = ORM::forTable('referrals')
+            ->selectExpr('COUNT(*)', 'count')
+            ->findMany();
+        $this->renderJson([
+            'total' => $counter[0]->count,
+            'data' => $refs
+        ]);
     }
 
     public function pending() {
