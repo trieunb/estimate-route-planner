@@ -42,6 +42,13 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
         }
     });
 
+    $scope.soldBySelectConfig = {
+        valueField: 'display_name',
+        labelField: 'display_name',
+        searchField: 'display_name',
+        maxItems: 1
+    };
+
     var selectOptions = {
         valueField: 'id',
         labelField: 'display_name',

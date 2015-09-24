@@ -386,6 +386,20 @@ class Asynchronzier
         } else {
             $job_customer_id = $data->CustomerRef;
         }
+        $sold_by_1 = $sold_by_2 = null;
+        try {
+            if (null != $data->CustomField && is_array($data->CustomField)) {
+                foreach ($data->CustomField as $customField) {
+                    if ($customField->DefinitionId == 2) {
+                        $sold_by_1 = $customField->StringValue;
+                    }
+                    if ($customField->DefinitionId == 3) {
+                        $sold_by_2 = $customField->StringValue;
+                    }
+                }
+            }
+        } catch(Exception $e) {}
+
         // TODO: issue on address lines vs country/city/state
         return [
             'id' => $data->Id,
@@ -416,8 +430,8 @@ class Asynchronzier
             'customer_signature' => $data_local['customer_signature'],
             'location_notes' => $data_local['location_notes'],
             'date_of_signature' => $data_local['date_of_signature'],
-            'sold_by_1' => $data_local['sold_by_1'],
-            'sold_by_2' => $data_local['sold_by_2'],
+            'sold_by_1' => $sold_by_1,
+            'sold_by_2' => $sold_by_2,
 
             'job_customer_id'   => $job_customer_id,
             'job_address_id'    => $job_address_id,
@@ -637,7 +651,7 @@ class Asynchronzier
             if (!is_array($entity['attributes'][$key])) {
                 $object->$key = $value;
             } else {
-                if ($key == 'Line') {
+                if ($key == 'Line' || $key == 'CustomField') {
                     $object->$key = [];
                     foreach ($entity['attributes'][$key] as $sub) {
                         $sub_object = new $sub['name']();
@@ -677,7 +691,6 @@ class Asynchronzier
                 }
             }
         }
-
         return $this->dataService->Add($object);
     }
 
@@ -692,7 +705,7 @@ class Asynchronzier
             if (!is_array($entity['attributes'][$key])) {
                 $object->$key = $value;
             } else {
-                if ($key == 'Line') {
+                if ($key == 'Line' || $key == 'CustomField') {
                     $object->$key = [];
                     foreach ($entity['attributes'][$key] as $sub) {
                         $sub_object = new $sub['name']();
@@ -732,7 +745,6 @@ class Asynchronzier
                 }
             }
         }
-
         return $this->dataService->Add($object);
     }
 
@@ -1000,27 +1012,49 @@ class Asynchronzier
         return $value;
     }
 
-    public function decodeEstimate($data)
+    public function decodeEstimate($localData)
     {
-        $value = array(
+        $value = [
             'name' => 'IPPEstimate',
             'attributes' => [
-                'CustomerRef' => $data['customer_id'],
-                'SyncToken' => $data['sync_token'],
-                'DocNumber' => $data['doc_number'],
-                'TxnDate' => $data['txn_date'],
-                'DueDate' => $data['due_date'],
-                'CustomerMemo' => $data['estimate_footer'],
+                'CustomerRef'   => $localData['customer_id'],
+                'SyncToken'     => $localData['sync_token'],
+                'DocNumber'     => $localData['doc_number'],
+                'TxnDate'       => $localData['txn_date'],
+                'DueDate'       => $localData['due_date'],
+                'CustomerMemo'  => $localData['estimate_footer'],
+                'CustomField'   => [
+                    // Sold by 1
+                    [
+                        'name' => 'IPPCustomField',
+                        'attributes' => [
+                            'DefinitionId' => '2',
+                            'Type' => 'StringType',
+                            'Name' => 'Sales Rep',
+                            'StringValue' => @$localData['sold_by_1'] . ''
+                        ]
+                    ],
+                    // Sold by 2
+                    [
+                        'name' => 'IPPCustomField',
+                        'attributes' => [
+                            'DefinitionId' => '3',
+                            'Type' => 'StringType',
+                            'Name' => 'Sales Rep',
+                            'StringValue' => @$localData['sold_by_2'] . ''
+                        ]
+                    ]
+                ],
                 'BillAddr' => [
                     [
                         'name' => 'IPPPhysicalAddress',
                         'attributes' => [
-                            'Id' => $data['bill_address_id'],
-                            'Line1' => $data['bill_address'],
-                            'City' => $data['bill_city'],
-                            'CountrySubDivisionCode' => $data['bill_state'],
-                            'PostalCode' => $data['bill_zip_code'],
-                            'Country' => $data['bill_country'],
+                            'Id' => $localData['bill_address_id'],
+                            'Line1' => $localData['bill_address'],
+                            'City' => $localData['bill_city'],
+                            'CountrySubDivisionCode' => $localData['bill_state'],
+                            'PostalCode' => $localData['bill_zip_code'],
+                            'Country' => $localData['bill_country'],
                         ],
                     ],
                 ],
@@ -1028,12 +1062,12 @@ class Asynchronzier
                     [
                         'name' => 'IPPPhysicalAddress',
                         'attributes' => [
-                            'Id' => $data['job_address_id'],
-                            'Line1' => $data['job_address'],
-                            'City' => $data['job_city'],
-                            'CountrySubDivisionCode' => $data['job_state'],
-                            'PostalCode' => $data['job_zip_code'],
-                            'Country' => $data['job_country'],
+                            'Id' => $localData['job_address_id'],
+                            'Line1' => $localData['job_address'],
+                            'City' => $localData['job_city'],
+                            'CountrySubDivisionCode' => $localData['job_state'],
+                            'PostalCode' => $localData['job_zip_code'],
+                            'Country' => $localData['job_country'],
                         ],
                     ],
                 ],
@@ -1041,14 +1075,15 @@ class Asynchronzier
                     [
                         'name' => 'IPPEmailAddress',
                         'attributes' => [
-                            'Address' => $data['email'],
+                            'Address' => $localData['email'],
                         ],
                     ],
                 ],
             ],
-        );
+        ];
+
         $value['attributes']['Line'] = [];
-        foreach ($data['lines'] as $line) {
+        foreach ($localData['lines'] as $line) {
             $value_line = [
                 'name' => 'IPPLine',
                 'attributes' => [
@@ -1070,15 +1105,14 @@ class Asynchronzier
             ];
             array_push($value['attributes']['Line'], $value_line);
         }
-        if (isset($data['id'])) {
-            $value['attributes']['Id'] = $data['id'];
+        if (isset($localData['id'])) {
+            $value['attributes']['Id'] = $localData['id'];
         }
-        if ($data['status'] == 'Completed') {
+        if ($localData['status'] == 'Completed') {
             $value['attributes']['TxnStatus'] = 'Accepted';
         } else {
-            $value['attributes']['TxnStatus'] = $data['status'];
+            $value['attributes']['TxnStatus'] = $localData['status'];
         }
-
         return $value;
     }
 
