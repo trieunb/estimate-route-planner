@@ -102,50 +102,9 @@ class EstimateController extends BaseController {
     public function add() {
         $estimateModel = new EstimateModel();
         $estimateLineModel = new EstimateLineModel();
-        $insertData = $this->data;
         $sync = Asynchronzier::getInstance();
-        /* Start check for new customer */
-        $newCustomerAttrs = $newJobCustomerAttrs = [];
-        if (($this->data['customer_id'] == 0) && // Has new billing customer
-            isset($this->data['customer_display_name']) &&
-            trim($this->data['customer_display_name'])) {
-            $newCustomerAttrs = $this->collectCustomerInfo();
-        }
-
-        // Check for new job customer
-        if (($this->data['job_customer_id'] == 0) && // Has new job customer
-            isset($this->data['job_customer_display_name']) &&
-            trim($this->data['job_customer_display_name'])) {
-            $newJobCustomerAttrs = $this->collectJobCustomerInfo();
-        }
-
-        try {
-            // Check if the new job customer is same with new billing customer
-            if ($newCustomerAttrs && $newJobCustomerAttrs &&
-                    ($newCustomerAttrs['display_name'] ===
-                        $newJobCustomerAttrs['display_name'])) {
-                $newCustomer = $this->_createCustomer(
-                    array_merge($newCustomerAttrs, $newJobCustomerAttrs)
-                );
-                $insertData['customer_id'] =
-                    $insertData['job_customer_id'] = $newCustomer->id;
-            } else {
-                if ($newCustomerAttrs) {
-                    $newCustomer = $this->_createCustomer($newCustomerAttrs);
-                    $insertData['customer_id'] = $newCustomer->id;
-                }
-                if ($newJobCustomerAttrs) {
-                    $newCustomer = $this->_createCustomer($newJobCustomerAttrs);
-                    $insertData['job_customer_id'] = $newCustomer->id;
-                }
-            }
-        } catch (IdsException $e) {
-            $this->renderJson([
-                'success' => false,
-                'message' => 'Failed to create new customer'
-            ]);
-        }
-        /* End of check for new customer */
+        $newCustomerData = $this->_checkForCreateNewCustomers();
+        $insertData = array_merge($this->data, $newCustomerData);
 
         if (isset($insertData['customer_signature_encoded'])) {
             $dataPieces = explode(",", $insertData['customer_signature_encoded']);
@@ -211,65 +170,69 @@ class EstimateController extends BaseController {
         $this->renderJson($estimate);
     }
 
+    private function _checkForCreateNewCustomers() {
+        $return = [];
+        $newCustomerAttrs = $newJobCustomerAttrs = [];
+        if (($this->data['customer_id'] == 0) && // Has new billing customer
+            isset($this->data['customer_display_name']) &&
+            trim($this->data['customer_display_name'])) {
+            $newCustomerAttrs = $this->collectCustomerInfo();
+        }
+
+        // Check for new job customer
+        if (($this->data['job_customer_id'] == 0) && // Has new job customer
+            isset($this->data['job_customer_display_name']) &&
+            trim($this->data['job_customer_display_name'])) {
+            $newJobCustomerAttrs = $this->collectJobCustomerInfo();
+        }
+
+        try {
+            // Check if the new job customer is same with new billing customer
+            if ($newCustomerAttrs && $newJobCustomerAttrs &&
+                    ($newCustomerAttrs['display_name'] ===
+                        $newJobCustomerAttrs['display_name'])) {
+                $newCustomer = $this->_createCustomer(
+                    array_merge($newCustomerAttrs, $newJobCustomerAttrs)
+                );
+                $return['customer_id'] =
+                    $return['job_customer_id'] = $newCustomer->id;
+            } else {
+                if ($newCustomerAttrs) {
+                    $newCustomer = $this->_createCustomer($newCustomerAttrs);
+                    $return['customer_id'] = $newCustomer->id;
+                }
+                if ($newJobCustomerAttrs) {
+                    $newCustomer = $this->_createCustomer($newJobCustomerAttrs);
+                    $return['job_customer_id'] = $newCustomer->id;
+                }
+            }
+        } catch (IdsException $e) {
+            $this->renderJson([
+                'success' => false,
+                'message' => 'Failed to create new customer'
+            ]);
+        }
+        return $return;
+    }
+
     public function update() {
         $estimateModel = new EstimateModel();
         $estimateLineModel = new EstimateLineModel();
         $updateData = $this->data;
         $estimate = ORM::forTable('estimates')->findOne($updateData['id']);
-
-        $sync = new Asynchronzier(PreferenceModel::getQuickbooksCreds());
-        // Check for new customer
-        if (($this->data['customer_id'] == 0) && @$this->data['customer_display_name']) {
-            // Push to Quickbooks
-            try {
-                $qbcustomerObj = $sync->createCustomer($this->collectCustomerInfo());
-                // Save to local DB
-                $customer = ORM::forTable('customers')->create();
-                $customer->set($sync->parseCustomer($qbcustomerObj));
-                $customer->save();
-                $updateData['customer_id'] = $customer->id;
-            } catch (IdsException $e) {
-                $this->renderJson([
-                    'success' => false,
-                    'message' => 'Failed to create new customer for billing information'
-                ]);
-            }
-        }
-
-        // Check for new job customer
-        if (($this->data['job_customer_id'] == 0) && @$this->data['job_customer_display_name']) {
-            if (($this->data['customer_id'] == 0)
-                    && ($this->data['job_customer_display_name'] == @$this->data['customer_display_name'])) {
-                $updateData['job_customer_id'] = $updateData['customer_id'];
-            } else {
-                try {
-                    // Push to Quickbooks
-                    $qbcustomerObj = $sync->createCustomer($this->collectJobCustomerInfo());
-                    // Save to local DB
-                    $jobCustomer = ORM::forTable('customers')->create();
-                    $jobCustomer->set($sync->parseCustomer($qbcustomerObj));
-                    $jobCustomer->save();
-                    $updateData['job_customer_id'] = $jobCustomer->id;
-                } catch (IdsException $e) {
-                    $this->renderJson([
-                        'success' => false,
-                        'message' => 'Failed to create new customer for job information'
-                    ]);
-                    exit;
-                }
-            }
-        }
-
+        $sync = Asynchronzier::getInstance();
+        $newCustomerData = $this->_checkForCreateNewCustomers();
+        $updateData = array_merge($this->data, $newCustomerData);
         if (!$updateData['estimate_route_id']) {
             $updateData['estimate_route_id'] = NULL;
         }
-        if (!$updateData['date_of_signature']) {
+        if (!@$updateData['date_of_signature']) {
             $updateData['date_of_signature'] = NULL;
         }
-        if (!$updateData['accepted_date']) {
+        if (!@$updateData['accepted_date']) {
             $updateData['accepted_date'] = NULL;
         }
-        if (!$updateData['expiration_date']) {
+        if (!@$updateData['expiration_date']) {
             $updateData['expiration_date'] = NULL;
         }
         if (isset($updateData['customer_signature_encoded'])) { // Hash customer signature
@@ -383,7 +346,6 @@ class EstimateController extends BaseController {
                 'message' => 'An error has occurred while deleting attachment'
             ]);
         }
-
     }
 
     public function printPDF() {

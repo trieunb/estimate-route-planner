@@ -270,6 +270,11 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
                         .success(function(response) {
                             if (response.success) {
                                 toastr.success(response.message);
+                                if ($scope.estimate.customer_id == 0 ||
+                                    $scope.estimate.job_customer_id == 0) {
+                                    // To force reload customer list
+                                    $rootScope.customers = undefined;
+                                }
                                 $location.path('/edit-estimate/' + response.data.id);
                             } else {
                                 var msg = response.message || 'An error occurred while saving estimate';

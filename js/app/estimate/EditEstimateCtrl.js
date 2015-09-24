@@ -368,8 +368,8 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
             .success(function(response){
                 if (response.success) {
                     toastr.success(response.message);
-                    if ($scope.customer_id == 0 || $scope.job_customer_id == 0) {
-                        // Reload to get refresh customer
+                    if ($scope.estimate.customer_id == 0 ||
+                        $scope.estimate.job_customer_id == 0) {
                         $window.location.reload();
                     }
                 } else {
