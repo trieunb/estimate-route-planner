@@ -15,11 +15,6 @@ function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFa
     $scope.setPageTitle('Referral routes list');
     $scope.referralRoutes = [];
 
-    // referralRouteFactory.all()
-    //     .success(function(response) {
-    //         $scope.referralRoutes = response.routes;
-    //     });
-
     $scope.saveRouteStatus = function(route) {
         $ngBootbox.confirm("Do want to save this route?")
             .then(

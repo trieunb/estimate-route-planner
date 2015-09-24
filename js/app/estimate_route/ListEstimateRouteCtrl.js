@@ -15,11 +15,6 @@ function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFa
     $scope.setPageTitle('Estimate routes list');
     $scope.estimateRoutes = [];
 
-    // estimateRouteFactory.all()
-    //     .success(function(response) {
-    //         $scope.estimateRoutes = response.routes;
-    //     });
-
     $scope.saveRouteStatus = function(route) {
         $ngBootbox.confirm("Do want to save this route?")
             .then(
