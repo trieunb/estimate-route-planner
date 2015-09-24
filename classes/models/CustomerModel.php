@@ -18,11 +18,20 @@ class CustomerModel extends BaseModel {
         'alternate_phone_number',
         'fax',
         'company_name',
+
+        'bill_address_id',
         'bill_address',
         'bill_city',
         'bill_state',
         'bill_zip_code',
         'bill_country',
+
+        'ship_address_id',
+        'ship_address',
+        'ship_city',
+        'ship_state',
+        'ship_zip_code',
+        'ship_country',
         'active',
         'created_at',
         'last_updated_at'

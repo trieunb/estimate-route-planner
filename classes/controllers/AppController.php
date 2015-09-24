@@ -34,8 +34,7 @@ class AppController extends BaseController {
 
         // All product services
         $productServices = ORM::forTable('products_and_services')
-            ->selectMany('id', 'name', 'description', 'rate')
-            ->where('active', '1')
+            ->selectMany('id', 'name', 'description', 'active', 'rate')
             ->orderByAsc('name')
             ->findArray();
         $this->renderJson([

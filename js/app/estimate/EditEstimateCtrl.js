@@ -34,7 +34,13 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
     $scope.companyInfo = {};
     $scope.productServices = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
-    angular.copy(sharedData.productServices, $scope.productServices);
+
+    // Filter active product services
+    angular.forEach(sharedData.productServices, function(pd) {
+        if (pd.active == 1) {
+            $scope.productServices.push(pd);
+        }
+    });
 
     var selectOptions = {
         valueField: 'id',
@@ -114,7 +120,9 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
         },
         init: function() {
             this.on("processing", function(file) {
-               this.options.url = ERPApp.baseAPIPath + '&_do=uploadAttachment&data[id]=' + $scope.estimate.id;
+                this.options.url = ERPApp.baseAPIPath +
+                    '&_do=uploadAttachment&data[id]=' +
+                    $scope.estimate.id;
             });
         }
     };
@@ -144,11 +152,18 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
             });
     }
 
+    // Get estimate data
     estimateFactory.show($routeParams.id)
         .success(function(response) {
             var estimate = response;
-            $rootScope.pageTitle = 'Estimate #' + estimate.doc_number;
+            if (estimate.doc_number) {
+                $rootScope.pageTitle = 'Estimate #' + estimate.doc_number;
+            } else {
+                $rootScope.pageTitle = 'Edit estimate';
+            }
+
             // Assign line_num for the empty line as length of estimate lines
+            var linePDIds = [];
             angular.forEach(estimate.lines, function(line) {
                 if (line.line_num == null) {
                     line.line_num = estimate.lines.length;
@@ -163,16 +178,32 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                 if (line.qty != null) {
                     line.qty = parseInt(line.qty);
                 }
+                // Check for add inactive products to the selections
+                // if a line has assigned with inactive product
+                if (line.product_service_id) {
+                    angular.forEach(sharedData.productServices, function(pd) {
+                        if ((pd.id == line.product_service_id) &&
+                            (pd.active == '0') &&
+                            (linePDIds.indexOf(pd.id) === -1)) {
+                            $scope.productServices.push(pd);
+                        }
+                    });
+                    linePDIds.push(line.product_service_id);
+                }
             });
+
             // Order lines by line_num
             estimate.lines = $filter('orderBy')(estimate.lines, 'line_num', false);
             // Load signature to canvas if exists
             setTimeout(function() {
                 var signaturePad = $scope.signature_pad;
                 if (estimate.customer_signature) {
-                    convertImgToBase64URL($rootScope.baseERPPluginUrl + estimate.customer_signature, function(encoded) {
-                        signaturePad.fromDataURL(encoded);
-                    });
+                    convertImgToBase64URL(
+                        $rootScope.baseERPPluginUrl + estimate.customer_signature,
+                        function(encoded) {
+                            signaturePad.fromDataURL(encoded);
+                        }
+                    );
                 }
                 signaturePad.onBegin = function() {
                     $scope.isChangedSignature = true;
@@ -188,12 +219,14 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                 function() {
                     attachmentUploader.destroy(attachment.id)
                         .success(function(response) {
-                            $scope.estimate.attachments.splice($scope.estimate.attachments.indexOf(attachment), 1);
-                            toastr['success'](response.message);
+                            $scope.estimate.attachments.splice(
+                                $scope.estimate.attachments.indexOf(attachment),
+                                1);
+                            toastr.success(response.message);
                         })
                         .error(function() {
-                            toastr['error']('An error has occurred while deleting attachment');
-                        })
+                            toastr.error('An error has occurred while deleting attachment');
+                        });
                 }, function() {
                     // Do nothing
                 }
@@ -270,6 +303,7 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                         $scope.estimate.bill_city = cus.bill_city;
                         $scope.estimate.bill_state = cus.bill_state;
                         $scope.estimate.bill_zip_code = cus.bill_zip_code;
+                        $scope.estimate.bill_country = cus.bill_country;
                         $scope.estimate.primary_phone_number = cus.primary_phone_number;
                         $scope.estimate.alternate_phone_number = cus.alternate_phone_number;
                         $scope.estimate.email = cus.email;
@@ -286,10 +320,11 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
             angular.forEach($scope.jobCustomers, function(cus) {
                 if (cus.id == newVal) {
                     if (newVal != 0) {
-                        $scope.estimate.job_address = cus.bill_address;
-                        $scope.estimate.job_city = cus.bill_city;
-                        $scope.estimate.job_state = cus.bill_state;
-                        $scope.estimate.job_zip_code = cus.bill_zip_code;
+                        $scope.estimate.job_address = cus.ship_address;
+                        $scope.estimate.job_city = cus.ship_city;
+                        $scope.estimate.job_state = cus.ship_state;
+                        $scope.estimate.job_zip_code = cus.ship_zip_code;
+                        $scope.estimate.job_country = cus.ship_country;
                     }
                     $scope.estimate.job_customer_display_name = cus.display_name;
                     return;
@@ -302,7 +337,8 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
         var total = 0.0;
         if ($scope.estimate.lines.length > 0) {
             angular.forEach($scope.estimate.lines, function(line) {
-                var rate = qty = 0;
+                var rate = 0;
+                var qty = 0;
                 if (line.qty) {
                     qty = parseInt(line.qty);
                 }
@@ -331,20 +367,20 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
         estimateFactory.sendMail($scope.sendMailData)
             .success(function(response){
                 if (response.success) {
-                    toastr['success'](response.message);
-                    if ($scope.customer_id == 0 || $scope.job_customer_id == 0) {
-                        // Reload to get refresh customer
+                    toastr.success(response.message);
+                    if ($scope.estimate.customer_id == 0 ||
+                        $scope.estimate.job_customer_id == 0) {
                         $window.location.reload();
                     }
                 } else {
-                    toastr['error'](response.message);
+                    toastr.error(response.message);
                 }
             });
     };
 
     $scope.submitForm = function(sendMail) {
         if (isEmptyLines()) {
-            toastr['error']('You must fill out at least one split line.');
+            toastr.error('You must fill out at least one split line.');
         } else {
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode({ address: getJobFullAddress() }, function(results, status) {
@@ -355,13 +391,17 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                     var estimate = {};
                     angular.copy($scope.estimate, estimate);
                     if (estimate.txn_date) {
-                        estimate.txn_date = ($filter('date')(estimate.txn_date, "yyyy-MM-dd"));
+                        estimate.txn_date = $filter('date')(
+                            estimate.txn_date,
+                            "yyyy-MM-dd");
                     }
                     if (estimate.due_date) {
-                        estimate.due_date = ($filter('date')(estimate.due_date, "yyyy-MM-dd"));
+                        estimate.due_date = $filter('date')(
+                            estimate.due_date, "yyyy-MM-dd");
                     }
                     if (estimate.date_of_signature) {
-                        estimate.date_of_signature = ($filter('date')(estimate.date_of_signature, "yyyy-MM-dd"));
+                        estimate.date_of_signature = $filter('date')(
+                            estimate.date_of_signature, "yyyy-MM-dd");
                     }
 
                     if ($scope.isChangedSignature) {
@@ -377,7 +417,7 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                         .success(function(response) {
                             if (response.success) {
                                 $scope.isChangedSignature = false;
-                                toastr['success'](response.message);
+                                toastr.success(response.message);
                                 if (sendMail) {
                                     $scope.sendMailData = {
                                         id: $scope.estimate.id,
@@ -388,29 +428,30 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                                     $scope.showSendModal = true;
                                 } else {
                                     // Reload to get refresh customer
-                                    if ($scope.estimate.customer_id == 0 || $scope.estimate.job_customer_id == 0) {
+                                    if ($scope.estimate.customer_id == 0 ||
+                                        $scope.estimate.job_customer_id == 0) {
                                         $window.location.reload();
                                     }
                                 }
                             } else {
                                 var msg = response.message || 'An error occurred while saving estimate';
-                                toastr['error'](msg);
+                                toastr.error(msg);
                             }
                         })
                         .error(function() {
-                            toastr['error']('An error occurred while updating estimate');
+                            toastr.error('An error occurred while updating estimate');
                         });
                 } else {
-                    toastr['error']('Could not find geo location of job info. Please check the job address!');
+                    toastr.error('Could not find geo location of job info. Please check the job address!');
                 }
             });
         }
     };
 
     var getJobFullAddress = function() {
-        return $scope.estimate.job_address + ' '
-            + $scope.estimate.job_city + ' '
-            + $scope.estimate.job_state + ' '
-            + $scope.estimate.job_zip_code;
+        return $scope.estimate.job_address + ' ' +
+            $scope.estimate.job_city + ' ' +
+            $scope.estimate.job_state + ' ' +
+            $scope.estimate.job_zip_code;
     };
 }

@@ -81,15 +81,15 @@ function erp_setup_admin_menu() {
     // Sub menus
     add_submenu_page(
         ROOT_MENU_SLUG,
-        'New Referral',
-        'New Referral',
+        'New Job Request',
+        'New Job Request',
         'erpp_create_referrals',
         ROOT_MENU_SLUG . '#new-referral',
         'erp_load'
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
-        'List Referrals',
+        'Job Requests',
         'Job Requests',
         'erpp_list_referrals',
         ROOT_MENU_SLUG . '#referrals',
@@ -98,15 +98,15 @@ function erp_setup_admin_menu() {
 
     add_submenu_page(
         ROOT_MENU_SLUG,
-        'New Referral Route',
-        'New Referral Route',
+        'New Estimate Route',
+        'New Estimate Route',
         'erpp_create_referral_routes',
         ROOT_MENU_SLUG . '#new-referral-route',
         'erp_load'
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
-        'List Referral Routes',
+        'List Estimate Routes',
         'Estimate Routes',
         'erpp_list_referral_routes',
         ROOT_MENU_SLUG . '#referral-routes',
@@ -130,7 +130,7 @@ function erp_setup_admin_menu() {
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
-        'New Estimate Route',
+        'New Crew Route',
         'New Crew Route',
         'erpp_create_estimate_routes',
         ROOT_MENU_SLUG . '#new-estimate-route',
@@ -138,7 +138,7 @@ function erp_setup_admin_menu() {
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
-        'List Estimate Routes',
+        'List Crew Routes',
         'Crew Routes',
         'erpp_list_estimate_routes',
         ROOT_MENU_SLUG . '#estimate-routes',

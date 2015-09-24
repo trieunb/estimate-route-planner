@@ -31,8 +31,8 @@ function userPermission(USER_CAPABILITIES) {
 
         // Settings
         'erpp_settings' : '^/settings$',
-        'erpp_settings' :'^/company-info$',
-        'erpp_settings' :'^/quickbooks-sync$'
+        'erpp_settings' : '^/company-info$',
+        'erpp_settings' : '^/quickbooks-sync$'
     };
 
     this.capForPath = function(requestPath) {
@@ -53,7 +53,7 @@ function userPermission(USER_CAPABILITIES) {
         if ('undefined' !== typeof(cap)) {
             return this.hasCap(cap);
         } else {
-            // The path has not restriction
+            // Allow the path not list in restriction
             return true;
         }
     };

@@ -1,0 +1,4 @@
+ALTER TABLE `estimates`
+CHANGE COLUMN `job_city` `job_city` VARCHAR(255) NULL DEFAULT NULL ,
+CHANGE COLUMN `job_state` `job_state` VARCHAR(255) NULL DEFAULT NULL ,
+CHANGE COLUMN `job_zip_code` `job_zip_code` VARCHAR(255) NULL DEFAULT NULL ;
