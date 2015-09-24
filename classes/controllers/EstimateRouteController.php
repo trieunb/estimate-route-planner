@@ -127,17 +127,5 @@ class EstimateRouteController extends BaseController {
         }
     }
 
-    public function search() {
-        $keyword = $this->data['title'];
-        $routes = ORM::forTable('estimate_routes')
-            ->where_like('title', "%$keyword%")
-            ->orderByDesc('created_at')
-            ->findArray();
-        $this->renderJson([
-            'success' =>true,
-            'message' => 'routes',
-            'data' => $routes
-        ]);
-    }
 }
 ?>
