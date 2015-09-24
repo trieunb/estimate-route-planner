@@ -4,20 +4,21 @@
         [
             '$scope',
             '$rootScope',
+            '$routeParams',
             'referralRouteFactory',
             '$ngBootbox',
             ListReferralRouteCtrl
         ]
     );
 
-function ListReferralRouteCtrl($scope, $rootScope, referralRouteFactory, $ngBootbox) {
+function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFactory, $ngBootbox) {
     $scope.setPageTitle('Referral routes list');
     $scope.referralRoutes = [];
 
-    referralRouteFactory.all()
-        .success(function(response) {
-            $scope.referralRoutes = response;
-        });
+    // referralRouteFactory.all()
+    //     .success(function(response) {
+    //         $scope.referralRoutes = response.routes;
+    //     });
 
     $scope.saveRouteStatus = function(route) {
         $ngBootbox.confirm("Do want to save this route?")
@@ -42,5 +43,35 @@ function ListReferralRouteCtrl($scope, $rootScope, referralRouteFactory, $ngBoot
                     route.new_status = route.status;
                 }
             );
+    };
+    //pagination
+    $scope.total = 0;
+    var currentPage = 1;
+    if ('undefined' != typeof($routeParams.pageNumber)) {
+        currentPage = $routeParams.pageNumber;
+    }
+    $scope.currentPage = currentPage;
+    var paginate = function() {
+        var query = {
+            _do: 'getReferralRoutes',
+            page: $scope.currentPage,
+            keyword: $scope.referralRoutes.title
+        }
+        referralRouteFactory.all(query)
+            .success(function(response) {
+                $scope.referralRoutes = response.routes;
+                $scope.referralRoutes.title = response.keyword;
+                $scope.total = parseInt(response.total);
+            });
+    };
+
+    $scope.pageChanged = function() {
+        paginate();
+    };
+    paginate();
+
+    $scope.searchRoute = function() {
+        $scope.currentPage = 1;
+        paginate();
     };
 }

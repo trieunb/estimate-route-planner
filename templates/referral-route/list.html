@@ -1,6 +1,14 @@
 <div id="list-referral" ng-controller="ListReferralRouteCtrl">
   <div class="table-tools" ng-if="hasCap('erpp_create_referral_routes')">
     <a href="#/new-referral-route" class="btn btn-success">Add new</a>
+    <form name="searchRouteForm" class="form-inline pull-right" 
+      ng-submit="searchRoute()">
+      <div class="form-group">
+        <input class="form-control" name="search"
+          ng-model="referralRoutes.title">
+        <button class="btn btn-info" name="search">Search</button>
+      </div>
+    </form>
   </div>
 
   <table class="table table-bordered table-hover table-fixed header-fixed">
@@ -42,4 +50,13 @@
       </tr>
     </tbody>
   </table>
+  <pagination ng-show="total"
+    rotate="true"
+    boundary-links="true"
+    max-size="10" class="pagination-md"
+    total-items="total"
+    items-per-page="2"
+    ng-model="currentPage"
+    ng-change="pageChanged()">
+  </pagination>   
 </div>

@@ -10,10 +10,31 @@ class EstimateRouteController extends BaseController {
     }
 
     public function index() {
+        $pageSize = 10;
+        if (isset($_REQUEST['page'])) {
+            $page = (int) $_REQUEST['page'];
+        } else {
+            $page = 1;
+        }
+        $keyword = "";
+        if (isset($_REQUEST['keyword'])) {
+            $keyword = $_REQUEST['keyword'];
+        }
         $routes = ORM::forTable('estimate_routes')
+            ->whereLike('title', "%$keyword%")
             ->orderByDesc('created_at')
+            ->limit($pageSize)
+            ->offset(($page - 1) * $pageSize)
             ->findArray();
-        $this->renderJson($routes);
+        $counter = ORM::forTable('estimate_routes')
+            ->whereLike('title', "%$keyword%")
+            ->selectExpr('COUNT(*)', 'count')
+            ->findMany();
+        $this->renderJson([
+            'keyword' => $keyword,
+            'routes' => $routes,
+            'total' => $counter[0]->count
+        ]);
     }
 
     public function show() {
@@ -104,6 +125,19 @@ class EstimateRouteController extends BaseController {
                 'message' => 'An error has occurred while saving route'
             ]);
         }
+    }
+
+    public function search() {
+        $keyword = $this->data['title'];
+        $routes = ORM::forTable('estimate_routes')
+            ->where_like('title', "%$keyword%")
+            ->orderByDesc('created_at')
+            ->findArray();
+        $this->renderJson([
+            'success' =>true,
+            'message' => 'routes',
+            'data' => $routes
+        ]);
     }
 }
 ?>

@@ -10,11 +10,9 @@ function estimateRouteFactory($http) {
                 data: {id: id}
             });
         },
-        all: function() {
+        all: function(query) {
             return $http.get(ERPApp.baseAPIPath, {
-                params: {
-                    _do: 'getEstimateRoutes'
-                }
+                params: query
             });
         },        
         save: function(data) {
@@ -35,6 +33,6 @@ function estimateRouteFactory($http) {
                     _do: 'getRecentEstimateRoutes'
                 }
             });
-        }
+        },
     };
 }

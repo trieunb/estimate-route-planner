@@ -10,10 +10,31 @@ class ReferralRouteController extends BaseController {
     }
 
     public function index() {
+        $pageSize = 2;
+        if (isset($_REQUEST['page'])) {
+            $page = (int) $_REQUEST['page'];
+        } else {
+            $page = 1;
+        }
+        $keyword = "";
+        if (isset($_REQUEST['keyword'])) {
+            $keyword = $_REQUEST['keyword'];
+        }
         $routes = ORM::forTable('referral_routes')
+            ->whereLike('title', "%$keyword%")
             ->orderByDesc('created_at')
+            ->limit($pageSize)
+            ->offset(($page - 1) * $pageSize)
             ->findArray();
-        $this->renderJson($routes);
+        $counter = ORM::forTable('referral_routes')
+            ->whereLike('title', "%$keyword%")
+            ->selectExpr('COUNT(*)', 'count')
+            ->findMany();
+        $this->renderJson([
+            'keyword' => $keyword,
+            'routes' => $routes,
+            'total' => $counter[0]->count
+        ]);
     }
 
     public function show() {
