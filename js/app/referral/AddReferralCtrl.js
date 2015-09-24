@@ -34,23 +34,23 @@ function AddReferralCtrl($scope, referralFactory, sharedData, $location, $filter
                 referralFactory.save(referral)
                     .success(function(response) {
                         if (response.success) {
-                            toastr['success'](response.message);
+                            toastr.success(response.message);
                             $location.path('/edit-referral/' + response.data.id);
                         } else {
                             var msg = response.message || 'An error occurred while saving job request';
-                            toastr['error'](msg);
+                            toastr.error(msg);
                         }
                     });
             } else {
-                toastr['error']('Could not find geo location. Please check the address!');
+                toastr.error('Could not find geo location. Please check the address!');
             }
         });
     };
 
     function getFullAddress() {
-        return $scope.referral.address + ' '
-            + $scope.referral.city + ' '
-            + $scope.referral.state + ' '
-            + $scope.referral.zip_code;
-    };
+        return $scope.referral.address + ' ' +
+            $scope.referral.city + ' ' +
+            $scope.referral.state + ' ' +
+            $scope.referral.zip_code;
+    }
 }
