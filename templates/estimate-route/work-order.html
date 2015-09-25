@@ -1,3 +1,50 @@
-<div class="form-work-order" ng-controller="WorkOrderCtrl">
-
+<div ng-controller="WorkOrderCtrl">
+    <button type="button" ng-click="print()" class="btn btn-primary hide-print pull-right">Print</button>
+    <div id="form-work-order">
+        <h3 class="text-center legend"><b>Work Order</b></h3>
+        <div class="route-title">
+            <strong>Route Name:</strong> {{:: route.title}} <small><a class="hide-print" href="#/edit-estimate-route/{{:: route.id}}">(Edit)</a></small>
+        </div>
+        <div class="start-time">
+            <strong>Start time:</strong> <span ng-bind="route.startTime" class="entered-time"></span>
+            <input type="text" class="input-time hide-print" ng-model="route.startTime">
+        </div>
+        <div class="estimates">
+            <ul class="list-unstyled">
+                <li ng-repeat="est in route.assignedEstimates">
+                    <p>
+                        <strong>ETA:</strong> <span ng-bind="est.time" class="entered-time"></span>
+                        <input type="text" class="input-time" ng-model="est.time">
+                        <br>
+                        <span>Estimate #{{:: est.doc_number}}</span>
+                    </p>
+                    <p>
+                        <strong>Job Information:</strong>
+                        <br>
+                        {{:: est.job_customer_display_name }}
+                        <br>
+                        {{:: est.job_address}} {{:: est.job_city}}, {{:: est.job_state}} {{:: est.job_zip_code}}
+                    </p>
+                    <p>
+                        <strong>Location Notes:</strong>
+                        <br>
+                        {{:: est.location_notes}}
+                    </p>
+                    <p>
+                        <strong>Product and Services:</strong>
+                    </p>
+                    <ul class="list-unstyled lines">
+                        <li ng-repeat="line in est.lines">
+                            {{:: line.qty}} - {{:: line.product_service_name}}: {{:: line.description}}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" ng-click="print()" class="hide-print btn btn-primary pull-right">Print</button>
+        </div>
+    </div>
 </div>
