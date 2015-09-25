@@ -1,7 +1,6 @@
 <?php
 class BaseController {
     protected $data;
-
     public function __construct($data) {
         $this->data = $data;
     }
@@ -27,6 +26,24 @@ class BaseController {
         http_response_code(404);
         echo json_encode(new stdClass);
         exit;
+    }
+
+    protected function Page($p) {
+        $page = "";
+        if (isset($_REQUEST[$p])) {
+            $page = $_REQUEST[$p];
+        } else {
+            $page = 1;
+        }
+        return $page;
+    }
+
+    protected function Keyword($k) {
+        $keyword = "";
+        if (isset($_REQUEST[$k])) {
+            $keyword = $_REQUEST[$k];
+        }
+        return $keyword;
     }
 }
 ?>

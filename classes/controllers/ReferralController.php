@@ -1,17 +1,10 @@
 <?php
 class ReferralController extends BaseController {
 
+    const PAGE_SIZE = 2;
     public function index() {
-        $pageSize = 10;
-        if (isset($_REQUEST['page'])) {
-            $page = $_REQUEST['page'];
-        } else {
-            $page = 1;
-        }
-        $keyword = "";
-        if (isset($_REQUEST['keyword'])) {
-            $keyword = $_REQUEST['keyword'];
-        }
+        $page = $this->Page('page');
+        $keyword = $this->Keyword('keyword');
         $refs = ORM::forTable('referrals')
             ->selectMany(
                 'id', 'name', 'address', 'primary_phone',
@@ -19,8 +12,8 @@ class ReferralController extends BaseController {
             )
             ->whereLike('name', "%$keyword%")
             ->orderByDesc('date_requested')
-            ->limit($pageSize)
-            ->offset(($page - 1) * $pageSize)
+            ->limit(self::PAGE_SIZE)
+            ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
         $counter = ORM::forTable('referrals')
             ->whereLike('name', "%$keyword%")
