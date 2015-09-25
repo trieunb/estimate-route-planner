@@ -26,13 +26,12 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
         var query = {
             _do: 'getReferrals',
             page: $scope.currentPage,
-            keyword: $scope.referrals.name
+            keyword: $scope.name
         }
         referralFactory.list(query)
             .success(function(response){
                 $scope.referrals = response.data;
                 $scope.total = parseInt(response.total);
-                $scope.referrals.name = response.keyword;
                 referralRouteFactory.all(query)
                     .success(function(response){
                         $scope.referralRoutes = response.routes;

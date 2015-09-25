@@ -29,20 +29,19 @@ class BaseController {
         exit;
     }
 
-    protected function Page($p) {
+    protected function getPageParam() {
         $page = "";
-        if (isset($_REQUEST[$p])) {
-            $page = $_REQUEST[$p];
+        if (isset($_REQUEST['page'])) {
+            $page = $_REQUEST['page'];
         } else {
             $page = 1;
         }
         return $page;
     }
 
-    protected function Keyword($k) {
-        $keyword = "";
-        if (isset($_REQUEST[$k])) {
-            $keyword = $_REQUEST[$k];
+    protected function getKeywordParam() {
+        if (isset($_REQUEST['keyword'])) {
+            $keyword = $_REQUEST['keyword'];
         }
         return $keyword;
     }

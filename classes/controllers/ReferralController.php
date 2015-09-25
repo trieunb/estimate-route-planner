@@ -2,8 +2,8 @@
 class ReferralController extends BaseController {
 
     public function index() {
-        $page = $this->Page('page');
-        $keyword = $this->Keyword('keyword');
+        $page = $this->getPageParam();
+        $keyword = $this->getKeywordParam();
         $refs = ORM::forTable('referrals')
             ->selectMany(
                 'id', 'name', 'address', 'primary_phone',
@@ -20,8 +20,7 @@ class ReferralController extends BaseController {
             ->findMany();
         $this->renderJson([
             'total' => $counter[0]->count,
-            'data' => $refs,
-            'keyword' => $keyword
+            'data' => $refs
         ]);
     }
 

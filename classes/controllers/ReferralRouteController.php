@@ -10,8 +10,8 @@ class ReferralRouteController extends BaseController {
     }
 
     public function index() {
-        $page = $this->Page('page');
-        $keyword = $this->Keyword('keyword');
+        $page = $this->getPageParam();
+        $keyword = $this->getKeywordParam();
         $routes = ORM::forTable('referral_routes')
             ->whereLike('title', "%$keyword%")
             ->orderByDesc('created_at')
@@ -23,7 +23,6 @@ class ReferralRouteController extends BaseController {
             ->selectExpr('COUNT(*)', 'count')
             ->findMany();
         $this->renderJson([
-            'keyword' => $keyword,
             'routes' => $routes,
             'total' => $counter[0]->count
         ]);
