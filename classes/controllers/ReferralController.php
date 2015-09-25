@@ -8,21 +8,28 @@ class ReferralController extends BaseController {
         } else {
             $page = 1;
         }
+        $keyword = "";
+        if (isset($_REQUEST['keyword'])) {
+            $keyword = $_REQUEST['keyword'];
+        }
         $refs = ORM::forTable('referrals')
             ->selectMany(
                 'id', 'name', 'address', 'primary_phone',
                 'date_service', 'status', 'date_requested'
             )
+            ->whereLike('name', "%$keyword%")
             ->orderByDesc('date_requested')
             ->limit($pageSize)
             ->offset(($page - 1) * $pageSize)
             ->findArray();
         $counter = ORM::forTable('referrals')
+            ->whereLike('name', "%$keyword%")
             ->selectExpr('COUNT(*)', 'count')
             ->findMany();
         $this->renderJson([
             'total' => $counter[0]->count,
-            'data' => $refs
+            'data' => $refs,
+            'keyword' => $keyword
         ]);
     }
 

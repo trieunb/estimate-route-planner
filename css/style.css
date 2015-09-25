@@ -350,3 +350,6 @@ label.required span {
     appearance: none;
     line-height: 22px;
 }
+.table-tools {
+  width: 60%;
+}

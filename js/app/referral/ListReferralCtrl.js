@@ -25,12 +25,14 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
     var paginate = function() {
         var query = {
             _do: 'getReferrals',
-            page: $scope.currentPage
+            page: $scope.currentPage,
+            keyword: $scope.referrals.name
         }
         referralFactory.list(query)
             .success(function(response){
                 $scope.referrals = response.data;
                 $scope.total = parseInt(response.total);
+                $scope.referrals.name = response.keyword;
                 referralRouteFactory.all(query)
                     .success(function(response){
                         $scope.referralRoutes = response.routes;
@@ -43,6 +45,10 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
     }
     paginate();
 
+    $scope.searchReferral = function() {
+        $scope.currentPage = 1;
+        paginate();
+    }
     $scope.showModalUpdateStatus = function(referral) {
         $scope.currentReferral = {};
         $scope.currentReferral.id = referral.id;
