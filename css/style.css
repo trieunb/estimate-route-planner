@@ -353,9 +353,7 @@ label.required span {
     appearance: none;
     line-height: 22px;
 }
-
 /* Work order form */
-
 #form-work-order .entered-time {
     display: none;
 }
@@ -413,3 +411,6 @@ label.required span {
     }
 }
 /* End work order form */
+.table-tools.list-referral {
+  width: 60%;
+}
