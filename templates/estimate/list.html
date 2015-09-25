@@ -1,9 +1,19 @@
 <div id="list-estimate" ng-controller="ListEstimateCtrl">
   <div class="row header-estimate" style="margin-bottom:10px">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <a href="#/new-estimate" class="btn btn-success" ng-if="hasCap('erpp_create_estimates')">Add new</a>
       </div>
-      <div class="col-sm-6 text-right">
+      <div class="col-sm-4">
+          <form name="searchEstimateForm" 
+            class="form-inline"
+            ng-submit="searchEstimate()">
+            <div class="form-group">
+              <input class="form-control" name="search"
+              ng-model="name" placeholder="Search">
+            </div>
+          </form>
+      </div>
+      <div class="col-sm-4 text-right">
         <div class="row">
           <label class="control-label col-sm-6" for="status">Filter by status: </label>
           <div class="col-sm-6">
@@ -69,6 +79,10 @@
         </tr>
     </tbody>
 </table>
+<p ng-if="!$root.isBusy && estimates.length == 0"
+  class="text-center">
+  No results were found!
+</p>
 <div class="modal fade" ng-class="{'in': showModal}" ng-style="{'display': showModal ? 'block' : 'none'}">
     <div class="modal-dialog">
         <div class="modal-content">

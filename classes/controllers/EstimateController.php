@@ -2,12 +2,8 @@
 class EstimateController extends BaseController {
 
     public function index() {
-        $pageSize = 30;
-        if (isset($_REQUEST['page'])) {
-            $page = (int) $_REQUEST['page'];
-        } else {
-            $page = 1;
-        }
+        $page = $this->getPageParam();
+        $keyword = $this->getKeywordParam();
         $filteredStatus = "";
 
         if (isset($_REQUEST['status'])) {
@@ -23,13 +19,17 @@ class EstimateController extends BaseController {
                 'e.status', 'e.email'
             )
             ->select('c.display_name', 'customer_display_name')
+            ->whereLike('c.display_name', "%$keyword%")
             ->whereLike('e.status', "%$filteredStatus%")
             ->orderByDesc('e.id')
-            ->limit($pageSize)
-            ->offset(($page - 1) * $pageSize)
+            ->limit(self::PAGE_SIZE)
+            ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
-        $counter = ORM::for_table('estimates')
-            ->whereLike('estimates.status', "%$filteredStatus%")
+        $counter = ORM::forTable('estimates')
+            ->tableAlias('e')
+            ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
+            ->whereLike('c.display_name', "%$keyword%")
+            ->whereLike('e.status', "%$filteredStatus%")
             ->selectExpr('COUNT(*)', 'count')
             ->findMany();
         $this->renderJson([
