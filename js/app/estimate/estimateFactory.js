@@ -10,6 +10,12 @@ function estimateFactory($http) {
                 data: estimate
             });
         },
+        listAssigedToRoute: function(routeId) {
+            return $http.post(ERPApp.baseAPIPath, {
+                _do: 'getAssignedEstimates',
+                data: {id: routeId}
+            });
+        },
         list: function(query) {
             return $http.get(ERPApp.baseAPIPath, {
                 params: query
