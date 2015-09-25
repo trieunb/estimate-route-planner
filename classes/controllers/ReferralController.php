@@ -2,7 +2,7 @@
 class ReferralController extends BaseController {
 
     public function index() {
-        $pageSize = 2;
+        $pageSize = 10;
         if (isset($_REQUEST['page'])) {
             $page = $_REQUEST['page'];
         } else {
