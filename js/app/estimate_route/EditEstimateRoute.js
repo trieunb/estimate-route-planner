@@ -201,23 +201,23 @@ function EditEstimateRouteCtrl(
            waypts.push(point);
        });
 
-       var request = {
-           origin : origin,
-           waypoints: waypts,
-           destination: destination,
-           optimizeWaypoints: true,
-           travelMode: google.maps.TravelMode.DRIVING
-       };
-
-       directionsService.route(request, function(response, status) {
-           if (status == google.maps.DirectionsStatus.OK) {
-               directionsDisplay.setDirections(response);
-           }
-       });
+    //    var request = {
+    //        origin : origin,
+    //        waypoints: waypts,
+    //        destination: destination,
+    //        optimizeWaypoints: true,
+    //        travelMode: google.maps.TravelMode.DRIVING
+    //    };
+       //
+    //    directionsService.route(request, function(response, status) {
+    //        if (status == google.maps.DirectionsStatus.OK) {
+    //            directionsDisplay.setDirections(response);
+    //        }
+    //    });
    };
 
    $scope.saveRoute = function() {
-       if ($scope.assignedEstimates.length == 0) {
+       if ($scope.assignedEstimates.length === 0) {
            toastr.error("A route could not be saved without any assigned estimates!");
        } else {
            var data = {};
@@ -233,6 +233,8 @@ function EditEstimateRouteCtrl(
                .success(function(response) {
                    if (response.success) {
                        toastr.success(response.message);
+                       $scope.currentAssignedEstimates = [];
+                       angular.copy($scope.assignedEstimates, $scope.currentAssignedEstimates);
                    } else {
                        var msg = response.message || 'An error occurred while saving estimate';
                        toastr.error(msg);
