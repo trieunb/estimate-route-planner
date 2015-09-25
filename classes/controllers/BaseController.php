@@ -42,6 +42,8 @@ class BaseController {
     protected function getKeywordParam() {
         if (isset($_REQUEST['keyword'])) {
             $keyword = $_REQUEST['keyword'];
+        } else {
+            $keyword = "";
         }
         return $keyword;
     }
