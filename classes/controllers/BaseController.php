@@ -1,6 +1,7 @@
 <?php
 class BaseController {
     protected $data;
+    const PAGE_SIZE = 30;
     public function __construct($data) {
         $this->data = $data;
     }

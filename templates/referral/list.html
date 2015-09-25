@@ -1,5 +1,5 @@
 <div id="list-referral" ng-controller="ListReferralCtrl">
-  <div class="table-tools text-left" ng-if="hasCap('erpp_create_referrals')">
+  <div class="table-tools text-left list-referral" ng-if="hasCap('erpp_create_referrals')">
     <a href="#/new-referral" class="btn btn-success">Add new</a>
     <form name="searchReferralForm" class="form-inline pull-right"
       ng-submit="searchReferral()">
@@ -99,7 +99,7 @@
       boundary-links="true"
       max-size="10" class="pagination-md"
       total-items="total"
-      items-per-page="2"
+      items-per-page="30"
       ng-model="currentPage"
       ng-change="pageChanged()">   
     </pagination> 

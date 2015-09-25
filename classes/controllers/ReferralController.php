@@ -1,7 +1,6 @@
 <?php
 class ReferralController extends BaseController {
 
-    const PAGE_SIZE = 2;
     public function index() {
         $page = $this->Page('page');
         $keyword = $this->Keyword('keyword');

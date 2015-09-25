@@ -350,6 +350,6 @@ label.required span {
     appearance: none;
     line-height: 22px;
 }
-.table-tools {
+.table-tools.list-referral {
   width: 60%;
 }

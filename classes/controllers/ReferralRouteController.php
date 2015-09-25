@@ -10,21 +10,13 @@ class ReferralRouteController extends BaseController {
     }
 
     public function index() {
-        $pageSize = 10;
-        if (isset($_REQUEST['page'])) {
-            $page = (int) $_REQUEST['page'];
-        } else {
-            $page = 1;
-        }
-        $keyword = "";
-        if (isset($_REQUEST['keyword'])) {
-            $keyword = $_REQUEST['keyword'];
-        }
+        $page = $this->Page('page');
+        $keyword = $this->Keyword('keyword');
         $routes = ORM::forTable('referral_routes')
             ->whereLike('title', "%$keyword%")
             ->orderByDesc('created_at')
-            ->limit($pageSize)
-            ->offset(($page - 1) * $pageSize)
+            ->limit(self::PAGE_SIZE)
+            ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
         $counter = ORM::forTable('referral_routes')
             ->whereLike('title', "%$keyword%")
