@@ -32,11 +32,11 @@ function EditEstimateRouteCtrl(
        suppressMarkers: true // Hide direction marker
    });
 
-   $scope.setPageTitle('Estimate route planner');
+   $scope.setPageTitle('Crew Route planner');
    $scope.route = {}; // Form data
    $scope.pendingEstimates = [];
    $scope.assignedEstimates = [];
-   $scope.recentRoutes = [];
+   $scope.currentAssignedEstimates = [];
    $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png' };
    $scope.map = {control: {}};  // Hold map instance
    $scope.map.options = {};
@@ -86,6 +86,7 @@ function EditEstimateRouteCtrl(
                        };
                        estimate.total = parseFloat(estimate.total);
                        $scope.assignedEstimates.push(estimate);
+                       $scope.currentAssignedEstimates.push(estimate);
                    });
                    // Setting gmap
                    uiGmapGoogleMapApi.then(function(maps) {
@@ -132,11 +133,6 @@ function EditEstimateRouteCtrl(
                directionsDisplay.setMap($scope.map.control.getGMap());
                $scope.drawAssignedEstimatesDirection(); // Render direction after loaded
            });
-           // Load recent saved routes
-           estimateRouteFactory.recent()
-               .success(function(response) {
-                   $scope.recentRoutes = response;
-               });
        });
 
    $scope.onDropToAssignedQueue = function(event, index, item, external, type) {
