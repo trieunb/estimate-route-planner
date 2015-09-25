@@ -1,7 +1,7 @@
 <?php
 class BaseController {
     protected $data;
-
+    const PAGE_SIZE = 30;
     public function __construct($data) {
         $this->data = $data;
     }
@@ -27,6 +27,25 @@ class BaseController {
         http_response_code(404);
         echo json_encode(new stdClass);
         exit;
+    }
+
+    protected function getPageParam() {
+        $page = "";
+        if (isset($_REQUEST['page'])) {
+            $page = $_REQUEST['page'];
+        } else {
+            $page = 1;
+        }
+        return $page;
+    }
+
+    protected function getKeywordParam() {
+        if (isset($_REQUEST['keyword'])) {
+            $keyword = $_REQUEST['keyword'];
+        } else {
+            $keyword = "";
+        }
+        return $keyword;
     }
 }
 ?>

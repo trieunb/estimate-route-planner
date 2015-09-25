@@ -1,6 +1,16 @@
 <div id="list-referral" ng-controller="ListReferralCtrl">
-  <div class="table-tools text-left" ng-if="hasCap('erpp_create_referrals')">
-    <a href="#/new-referral" class="btn btn-success">Add new</a>
+  <div class="table-tools text-left list-referral">
+    <a href="#/new-referral" class="btn btn-success"
+      ng-if="hasCap('erpp_create_referrals')">
+      Add new
+    </a>
+    <form name="searchReferralForm" class="form-inline pull-right"
+      ng-submit="searchReferral()">
+      <div class="form-group">
+        <input class="form-control" name="search"
+        ng-model="name" placeholder="Search">
+      </div>
+    </form>
   </div>
   <table class="table table-bordered table-hover table-fixed header-fixed">
     <thead>
@@ -46,6 +56,10 @@
       </tr>
     </tbody>
   </table>
+  <p ng-if="!$root.isBusy && referrals.length == 0"
+    class="text-center">
+    No results were found!
+  </p>
   <div class="html-pagination hide">
     <ul class="pagination" style="display: none;">
       <li><a href="#" rel="prev">Previous</a></li>
@@ -88,7 +102,7 @@
       boundary-links="true"
       max-size="10" class="pagination-md"
       total-items="total"
-      items-per-page="2"
+      items-per-page="30"
       ng-model="currentPage"
       ng-change="pageChanged()">   
     </pagination> 
