@@ -201,19 +201,19 @@ function EditEstimateRouteCtrl(
            waypts.push(point);
        });
 
-    //    var request = {
-    //        origin : origin,
-    //        waypoints: waypts,
-    //        destination: destination,
-    //        optimizeWaypoints: true,
-    //        travelMode: google.maps.TravelMode.DRIVING
-    //    };
-       //
-    //    directionsService.route(request, function(response, status) {
-    //        if (status == google.maps.DirectionsStatus.OK) {
-    //            directionsDisplay.setDirections(response);
-    //        }
-    //    });
+       var request = {
+           origin : origin,
+           waypoints: waypts,
+           destination: destination,
+           optimizeWaypoints: true,
+           travelMode: google.maps.TravelMode.DRIVING
+       };
+
+       directionsService.route(request, function(response, status) {
+           if (status == google.maps.DirectionsStatus.OK) {
+               directionsDisplay.setDirections(response);
+           }
+       });
    };
 
    $scope.saveRoute = function() {
