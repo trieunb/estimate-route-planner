@@ -1,15 +1,20 @@
 <div id="list-estimate" ng-controller="ListEstimateCtrl">
   <div class="row header-estimate" style="margin-bottom:10px">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a href="#/new-estimate" class="btn btn-success" ng-if="hasCap('erpp_create_estimates')">Add new</a>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-5">
           <form name="searchEstimateForm" 
             class="form-inline"
             ng-submit="searchEstimate()">
             <div class="form-group">
               <input class="form-control" name="search"
               ng-model="name" placeholder="Search">
+              <button class="btn btn-info" name="search">Search</button>
+              <button class="btn btn-default" 
+                name="search" ng-click="clearSearch()">
+                Clear
+              </button>
             </div>
           </form>
       </div>

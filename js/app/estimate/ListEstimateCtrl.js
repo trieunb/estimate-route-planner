@@ -52,7 +52,12 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
     $scope.searchEstimate = function() {
         $scope.currentPage = 1;
         paginate();
-    }
+    };
+
+    $scope.clearSearch = function() {
+        $scope.name = '';
+        $scope.selectedStatus = '';
+    };
 
     $scope.filterStatuses = [
         {

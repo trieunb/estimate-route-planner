@@ -9,6 +9,11 @@
       <div class="form-group">
         <input class="form-control" name="search"
         ng-model="name" placeholder="Search">
+        <button class="btn btn-info" name="search">Search</button>
+        <button class="btn btn-default" 
+          name="search" ng-click="name = null">
+          Clear
+        </button>
       </div>
     </form>
   </div>
