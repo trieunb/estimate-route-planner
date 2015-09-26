@@ -12,7 +12,7 @@
     );
 
 function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFactory, $ngBootbox) {
-    $scope.setPageTitle('Estimate routes list');
+    $scope.setPageTitle('Crew Routes List');
     $scope.estimateRoutes = [];
 
     $scope.saveRouteStatus = function(route) {

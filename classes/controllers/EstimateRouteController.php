@@ -40,9 +40,10 @@ class EstimateRouteController extends BaseController {
                 ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
                 ->where('e.estimate_route_id', $routeId)
                 ->selectMany(
-                    'e.id', 'e.due_date', 'e.job_address', 'e.job_city',
+                    'e.id', 'e.doc_number', 'e.status', 'e.txn_date',
+                    'e.due_date', 'e.job_address', 'e.job_city',
                     'e.job_state', 'e.job_zip_code', 'e.total', 'e.job_lat',
-                    'e.job_lng', 'e.status'
+                    'e.route_order', 'e.job_lng', 'e.status'
                 )
                 ->select('c.display_name', 'job_customer_display_name')
                 ->orderByAsc('e.route_order')

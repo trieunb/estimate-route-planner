@@ -27,7 +27,7 @@ function AddEstimateRouteCtrl(
         suppressMarkers: true // Hide direction marker
     });
 
-    $scope.setPageTitle('Estimate route planner');
+    $scope.setPageTitle('New Crew Route');
     $scope.route = {}; // Form data
     $scope.pendingEstimates = [];
     $scope.assignedEstimates = [];

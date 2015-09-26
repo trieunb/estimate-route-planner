@@ -58,6 +58,52 @@ class EstimateController extends BaseController {
         $this->renderJson($estimates);
     }
 
+    /**
+     * Get all estimates (includes lines data) which assigned to given route
+     */
+    public function assigned() {
+        $routeId = $this->data['id'];
+        $estimates = ORM::forTable('estimates')
+            ->tableAlias('e')
+            ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
+            ->selectMany(
+                'e.id', 'e.due_date', 'e.job_address', 'e.job_city',
+                'e.job_country', 'e.job_state', 'e.job_zip_code',
+                'e.location_notes', 'e.doc_number',
+                'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
+            )
+            ->select('c.display_name', 'job_customer_display_name')
+            ->orderByDesc('e.id')
+            ->where('e.estimate_route_id', $routeId)
+            ->findArray();
+        # Get lines
+        $estimateIds = [];
+        foreach ($estimates as $est) {
+            $estimateIds[] = $est['id'];
+        }
+        $lines = ORM::forTable('estimate_lines')
+            ->tableAlias('el')
+            ->join(
+                'products_and_services',
+                ['el.product_service_id', '=', 'ps.id'],
+                'ps'
+            )
+            ->whereIn('estimate_id', $estimateIds)
+            ->select('el.*')
+            ->select('ps.name', 'product_service_name')
+            ->orderByAsc('el.line_num')
+            ->findArray();
+        foreach ($estimates as &$est) {
+            $est['lines'] = [];
+            foreach ($lines as $line) {
+                if ($line['estimate_id'] === $est['id']) {
+                    $est['lines'][] = $line;
+                }
+            }
+        }
+        $this->renderJson($estimates);
+    }
+
     public function getdata() {
         return PreferenceModel::getQuickbooksCreds();
     }
