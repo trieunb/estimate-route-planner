@@ -1,0 +1,133 @@
+<div>
+    <div>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#settings">Company Info</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#quickbooks-sync">Quickbooks Synchronize</a></li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <!-- Content of tab Company Info -->
+        <div role="tabpanel" class="tab-pane active" id="conpanyInfo" ng-controller="CompanyInfoCtrl">
+            <div class="row">
+                <form method="post" name="companyForm" ng-submit="submitForm()" novalidate>
+                    <!-- Content left of Company Info-->
+                    <div class="col-sm-8">
+                        <div class="row space_nomal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">Company Name</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" type="text" name="name" ng-model="info.name" required>
+                                    <span style="color:red" ng-show="companyForm.name.$dirty && companyForm.name.$invalid">
+                                        <span ng-show="companyForm.name.$error.required">Company name is required.</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row space_nomal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">Full Address</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control textarea_size" type="text" name="full_address" ng-model="info.full_address" required></textarea>
+                                    <span style="color:red" ng-show="companyForm.full_address.$dirty && companyForm.full_address.$invalid">
+                                        <span ng-show="companyForm.full_address.$error.required">Address is required.</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row space_nomal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">Phone</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" type="tel" name="primary_phone_number" ng-model="info.primary_phone_number" required ng-maxlength="21">
+                                    <span style="color:red" ng-show="companyForm.primary_phone_number.$dirty && companyForm.primary_phone_number.$invalid">
+                                        <span ng-show="companyForm.primary_phone_number.$error.required">Phone is required.</span>
+                                        <span ng-show="companyForm.primary_phone_number.$error.maxlength">Too long!</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row space_nomal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">Fax</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" type="tel" name="fax" ng-model="info.fax" required ng-maxlength="21">
+                                    <span style="color:red" ng-show="companyForm.fax.$dirty && companyForm.fax.$invalid">
+                                        <span ng-show="companyForm.fax.$error.required">Fax is required.</span>
+                                        <span ng-show="companyForm.fax.$error.maxlength">Too long!</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row space_nomal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">Email</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" type="email" name="email" ng-model="info.email" required>
+                                    <span style="color:red" ng-show="companyForm.email.$dirty && companyForm.email.$invalid">
+                                        <span ng-show="companyForm.email.$error.required">Email is required.</span>
+                                        <span ng-show="companyForm.email.$error.email"> Not valid email!</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row space_nomal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">Company Website</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" type="text" name="website" ng-model="info.website" required>
+                                    <span style="color:red" ng-show="companyForm.website.$dirty && companyForm.website.$invalid">
+                                        <span ng-show="companyForm.website.$error.required">Website is required.</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row space_nomal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">Estimate Footer</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control textarea_size" type="text" name="setting.estimate_footer"
+                                    ng-model="info.estimate_footer" ng-required="true"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row space_nomal">
+                            <div class="col-sm-9 col-sm-offset-3">
+                                <button type="submit" class="btn btn-primary" ng-disabled="companyForm.$invalid">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                    <!-- End Content left of company info -->
+
+
+                    <!-- Content right of Company info -->
+                <form enctype="multipart/form-data" name="logoForm" id="logo-form">
+                    <div class="col-sm-4">
+                        <div class="row space_nomal">
+                            <div class="col-sm-12">
+                                <label class="control-label">Company Logo</label></br>
+                                <div class="logo_upload" id="logo_upload">
+                                    <img ng-src="{{$root.baseERPPluginUrl}}{{info.logo_url || 'images/default-logo.png'}}" id="logo_upload_img">
+                                    <input type="file" id="logo-input" ng-model="info.photofile"
+                                        name="logo" accept="image/*"
+                                        required
+                                        required-file
+                                        onchange="angular.element(this).scope().imageChange(this)"
+                                        style="margin-left: 0;"
+                                        class="center_nomal">
+                                    <br>
+                                    <button class="btn btn-success" ng-disabled="logoForm.$invalid || !photofile"
+                                        ng-click="uploadLogo()">Upload</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <form>
+            </div>
+        </div>
+        <!-- End Content of Company Info-->
+      </div>
+    </div>
+</div>

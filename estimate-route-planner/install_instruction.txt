@@ -1,0 +1,43 @@
+The instruction assumes that you already install Wordpress site.
+
+0. Requirements check:
+  - PHP >= 5.4
+  - MySQL >= 5.4
+  - Wordpress >= 4.2
+  - The apache user(default is www-data or nobody) is able to read/write to the plugin directories,
+    such as: tmp, log, uploads
+
+1. Install PHP OAuth
+  - Ubuntu/Debian: sudo apt-get install php5-oauth
+  - Other: contact me if needed
+
+2. Restart Apache and go to wordpress admin
+
+3. Download and unzip plugin source to wp-content/plugins
+    Expected result: <ROOT>/wp-content/plugins/estimate-route-planner
+
+4. Active the plugin
+
+5. Click to plugin menu (ER Planner Pro), it  will ask for connect with Quickbooks.
+
+6. If connect successfully, click to "Settings" and then click "Sync Now".
+
+7. Active cron job(every 5 minutes) for synchronize data, run this command:
+  (crontab -l ; echo "*/5 * * * * /usr/bin/php /<path-to-root>/wp-content/plugins/estimate-route-planner/schedule/sync.php") | crontab -
+  Verify cron job added: crontab -l
+
+
+DEMO Info
+- Sandbox account:
+  Email: sfr.software.company@gmail.com
+  Password: 123qwe!@#
+- App
+  ID: b7qyh8uivh
+  Name: Estimate and route planner development
+  Consumer Key: qyprdO36LrtCooxwQMdZ1EIOxcRWsD
+  Consumer secret: IMpefgccn2CwEafRzAtNunUX4NWm04JoKg59dmTc
+- Company
+  Name: Top leaf tree demo
+  ID: 1417651845
+  Dashboad: https://sandbox.qbo.intuit.com/app/homepage
+- Gmap API: AIzaSyDwG1YMLsNsEpDcah2DGPyIOT8elT1wMqo

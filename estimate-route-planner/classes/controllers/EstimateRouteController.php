@@ -1,0 +1,137 @@
+<?php
+class EstimateRouteController extends BaseController {
+
+    public function recent() {
+        $routes = ORM::forTable('estimate_routes')
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->findArray();
+        $this->renderJson($routes);
+    }
+
+    public function index() {
+        $routes = ORM::forTable('estimate_routes')
+            ->orderByDesc('created_at')
+            ->findArray();
+        $this->renderJson($routes);
+    }
+
+    public function show() {
+        $routeId = $this->data['id'];
+        $route = ORM::forTable('estimate_routes')
+            ->findOne($routeId);
+        $response = $route->asArray();
+        if ($route) {
+            // Get assigned estimates
+            $response['assigned_estimates'] = ORM::forTable('estimates')
+                ->join('customers', ['estimates.job_customer_id', '=', 'customers.id'])
+                ->where('estimates.estimate_route_id', $routeId)
+                ->select('estimates.*')
+                ->select('customers.display_name', 'job_customer_display_name')
+                ->orderByAsc('route_order')
+                ->findArray();
+        }
+        $this->renderJson($response);
+    }
+
+    public function save() {
+        $route = ORM::forTable('estimate_routes')->create();
+        $route->title = $this->data['title'];
+        $route->created_at = date('Y-m-d H:i:s');
+        $route->status = 'Pending';
+        if ($route->save()) {
+            foreach ($this->data['assigned_estimate_ids'] as $index => $estimateId) {
+                $estimate = ORM::forTable('estimates')
+                    ->findOne($estimateId);
+                $estimate->estimate_route_id = $route->id;
+                $estimate->route_order = $index;
+                $estimate->save();
+            }
+            $this->renderJson([
+                'success' => true,
+                'message' => 'Route created successfully',
+                'data'    => $route->asArray()
+            ]);
+        } else {
+            $this->renderJson([
+                'success' => false,
+                'message' => 'An error has occurred while saving route'
+            ]);
+        }
+    }
+
+    public function update() {
+        $routeId = $this->data['id'];
+        $route = ORM::forTable('estimate_routes')->findOne($routeId);
+        $route->title = $this->data['title'];
+        $route->status = $this->data['status'];
+
+        if ($route->save()) {
+            if (isset($this->data['assigned_estimate_ids'])) {
+                $oldAssignedEstimates = ORM::forTable('estimates')
+                    ->where('estimate_route_id', $routeId)
+                    ->findMany();
+
+                foreach ($oldAssignedEstimates as $estimate) {
+                    if (!in_array($estimate->id, $this->data['assigned_estimate_ids'])) {
+                        // Un-assign to the route
+                        $estimate->estimate_route_id = NULL;
+                        $estimate->route_order = 0;
+                        $estimate->save();
+                    }
+                }
+
+                foreach ($this->data['assigned_estimate_ids'] as $index => $id) {
+                    $estimate = ORM::forTable('estimates')
+                        ->findOne($id);
+                    $estimate->estimate_route_id = $routeId;
+                    $estimate->route_order = $index;
+                    $estimate->save();
+                }
+            }
+            $this->renderJson([
+                'success' => true,
+                'message' => 'Route updated successfully'
+            ]);
+        } else {
+            $this->renderJson([
+                'success' => false,
+                'message' => 'An error has occurred while saving route'
+            ]);
+        }
+    }
+
+    public function printRoute() {
+        header('Content-Type: text/html');
+        $estimate_route_id = $_REQUEST['id'];
+        $estimate_route = ORM::forTable('estimate_routes')
+                        ->join('estimates',
+                            ['estimate_routes.id','=','estimates.estimate_route_id'])
+                        ->where('estimate_routes.id',$estimate_route_id)
+                        ->select('estimate_routes.title')
+                        ->select('estimates.*')
+                        ->order_by_asc('route_order')
+                        ->findArray();
+        
+        $points = [];
+        $estimate_title;
+        foreach ($estimate_route as $value) {
+            $points[] = [
+                'lat' => $value['job_lat'],
+                'lng' => $value['job_lng']
+            ];
+            $estimate_title = $value['title'];
+        }
+        $start = [
+            'lat' => $points[0]['lat'],
+            'lng' => $points[0]['lng']
+        ];
+        $end = [
+            'lat' => $points[count($points)-1]['lat'],
+            'lng' => $points[count($points)-1]['lng']
+        ];
+        require_once TEMPLATES_DIR . '/print/estimate-route.php';
+    }
+
+}
+?>

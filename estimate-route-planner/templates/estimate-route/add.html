@@ -1,0 +1,133 @@
+<div ng-controller="AddEstimateRouteCtrl">
+    <div class="row">
+        <div class="col-sm-3">
+            <h4 class="h4-title">Assigned Routes</h4>
+            <div class="assigned-routes">
+                Sort by:
+                <select class="sort-by-select"
+                    ng-model="assigned_queue_sort_by"
+                    ng-change="sortAssignedQueue()"
+                    ng-options="sort.value as sort.label for sort in sortOptions">
+                </select>
+                <ul dnd-list="assignedEstimates" dnd-drop="onDropToAssignedQueue(event, index, item, external, type)">
+                    <li class="box-assign" ng-repeat="estimate in assignedEstimates"
+                        dnd-draggable="estimate"
+                        dnd-moved="onAssignedMoved(estimate, $index)"
+                        >
+                        <a href="#/edit-estimate/{{estimate.id}}" target="_blank">{{::estimate.job_customer_display_name}}</a>
+                        <br>
+                        {{::estimate.job_address}}<br>
+                        {{::estimate.job_city}},{{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                        Phone: {{::estimate.primary_phone_number}}<br>
+                        Due: {{::estimate.due_date}}<br>
+                        Total: ${{::estimate.total}}
+                    </li>
+                </ul>
+            </div>
+
+            <h4 class="h4-title">Pending Routes</h4>
+
+            <div class="assigned-routes">
+                Sort by:
+                <select class="sort-by-select"
+                    ng-model="pending_queue_sort_by"
+                    ng-change="sortPendingQueue()"
+                    ng-options="sort.value as sort.label for sort in sortOptions">
+                </select>
+                <ul dnd-list="pendingEstimates" dnd-drop="onDropToPendingQueue(event, index, item, external, type)">
+                    <li class="box-assign" ng-repeat="estimate in pendingEstimates"
+                        dnd-draggable="estimate"
+                        dnd-moved="onPendingMoved(estimate, $index)"
+                        >
+                        <a href="#/edit-estimate/{{estimate.id}}" target="_blank">{{::estimate.job_customer_display_name}}</a>
+                        <br>
+                        {{::estimate.job_address}}<br>
+                        {{::estimate.job_city}},{{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                        Phone: {{::estimate.primary_phone_number}}<br>
+                        Due: {{::estimate.due_date}}<br>
+                        Total: ${{::estimate.total}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+                <form name="routeForm" ng-submit="saveRoute()">
+                    <div class="col-md-6">
+                        <label for="title" class="required">Title</label>
+                        <input class="form-control inline" type="text" name="title"
+                            ng-model="route.title" ng-required="true"/>
+                    </div>
+                    <div class="col-md-4 col-md-offset-2">
+                        <div class="btn-action text-right">
+                            <button class="btn btn-default btn-sm" type="button" ng-disabled="routeForm.$invalid">Print</button>
+                            <button class="btn btn-primary btn-sm" ng-disabled="routeForm.$invalid">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="gmap-container">
+                <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
+                    <ui-gmap-marker ng-repeat="estimate in pendingEstimates"
+                        icon="pendingMarkerIcon"
+                        idkey="$index" coords="estimate.coords"
+                        >
+                        <ui-gmap-window>
+                            <p>
+                                <a href="#/edit-estimate/{{estimate.id}}" target="_blank">{{::estimate.job_customer_display_name}}</a><br>
+                                {{::estimate.job_address}}<br>
+                                {{::estimate.job_city}},{{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                                Phone: {{::estimate.primary_phone_number}}<br>
+                                Due: {{::estimate.due_date}}<br>
+                                Total: ${{::estimate.total}}
+                            </p>
+                        </ui-gmap-window>
+                    </ui-gmap-marker>
+
+                    <ui-gmap-marker ng-repeat="estimate in assignedEstimates"
+                        idkey="$index" coords="estimate.coords"
+                        >
+                        <ui-gmap-window>
+                            <p>
+                                <a href="#/edit-estimate/{{estimate.id}}" target="_blank">{{::estimate.job_customer_display_name}}</a><br>
+                                {{::estimate.job_address}}<br>
+                                {{::estimate.job_city}},{{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                                Phone: {{::estimate.primary_phone_number}}<br>
+                                Due: {{::estimate.due_date}}<br>
+                                Total: ${{::estimate.total}}
+                            </p>
+                        </ui-gmap-window>
+                    </ui-gmap-marker>
+
+                </ui-gmap-google-map>
+            </div>
+
+            <h4 class="h4-title">Recent Saved Routes</h4>
+            <table class="table table-bordered table-striped table-fixed header-fixed">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Created At</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="route in recentRoutes">
+                    <td><span>{{::route.title}}</span></td>
+                    <td><span>{{::route.created_at}}</span></td>
+                    <td><span>{{::route.status}}</span></td>
+                    <td>
+                        <a href="#/edit-estimate-route/{{route.id}}">View</a>
+                    </td>
+                  </tr>
+                  <tr ng-if="!$root.isBusy && recentRoutes.length == 0">
+                      <td colspan="4" class="text-center">
+                          No routes created yet
+                      </td>
+                  </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

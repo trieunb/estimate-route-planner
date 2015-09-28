@@ -1,0 +1,82 @@
+<div id="list-referral" ng-controller="ListReferralCtrl">
+  <div class="table-tools text-left">
+    <a href="#/new-referral" class="btn btn-success">Add new</a>
+  </div>
+  <table class="table table-bordered table-hover table-fixed header-fixed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Date requested</th>
+        <th>Address</th>
+        <th>Phone Number</th>
+        <th>Date service</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="ref in referrals | orderBy:'date_requested'">
+        <td><a href="#/edit-referral/{{ref.id}}"><span>{{ref.name}}</span></a></td>
+        <td><span>{{ref.date_requested}}</span></td>
+        <td><span>{{ref.address}}</span></td>
+        <td><span>{{ref.primary_phone}}</span></td>
+        <td><span>{{ref.date_service}}</span></td>
+        <td>
+            <select
+                ng-init="ref.new_status = ref.status"
+                ng-model="ref.new_status"
+                ng-options="status.value as status.label for status in $root.referralStatuses"
+                ng-change="showModalUpdateStatus(ref)">
+            </select>
+        </td>
+        <td>
+            <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown">View
+              <span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                <li><a href="#/edit-referral/{{ref.id}}">Edit</a></li>
+                <li><a target="_blank" href="{{$root.baseAPIPath}}&_do=printReferral&id={{ref.id}}">Print</a></li>
+              </ul>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="html-pagination hide">
+    <ul class="pagination" style="display: none;">
+      <li><a href="#" rel="prev">Previous</a></li>
+      <li><a href="#">1</a></li>
+      <li><a href="#">2</a></li>
+      <li><a href="#">3</a></li>
+      <li><a href="#">4</a></li>
+      <li><a href="#">5</a></li>
+      <li><a href="#" rel="next">Next</a></li>
+    </ul>
+  </div>
+  <div class="modal fade" ng-class="{'in': showAssignModal}" ng-style="{'display': showAssignModal ? 'block' : 'none'}">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4>Please select route to assign:</h4>
+              </div>
+              <form role="form" name="assignReferralForm">
+                  <div class="modal-body">
+                    <div class="form-group">
+                      <select
+                        class="form-control"
+                        ng-model="currentReferral.referral_route_id"
+                        ng-required="true"
+                        ng-options="route.id as route.title for route in referralRoutes">
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="updateReferralStatus()"
+                        ng-disabled="assignReferralForm.$invalid || $root.isBusy">Save</button>
+                    <button class="btn" type="button" ng-click="cancelAssignReferral()">Cancel</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+    </div>
+</div>
