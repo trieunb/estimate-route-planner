@@ -14,12 +14,12 @@
                         dnd-draggable="referral"
                         dnd-type="'assigned'"
                         dnd-moved="onAssignedMoved(referral, $index)">
-                            <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="hasCap('erpp_edit_referrals')">{{::referral.name}}</a>
-                            <span ng-if="!hasCap('erpp_edit_referrals')">{{::referral.name}}</span>
+                            <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</a>
+                            <span ng-if="!hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</span>
                             <br>
                             <span>{{::referral.address}}</span><br>
                             <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
-                            <span>Phone: {{::referral.primary_phone}}</span><br>
+                            <span>Phone: {{::referral.primary_phone_number}}</span><br>
                             <span>Date Requested: {{::referral.date_requested}}</span><br>
                             <span>Status: {{::referral.status}}</span>
                     </li>
@@ -40,12 +40,12 @@
                             dnd-draggable="referral"
                             dnd-type="'pending'"
                             dnd-moved="onPendingMoved(referral, $index)">
-                            <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="hasCap('erpp_edit_referrals')">{{::referral.name}}</a>
-                            <span ng-if="!hasCap('erpp_edit_referrals')">{{::referral.name}}</span>
+                            <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</a>
+                            <span ng-if="!hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</span>
                             <br>
                             <span>{{::referral.address}}</span><br>
                             <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
-                            <span>Phone: {{::referral.primary_phone}}</span><br>
+                            <span>Phone: {{::referral.primary_phone_number}}</span><br>
                             <span>Date Requested: {{::referral.date_requested}}</span><br>
                             <span>Status: {{::referral.status}}</span>
                     </li>
@@ -77,12 +77,12 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="$root.hasCap('erpp_edit_referrals')">{{::referral.name}}</a>
-                                <span ng-if="!$root.hasCap('erpp_edit_referrals')">{{::referral.name}}</span>
+                                <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="$root.hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</a>
+                                <span ng-if="!$root.hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 {{::referral.address}}<br/>
                                 {{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}<br/>
-                                Phone: {{::referral.primary_phone}}<br/>
+                                Phone: {{::referral.primary_phone_number}}<br/>
                                 Date Requested: {{::referral.date_requested}}<br/>
                                 Status: {{::referral.status}}
                             </p>
@@ -94,12 +94,12 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="$root.hasCap('erpp_edit_referrals')">{{::referral.name}}</a>
-                                <span ng-if="!$root.hasCap('erpp_edit_referrals')">{{::referral.name}}</span>
+                                <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="$root.hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</a>
+                                <span ng-if="!$root.hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 {{::referral.address}}<br/>
                                 {{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}<br/>
-                                Phone: {{::referral.primary_phone}}<br/>
+                                Phone: {{::referral.primary_phone_number}}<br/>
                                 Date Requested: {{::referral.date_requested}}<br/>
                                 Status: {{::referral.status}}
                             </p>

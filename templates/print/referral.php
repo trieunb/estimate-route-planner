@@ -54,10 +54,10 @@
                         <tbody>
                             <tr>
                                 <td class="wpt10">
-                                    <label>Name</label>
+                                    <label>Customer</label>
                                 </td>
                                 <td colspan="3">
-                                    <span><?php echo $referral['name'] ?></span>
+                                    <span><?php echo $referral['customer_display_name'] ?></span>
                                 </td>
                             </tr>
                             <tr>

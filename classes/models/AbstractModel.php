@@ -1,7 +1,13 @@
 <?php
+/**
+ * The base model class. A wrapper of ORM library
+ * @author Lht
+ *
+ */
 abstract class AbstractModel extends ORM {
 
     protected $fillable = [];
+
     protected $tableName;
 
     public function __construct() {
@@ -11,8 +17,8 @@ abstract class AbstractModel extends ORM {
     public abstract function getTableName();
 
     /**
-     * Override to add filter the fillable attrs from mass assignment
-     * NOTE: this only filter array inputs, skip assign single attribute
+     * Override to restrict only $fillable from mass assignment
+     * NOTE: this only filter array inputs, skip if assign a single attribute
     */
     protected function _set_orm_property($key, $value = null, $expr = false) {
         if (is_array($key)) {

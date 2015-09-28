@@ -15,7 +15,7 @@
   <table class="table table-bordered table-hover table-fixed header-fixed">
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Customer</th>
         <th>Date requested</th>
         <th>Address</th>
         <th>Phone Number</th>
@@ -27,8 +27,8 @@
     <tbody>
       <tr ng-repeat="ref in referrals | orderBy:'date_requested'">
         <td>
-          <a href="#/edit-referral/{{ref.id}}" ng-if="hasCap('erpp_edit_referrals')"><span>{{ref.name}}</span></a>
-          <span ng-if="!hasCap('erpp_edit_referrals')">{{ref.name}}</span>
+          <a href="#/edit-referral/{{ref.id}}" ng-if="hasCap('erpp_edit_referrals')"><span>{{ref.customer_display_name}}</span></a>
+          <span ng-if="!hasCap('erpp_edit_referrals')">{{ref.customer_display_name}}</span>
         </td>
         <td><span>{{ref.date_requested}}</span></td>
         <td><span>{{ref.address}}</span></td>
@@ -104,6 +104,6 @@
       total-items="total"
       items-per-page="30"
       ng-model="currentPage"
-      ng-change="pageChanged()">   
-    </pagination> 
+      ng-change="pageChanged()">
+    </pagination>
 </div>

@@ -412,7 +412,6 @@
             $statement = self::get_db($connection_name)->prepare($query);
             self::$_last_statement = $statement;
             $time = microtime(true);
-
             foreach ($parameters as $key => &$param) {
                 if (is_null($param)) {
                     $type = PDO::PARAM_NULL;

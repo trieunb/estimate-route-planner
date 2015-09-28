@@ -2,7 +2,6 @@
 class ReferralModel extends AbstractModel {
 
     protected $fillable = [
-        'id',
         'customer_id',
         'referral_route_id',
         'route_order',
