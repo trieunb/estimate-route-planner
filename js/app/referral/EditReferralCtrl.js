@@ -4,17 +4,29 @@ angular
         'EditReferralCtrl',
         [
             '$scope',
+            '$rootScope',
             'referralFactory',
+            'customerFactory',
             'sharedData',
             '$routeParams',
             '$filter',
+            '$window',
             EditReferralCtrl
         ]
     );
 
-function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $filter) {
+function EditReferralCtrl(
+    $scope,
+    $rootScope,
+    referralFactory,
+    customerFactory,
+    sharedData,
+    $routeParams,
+    $filter,
+    $window) {
     $scope.setPageTitle('Edit Job Request');
     $scope.companyInfo = {};
+    $scope.customers = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
     var init = function() {
@@ -24,6 +36,66 @@ function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $fi
                 $scope.referral = response;
             });
     };
+
+    // Load customers list
+    if (typeof($rootScope.customers) !== 'undefined') {
+        angular.copy($rootScope.customers, $scope.customers);
+    } else {
+        customerFactory.all()
+            .success(function(response) {
+                $scope.customers = response;
+                $rootScope.customers = [];
+                angular.copy($scope.customers, $rootScope.customers);
+            });
+    }
+
+
+        $scope.customersSelectConfig = {
+            valueField: 'id',
+            labelField: 'display_name',
+            sortField: 'display_name',
+            searchField: 'display_name',
+            selectOnTab: true,
+            maxItems: 1,
+            maxOptions: 10000,
+            create: function(input, callback) {
+                var newCustomer = {
+                    id: 0,
+                    display_name: input
+                };
+                angular.forEach($scope.customers, function(cus, index) {
+                    // Remove last new customer
+                    if (cus.id == 0) {
+                        $scope.customers.splice(index, 1);
+                        return;
+                    }
+                });
+                $scope.customers.push(newCustomer);
+                $scope.referral.customer_display_name = input;
+                callback(newCustomer);
+            }
+        };
+
+        // What customer change to populate customer fields
+        $scope.$watch('referral.customer_id', function(newVal, oldVal) {
+            if ($scope.referralForm.$dirty && ('undefined' != typeof(newVal))) {
+                angular.forEach($scope.customers, function(cus) {
+                    if (cus.id == newVal) {
+                        if (newVal != 0) { // Keep entered info if new client
+                            $scope.referral.address = cus.ship_address;
+                            $scope.referral.city = cus.ship_city;
+                            $scope.referral.state = cus.ship_state;
+                            $scope.referral.zip_code = cus.ship_zip_code;
+                            $scope.referral.country = cus.ship_country;
+                            $scope.referral.primary_phone_number = cus.primary_phone_number;
+                            $scope.referral.email = cus.email;
+                        }
+                        $scope.referral.customer_display_name = cus.display_name;
+                        return;
+                    }
+                });
+            }
+        });
 
     $scope.submitForm = function() {
         // Check address files changed to regeolocation
@@ -48,12 +120,12 @@ function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $fi
         }
     };
 
-
     function getFullAddress() {
         return $scope.referral.address + ' ' +
             $scope.referral.city + ' ' +
             $scope.referral.state + ' ' +
-            $scope.referral.zip_code;
+            $scope.referral.zip_code + ' ' +
+            $scope.referral.country;
     }
 
     function doSubmit() {
@@ -66,6 +138,10 @@ function EditReferralCtrl($scope, referralFactory, sharedData, $routeParams, $fi
                 if (response.success) {
                     toastr.success(response.message);
                     $scope.referralForm.$setPristine();
+                    // Reload to get refresh customer
+                    if ($scope.referral.customer_id == 0) {
+                        $window.location.reload();
+                    }
                 } else {
                     var msg = response.message || 'An error occurred while saving referral';
                     toastr.error(msg);

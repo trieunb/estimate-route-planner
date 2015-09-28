@@ -35,8 +35,16 @@ class ReferralRouteController extends BaseController {
 
         $response = $route->asArray();
         if ($route) {
+            $referralM = new ReferralModel;
             // Get assigned referrals
-            $response['assigned_referrals'] = ORM::forTable('referrals')
+            $response['assigned_referrals'] = $referralM->tableAlias('r')
+                ->join('customers', ['r.customer_id', '=', 'c.id'], 'c')
+                ->selectMany(
+                    'r.id', 'r.address', 'r.city',
+                    'r.state', 'r.zip_code', 'r.primary_phone_number',
+                    'r.status', 'r.date_requested', 'r.lat', 'r.lng'
+                )
+                ->select('c.display_name', 'customer_display_name')
                 ->where('referral_route_id', $routeId)
                 ->orderByAsc('route_order')
                 ->findArray();
