@@ -39,7 +39,8 @@ class ReferralController extends BaseController {
     }
 
     public function add() {
-        $ref = ORM::forTable('referrals')->create();
+        $model = new ReferralModel();
+        $ref = $model->create();
         $ref->set($this->data);
         $ref->save();
         $this->renderJson([
