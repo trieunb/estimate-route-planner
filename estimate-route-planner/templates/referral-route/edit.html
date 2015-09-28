@@ -1,0 +1,146 @@
+<div ng-controller="EditReferralRouteCtrl">
+    <div class="row">
+        <div class="col-sm-3">
+            <h4 class="h4-title">Assigned Routes</h4>
+            <div class="assigned-routes">
+                Sort by:
+                <select class="sort-by-select"
+                    ng-model="assigned_queue_sort_by"
+                    ng-change="sortAssignedQueue()"
+                    ng-options="sort.value as sort.label for sort in sortOptions">
+                </select>
+                <ul dnd-list="assignedReferrals" dnd-drop="onDropToAssignedQueue(event, index, item, external, type)">
+                    <li class="box-assign" ng-repeat="referral in assignedReferrals"
+                        dnd-draggable="referral"
+                        dnd-type="'assigned'"
+                        dnd-moved="onAssignedMoved(referral, $index)">
+                            <a href="#/edit-referral/{{referral.id}}" target="_blank">{{::referral.name}}</a><br>
+                            <span>{{::referral.address}}</span><br>
+                            <span>{{::referral.city}},{{::referral.state}} {{::referral.zip_code}}</span><br>
+                            <span><span class="text-info">Phone:</span> {{::referral.primary_phone}}</span><br>
+                            <span><span class="text-info">Date Requested:</span> {{::referral.date_requested}}</span><br>
+                            <span><span class="text-info">Status:</span> {{::referral.status}}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <h4 class="h4-title">Pending Routes</h4>
+
+            <div class="assigned-routes">
+                Sort by:
+                <select class="sort-by-select"
+                    ng-model="pending_queue_sort_by"
+                    ng-change="sortPendingQueue()"
+                    ng-options="sort.value as sort.label for sort in sortOptions">
+                </select>
+                <ul dnd-list="pendingReferrals" dnd-drop="onDropToPendingQueue(event, index, item, external, type)">
+                    <li class="box-assign" ng-repeat="referral in pendingReferrals"
+                            dnd-draggable="referral"
+                            dnd-type="'pending'"
+                            dnd-moved="onPendingMoved(referral, $index)"
+                            >
+                            <a href="#/edit-referral/{{referral.id}}" target="_blank">{{::referral.name}}</a><br>
+                            <span>{{::referral.address}}</span><br>
+                            <span>{{::referral.city}},{{::referral.state}} {{::referral.zip_code}}</span><br>
+                            <span>Phone: {{::referral.primary_phone}}</span><br>
+                            <span>Date Requested: {{::referral.date_requested}}</span><br>
+                            <span>Status: {{::referral.status}}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+                <form name="routeForm" ng-submit="saveRoute()">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="title" class="required">Title</label>
+                                <input class="form-control inline" type="text" name="title"
+                                    ng-model="route.title" ng-required="true"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="status">Status</label>
+                                <select class="form-control inline"
+                                    name="status"
+                                    ng-model="route.status"
+                                    ng-options="status.value as status.label for status in $root.routeStatuses">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-action text-right">
+                            <a href="#/new-referral-route" class="btn btn-success">Add new</a>
+                            <a target="_blank" href="{{$root.baseAPIPath}}&_do=printReferralRoute&id={{route.id}}" class="btn btn-default" type="button"
+                             ng-disabled="routeForm.$invalid">Print</a>
+                            <button class="btn btn-primary" type="submit" ng-disabled="routeForm.$invalid">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="gmap-container">
+                <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
+                    <ui-gmap-marker ng-repeat="referral in pendingReferrals"
+                        icon="pendingMarkerIcon"
+                        idkey="$index" coords="referral.coords"
+                        >
+                        <ui-gmap-window>
+                            <p>
+                                <a href="#/edit-referral/{{referral.id}}" target="_blank">{{::referral.name}}</a><br>
+                                <span>{{::referral.address}}</span><br>
+                                <span>{{::referral.city}},{{::referral.state}} {{::referral.zip_code}}</span><br>
+                                <span>Phone: {{::referral.primary_phone}}</span><br>
+                                <span>Date Requested: {{::referral.date_requested}}</span><br>
+                                <span>Status: {{::referral.status}}</span>
+                            </p>
+                        </ui-gmap-window>
+                    </ui-gmap-marker>
+
+                    <ui-gmap-marker ng-repeat="referral in assignedReferrals"
+                        idkey="$index" coords="referral.coords"
+                        >
+                        <ui-gmap-window>
+                            <p>
+                                <a href="#/edit-referral/{{referral.id}}" target="_blank">{{::referral.name}}</a><br>
+                                <span>{{::referral.address}}</span><br>
+                                <span>{{::referral.city}},{{::referral.state}} {{::referral.zip_code}}</span><br>
+                                <span>Phone: {{::referral.primary_phone}}</span><br>
+                                <span>Date Requested: {{::referral.date_requested}}</span><br>
+                                <span>Status: {{::referral.status}}</span>
+                            </p>
+                        </ui-gmap-window>
+                    </ui-gmap-marker>
+
+                </ui-gmap-google-map>
+            </div>
+
+            <h4 class="h4-title">Recent Saved Routes</h4>
+            <table class="table table-bordered table-fixed header-fixed">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="route in recentRoutes">
+                        <td><span>{{::route.title}}</span></td>
+                        <td><span>{{::route.created_at}}</span></td>
+                        <td><span>{{::route.status}}</span></td>
+                        <td>
+                            <a href="#/edit-referral-route/{{route.id}}">View</a>
+                        </td>
+                    </tr>
+                    <tr ng-if="!$root.isBusy && recentRoutes.length == 0">
+                        <td colspan="4" class="text-center">
+                            No routes created yet
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

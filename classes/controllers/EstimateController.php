@@ -13,13 +13,18 @@ class EstimateController extends BaseController {
         $estimates = ORM::forTable('estimates')
             ->tableAlias('e')
             ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
+            ->join('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
             ->selectMany(
                 'e.id', 'e.txn_date', 'e.doc_number',
                 'e.source', 'e.due_date', 'e.total',
                 'e.status', 'e.email'
             )
             ->select('c.display_name', 'customer_display_name')
-            ->whereLike('c.display_name', "%$keyword%")
+            ->select('jc.display_name', 'job_customer_display_name')
+            ->whereAnyIs([
+                ['c.display_name' => "%$keyword%"],
+                ['jc.display_name' => "%$keyword%"]], 'LIKE'
+            )
             ->whereLike('e.status', "%$filteredStatus%")
             ->orderByDesc('e.id')
             ->limit(self::PAGE_SIZE)
@@ -28,7 +33,11 @@ class EstimateController extends BaseController {
         $counter = ORM::forTable('estimates')
             ->tableAlias('e')
             ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
-            ->whereLike('c.display_name', "%$keyword%")
+            ->join('customers', ['e.customer_id', '=', 'jc.id'], 'jc')
+            ->whereAnyIs([
+                ['c.display_name' => "%$keyword%"],
+                ['jc.display_name' => "%$keyword%"]], 'LIKE'
+            )
             ->whereLike('e.status', "%$filteredStatus%")
             ->selectExpr('COUNT(*)', 'count')
             ->findMany();
