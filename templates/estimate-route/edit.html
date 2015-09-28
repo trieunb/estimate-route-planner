@@ -122,34 +122,44 @@
                 </ui-gmap-google-map>
             </div>
 
-            <div ng-if="hasCap('erpp_list_estimate_routes')">
-                <h4 class="h4-title">Recent Saved Routes</h4>
-                <table class="table table-bordered table-striped table-fixed header-fixed">
-                    <thead>
-                      <tr>
-                        <th>Title</th>
-                        <th>Created At</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr ng-repeat="route in recentRoutes">
-                        <td><span>{{::route.title}}</span></td>
-                        <td><span>{{::route.created_at}}</span></td>
-                        <td><span>{{::route.status}}</span></td>
-                        <td>
-                            <a href="#/edit-estimate-route/{{route.id}}">View</a>
-                        </td>
-                      </tr>
-                      <tr ng-if="!$root.isBusy && recentRoutes.length == 0">
-                          <td colspan="4" class="text-center">
-                              No routes created yet
-                          </td>
-                      </tr>
-                    </tbody>
-                </table>
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-6">
+                    <h4 class="h4-title">Current Assigned Estimates</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a href="#/estimate-route/{{:: route.id}}/work-order" class="btn btn-success">Create Work Order</a>
+                </div>
             </div>
+            <table class="table table-bordered table-fixed header-fixed">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Number</th>
+                    <th ng-if="hasCap('erpp_view_estimate_total')">Total</th>
+                    <th>Status</th>
+                    <th ng-if="hasCap('erpp_edit_estimates')">
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="est in currentAssignedEstimates">
+                    <td><span>{{::est.txn_date}}</span></td>
+                    <td><span>{{::est.job_customer_display_name}}</span></td>
+                    <td><span>{{::est.doc_number}}</span></td>
+                    <td ng-if="hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
+                    <td><span>{{::est.status}}</span></td>
+                    <td ng-if="hasCap('erpp_edit_estimates')">
+                        <a href="#/edit-estimate/{{est.id}}">Edit</a>
+                    </td>
+                  </tr>
+                  <tr ng-if="!$root.isBusy && currentAssignedEstimates.length == 0">
+                      <td colspan="4" class="text-center">
+                          There is no assigned estimates
+                      </td>
+                  </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

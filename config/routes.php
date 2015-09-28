@@ -12,6 +12,7 @@ return [
     'uploadAttachment'      => 'Estimate@uploadAttachment',
     'deleteAttachment'      => 'Estimate@deleteAttachment',
     'getUnassignedEstimates'=> 'Estimate@unassigned',
+    'getAssignedEstimates'  => 'Estimate@assigned',
     'printEstimate'         => 'Estimate@printPDF',
     'sendEstimate'          => 'Estimate@sendEstimate',
 

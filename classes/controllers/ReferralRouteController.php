@@ -10,28 +10,19 @@ class ReferralRouteController extends BaseController {
     }
 
     public function index() {
-        $pageSize = 10;
-        if (isset($_REQUEST['page'])) {
-            $page = (int) $_REQUEST['page'];
-        } else {
-            $page = 1;
-        }
-        $keyword = "";
-        if (isset($_REQUEST['keyword'])) {
-            $keyword = $_REQUEST['keyword'];
-        }
+        $page = $this->getPageParam();
+        $keyword = $this->getKeywordParam();
         $routes = ORM::forTable('referral_routes')
             ->whereLike('title', "%$keyword%")
             ->orderByDesc('created_at')
-            ->limit($pageSize)
-            ->offset(($page - 1) * $pageSize)
+            ->limit(self::PAGE_SIZE)
+            ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
         $counter = ORM::forTable('referral_routes')
             ->whereLike('title', "%$keyword%")
             ->selectExpr('COUNT(*)', 'count')
             ->findMany();
         $this->renderJson([
-            'keyword' => $keyword,
             'routes' => $routes,
             'total' => $counter[0]->count
         ]);
@@ -44,8 +35,16 @@ class ReferralRouteController extends BaseController {
 
         $response = $route->asArray();
         if ($route) {
+            $referralM = new ReferralModel;
             // Get assigned referrals
-            $response['assigned_referrals'] = ORM::forTable('referrals')
+            $response['assigned_referrals'] = $referralM->tableAlias('r')
+                ->join('customers', ['r.customer_id', '=', 'c.id'], 'c')
+                ->selectMany(
+                    'r.id', 'r.address', 'r.city',
+                    'r.state', 'r.zip_code', 'r.primary_phone_number',
+                    'r.status', 'r.date_requested', 'r.lat', 'r.lng'
+                )
+                ->select('c.display_name', 'customer_display_name')
                 ->where('referral_route_id', $routeId)
                 ->orderByAsc('route_order')
                 ->findArray();

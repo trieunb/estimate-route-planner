@@ -948,7 +948,6 @@ class Asynchronzier
             $billAddr->PostalCode               = @$data['bill_zip_code'];
             $customerObj->BillAddr = $billAddr;
         }
-
         if (isset($data['ship_address'])) {
             $shipAddr = new IPPPhysicalAddress();
             $shipAddr->Line1                    = @$data['ship_address'];
@@ -956,7 +955,12 @@ class Asynchronzier
             $shipAddr->Country                  = @$data['ship_country'];
             $shipAddr->CountrySubDivisionCode   = @$data['ship_state'];
             $shipAddr->PostalCode               = @$data['ship_zip_code'];
+
             $customerObj->ShipAddr = $shipAddr;
+            // Set billing same with shipping if billing address is not set
+            if (!isset($data['bill_address'])) {
+                $customerObj->BillAddr = $shipAddr;
+            }
         }
 
         if (isset($data['primary_phone_number'])) {

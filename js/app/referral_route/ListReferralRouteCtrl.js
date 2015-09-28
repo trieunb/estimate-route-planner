@@ -50,12 +50,11 @@ function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFa
         var query = {
             _do: 'getReferralRoutes',
             page: $scope.currentPage,
-            keyword: $scope.referralRoutes.title
+            keyword: $scope.title
         }
         referralRouteFactory.all(query)
             .success(function(response) {
                 $scope.referralRoutes = response.routes;
-                $scope.referralRoutes.title = response.keyword;
                 $scope.total = parseInt(response.total);
             });
     };

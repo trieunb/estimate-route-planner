@@ -3,7 +3,9 @@
         'AddReferralCtrl',
         [
             '$scope',
+            '$rootScope',
             'referralFactory',
+            'customerFactory',
             'sharedData',
             '$location',
             '$filter',
@@ -11,14 +13,82 @@
         ]
     );
 
-function AddReferralCtrl($scope, referralFactory, sharedData, $location, $filter) {
+function AddReferralCtrl(
+    $scope,
+    $rootScope,
+    referralFactory,
+    customerFactory,
+    sharedData,
+    $location,
+    $filter) {
+
     $scope.setPageTitle('New Job Request');
     $scope.companyInfo = {};
+    $scope.customers = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     // Initial with default status
     $scope.referral = {
         status: 'Pending'
     };
+
+    // Load customers list
+    if (typeof($rootScope.customers) !== 'undefined') {
+        angular.copy($rootScope.customers, $scope.customers);
+    } else {
+        customerFactory.all()
+            .success(function(response) {
+                $scope.customers = response;
+                $rootScope.customers = [];
+                angular.copy($scope.customers, $rootScope.customers);
+            });
+    }
+
+    $scope.customersSelectConfig = {
+        valueField: 'id',
+        labelField: 'display_name',
+        sortField: 'display_name',
+        searchField: 'display_name',
+        selectOnTab: true,
+        maxItems: 1,
+        maxOptions: 10000,
+        create: function(input, callback) {
+            var newCustomer = {
+                id: 0,
+                display_name: input
+            };
+            angular.forEach($scope.customers, function(cus, index) {
+                // Remove last new customer
+                if (cus.id == 0) {
+                    $scope.customers.splice(index, 1);
+                    return;
+                }
+            });
+            $scope.customers.push(newCustomer);
+            $scope.referral.customer_display_name = input;
+            callback(newCustomer);
+        }
+    };
+
+    // What customer change to populate customer fields
+    $scope.$watch('referral.customer_id', function(newVal, oldVal) {
+        if ($scope.referralForm.$dirty && ('undefined' != typeof(newVal))) {
+            angular.forEach($scope.customers, function(cus) {
+                if (cus.id == newVal) {
+                    if (newVal != 0) { // Keep entered info if new client
+                        $scope.referral.address = cus.ship_address;
+                        $scope.referral.city = cus.ship_city;
+                        $scope.referral.state = cus.ship_state;
+                        $scope.referral.zip_code = cus.ship_zip_code;
+                        $scope.referral.country = cus.ship_country;
+                        $scope.referral.primary_phone_number = cus.primary_phone_number;
+                        $scope.referral.email = cus.email;
+                    }
+                    $scope.referral.customer_display_name = cus.display_name;
+                    return;
+                }
+            });
+        }
+    });
 
     $scope.submitForm = function() {
         var geocoder = new google.maps.Geocoder();
@@ -35,6 +105,10 @@ function AddReferralCtrl($scope, referralFactory, sharedData, $location, $filter
                     .success(function(response) {
                         if (response.success) {
                             toastr.success(response.message);
+                            if ($scope.referral.customer_id == 0) {
+                                // To force reload customer list
+                                $rootScope.customers = undefined;
+                            }
                             $location.path('/edit-referral/' + response.data.id);
                         } else {
                             var msg = response.message || 'An error occurred while saving job request';
@@ -51,6 +125,7 @@ function AddReferralCtrl($scope, referralFactory, sharedData, $location, $filter
         return $scope.referral.address + ' ' +
             $scope.referral.city + ' ' +
             $scope.referral.state + ' ' +
-            $scope.referral.zip_code;
+            $scope.referral.zip_code + ' ' +
+            $scope.referral.country;
     }
 }

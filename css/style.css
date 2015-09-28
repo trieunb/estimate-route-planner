@@ -14,6 +14,9 @@
 #erp-content.busy {
     opacity: 0.5;
 }
+#erp-content p, #erp-content li{
+    font-size: 14px;
+}
 #spinner {
     background: url('../images/spinner.gif') no-repeat;
     background-size: 30px 30px;
@@ -349,4 +352,65 @@ label.required span {
     -moz-appearance: none;
     appearance: none;
     line-height: 22px;
+}
+/* Work order form */
+#form-work-order .entered-time {
+    display: none;
+}
+#form-work-order .input-time {
+    width: 90px;
+}
+#form-work-order .route-title {
+    font-size: 20px;
+}
+#form-work-order .start-time, #form-work-order .estimates {
+    margin-top: 10px;
+}
+#form-work-order .estimates > ul > li {
+    margin-top: 20px;
+    font-size: 13px;
+}
+#form-work-order .estimates ul.lines {
+    margin-top: -10px;
+}
+
+@media print {
+    .hide-print {
+        display: none;
+    }
+    #form-work-order {
+        font-size: 14px;
+    }
+    #form-work-order .legend {
+        margin: 0 0 20px 0;
+    }
+    #form-work-order .entered-time {
+        display: inline-block !important;
+    }
+    #form-work-order .input-time {
+        display: none !important;
+    }
+    #adminmenuwrap,
+    #erp-header,
+    #wpfooter,
+    #adminmenu,
+    #wpadminbar,
+    #adminmenuback,
+    #wp-auth-check-wrap,
+    [class$="-nag"]
+    {
+        display: none !important;
+    }
+
+    #erp-content {
+        border: none;
+    }
+    #wpcontent {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+/* End work order form */
+.table-tools.list-referral {
+  width: 60%;
 }
