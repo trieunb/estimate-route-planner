@@ -21,8 +21,7 @@ class EstimateController extends BaseController {
             )
             ->select('c.display_name', 'customer_display_name')
             ->select('jc.display_name', 'job_customer_display_name')
-            //->whereLike('c.display_name', "%$keyword%")
-            ->where_any_is([
+            ->whereAnyIs([
                 ['c.display_name' => "%$keyword%"],
                 ['jc.display_name' => "%$keyword%"]], 'LIKE'
             )
@@ -34,7 +33,11 @@ class EstimateController extends BaseController {
         $counter = ORM::forTable('estimates')
             ->tableAlias('e')
             ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
-            ->whereLike('c.display_name', "%$keyword%")
+            ->join('customers', ['e.customer_id', '=', 'jc.id'], 'jc')
+            ->whereAnyIs([
+                ['c.display_name' => "%$keyword%"],
+                ['jc.display_name' => "%$keyword%"]], 'LIKE'
+            )
             ->whereLike('e.status', "%$filteredStatus%")
             ->selectExpr('COUNT(*)', 'count')
             ->findMany();
