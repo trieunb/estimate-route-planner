@@ -33,7 +33,7 @@ class EstimateController extends BaseController {
         $counter = ORM::forTable('estimates')
             ->tableAlias('e')
             ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
-            ->join('customers', ['e.customer_id', '=', 'jc.id'], 'jc')
+            ->join('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
             ->whereAnyIs([
                 ['c.display_name' => "%$keyword%"],
                 ['jc.display_name' => "%$keyword%"]], 'LIKE'
