@@ -38,10 +38,42 @@ class ReferralController extends BaseController {
         $this->renderJson($refs);
     }
 
+    /**
+     * Collect referral field as customer' shipping address
+    */
+    private function _collectCustomerInfo() {
+        $customerInfo = [];
+        $customerInfo['display_name']   = trim(@$this->data['customer_display_name']);
+        $customerInfo['ship_address']   = @$this->data['address'];
+        $customerInfo['ship_city']      = @$this->data['city'];
+        $customerInfo['ship_country']   = @$this->data['country'];
+        $customerInfo['ship_state']     = @$this->data['state'];
+        $customerInfo['ship_zip_code']  = @$this->data['zip_code'];
+        $customerInfo['primary_phone_number'] = @$this->data['primary_phone_number'];
+        return $customerInfo;
+    }
+
+    private function _checkForCreateNewCustomer() {
+        $results = [];
+        if (($this->data['customer_id'] == 0) && // Has new customer
+            isset($this->data['customer_display_name']) &&
+            trim($this->data['customer_display_name'])) {
+            $sync = Asynchronzier::getInstance();
+            $qbcustomerObj = $sync->createCustomer($this->_collectCustomerInfo());
+            $customerRecord = ORM::forTable('customers')->create();
+            $customerRecord->set($sync->parseCustomer($qbcustomerObj));
+            $customerRecord->save();
+            $results['customer_id'] = $customerRecord->id;
+        }
+        return $results;
+    }
+
     public function add() {
-        $model = new ReferralModel();
+        $customerData = $this->_checkForCreateNewCustomer();
+        $insertData = array_merge($this->data, $customerData);
+        $model = new ReferralModel;
         $ref = $model->create();
-        $ref->set($this->data);
+        $ref->set($insertData);
         $ref->save();
         $this->renderJson([
             'success'  => true,
@@ -61,11 +93,13 @@ class ReferralController extends BaseController {
     }
 
     public function update() {
-        $ref = ORM::forTable('referrals')
-            ->findOne($this->data['id']);
+        $customerData = $this->_checkForCreateNewCustomer();
+        $updateData = array_merge($this->data, $customerData);
+        $model = new ReferralModel;
+        $ref = $model->findOne($updateData['id']);
         if ($ref) {
-            $ref->set($this->data);
-            if (!$this->data['referral_route_id']) {
+            $ref->set($updateData);
+            if (!$updateData['referral_route_id']) {
                 $ref->referral_route_id = NULL;
             }
             $ref->save();
@@ -87,7 +121,8 @@ class ReferralController extends BaseController {
         $ref = ORM::forTable('referrals')
             ->findOne($this->data['id']);
         if ($this->data['status'] == 'Assigned' && $this->data['referral_route_id']) {
-            $route = ORM::forTable('referral_routes')->findOne($this->data['referral_route_id']);
+            $route = ORM::forTable('referral_routes')
+                ->findOne($this->data['referral_route_id']);
             $assignedReferralsCount = ORM::forTable('referrals')
                 ->select('id')
                 ->where('referral_route_id', $route->id)

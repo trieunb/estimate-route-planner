@@ -64,7 +64,7 @@ function AddReferralCtrl(
                 }
             });
             $scope.customers.push(newCustomer);
-            $scope.estimate.customer_display_name = input;
+            $scope.referral.customer_display_name = input;
             callback(newCustomer);
         }
     };
@@ -105,6 +105,10 @@ function AddReferralCtrl(
                     .success(function(response) {
                         if (response.success) {
                             toastr.success(response.message);
+                            if ($scope.referral.customer_id == 0) {
+                                // To force reload customer list
+                                $rootScope.customers = undefined;
+                            }
                             $location.path('/edit-referral/' + response.data.id);
                         } else {
                             var msg = response.message || 'An error occurred while saving job request';
