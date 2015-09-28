@@ -1,12 +1,18 @@
 <div id="list-referral" ng-controller="ListEstimateRouteCtrl">
-  <div class="table-tools" ng-if="hasCap('erpp_create_estimate_routes')">
-    <a href="#/new-estimate-route" class="btn btn-success">Add new</a>
+  <div class="table-tools">
+    <a href="#/new-estimate-route" 
+      ng-if="hasCap('erpp_create_estimate_routes')" 
+      class="btn btn-success">Add new</a>
     <form name="searchRouteForm" class="form-inline pull-right" 
       ng-submit="searchRoute()">
       <div class="form-group">
-        <input class="form-control" name="title" type="text"
-          ng-model="estimateRoutes.title">
+        <input class="form-control" name="search" 
+          ng-model="estRouteTitle">
         <button class="btn btn-info" name="search">Search</button>
+        <button class="btn btn-default" 
+          name="search" ng-click="estRouteTitle = null">
+          Clear
+        </button>
       </div>
     </form>
   </div>
@@ -55,7 +61,7 @@
     boundary-links="true"
     max-size="10" class="pagination-md"
     total-items="total"
-    items-per-page="10"
+    items-per-page="30"
     ng-model="currentPage"
     ng-change="pageChanged()">
   </pagination>

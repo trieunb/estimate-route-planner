@@ -29,7 +29,8 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
         var query = {
             _do: 'getEstimates',
             page: $scope.currentPage,
-            status: $scope.selectedStatus
+            status: $scope.selectedStatus,
+            keyword: $scope.name
         }
         estimateFactory.list(query)
             .success(function(response) {
@@ -46,6 +47,16 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
         // Reset page to 1
         $scope.currentPage = 1;
         paginate();
+    };
+
+    $scope.searchEstimate = function() {
+        $scope.currentPage = 1;
+        paginate();
+    };
+
+    $scope.clearSearch = function() {
+        $scope.name = '';
+        $scope.selectedStatus = '';
     };
 
     $scope.filterStatuses = [

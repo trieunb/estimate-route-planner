@@ -2,12 +2,8 @@
 class EstimateController extends BaseController {
 
     public function index() {
-        $pageSize = 30;
-        if (isset($_REQUEST['page'])) {
-            $page = (int) $_REQUEST['page'];
-        } else {
-            $page = 1;
-        }
+        $page = $this->getPageParam();
+        $keyword = $this->getKeywordParam();
         $filteredStatus = "";
 
         if (isset($_REQUEST['status'])) {
@@ -17,19 +13,32 @@ class EstimateController extends BaseController {
         $estimates = ORM::forTable('estimates')
             ->tableAlias('e')
             ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
+            ->join('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
             ->selectMany(
                 'e.id', 'e.txn_date', 'e.doc_number',
                 'e.source', 'e.due_date', 'e.total',
                 'e.status', 'e.email'
             )
             ->select('c.display_name', 'customer_display_name')
+            ->select('jc.display_name', 'job_customer_display_name')
+            ->whereAnyIs([
+                ['c.display_name' => "%$keyword%"],
+                ['jc.display_name' => "%$keyword%"]], 'LIKE'
+            )
             ->whereLike('e.status', "%$filteredStatus%")
             ->orderByDesc('e.id')
-            ->limit($pageSize)
-            ->offset(($page - 1) * $pageSize)
+            ->limit(self::PAGE_SIZE)
+            ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
-        $counter = ORM::for_table('estimates')
-            ->whereLike('estimates.status', "%$filteredStatus%")
+        $counter = ORM::forTable('estimates')
+            ->tableAlias('e')
+            ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
+            ->join('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
+            ->whereAnyIs([
+                ['c.display_name' => "%$keyword%"],
+                ['jc.display_name' => "%$keyword%"]], 'LIKE'
+            )
+            ->whereLike('e.status', "%$filteredStatus%")
             ->selectExpr('COUNT(*)', 'count')
             ->findMany();
         $this->renderJson([

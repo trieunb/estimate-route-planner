@@ -51,12 +51,11 @@ function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFa
         var query = {
             _do: 'getEstimateRoutes',
             page: $scope.currentPage,
-            keyword: $scope.estimateRoutes.title
+            keyword: $scope.estRouteTitle
         }
         estimateRouteFactory.all(query)
             .success(function(response) {
                 $scope.estimateRoutes = response.routes;
-                $scope.estimateRoutes.title = response.keyword;
                 $scope.total = parseInt(response.total);
             });
     };
