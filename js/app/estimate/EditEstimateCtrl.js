@@ -110,7 +110,7 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
             done();
         },
         success: function(file, response) {
-            if(response.success) {
+            if (response.success) {
                 $scope.estimate.attachments.push(response.attachment);
                 $scope.$apply();
             }
@@ -414,7 +414,7 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                     if ($scope.isChangedSignature) {
                         // Get base64 of customer signature
                         var signaturePad = $scope.signature_pad;
-                        if(signaturePad.isEmpty()) {
+                        if (signaturePad.isEmpty()) {
                             estimate.customer_signature_encoded = '';
                         } else {
                             estimate.customer_signature_encoded = signaturePad.toDataURL();

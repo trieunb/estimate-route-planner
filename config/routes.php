@@ -16,6 +16,8 @@ return [
     'printEstimate'         => 'Estimate@printPDF',
     'sendEstimate'          => 'Estimate@sendEstimate',
 
+    'getAttachment'         => 'Attachment@show',
+
     'printReferral'         => 'Referral@printPDF',
     'getReferrals'          => 'Referral@index',
     'getPendingReferrals'   => 'Referral@pending',

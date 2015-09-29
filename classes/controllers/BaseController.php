@@ -21,20 +21,28 @@ class BaseController {
      * @return null
      */
     protected function renderJson($jsonData, $jsonOption = null) {
+        header('Content-Type: application/json');
         $this->render(json_encode($jsonData, $jsonOption));
     }
 
     protected function renderEmpty() {
+        header('Content-Type: application/json');
         $this->render(json_encode(new stdClass));
     }
 
     protected function render404() {
+        header('Content-Type: application/json');
         $this->render(json_encode(new stdClass), 404);
     }
 
-    protected function render($rawResponse, $statusCode = 200) {
+    protected function render($rawResponse = '', $statusCode = 200) {
         http_response_code($statusCode);
         echo $rawResponse;
+    }
+
+    protected function redirect($to) {
+        header('Location: ' . $to);
+        exit;
     }
 
     protected function getPageParam() {

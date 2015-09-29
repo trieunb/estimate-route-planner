@@ -47,5 +47,18 @@ class EstimateModel extends BaseModel {
         return 'estimates';
     }
 
+    public function updateSyncToken($estimateId) {
+        // Update estimate sync token and updated at
+        $objEstimate = new IPPEstimate();
+        $objEstimate->Id = $estimateId;
+        $sync = Asynchronzier::getInstance();
+        $estimateEntity = $sync->Retrieve($objEstimate);
+        $estimateLocal = ORM::forTable('estimates')->findOne($estimateId);
+        $estimateLocal->last_updated_at =
+            date("Y-m-d H:i:s", strtotime($estimateEntity->MetaData->LastUpdatedTime));
+        $estimateLocal->sync_token = $estimateEntity->SyncToken;
+        $estimateLocal->save();
+        return $estimateLocal->sync_token;
+    }
 }
 ?>
