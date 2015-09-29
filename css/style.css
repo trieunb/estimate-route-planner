@@ -414,3 +414,7 @@ label.required span {
 .table-tools.list-referral {
   width: 60%;
 }
+
+.n-p {
+    padding: 0 0 0 0;
+}

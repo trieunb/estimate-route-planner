@@ -13,12 +13,21 @@ angular
         ]
     );
 
-function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateFactory, sharedData) {
+function ListEstimateCtrl(
+        $scope,
+        $rootScope,
+        $routeParams,
+        $location,
+        estimateFactory,
+        sharedData) {
     $scope.setPageTitle('List Estimates');
     $scope.estimates = {};
     $scope.selectedStatus = '';
     $scope.sendMailData = {};
-    $scope.filter = {};
+    $scope.filter = {
+        keyword: '',
+        status: ''
+    };
     // Paginate
     $scope.total = 0;
     var currentPage = 1;
@@ -32,7 +41,7 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
             page: $scope.currentPage,
             status: $scope.filter.status,
             keyword: $scope.filter.keyword
-        }
+        };
         estimateFactory.list(query)
             .success(function(response) {
                 $scope.estimates = response.data;
@@ -42,7 +51,6 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
     $scope.pageChanged = function() {
         paginate();
     };
-    paginate();
 
     $scope.changeFilterStatus = function() {
         // Reset page to 1
@@ -56,7 +64,10 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
     };
 
     $scope.clearSearch = function() {
-        $scope.filter = {};
+        $scope.filter = {
+            keyword: '',
+            status: ''
+        };
     };
 
     $scope.filterStatuses = [
@@ -100,11 +111,12 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
         estimateFactory.sendMail($scope.sendMailData)
             .success(function(response){
                 if (response.success) {
-                    toastr['success'](response.message);
+                    toastr.success(response.message);
 
                 } else {
-                    toastr['error'](response.message);
+                    toastr.error(response.message);
                 }
             });
     };
+    paginate();
 }

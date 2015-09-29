@@ -1,131 +1,132 @@
 <div id="list-estimate" ng-controller="ListEstimateCtrl">
-  <div class="row header-estimate" style="margin-bottom:10px">
-      <div class="col-md-5">
+    <div class="row header-estimate" style="margin-bottom:10px">
+      <div class="col-md-2">
         <a href="#/new-estimate" class="btn btn-success" ng-if="hasCap('erpp_create_estimates')">Add new</a>
       </div>
-      <div class="col-md-7">
+      <div class="col-md-10">
         <form name="searchEstimateForm"
-              class="form-inline"
-              ng-submit="searchEstimate()">
-          <div class="form-group">
-            <input class="form-control" name="search"
-            ng-model="filter.keyword" placeholder="Search">
-          </div>
-          <div class="form-group">
-            <label class="control-label col-sm-5 text-right" for="status">
-              Status:
-            </label>
-            <div class="col-sm-7">
-                <select ng-model="filter.status" class="form-control"
-                  ng-change="changeFilterStatus()"
-                  ng-options="status.value as status.label for status in filterStatuses">
-                </select>
-            </div>
-          </div>
-          <div class="form-group  pull-right">
-            <button class="btn btn-info" name="search">Search</button>
-            <button class="btn btn-default"
-              name="search" ng-click="clearSearch()">
-              Clear
-            </button>
-          </div>
+            ng-submit="searchEstimate()">
+                <div class="col-md-5 col-sm-4 n-p">
+                    <div class="col-sm-12">
+                        <input class="form-control" name="search" ng-model="filter.keyword"
+                            placeholder="Search by customer name, number ... ">
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 n-p">
+                    <label class="control-label col-sm-4">Status:</label>
+                    <div class="col-sm-8">
+                        <select ng-model="filter.status" class="form-control"
+                            ng-change="changeFilterStatus()"
+                            ng-options="status.value as status.label for status in filterStatuses">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4 n-p text-right">
+                    <div class="col-sm-12">
+                        <button class="btn btn-info" name="search">Search</button>
+                        <button class="btn btn-default btn-sm"
+                            name="search" ng-click="clearSearch()">
+                            Clear
+                        </button>
+                    </div>
+                </div>
         </form>
       </div>
   </div>
 
-<table class="table table-bordered table-hover table-fixed header-fixed">
-    <thead>
-      <tr>
-        <th style="width: 130px;">Estimate Date</th>
-        <th>Customer</th>
-        <th style="width: 100;">Number</th>
-        <th style="width: 120px;">Source</th>
-        <th style="width: 130px;">Due Date</th>
-        <th ng-if="hasCap('erpp_view_estimate_total')">Total</th>
-        <th style="width: 100px;">Status</th>
-        <th style="width: 60px;">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="est in estimates">
-            <td>
-              <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{::est.txn_date}}</span></a>
-              <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.txn_date}}</span>
-            </td>
-            <td>
-              <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{est.customer_display_name}}</span></a>
-              <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.customer_display_name}}</span>
-            </td>
-            <td>
-              <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{est.doc_number}}</span></a>
-              <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.doc_number}}</span>
-            </td>
-            <td><span>{{est.source}}</span></td>
+    <table class="table table-bordered table-hover table-fixed header-fixed">
+        <thead>
+          <tr>
+            <th style="width: 130px;">Estimate Date</th>
+            <th>Customer</th>
+            <th style="width: 100;">Number</th>
+            <th style="width: 120px;">Source</th>
+            <th style="width: 130px;">Due Date</th>
+            <th ng-if="hasCap('erpp_view_estimate_total')">Total</th>
+            <th style="width: 100px;">Status</th>
+            <th style="width: 60px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="est in estimates">
+                <td>
+                  <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{::est.txn_date}}</span></a>
+                  <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.txn_date}}</span>
+                </td>
+                <td>
+                  <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{est.customer_display_name}}</span></a>
+                  <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.customer_display_name}}</span>
+                </td>
+                <td>
+                  <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{est.doc_number}}</span></a>
+                  <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.doc_number}}</span>
+                </td>
+                <td><span>{{est.source}}</span></td>
 
-            <td><span>{{est.due_date}}</span></td>
+                <td><span>{{est.due_date}}</span></td>
 
-            <td ng-if="hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
+                <td ng-if="hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
 
-            <td><span>{{est.status}}</span></td>
-            <td>
-                <div class="dropdown">
-                  <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown">View
-                  <span class="caret"></span></button>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a href="#/edit-estimate/{{est.id}}" ng-if="hasCap('erpp_edit_estimates')">Edit</a>
-                    </li>
-                    <li>
-                      <a target="_blank" href="{{$root.baseAPIPath}}&_do=printEstimate&id={{est.id}}" ng-if="hasCap('erpp_print_estimates')">Print</a></li>
-                    <li>
-                      <a ng-click="openSendMailModal(est)" ng-if="hasCap('erpp_send_estimates')">Send</a>
-                    </li>
-                  </ul>
+                <td><span>{{est.status}}</span></td>
+                <td>
+                    <div class="dropdown">
+                      <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown">View
+                      <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li>
+                          <a href="#/edit-estimate/{{est.id}}" ng-if="hasCap('erpp_edit_estimates')">Edit</a>
+                        </li>
+                        <li>
+                          <a target="_blank" href="{{$root.baseAPIPath}}&_do=printEstimate&id={{est.id}}" ng-if="hasCap('erpp_print_estimates')">Print</a></li>
+                        <li>
+                          <a ng-click="openSendMailModal(est)" ng-if="hasCap('erpp_send_estimates')">Send</a>
+                        </li>
+                      </ul>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p ng-if="!$root.isBusy && estimates.length == 0"
+      class="text-center">
+      No results were found!
+    </p>
+    <div class="modal fade" ng-class="{'in': showModal}" ng-style="{'display': showModal ? 'block' : 'none'}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Send estimate</h4>
                 </div>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<p ng-if="!$root.isBusy && estimates.length == 0"
-  class="text-center">
-  No results were found!
-</p>
-<div class="modal fade" ng-class="{'in': showModal}" ng-style="{'display': showModal ? 'block' : 'none'}">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Send estimate</h4>
+                <form role="form" name="sendEmailForm">
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <label for="email">To</label>
+                        <input type="text" class="form-control" placeholder="Email to receive"
+                            multiple-emails
+                            ng-required="true"
+                            ng-model="sendMailData.to">
+                      </div>
+                      <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" class="form-control" placeholder="Subject"
+                            ng-required="true"
+                            ng-model="sendMailData.subject">
+                      </div>
+                      <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea class="form-control" rows="5" placeholder="Content"
+                            ng-required="true"
+                            ng-model="sendMailData.body"></textarea>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-primary" ng-click="sendMailEstimate()" ng-disabled="sendEmailForm.$invalid || $root.isBusy">Send</button>
+                      <button class="btn" type="button" ng-click="showModal = false">Cancel</button>
+                    </div>
+                </form>
             </div>
-            <form role="form" name="sendEmailForm">
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label for="email">To</label>
-                    <input type="text" class="form-control" placeholder="Email to receive"
-                        multiple-emails
-                        ng-required="true"
-                        ng-model="sendMailData.to">
-                  </div>
-                  <div class="form-group">
-                    <label for="subject">Subject</label>
-                    <input type="text" class="form-control" placeholder="Subject"
-                        ng-required="true"
-                        ng-model="sendMailData.subject">
-                  </div>
-                  <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea class="form-control" rows="5" placeholder="Content"
-                        ng-required="true"
-                        ng-model="sendMailData.body"></textarea>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button class="btn btn-primary" ng-click="sendMailEstimate()" ng-disabled="sendEmailForm.$invalid || $root.isBusy">Send</button>
-                  <button class="btn" type="button" ng-click="showModal = false">Cancel</button>
-                </div>
-            </form>
         </div>
-    </div>
-  </div>
+   </div>
     <pagination ng-show="total"
         rotate="true"
         max-size="10" class="pagination-md"
