@@ -14,6 +14,40 @@
 function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFactory, $ngBootbox) {
     $scope.setPageTitle('Crew Routes List');
     $scope.estimateRoutes = [];
+    $scope.filter = {};
+
+    $scope.total = 0;
+    var currentPage = 1;
+    if ('undefined' != typeof($routeParams.pageNumber)) {
+        currentPage = $routeParams.pageNumber;
+    }
+    $scope.currentPage = currentPage;
+    var paginate = function() {
+        var query = {
+            _do: 'getEstimateRoutes',
+            page: $scope.currentPage,
+            keyword: $scope.filter.keyword
+        };
+        estimateRouteFactory.all(query)
+            .success(function(response) {
+                $scope.estimateRoutes = response.routes;
+                $scope.total = parseInt(response.total);
+            });
+    };
+
+    $scope.pageChanged = function() {
+        paginate();
+    };
+
+    $scope.searchRoute = function() {
+        $scope.currentPage = 1;
+        paginate();
+    };
+
+    $scope.clearSearch = function() {
+        $scope.filter = {};
+        paginate();
+    };
 
     $scope.saveRouteStatus = function(route) {
         $ngBootbox.confirm("Do want to save this route?")
@@ -27,10 +61,10 @@ function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFa
                         .success(function(response) {
                             route.status = route.new_status;
                             if (response.success) {
-                                toastr['success'](response.message);
+                                toastr.success(response.message);
                             } else {
                                 var errorMsg = response.message || 'An error has occurred while saving route';
-                                toastr['error'](errorMsg);
+                                toastr.error(errorMsg);
                             }
                         });
                 },
@@ -39,34 +73,5 @@ function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFa
                 }
             );
     };
-
-    //pagination
-    $scope.total = 0;
-    var currentPage = 1;
-    if ('undefined' != typeof($routeParams.pageNumber)) {
-        currentPage = $routeParams.pageNumber;
-    }
-    $scope.currentPage = currentPage;
-    var paginate = function() {
-        var query = {
-            _do: 'getEstimateRoutes',
-            page: $scope.currentPage,
-            keyword: $scope.estRouteTitle
-        }
-        estimateRouteFactory.all(query)
-            .success(function(response) {
-                $scope.estimateRoutes = response.routes;
-                $scope.total = parseInt(response.total);
-            });
-    };
-
-    $scope.pageChanged = function() {
-        paginate();
-    };
     paginate();
-
-    $scope.searchRoute = function() {
-        $scope.currentPage = 1;
-        paginate();
-    }
 }

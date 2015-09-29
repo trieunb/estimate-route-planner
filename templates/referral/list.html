@@ -1,22 +1,27 @@
 <div id="list-referral" ng-controller="ListReferralCtrl">
-  <div class="table-tools text-left">
-    <a href="#/new-referral" class="btn btn-success"
-      ng-if="hasCap('erpp_create_referrals')">
-      Add new
-    </a>
-    <form name="searchReferralForm" class="form-inline pull-right"
-      ng-submit="searchReferral()">
-      <div class="form-group">
-        <input class="form-control" name="search"
-        ng-model="name" placeholder="Search">
-        <button class="btn btn-info" name="search">Search</button>
-        <button class="btn btn-default" 
-          name="search" ng-click="name = null">
-          Clear
-        </button>
-      </div>
-    </form>
-  </div>
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-4 col-xs-12">
+            <a href="#/new-referral" class="btn btn-success"
+              ng-if="hasCap('erpp_create_referrals')">
+              Add new
+            </a>
+        </div>
+        <div class="col-md-8 col-xs-12">
+            <form name="searchReferralForm" ng-submit="searchReferral()">
+                <div class="col-md-9 n-p">
+                    <input class="form-control" name="search"
+                        ng-model="filter.keyword" placeholder="Search by customer name">
+                </div>
+                <div class="col-md-3 text-right n-p">
+                    <button class="btn btn-info" name="search" type="submit">Search</button>
+                    <button class="btn btn-default btn-sm" type="button"
+                        ng-click="clearSearch()">
+                        Clear
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
   <table class="table table-bordered table-hover table-fixed header-fixed">
     <thead>
       <tr>

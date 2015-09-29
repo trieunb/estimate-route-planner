@@ -10,9 +10,14 @@ function referralRouteFactory($http) {
                 data: {id: id}
             });
         },
-        all: function(query) {
+        filter: function(query) {
             return $http.get(ERPApp.baseAPIPath, {
                 params: query
+            });
+        },
+        all: function() {
+            return $http.get(ERPApp.baseAPIPath, {
+                params: {_do: 'getReferralRoutes'}
             });
         },
         save: function(data) {

@@ -37,7 +37,8 @@ return [
 
     // Referral routes
     'getRecentReferralRoutes' => 'ReferralRoute@recent',
-    'getReferralRoutes'     => 'ReferralRoute@index',
+    'getReferralRoutes'     => 'ReferralRoute@all',
+    'filterReferralRoutes'  => 'ReferralRoute@index',
     'getReferralRoute'      => 'ReferralRoute@show',
     'saveReferralRoute'     => 'ReferralRoute@save',
     'updateReferralRoute'   => 'ReferralRoute@update',
