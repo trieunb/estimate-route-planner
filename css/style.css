@@ -425,3 +425,6 @@ label.required span {
 .n-p {
     padding: 0 0 0 0;
 }
+.estimate-total {
+    font-size: 18px;
+}
