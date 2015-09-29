@@ -222,7 +222,9 @@ class EstimateController extends BaseController {
             }
             if ($estimate->customer_signature) { // Check to remove the old
                 @unlink(ERP_ROOT_DIR . '/' . $estimate->customer_signature);
-                $updateData['customer_signature'] = '';
+                if (!$encodedSignature) {
+                    $updateData['customer_signature'] = '';
+                }
                 // Remove the signature attachments if exists
                 $signatureAttachment = ORM::forTable('estimate_attachments')
                     ->where('estimate_id', $id)
