@@ -15,6 +15,7 @@ function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFa
     $scope.setPageTitle('Referral routes list');
     $scope.referralRoutes = [];
 
+    $scope.filter = {};
     $scope.saveRouteStatus = function(route) {
         $ngBootbox.confirm("Do want to save this route?")
             .then(
@@ -27,10 +28,10 @@ function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFa
                         .success(function(response) {
                             route.status = route.new_status;
                             if (response.success) {
-                                toastr['success'](response.message);
+                                toastr.success(response.message);
                             } else {
                                 var errorMsg = response.message || 'An error has occurred while saving route';
-                                toastr['error'](errorMsg);
+                                toastr.error(errorMsg);
                             }
                         });
                 },
@@ -48,11 +49,11 @@ function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFa
     $scope.currentPage = currentPage;
     var paginate = function() {
         var query = {
-            _do: 'getReferralRoutes',
+            _do: 'filterReferralRoutes',
             page: $scope.currentPage,
-            keyword: $scope.title
-        }
-        referralRouteFactory.all(query)
+            keyword: $scope.filter.keyword
+        };
+        referralRouteFactory.filter(query)
             .success(function(response) {
                 $scope.referralRoutes = response.routes;
                 $scope.total = parseInt(response.total);
@@ -62,10 +63,15 @@ function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFa
     $scope.pageChanged = function() {
         paginate();
     };
-    paginate();
+
+    $scope.clearSearch = function() {
+        $scope.filter = {};
+        paginate();
+    };
 
     $scope.searchRoute = function() {
         $scope.currentPage = 1;
         paginate();
     };
+    paginate();
 }

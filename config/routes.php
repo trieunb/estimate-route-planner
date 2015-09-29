@@ -15,6 +15,9 @@ return [
     'getAssignedEstimates'  => 'Estimate@assigned',
     'printEstimate'         => 'Estimate@printPDF',
     'sendEstimate'          => 'Estimate@sendEstimate',
+    'getEstimateAttachments'=> 'Estimate@attachments',
+
+    'getAttachment'         => 'Attachment@show',
 
     'printReferral'         => 'Referral@printPDF',
     'getReferrals'          => 'Referral@index',
@@ -37,7 +40,8 @@ return [
 
     // Referral routes
     'getRecentReferralRoutes' => 'ReferralRoute@recent',
-    'getReferralRoutes'     => 'ReferralRoute@index',
+    'getReferralRoutes'     => 'ReferralRoute@all',
+    'filterReferralRoutes'  => 'ReferralRoute@index',
     'getReferralRoute'      => 'ReferralRoute@show',
     'saveReferralRoute'     => 'ReferralRoute@save',
     'updateReferralRoute'   => 'ReferralRoute@update',

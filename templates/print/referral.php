@@ -81,7 +81,7 @@
                                     <label>Primary Phone</label>
                                 </td>
                                 <td colspan="3">
-                                    <span><?php echo $referral['primary_phone'] ?></span>
+                                    <span><?php echo $referral['primary_phone_number'] ?></span>
                                 </td>
                             </tr>
                             <tr>

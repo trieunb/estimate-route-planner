@@ -9,6 +9,14 @@ class ReferralRouteController extends BaseController {
         $this->renderJson($routes);
     }
 
+    public function all() {
+        $routes = ORM::forTable('referral_routes')
+            ->orderByDesc('created_at')
+            ->limit(self::PAGE_SIZE)
+            ->findArray();
+        $this->renderJson($routes);
+    }
+
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();

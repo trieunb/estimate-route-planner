@@ -2,10 +2,15 @@
 class BaseController {
     const PAGE_SIZE = 30;
 
+    /* @var array */
     protected $data;
 
-    public function __construct($data) {
+    /* @var ERPLogger */
+    protected $logger;
+
+    public function __construct($data, ERPLogger $logger) {
         $this->data = $data;
+        $this->logger = $logger;
     }
 
     /**
@@ -16,18 +21,27 @@ class BaseController {
      * @return null
      */
     protected function renderJson($jsonData, $jsonOption = null) {
-        echo json_encode($jsonData, $jsonOption);
-        exit;
+        header('Content-Type: application/json');
+        $this->render(json_encode($jsonData, $jsonOption));
     }
 
     protected function renderEmpty() {
-        echo json_encode(new stdClass);
-        exit;
+        header('Content-Type: application/json');
+        $this->render(json_encode(new stdClass));
     }
 
     protected function render404() {
-        http_response_code(404);
-        echo json_encode(new stdClass);
+        header('Content-Type: application/json');
+        $this->render(json_encode(new stdClass), 404);
+    }
+
+    protected function render($rawResponse = '', $statusCode = 200) {
+        http_response_code($statusCode);
+        echo $rawResponse;
+    }
+
+    protected function redirect($to) {
+        header('Location: ' . $to);
         exit;
     }
 

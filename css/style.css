@@ -137,7 +137,7 @@ span.new-referal {
     height: 115px;
 }
 #erp-wrapper .upload {
-    border: 2px solid;
+    border: 1px solid #ccc;
 }
 
 /* style for .form-control error state */
@@ -161,17 +161,21 @@ span.new-referal {
   opacity: 1;
 }
 #erp-wrapper input[type=file] {
-  border: 1px solid #dadada;
+  border: 1px solid #ccc;
 }
 
-.estimate-logo{
+.estimate-logo {
     max-width: 120px;
 }
 
 .div-customer-signature {
     border: 1px solid #ccc;
-    width: 300px;
+    width: 100%;
     height: 150px;
+    text-align: center;
+}
+.div-customer-signature canvas {
+    cursor: default;
 }
 .space-30 {
     clear: both;
@@ -246,6 +250,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 /* Dropzone style */
+.dropzone {
+    padding: 10px;
+}
 .drop-clickable {
     cursor: pointer;
 }
@@ -413,4 +420,11 @@ label.required span {
 /* End work order form */
 .table-tools.list-referral {
   width: 60%;
+}
+
+.n-p {
+    padding: 0 0 0 0;
+}
+.estimate-total {
+    font-size: 18px;
 }

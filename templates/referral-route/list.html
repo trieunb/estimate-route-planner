@@ -1,17 +1,25 @@
 <div id="list-referral" ng-controller="ListReferralRouteCtrl">
-  <div class="table-tools">
-    <a href="#/new-referral-route" class="btn btn-success"
-      ng-if="hasCap('erpp_create_referral_routes')">
-      Add new
-    </a>
-    <form name="searchRouteForm" class="form-inline pull-right" 
-      ng-submit="searchRoute()">
-      <div class="form-group">
-        <input class="form-control" name="search"
-          ng-model="title">
-        <button class="btn btn-info" name="search">Search</button>
-      </div>
-    </form>
+    <div class="row" style="margin-bottom: 10px">
+        <div class="col-md-4 col-xs-12">
+            <a href="#/new-referral-route" class="btn btn-success"
+                ng-if="hasCap('erpp_create_referral_routes')">
+                Add new
+            </a>
+        </div>
+        <div class="col-md-8 col-xs-12">
+            <form name="searchRouteForm" ng-submit="searchRoute()">
+                <div class="col-md-9 n-p">
+                    <input class="form-control" ng-model="filter.keyword" placeholder="Search in title ...">
+                </div>
+                <div class="col-md-3 text-right n-p">
+                    <button class="btn btn-info" type="submit">Search</button>
+                    <button class="btn btn-default btn-sm" type="button"
+                        ng-click="clearSearch()">
+                        Clear
+                    </button>
+                </div>
+            </form>
+        </div>
   </div>
 
   <table class="table table-bordered table-hover table-fixed header-fixed">
@@ -38,7 +46,7 @@
 
         <td><span>{{route.created_at}}</span></td>
         <td>
-          <select 
+          <select
             ng-if="hasCap('erpp_edit_referral_routes')"
             ng-init="route.new_status = route.status"
             ng-model="route.new_status"
@@ -53,7 +61,7 @@
       </tr>
     </tbody>
   </table>
-  <p ng-if="!$root.isBusy && referralRoutes.length == 0" 
+  <p ng-if="!$root.isBusy && referralRoutes.length == 0"
     class="text-center">
     No results were found!
   </p>
@@ -65,5 +73,5 @@
     items-per-page="30"
     ng-model="currentPage"
     ng-change="pageChanged()">
-  </pagination>   
+  </pagination>
 </div>

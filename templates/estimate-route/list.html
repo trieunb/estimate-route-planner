@@ -1,14 +1,24 @@
 <div id="list-referral" ng-controller="ListEstimateRouteCtrl">
-  <div class="table-tools" ng-if="hasCap('erpp_create_estimate_routes')">
-    <a href="#/new-estimate-route" class="btn btn-success">Add new</a>
-    <form name="searchRouteForm" class="form-inline pull-right" 
-      ng-submit="searchRoute()">
-      <div class="form-group">
-        <input class="form-control" name="title" type="text"
-          ng-model="estimateRoutes.title">
-        <button class="btn btn-info" name="search">Search</button>
-      </div>
-    </form>
+  <div class="row" style="margin-bottom: 10px">
+        <div class="col-md-4 col-xs-12">
+            <a href="#/new-estimate-route" ng-if="hasCap('erpp_create_estimate_routes')"
+                class="btn btn-success">Add new</a>
+        </div>
+        <div class="col-md-8 col-xs-12">
+            <form name="searchRouteForm" ng-submit="searchRoute()">
+                <div class="col-md-9 n-p">
+                    <input class="form-control" name="search" placeholder="Search in title .."
+                        ng-model="filter.keyword">
+                </div>
+                <div class="col-md-3 text-right n-p">
+                    <button class="btn btn-info" type="submit">Search</button>
+                    <button class="btn btn-default btn-sm" type="button"
+                      name="search" ng-click="clearSearch()">
+                      Clear
+                    </button>
+                </div>
+            </form>
+        </div>
   </div>
 
   <table class="table table-bordered table-hover table-fixed header-fixed">
@@ -33,7 +43,7 @@
           </td>
           <td><span>{{route.created_at}}</span></td>
           <td>
-            <select 
+            <select
               ng-if="hasCap('erpp_edit_estimate_routes')"
               ng-init="route.new_status = route.status" ng-model="route.new_status" ng-options="status.value as status.label for status in $root.routeStatuses"
               ng-change="saveRouteStatus(route)">
@@ -43,7 +53,7 @@
           <td>
             <a href="#/edit-estimate-route/{{::route.id}}" ng-if="hasCap('erpp_edit_estimate_routes')">Edit</a>
           </td>
-        </tr> 
+        </tr>
     </tbody>
   </table>
   <p ng-if="!$root.isBusy && estimateRoutes.length == 0"
@@ -55,7 +65,7 @@
     boundary-links="true"
     max-size="10" class="pagination-md"
     total-items="total"
-    items-per-page="10"
+    items-per-page="30"
     ng-model="currentPage"
     ng-change="pageChanged()">
   </pagination>

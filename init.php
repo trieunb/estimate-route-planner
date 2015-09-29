@@ -25,7 +25,7 @@ require_once(ERP_ROOT_DIR . '/lib/idiorm.php');
 ORM::configure('mysql:dbname=' . DB_NAME . ';host=' . DB_HOST);
 ORM::configure('username', DB_USER);
 ORM::configure('password', DB_PASSWORD);
-ORM::configure('logging', false);
+ORM::configure('logging', true);
 
 // Autoload plugin classes
 spl_autoload_register(function($class) {

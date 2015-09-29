@@ -392,9 +392,12 @@
                         <button type="button" class="btn btn-default btn-lines" ng-click="removeAllLines()">Clean All Lines</button>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <span class="pull-right" ng-if="hasCap('erpp_view_estimate_total')">Estimate total: $<span ng-bind="estimate.total"></span></span></br>
-                    <span class="pull-right">Quoted Prices Good for 30 Days</span>
+                <div class="col-sm-6 text-right">
+                    <span class="estimate-total" ng-if="hasCap('erpp_view_estimate_total')">
+                        Estimate total: $<span ng-bind="estimate.total"></span>
+                    </span>
+                    </br>
+                    <span>Quoted Prices Good for 30 Days</span>
                 </div>
             </div>
         </div>
@@ -418,11 +421,18 @@
             <div class="col-md-12">
                 <div class="col-sm-5">
                     <div class="form-group">
-                        <label for="customer_signature" class="col-sm-5">Customer Signature</label>
-                        <button type="button" ng-click="clearCustomerSignature()" class="btn btn-xs btn-default">Clear</button>
+                        <div class="col-sm-12">
+                            <label for="customer_signature">Customer Signature</label>
+                            <button type="button" style="margin-left: 5px;"
+                                ng-click="clearCustomerSignature()"
+                                class="btn btn-xs btn-default pull-right">Clear</button>
+                            <!-- <button type="button" ng-if="estimate.customer_signature"
+                                ng-click="deleteCustomerSignature()"
+                                class="btn btn-xs btn-danger pull-right">Delete</button> -->
+                        </div>
                         <div class="col-sm-12">
                             <div class="div-customer-signature">
-                                <canvas ng-signature-pad="signature_pad"></canvas>
+                                <canvas ng-signature-pad="signature_pad" width="400px" height="150px"></canvas>
                             </div>
                         </div>
                     </div>
@@ -468,7 +478,7 @@
                         <div class="col-sm-12">
                             <label>Estimate Pictures</label>
                             <div ng-dropzone dropzone="dropzone" dropzone-config="dropzoneConfig">
-                                <div class="upload text-center dropzone" id="drop-container">
+                                <div class="upload dropzone" id="drop-container">
                                     <ul class="estimate-attachments-list">
                                         <li ng-repeat="attachment in estimate.attachments">
                                             <a target="_blank" href="{{attachment.tmp_download_uri}}">
@@ -477,12 +487,15 @@
                                             <span class="text-danger remove-attachment" ng-click="removeAttachment(attachment)">X</span>
                                         </li>
                                     </ul>
-                                    Drag and drop or <span class="text-primary drop-clickable">click to select</span>
-                                    <br>
-                                    <span ng-show="isUploading" class="text-warning">
-                                        <span ng-show="uploadProgress < 100">Upload progress: <span ng-bind="uploadProgress"></span>%</span>
-                                        <span ng-show="uploadProgress >= 100">Processing ... </span>
-                                    </span>
+                                    <hr ng-if="estimate.attachments.length">
+                                    <p class="text-center">
+                                        Drag and drop or <span class="text-primary drop-clickable">click to select</span>
+                                        <br>
+                                        <span ng-show="isUploading" class="text-warning">
+                                            <span ng-show="uploadProgress < 100">Upload progress: <span ng-bind="uploadProgress"></span>%</span>
+                                            <span ng-show="uploadProgress >= 100">Processing ... </span>
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
                             <div id="attachment-previews" class="hide">
