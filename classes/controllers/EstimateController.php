@@ -191,6 +191,7 @@ class EstimateController extends BaseController {
     }
 
     public function update() {
+        $estimateM = new EstimateModel;
         $updateData = $this->data;
         $id = $updateData['id'];
         $estimate = ORM::forTable('estimates')->findOne($id);
@@ -208,23 +209,31 @@ class EstimateController extends BaseController {
         }
         if (isset($updateData['customer_signature_encoded'])) { // This mean the signature has changed
             $encodedSignature = $updateData['customer_signature_encoded'];
+            $atmModel = new AttachmentModel;
             if ($encodedSignature) {
-                $atmModel = new AttachmentModel;
-                $estimateM = new EstimateModel;
                 // Upload to QB
                 $decodedSignature = Base64Encoder::decode($encodedSignature);
                 $atmModel->uploadSignature($id, $decodedSignature);
-                $newToken = $estimateM->updateSyncToken($id);
-                $estimate->sync_token = $newToken;
                 // Save signature to local-disk
                 $signatureFileName = 'customer-signature-' . time() . '.png';
-                file_put_contents(ERP_UPLOADS_DIR . '/' . $signatureFileName, $decodedSignature);
+                file_put_contents(
+                    ERP_UPLOADS_DIR . '/' . $signatureFileName, $decodedSignature);
                 $updateData['customer_signature'] = 'uploads/' . $signatureFileName;
             }
             if ($estimate->customer_signature) { // Check to remove the old
                 @unlink(ERP_ROOT_DIR . '/' . $estimate->customer_signature);
                 $updateData['customer_signature'] = '';
+                // Remove the signature attachments if exists
+                $signatureAttachment = ORM::forTable('estimate_attachments')
+                    ->where('estimate_id', $id)
+                    ->where('is_customer_signature', true)
+                    ->findOne();
+                if ($signatureAttachment) {
+                    $atmModel->delete($signatureAttachment->id);
+                }
             }
+            $newToken = $estimateM->updateSyncToken($id);
+            $estimate->sync_token = $newToken;
         }
         $updateData['sync_token'] = $estimate->sync_token;
         $params = $sync->decodeEstimate($updateData);
@@ -327,7 +336,10 @@ class EstimateController extends BaseController {
 
     public function deleteAttachment() {
         $estAtM = new AttachmentModel;
-        if ($estAtM->delete($this->data['id'])) {
+        $estimateM = new EstimateModel;
+        $attachment = $estAtM->delete($this->data['id']);
+        if ($attachment) {
+            $estimateM->updateSyncToken($attachment->estimate_id);
             $this->renderJson([
                 'success' => true,
                 'message' => 'An attachment has been deleted'

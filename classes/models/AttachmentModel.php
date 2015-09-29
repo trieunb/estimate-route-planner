@@ -78,27 +78,15 @@ class AttachmentModel extends BaseModel {
             try {
                 // Delete from quickbooks
                 $sync->Delete($objAttachable);
-
-                // Update estimate sync token and updated at
-                $objEstimate = new IPPEstimate();
-                $objEstimate->Id = $attachment->estimate_id;
-                $estimateEntity = $sync->Retrieve($objEstimate);
-                $estimateLocal = ORM::forTable('estimates')->findOne($attachment->estimate_id);
-                if ($estimateLocal) {
-                    $estimateLocal->last_updated_at =
-                        date("Y-m-d H:i:s", strtotime($estimateEntity->MetaData->LastUpdatedTime));
-                    $estimateLocal->sync_token = $estimateEntity->SyncToken;
-                    $estimateLocal->save();
-                }
             } catch(IdsException $e) {
                 // Do nothing
             } finally {
                 // Delete from local database
                 $attachment->delete();
-                return true;
+                return $attachment;
             }
         } else {
-            return false;
+            return null;
         }
     }
 }
