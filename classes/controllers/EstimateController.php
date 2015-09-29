@@ -107,77 +107,41 @@ class EstimateController extends BaseController {
         $this->renderJson($estimates);
     }
 
-    public function getdata() {
-        return PreferenceModel::getQuickbooksCreds();
-    }
-
-    private function collectCustomerInfo() {
-        $customerInfo = [];
-        $customerInfo['display_name']   = trim($this->data['customer_display_name']);
-        $customerInfo['bill_address']   = @$this->data['bill_address'];
-        $customerInfo['bill_city']      = @$this->data['bill_city'];
-        $customerInfo['bill_country']   = @$this->data['bill_country'];
-        $customerInfo['bill_state']     = @$this->data['bill_state'];
-        $customerInfo['bill_zip_code']  = @$this->data['bill_zip_code'];
-        $customerInfo['primary_phone_number']    = @$this->data['primary_phone_number'];
-        $customerInfo['alternate_phone_number']  = @$this->data['alternate_phone_number'];
-        $customerInfo['email']  = @$this->data['email'];
-        return $customerInfo;
-    }
-
-    private function collectJobCustomerInfo() {
-        $customerInfo = [];
-        $customerInfo['display_name']   = trim(@$this->data['job_customer_display_name']);
-        $customerInfo['ship_address']   = @$this->data['job_address'];
-        $customerInfo['ship_city']      = @$this->data['job_city'];
-        $customerInfo['ship_country']   = @$this->data['job_country'];
-        $customerInfo['ship_state']     = @$this->data['job_state'];
-        $customerInfo['ship_zip_code']  = @$this->data['job_zip_code'];
-        return $customerInfo;
-    }
-
-    /**
-     * Create new customer, push to QB and return the local record
-     */
-    private function _createCustomer($attrs) {
-        $sync = Asynchronzier::getInstance();
-        $qbcustomerObj = $sync->createCustomer($attrs);
-        $customerRecord = ORM::forTable('customers')->create();
-        $customerRecord->set($sync->parseCustomer($qbcustomerObj));
-        $customerRecord->save();
-        return $customerRecord;
-    }
-
     public function add() {
         $estimateModel = new EstimateModel();
-        $estimateLineModel = new EstimateLineModel();
         $sync = Asynchronzier::getInstance();
         $newCustomerData = $this->_checkForCreateNewCustomers();
         $insertData = array_merge($this->data, $newCustomerData);
 
+        // Upload customer signature
+        $decodedSignature = null;
         if (isset($insertData['customer_signature_encoded'])) {
-            $dataPieces = explode(",", $insertData['customer_signature_encoded']);
-            $encodedImage = $dataPieces[1];
-            $decodedImage = base64_decode($encodedImage);
-            $signatureFileName = 'signature-' . time() . '.png';
-            file_put_contents(ERP_UPLOADS_DIR . '/' . $signatureFileName, $decodedImage);
-            $insertData['customer_signature'] = 'uploads/' . $signatureFileName;
+            $encodedSignature = $insertData['customer_signature_encoded'];
+            if ($encodedSignature) {
+                $decodedSignature = Base64Encoder::decode($encodedSignature);
+                $signatureFileName = 'customer-signature-' . time() . '.png';
+                file_put_contents(ERP_UPLOADS_DIR . '/' . $signatureFileName, $decodedSignature);
+                $insertData['customer_signature'] = 'uploads/' . $signatureFileName;
+            }
         }
-        if (!@$insertData['date_of_signature']) {
-            $insertData['date_of_signature'] = NULL;
+        $keepNullColumns = [
+            'estimate_route_id', 'date_of_signature', 'accepted_date',
+            'expiration_date'
+        ];
+        foreach ($keepNullColumns as $column) {
+            if (!@$insertData[$column]) {
+                $insertData[$column] = NULL;
+            }
         }
-        if (!@$insertData['accepted_date']) {
-            $insertData['accepted_date'] = NULL;
-        }
-        if (!@$insertData['expiration_date']) {
-            $insertData['expiration_date'] = NULL;
-        }
-
+        // Save estimate to QB
         $params = $sync->decodeEstimate($insertData);
         $result = $sync->Create($params);
-        $data_result = $sync->parseEstimate($result, $insertData);
+        $parsedEstimateData = $sync->parseEstimate($result, $insertData);
+
+        // Parse lines data
+        $estimateLineModel = new EstimateLineModel();
         foreach ($result->Line as $line) {
-            $result_line = $sync->parseEstimateLine($line, $data_result['id']);
+            $result_line = $sync->parseEstimateLine($line, $parsedEstimateData['id']);
             if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
                 $estimate_line = $estimateLineModel->findBy([
                     'line_id' => $result_line['line_id'],
@@ -188,12 +152,21 @@ class EstimateController extends BaseController {
                 }
             }
         }
-
-        if ($estimateModel->insert($data_result)) {
+        // Save estimate to local DB
+        unset($parsedEstimateData['line']);
+        $estimate = ORM::forTable('estimates')->create();
+        $estimate->set($parsedEstimateData);
+        if ($estimate->save()) {
+            // Check to upload signature as estimate attachment
+            if ($decodedSignature) {
+                $atmModel = new AttachmentModel;
+                $atmModel->uploadSignature($parsedEstimateData['id'], $decodedSignature);
+                $estimateModel->updateSyncToken($parsedEstimateData['id']);
+            }
             $this->renderJson([
                 'success' => true,
                 'message' => 'Estimate saved successfully',
-                'data'    => $data_result
+                'data'    => $estimate->asArray()
             ]);
         } else {
             $this->renderJson([
@@ -217,84 +190,52 @@ class EstimateController extends BaseController {
         $this->renderJson($estimate);
     }
 
-    private function _checkForCreateNewCustomers() {
-        $return = [];
-        $newCustomerAttrs = $newJobCustomerAttrs = [];
-        if (($this->data['customer_id'] == 0) && // Has new billing customer
-            isset($this->data['customer_display_name']) &&
-            trim($this->data['customer_display_name'])) {
-            $newCustomerAttrs = $this->collectCustomerInfo();
-        }
-
-        // Check for new job customer
-        if (($this->data['job_customer_id'] == 0) && // Has new job customer
-            isset($this->data['job_customer_display_name']) &&
-            trim($this->data['job_customer_display_name'])) {
-            $newJobCustomerAttrs = $this->collectJobCustomerInfo();
-        }
-
-        try {
-            // Check if the new job customer is same with new billing customer
-            if ($newCustomerAttrs && $newJobCustomerAttrs &&
-                    ($newCustomerAttrs['display_name'] ===
-                        $newJobCustomerAttrs['display_name'])) {
-                $newCustomer = $this->_createCustomer(
-                    array_merge($newCustomerAttrs, $newJobCustomerAttrs)
-                );
-                $return['customer_id'] =
-                    $return['job_customer_id'] = $newCustomer->id;
-            } else {
-                if ($newCustomerAttrs) {
-                    $newCustomer = $this->_createCustomer($newCustomerAttrs);
-                    $return['customer_id'] = $newCustomer->id;
-                }
-                if ($newJobCustomerAttrs) {
-                    $newCustomer = $this->_createCustomer($newJobCustomerAttrs);
-                    $return['job_customer_id'] = $newCustomer->id;
-                }
-            }
-        } catch (IdsException $e) {
-            $this->renderJson([
-                'success' => false,
-                'message' => 'Failed to create new customer'
-            ]);
-        }
-        return $return;
-    }
-
     public function update() {
-        $estimateModel = new EstimateModel();
-        $estimateLineModel = new EstimateLineModel();
+        $estimateM = new EstimateModel;
         $updateData = $this->data;
-        $estimate = ORM::forTable('estimates')->findOne($updateData['id']);
+        $id = $updateData['id'];
+        $estimate = ORM::forTable('estimates')->findOne($id);
         $sync = Asynchronzier::getInstance();
         $newCustomerData = $this->_checkForCreateNewCustomers();
         $updateData = array_merge($this->data, $newCustomerData);
-        if (!$updateData['estimate_route_id']) {
-            $updateData['estimate_route_id'] = NULL;
-        }
-        if (!@$updateData['date_of_signature']) {
-            $updateData['date_of_signature'] = NULL;
-        }
-        if (!@$updateData['accepted_date']) {
-            $updateData['accepted_date'] = NULL;
-        }
-        if (!@$updateData['expiration_date']) {
-            $updateData['expiration_date'] = NULL;
-        }
-        if (isset($updateData['customer_signature_encoded'])) { // Hash customer signature
-            if ($updateData['customer_signature_encoded']) {
-                $dataPieces = explode(",", $updateData['customer_signature_encoded']);
-                $encodedImage = $dataPieces[1];
-                $decodedImage = base64_decode($encodedImage);
-                $signatureFileName = 'signature-' . time() . '.png';
-                file_put_contents(ERP_UPLOADS_DIR . '/' . $signatureFileName, $decodedImage);
-                $updateData['customer_signature'] = 'uploads/' . $signatureFileName;
-            } elseif ($estimate->customer_signature) {
-                // Check exists to remove old signature
-                @unlink(ERP_ROOT_DIR . '/' . $estimate->customer_signature);
-                $updateData['customer_signature'] = '';
+        $keepNullColumns = [
+            'estimate_route_id', 'date_of_signature', 'accepted_date',
+            'expiration_date'
+        ];
+        foreach ($keepNullColumns as $column) {
+            if (!@$updateData[$column]) {
+                $updateData[$column] = NULL;
             }
+        }
+        if (isset($updateData['customer_signature_encoded'])) { // This mean the signature has changed
+            $encodedSignature = $updateData['customer_signature_encoded'];
+            $atmModel = new AttachmentModel;
+            if ($encodedSignature) {
+                // Upload to QB
+                $decodedSignature = Base64Encoder::decode($encodedSignature);
+                $atmModel->uploadSignature($id, $decodedSignature);
+                // Save signature to local-disk
+                $signatureFileName = 'customer-signature-' . time() . '.png';
+                file_put_contents(
+                    ERP_UPLOADS_DIR . '/' . $signatureFileName, $decodedSignature);
+                $updateData['customer_signature'] = 'uploads/' . $signatureFileName;
+            }
+            if ($estimate->customer_signature) { // Check to remove the old
+                @unlink(ERP_ROOT_DIR . '/' . $estimate->customer_signature);
+                if (!$encodedSignature) {
+                    $updateData['customer_signature'] = '';
+                }
+                // Remove the signature attachments if exists
+                $signatureAttachment = ORM::forTable('estimate_attachments')
+                    ->where('estimate_id', $id)
+                    ->where('is_customer_signature', true)
+                    ->findOne();
+                if ($signatureAttachment) {
+                    $atmModel->delete($signatureAttachment->id);
+                }
+            }
+            $newToken = $estimateM->updateSyncToken($id);
+            $estimate->sync_token = $newToken;
         }
         $updateData['sync_token'] = $estimate->sync_token;
         $params = $sync->decodeEstimate($updateData);
@@ -304,7 +245,7 @@ class EstimateController extends BaseController {
             if ($e->getStatusCode() == '400') { // Maybe the sync token wrong
                 // Try to get update token
                 $objEstimate = new IPPEstimate();
-                $objEstimate->Id = $updateData['id'];
+                $objEstimate->Id = $id;
                 $responseEstimate = $sync->Retrieve($objEstimate);
                 if ($params['attributes']['SyncToken'] != $responseEstimate->SyncToken) {
                     $params['attributes']['SyncToken'] = $responseEstimate->SyncToken;
@@ -316,30 +257,31 @@ class EstimateController extends BaseController {
                 throw $e;
             }
         }
-        $data_result = $sync->parseEstimate($result, $updateData);
+        $parsedEstimateData = $sync->parseEstimate($result, $updateData);
 
         // Start sync lines
-        $data_line_sync = [];
+        $estimateLineModel = new EstimateLineModel();
+        $newEstimateLines = [];
         foreach ($result->Line as $line) {
-            $result_line = $sync->parseEstimateLine($line, $data_result['id']);
+            $result_line = $sync->parseEstimateLine($line, $id);
             if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
                 $lineInfo = [
                     'line_id' => $result_line['line_id'],
                     'estimate_id' => $result_line['estimate_id']
                 ];
-                array_push($data_line_sync, $lineInfo);
+                array_push($newEstimateLines, $lineInfo);
                 $estimate_line = $estimateLineModel->findBy($lineInfo);
                 if ($estimate_line == null) {
                     $estimateLineModel->insert($result_line);
                 } else {
-                  $estimateLineModel->update($result_line, $lineInfo);
+                    $estimateLineModel->update($result_line, $lineInfo);
                 }
             }
         }
-        $data_estimate_line = $estimateLineModel->getAllWithColumns(
-            ['line_id', 'estimate_id'], ['estimate_id' => $data_result['id']]
+        $oldEstimateLine = $estimateLineModel->getAllWithColumns(
+            ['line_id', 'estimate_id'], ['estimate_id' => $id]
         );
-        $data_delete = $sync->mergeData($data_line_sync, $data_estimate_line);
+        $data_delete = $sync->mergeData($newEstimateLines, $oldEstimateLine);
         foreach ($data_delete as $item_line_delete) {
             $estimateLineModel->delete([
               'line_id' => $item_line_delete['line_id'],
@@ -347,8 +289,9 @@ class EstimateController extends BaseController {
             ]);
         }
         // End sync lines
-        unset($data_result['line']);
-        $estimate->set($data_result);
+
+        unset($parsedEstimateData['line']);
+        $estimate->set($parsedEstimateData);
         if ($estimate->save()) {
             $this->renderJson([
                 'success' => true,
@@ -363,11 +306,24 @@ class EstimateController extends BaseController {
         }
     }
 
+    /**
+     * Return the estimate's attachments
+     */
+    public function attachments() {
+        $id = $this->data['id'];
+        $attachments = ORM::forTable('estimate_attachments')
+            ->where('estimate_id', $id)
+            ->findArray();
+        $this->renderJson($attachments);
+    }
+
     public function uploadAttachment() {
         if (isset($this->data['id']) && isset($_FILES['file'])) {
-            $uploadedFile = $_FILES['file'];
             $estAtM = new AttachmentModel;
-            $attachment = $estAtM->upload($this->data['id'], $uploadedFile);
+            $estimateId = $this->data['id'];
+            $attachment = $estAtM->upload($estimateId, $_FILES['file']);
+            $estimateM = new EstimateModel;
+            $estimateM->updateSyncToken($estimateId);
             $this->renderJson([
                 'success' => true,
                 'attachment' => $attachment
@@ -382,7 +338,10 @@ class EstimateController extends BaseController {
 
     public function deleteAttachment() {
         $estAtM = new AttachmentModel;
-        if ($estAtM->delete($this->data['id'])) {
+        $estimateM = new EstimateModel;
+        $attachment = $estAtM->delete($this->data['id']);
+        if ($attachment) {
+            $estimateM->updateSyncToken($attachment->estimate_id);
             $this->renderJson([
                 'success' => true,
                 'message' => 'An attachment has been deleted'
@@ -498,16 +457,98 @@ class EstimateController extends BaseController {
         return
             ORM::forTable('estimates')
             ->tableAlias('e')
-            ->left_outer_join('customers', ['e.customer_id' ,'=', 'cus.id'], 'cus')
-            ->left_outer_join('customers', ['e.job_customer_id' ,'=', 'jobcus.id'], 'jobcus')
-            ->left_outer_join('employees', ['e.sold_by_1' ,'=', 'emp1.id'], 'emp1')
-            ->left_outer_join('employees', ['e.sold_by_2' ,'=', 'emp2.id'], 'emp2')
+            ->leftOuterJoin('customers', ['e.customer_id' ,'=', 'cus.id'], 'cus')
+            ->leftOuterJoin('customers', ['e.job_customer_id' ,'=', 'jobcus.id'], 'jobcus')
+            ->leftOuterJoin('employees', ['e.sold_by_1' ,'=', 'emp1.id'], 'emp1')
+            ->leftOuterJoin('employees', ['e.sold_by_2' ,'=', 'emp2.id'], 'emp2')
             ->select('e.*')
             ->select('cus.display_name', 'customer_display_name')
             ->select('jobcus.display_name', 'job_customer_display_name')
             ->select('emp1.display_name', 'sold_by_1_display_name')
             ->select('emp2.display_name', 'sold_by_2_display_name')
             ->findOne($id);
+    }
+
+    private function collectCustomerInfo() {
+        $customerInfo = [];
+        $customerInfo['display_name']   = trim($this->data['customer_display_name']);
+        $customerInfo['bill_address']   = @$this->data['bill_address'];
+        $customerInfo['bill_city']      = @$this->data['bill_city'];
+        $customerInfo['bill_country']   = @$this->data['bill_country'];
+        $customerInfo['bill_state']     = @$this->data['bill_state'];
+        $customerInfo['bill_zip_code']  = @$this->data['bill_zip_code'];
+        $customerInfo['primary_phone_number']    = @$this->data['primary_phone_number'];
+        $customerInfo['alternate_phone_number']  = @$this->data['alternate_phone_number'];
+        $customerInfo['email']  = @$this->data['email'];
+        return $customerInfo;
+    }
+
+    private function collectJobCustomerInfo() {
+        $customerInfo = [];
+        $customerInfo['display_name']   = trim(@$this->data['job_customer_display_name']);
+        $customerInfo['ship_address']   = @$this->data['job_address'];
+        $customerInfo['ship_city']      = @$this->data['job_city'];
+        $customerInfo['ship_country']   = @$this->data['job_country'];
+        $customerInfo['ship_state']     = @$this->data['job_state'];
+        $customerInfo['ship_zip_code']  = @$this->data['job_zip_code'];
+        return $customerInfo;
+    }
+
+    /**
+     * Create new customer, push to QB and return the local record
+     */
+    private function _createCustomer($attrs) {
+        $sync = Asynchronzier::getInstance();
+        $qbcustomerObj = $sync->createCustomer($attrs);
+        $customerRecord = ORM::forTable('customers')->create();
+        $customerRecord->set($sync->parseCustomer($qbcustomerObj));
+        $customerRecord->save();
+        return $customerRecord;
+    }
+
+    private function _checkForCreateNewCustomers() {
+        $return = [];
+        $newCustomerAttrs = $newJobCustomerAttrs = [];
+        if (($this->data['customer_id'] == 0) && // Has new billing customer
+            isset($this->data['customer_display_name']) &&
+            trim($this->data['customer_display_name'])) {
+            $newCustomerAttrs = $this->collectCustomerInfo();
+        }
+
+        // Check for new job customer
+        if (($this->data['job_customer_id'] == 0) && // Has new job customer
+            isset($this->data['job_customer_display_name']) &&
+            trim($this->data['job_customer_display_name'])) {
+            $newJobCustomerAttrs = $this->collectJobCustomerInfo();
+        }
+
+        try {
+            // Check if the new job customer is same with new billing customer
+            if ($newCustomerAttrs && $newJobCustomerAttrs &&
+                    ($newCustomerAttrs['display_name'] ===
+                        $newJobCustomerAttrs['display_name'])) {
+                $newCustomer = $this->_createCustomer(
+                    array_merge($newCustomerAttrs, $newJobCustomerAttrs)
+                );
+                $return['customer_id'] =
+                    $return['job_customer_id'] = $newCustomer->id;
+            } else {
+                if ($newCustomerAttrs) {
+                    $newCustomer = $this->_createCustomer($newCustomerAttrs);
+                    $return['customer_id'] = $newCustomer->id;
+                }
+                if ($newJobCustomerAttrs) {
+                    $newCustomer = $this->_createCustomer($newJobCustomerAttrs);
+                    $return['job_customer_id'] = $newCustomer->id;
+                }
+            }
+        } catch (IdsException $e) {
+            $this->renderJson([
+                'success' => false,
+                'message' => 'Failed to create new customer'
+            ]);
+        }
+        return $return;
     }
 }
 ?>

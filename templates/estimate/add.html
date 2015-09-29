@@ -416,11 +416,15 @@
             <div class="col-md-12">
                 <div class="col-sm-5">
                     <div class="form-group">
-                        <label for="customer_signature" class="col-sm-5">Customer Signature</label>
-                        <button type="button" ng-click="clearCustomerSignature()" class="btn btn-xs btn-default">Clear</button>
+                        <div class="col-sm-12">
+                            <label for="customer_signature">Customer Signature</label>
+                            <button type="button"
+                                ng-click="clearCustomerSignature()"
+                                class="btn btn-xs btn-default pull-right">Clear</button>
+                            </div>
                         <div class="col-sm-12">
                             <div class="div-customer-signature">
-                                <canvas ng-signature-pad="signature_pad"></canvas>
+                                <canvas ng-signature-pad="signature_pad" width="400px" height="150px"></canvas>
                             </div>
                         </div>
                     </div>
