@@ -295,6 +295,17 @@ class EstimateController extends BaseController {
         }
     }
 
+    /**
+     * Return the estimate's attachments
+     */
+    public function attachments() {
+        $id = $this->data['id'];
+        $attachments = ORM::forTable('estimate_attachments')
+            ->where('estimate_id', $id)
+            ->findArray();
+        $this->renderJson($attachments);
+    }
+
     public function uploadAttachment() {
         if (isset($this->data['id']) && isset($_FILES['file'])) {
             $estAtM = new AttachmentModel;

@@ -46,5 +46,11 @@ function estimateFactory($http) {
                 data: mailData
             });
         },
+        attachments: function(id) {
+            return $http.post(ERPApp.baseAPIPath, {
+                _do: 'getEstimateAttachments',
+                data: {id: id}
+            });
+        }
     };
 }

@@ -15,6 +15,7 @@ return [
     'getAssignedEstimates'  => 'Estimate@assigned',
     'printEstimate'         => 'Estimate@printPDF',
     'sendEstimate'          => 'Estimate@sendEstimate',
+    'getEstimateAttachments'=> 'Estimate@attachments',
 
     'getAttachment'         => 'Attachment@show',
 

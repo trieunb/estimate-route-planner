@@ -28,6 +28,7 @@ class AttachmentModel extends BaseModel {
             'image/png'
         );
         $attachmentData = $sync->parseAttachment($attachableObj);
+        $attachmentData['is_customer_signature'] = true;
         $this->insert($attachmentData);
         return $attachmentData;
     }
