@@ -1,6 +1,10 @@
 <?php
 class ERPLogger {
 
+    const LEVEL_INFO = 'INFO';
+    const LEVEL_WARNING = 'WARNING';
+    const LEVEL_ERROR = 'ERROR';
+
     private $fileName;
 
     public function __construct($fileName) {
@@ -11,16 +15,46 @@ class ERPLogger {
         return LOG_STORAGE_PATH . '/' . $this->fileName;
     }
 
-    public function log($message) {
+    /**
+     * Write data to file
+     * @var $data mixed
+     * @var $level string
+     */
+    public function log($data, $level = self::LEVEL_INFO) {
+        if (is_array($data)) {
+            $data = json_encode($data);
+        }
+        $logLine = '[' . self::LEVEL_INFO . '] ' . $data . "\n";
         try {
             file_put_contents(
                 $this->getRealFilePath(),
-                $message . "\n",
+                $logLine,
                 FILE_APPEND | LOCK_EX
             );
         } catch (Exeption $e) {
             // Do nothing
         }
+    }
+
+    /**
+     * Log with INFO annotate
+     */
+    public function info($data) {
+        $this->log($data, self::LEVEL_INFO);
+    }
+
+    /**
+     * Log with WARNING annotate
+     */
+    public function warn($data) {
+        $this->log($data, self::LEVEL_WARNING);
+    }
+
+    /**
+     * Log with ERROR annotate
+     */
+    public function error($data) {
+        $this->log($data, self::LEVEL_ERROR);
     }
 }
 ?>

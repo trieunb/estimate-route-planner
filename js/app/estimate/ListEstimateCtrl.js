@@ -18,6 +18,7 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
     $scope.estimates = {};
     $scope.selectedStatus = '';
     $scope.sendMailData = {};
+    $scope.filter = {};
     // Paginate
     $scope.total = 0;
     var currentPage = 1;
@@ -29,8 +30,8 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
         var query = {
             _do: 'getEstimates',
             page: $scope.currentPage,
-            status: $scope.selectedStatus,
-            keyword: $scope.name
+            status: $scope.filter.status,
+            keyword: $scope.filter.keyword
         }
         estimateFactory.list(query)
             .success(function(response) {
@@ -55,8 +56,7 @@ function ListEstimateCtrl($scope, $rootScope, $routeParams, $location, estimateF
     };
 
     $scope.clearSearch = function() {
-        $scope.name = '';
-        $scope.selectedStatus = '';
+        $scope.filter = {};
     };
 
     $scope.filterStatuses = [

@@ -9,11 +9,18 @@ class EstimateController extends BaseController {
         if (isset($_REQUEST['status'])) {
             $filteredStatus = $_REQUEST['status'];
         }
-
-        $estimates = ORM::forTable('estimates')
+        $searchQuery = ORM::forTable('estimates')
             ->tableAlias('e')
-            ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
-            ->join('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
+            ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
+            ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
+            ->whereAnyIs([
+                ['c.display_name' => "%$keyword%"],
+                ['jc.display_name' => "%$keyword%"]], 'LIKE'
+            )
+            ->whereLike('e.status', "%$filteredStatus%")
+            ->orderByDesc('e.id');
+        $countQuery = clone($searchQuery);
+        $estimates = $searchQuery
             ->selectMany(
                 'e.id', 'e.txn_date', 'e.doc_number',
                 'e.source', 'e.due_date', 'e.total',
@@ -21,26 +28,10 @@ class EstimateController extends BaseController {
             )
             ->select('c.display_name', 'customer_display_name')
             ->select('jc.display_name', 'job_customer_display_name')
-            ->whereAnyIs([
-                ['c.display_name' => "%$keyword%"],
-                ['jc.display_name' => "%$keyword%"]], 'LIKE'
-            )
-            ->whereLike('e.status', "%$filteredStatus%")
-            ->orderByDesc('e.id')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
-        $counter = ORM::forTable('estimates')
-            ->tableAlias('e')
-            ->join('customers', ['e.customer_id', '=', 'c.id'], 'c')
-            ->join('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
-            ->whereAnyIs([
-                ['c.display_name' => "%$keyword%"],
-                ['jc.display_name' => "%$keyword%"]], 'LIKE'
-            )
-            ->whereLike('e.status', "%$filteredStatus%")
-            ->selectExpr('COUNT(*)', 'count')
-            ->findMany();
+        $counter = $countQuery->selectExpr('COUNT(*)', 'count')->findMany();
         $this->renderJson([
             'total' => $counter[0]->count,
             'data'  => $estimates

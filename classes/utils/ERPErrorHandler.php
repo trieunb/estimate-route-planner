@@ -1,5 +1,5 @@
 <?php
-class ErrorHandler {
+class ERPErrorHandler {
     public function handleException($e) {
         if (! $e instanceof Exception) {
             $e = new FatalThrowableError($e);
