@@ -397,6 +397,7 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                     $scope.estimate.job_lng = location.lng();
                     var estimate = {};
                     angular.copy($scope.estimate, estimate);
+                    delete estimate.attachments;
                     if (estimate.txn_date) {
                         estimate.txn_date = $filter('date')(
                             estimate.txn_date,

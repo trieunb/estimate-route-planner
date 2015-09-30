@@ -68,8 +68,8 @@
                       display: inline-block;
                 }
                 .footer-right {
-                      width: 50%;
-                      float: left;
+                      width: 45%;
+                      float: right;
                       display: inline-block;
                 }
                 table.tabl-info.table.table-bordered th.text-center {
@@ -142,7 +142,8 @@
                                     echo $estimate->bill_address .
                                     ' ' . $estimate->bill_city .
                                     ', ' . $estimate->bill_state .
-                                    ' ' . $estimate->bill_zip_code ;
+                                    ' ' . $estimate->bill_zip_code .
+                                    ' ' . $estimate->bill_country ;
                                     ?>
                                 <?php } ?>
                             </td>
@@ -153,7 +154,8 @@
                                     echo $estimate->job_address .
                                     ' ' . $estimate->job_city .
                                     ', ' . $estimate->job_state .
-                                    ' ' . $estimate->job_zip_code ;
+                                    ' ' . $estimate->job_zip_code .
+                                    ' ' . $estimate->job_country ;
                                     ?>
                                 <?php } ?>
                             </td>
@@ -221,13 +223,13 @@
                     <label>Date of Signature:</label>
                     <span><?php echo $estimate->date_of_signature ?></span><br>
                     <?php if ($estimate->customer_signature) :?>
-                        <img src="<?php echo erp_asset_url($estimate->customer_signature) ?>">
+                        <img style="max-width: 100%"src="<?php echo erp_asset_url($estimate->customer_signature) ?>">
                     <?php endif; ?>
                     <br>
                     <label>Sold By:</label>
-                    <span><?php echo $estimate->sold_by_1_display_name ?></span><br>
+                    <span><?php echo $estimate->sold_by_1 ?></span><br>
                     <label>Sold By:</label>
-                    <span><?php echo $estimate->sold_by_2_display_name ?></span>
+                    <span><?php echo $estimate->sold_by_2 ?></span>
                 </div>
                 <div class="footer-right">
                     <span><?php echo $estimate->estimate_footer; ?></span>

@@ -28,7 +28,7 @@ class AttachmentModel extends BaseModel {
         );
         $attachmentData = ERPDataParser::parseAttachment($attachableObj);
         $attachmentData['is_customer_signature'] = 1;
-        RM::forTable('estimate_attachments')->create($attachmentData)->save();
+        ORM::forTable('estimate_attachments')->create($attachmentData)->save();
         return $attachmentData;
     }
 

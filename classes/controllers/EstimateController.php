@@ -211,10 +211,12 @@ class EstimateController extends BaseController {
         if (isset($updateData['customer_signature_encoded'])) { // This mean the signature has changed
             $encodedSignature = $updateData['customer_signature_encoded'];
             $atmModel = new AttachmentModel;
+            $needUpdateSyncToken = false;
             if ($encodedSignature) {
                 // Upload to QB
                 $decodedSignature = Base64Encoder::decode($encodedSignature);
                 $atmModel->uploadSignature($id, $decodedSignature);
+                $needUpdateSyncToken = true;
                 // Save signature to local-disk
                 $signatureFileName = 'customer-signature-' . time() . '.png';
                 file_put_contents(
@@ -233,10 +235,16 @@ class EstimateController extends BaseController {
                     ->findOne();
                 if ($signatureAttachment) {
                     $atmModel->delete($signatureAttachment->id);
+                    $needUpdateSyncToken = true;
                 }
             }
-            $newToken = $estimateM->updateSyncToken($id);
-            $estimate->sync_token = $newToken;
+            if ($needUpdateSyncToken) {
+                $newToken = $estimateM->updateSyncToken($id);
+                $estimate->sync_token = $newToken;
+            }
+        } else {
+            // Keep the old url
+            $updateData['customer_signature'] = $estimate->customer_signature;
         }
         $updateData['sync_token'] = $estimate->sync_token;
         $params = $sync->decodeEstimate($updateData);
@@ -378,7 +386,6 @@ class EstimateController extends BaseController {
                 ->select('ps.name', 'product_service_name')
                 ->findArray();
         require TEMPLATES_DIR . '/print/estimate.php';
-        exit();
     }
 
     public function sendEstimate() {
@@ -466,13 +473,9 @@ class EstimateController extends BaseController {
             ->tableAlias('e')
             ->leftOuterJoin('customers', ['e.customer_id' ,'=', 'cus.id'], 'cus')
             ->leftOuterJoin('customers', ['e.job_customer_id' ,'=', 'jobcus.id'], 'jobcus')
-            ->leftOuterJoin('employees', ['e.sold_by_1' ,'=', 'emp1.id'], 'emp1')
-            ->leftOuterJoin('employees', ['e.sold_by_2' ,'=', 'emp2.id'], 'emp2')
             ->select('e.*')
             ->select('cus.display_name', 'customer_display_name')
             ->select('jobcus.display_name', 'job_customer_display_name')
-            ->select('emp1.display_name', 'sold_by_1_display_name')
-            ->select('emp2.display_name', 'sold_by_2_display_name')
             ->findOne($id);
     }
 
