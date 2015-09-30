@@ -259,7 +259,6 @@ class EstimateController extends BaseController {
             }
         }
         $parsedEstimateData = ERPDataParser::parseEstimate($result, $updateData);
-
         // Start sync lines
         $estimateLineModel = new EstimateLineModel();
         $newEstimateLines = [];
