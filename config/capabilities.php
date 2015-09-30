@@ -22,7 +22,7 @@ return [
     'erpp_view_estimate_total',
     'erpp_print_estimates',
     'erpp_send_estimates',
-    'erpp_view_sales_estimate',
+    'erpp_view_sales_estimates',
 
     // Estimate route
     'erpp_create_estimate_routes',

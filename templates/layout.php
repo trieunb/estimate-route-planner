@@ -1,7 +1,7 @@
 <div id="erp-wrapper">
     <h1 id="erp-header"><span ng-bind="pageTitle"></span></h1>
-    <div id="erp-content" ng-class="{busy: isBusy}">
-        <div class="loading-overlay" ng-if="isBusy" ng-cloak>
+    <div id="erp-content" ng-class="{busy: isBusy}" ng-cloak>
+        <div class="loading-overlay" ng-if="isBusy">
             <div style="position: relative; display: inline-block">
                 <div id="spinner"></div>
             </div>

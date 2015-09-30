@@ -22,6 +22,15 @@ class EstimateController extends BaseController {
             )
             ->whereLike('e.status', "%$filteredStatus%")
             ->orderByDesc('e.id');
+        if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
+            $currentUserDisplayName = $this->currentUser->display_name;
+            $searchQuery
+                ->whereAnyIs([
+                    ['e.sold_by_1' => $currentUserDisplayName],
+                    ['e.sold_by_2' => $currentUserDisplayName]
+                ]);
+        }
+
         $countQuery = clone($searchQuery);
         $estimates = $searchQuery
             ->selectMany(
@@ -179,16 +188,31 @@ class EstimateController extends BaseController {
     public function show() {
         // TODO: add check for Sales Rep permission
         $id = $this->data['id'];
-        $estimate = ORM::forTable('estimates')->findOne($id);
-        $estimate = $estimate->asArray();
-        $estimate['lines'] = ORM::forTable('estimate_lines')
-            ->where('estimate_id', $estimate['id'])
-            ->findArray();
-        $estimate['attachments'] = ORM::forTable('estimate_attachments')
-            ->where('estimate_id', $estimate['id'])
-            ->where('is_customer_signature', 0)
-            ->findArray();
-        $this->renderJson($estimate);
+        $estimate = null;
+        if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
+            $currentUserDisplayName = $this->currentUser->display_name;
+            $estimate = ORM::forTable('estimates')
+                ->whereAnyIs([
+                    ['sold_by_1' => $currentUserDisplayName],
+                    ['sold_by_2' => $currentUserDisplayName]
+                ])
+                ->findOne($id);
+        } else {
+            $estimate = ORM::forTable('estimates')->findOne($id);
+        }
+        if ($estimate) {
+            $estimate = $estimate->asArray();
+            $estimate['lines'] = ORM::forTable('estimate_lines')
+                ->where('estimate_id', $id)
+                ->findArray();
+            $estimate['attachments'] = ORM::forTable('estimate_attachments')
+                ->where('estimate_id', $id)
+                ->where('is_customer_signature', 0)
+                ->findArray();
+            $this->renderJson($estimate);
+        } else {
+            $this->render404();
+        }
     }
 
     public function update() {

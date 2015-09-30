@@ -8,9 +8,13 @@ class BaseController {
     /* @var ERPLogger */
     protected $logger;
 
+    /* @var WP_User */
+    protected $currentUser;
+
     public function __construct($data, ERPLogger $logger) {
         $this->data = $data;
         $this->logger = $logger;
+        $this->currentUser = wp_get_current_user();
     }
 
     /**
@@ -62,6 +66,14 @@ class BaseController {
             $keyword = "";
         }
         return $keyword;
+    }
+
+    protected function currentUserHasCap($capability) {
+        if ($this->currentUser) {
+            return $this->currentUser->has_cap($capability);
+        } else {
+            return false;
+        }
     }
 }
 ?>
