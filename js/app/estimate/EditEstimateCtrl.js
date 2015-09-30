@@ -423,9 +423,6 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                     estimateFactory.update(estimate)
                         .success(function(response) {
                             if (response.success) {
-                                if ($scope.isChangedSignature) {
-                                    reloadAttachments();
-                                }
                                 $scope.isChangedSignature = false;
                                 toastr.success(response.message);
                                 if (sendMail) {

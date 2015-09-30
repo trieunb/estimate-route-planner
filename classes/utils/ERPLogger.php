@@ -20,11 +20,16 @@ class ERPLogger {
      * @var $data mixed
      * @var $level string
      */
-    public function log($data, $level = self::LEVEL_INFO) {
+    public function log($data, $level = null) {
         if (is_array($data)) {
             $data = json_encode($data);
         }
-        $logLine = '[' . self::LEVEL_INFO . '] ' . $data . "\n";
+        if (null != $level) {
+            $logLine = '[' . self::LEVEL_INFO . '] ' . $data . "\n";
+        } else {
+            $logLine = $data . "\n";
+        }
+
         try {
             file_put_contents(
                 $this->getRealFilePath(),

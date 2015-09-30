@@ -154,7 +154,7 @@ class ReferralController extends BaseController {
             $sync = Asynchronzier::getInstance();
             $qbcustomerObj = $sync->createCustomer($this->_collectCustomerInfo());
             $customerRecord = ORM::forTable('customers')->create();
-            $customerRecord->set($sync->parseCustomer($qbcustomerObj));
+            $customerRecord->set(ERPDataParser::parseCustomer($qbcustomerObj));
             $customerRecord->save();
             $results['customer_id'] = $customerRecord->id;
         }

@@ -136,12 +136,12 @@ class EstimateController extends BaseController {
         // Save estimate to QB
         $params = $sync->decodeEstimate($insertData);
         $result = $sync->Create($params);
-        $parsedEstimateData = $sync->parseEstimate($result, $insertData);
+        $parsedEstimateData = ERPDataParser::parseEstimate($result, $insertData);
 
         // Parse lines data
         $estimateLineModel = new EstimateLineModel();
         foreach ($result->Line as $line) {
-            $result_line = $sync->parseEstimateLine($line, $parsedEstimateData['id']);
+            $result_line = ERPDataParser::parseEstimateLine($line, $parsedEstimateData['id']);
             if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
                 $estimate_line = $estimateLineModel->findBy([
                     'line_id' => $result_line['line_id'],
@@ -186,6 +186,7 @@ class EstimateController extends BaseController {
             ->findArray();
         $estimate['attachments'] = ORM::forTable('estimate_attachments')
             ->where('estimate_id', $estimate['id'])
+            ->where('is_customer_signature', 0)
             ->findArray();
         $this->renderJson($estimate);
     }
@@ -228,7 +229,7 @@ class EstimateController extends BaseController {
                 // Remove the signature attachments if exists
                 $signatureAttachment = ORM::forTable('estimate_attachments')
                     ->where('estimate_id', $id)
-                    ->where('is_customer_signature', true)
+                    ->where('is_customer_signature', 1)
                     ->findOne();
                 if ($signatureAttachment) {
                     $atmModel->delete($signatureAttachment->id);
@@ -257,13 +258,13 @@ class EstimateController extends BaseController {
                 throw $e;
             }
         }
-        $parsedEstimateData = $sync->parseEstimate($result, $updateData);
+        $parsedEstimateData = ERPDataParser::parseEstimate($result, $updateData);
 
         // Start sync lines
         $estimateLineModel = new EstimateLineModel();
         $newEstimateLines = [];
         foreach ($result->Line as $line) {
-            $result_line = $sync->parseEstimateLine($line, $id);
+            $result_line = ERPDataParser::parseEstimateLine($line, $id);
             if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
                 $lineInfo = [
                     'line_id' => $result_line['line_id'],
@@ -313,6 +314,7 @@ class EstimateController extends BaseController {
         $id = $this->data['id'];
         $attachments = ORM::forTable('estimate_attachments')
             ->where('estimate_id', $id)
+            ->where('is_customer_signature', 0)
             ->findArray();
         $this->renderJson($attachments);
     }
@@ -341,7 +343,13 @@ class EstimateController extends BaseController {
         $estimateM = new EstimateModel;
         $attachment = $estAtM->delete($this->data['id']);
         if ($attachment) {
-            $estimateM->updateSyncToken($attachment->estimate_id);
+            $estimateId = $attachment->estimate_id;
+            if ($attachment->is_customer_signature) {
+                $estimate = ORM::forTable('estimates')->findOne($estimateId);
+                $estimate->customer_signature = NULL;
+                $estimate->save();
+            }
+            $estimateM->updateSyncToken($estimateId);
             $this->renderJson([
                 'success' => true,
                 'message' => 'An attachment has been deleted'
@@ -501,7 +509,7 @@ class EstimateController extends BaseController {
         $sync = Asynchronzier::getInstance();
         $qbcustomerObj = $sync->createCustomer($attrs);
         $customerRecord = ORM::forTable('customers')->create();
-        $customerRecord->set($sync->parseCustomer($qbcustomerObj));
+        $customerRecord->set(ERPDataParser::parseCustomer($qbcustomerObj));
         $customerRecord->save();
         return $customerRecord;
     }
