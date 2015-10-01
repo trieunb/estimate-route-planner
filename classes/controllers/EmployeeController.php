@@ -1,6 +1,9 @@
 <?php
 class EmployeeController extends BaseController {
 
+    /**
+     * Return list of WP users
+     */
     public function index() {
         $emps = [];
         foreach (get_users() as $user) {

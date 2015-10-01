@@ -128,7 +128,6 @@ class ReferralController extends BaseController {
             ->select('c.display_name', 'customer_display_name')
             ->findOne($_REQUEST['id']);
         require TEMPLATES_DIR . '/print/referral.php';
-        exit;
     }
 
     /**

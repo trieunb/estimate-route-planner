@@ -23,11 +23,11 @@ class EstimateController extends BaseController {
             ->whereLike('e.status', "%$filteredStatus%")
             ->orderByDesc('e.id');
         if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
-            $currentUserDisplayName = $this->currentUser->display_name;
+            $currentUserName = $this->getCurrentUserName();
             $searchQuery
                 ->whereAnyIs([
-                    ['e.sold_by_1' => $currentUserDisplayName],
-                    ['e.sold_by_2' => $currentUserDisplayName]
+                    ['e.sold_by_1' => $currentUserName],
+                    ['e.sold_by_2' => $currentUserName]
                 ]);
         }
 
@@ -189,11 +189,11 @@ class EstimateController extends BaseController {
         $id = $this->data['id'];
         $estimate = null;
         if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
-            $currentUserDisplayName = $this->currentUser->display_name;
+            $currentUserName = $this->getCurrentUserName();
             $estimate = ORM::forTable('estimates')
                 ->whereAnyIs([
-                    ['sold_by_1' => $currentUserDisplayName],
-                    ['sold_by_2' => $currentUserDisplayName]
+                    ['sold_by_1' => $currentUserName],
+                    ['sold_by_2' => $currentUserName]
                 ])
                 ->findOne($id);
         } else {
