@@ -22,6 +22,15 @@ class EstimateController extends BaseController {
             )
             ->whereLike('e.status', "%$filteredStatus%")
             ->orderByDesc('e.id');
+        if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
+            $currentUserName = $this->getCurrentUserName();
+            $searchQuery
+                ->whereAnyIs([
+                    ['e.sold_by_1' => $currentUserName],
+                    ['e.sold_by_2' => $currentUserName]
+                ]);
+        }
+
         $countQuery = clone($searchQuery);
         $estimates = $searchQuery
             ->selectMany(
@@ -136,12 +145,12 @@ class EstimateController extends BaseController {
         // Save estimate to QB
         $params = $sync->decodeEstimate($insertData);
         $result = $sync->Create($params);
-        $parsedEstimateData = $sync->parseEstimate($result, $insertData);
+        $parsedEstimateData = ERPDataParser::parseEstimate($result, $insertData);
 
         // Parse lines data
         $estimateLineModel = new EstimateLineModel();
         foreach ($result->Line as $line) {
-            $result_line = $sync->parseEstimateLine($line, $parsedEstimateData['id']);
+            $result_line = ERPDataParser::parseEstimateLine($line, $parsedEstimateData['id']);
             if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
                 $estimate_line = $estimateLineModel->findBy([
                     'line_id' => $result_line['line_id'],
@@ -177,17 +186,32 @@ class EstimateController extends BaseController {
     }
 
     public function show() {
-        // TODO: add check for Sales Rep permission
         $id = $this->data['id'];
-        $estimate = ORM::forTable('estimates')->findOne($id);
-        $estimate = $estimate->asArray();
-        $estimate['lines'] = ORM::forTable('estimate_lines')
-            ->where('estimate_id', $estimate['id'])
-            ->findArray();
-        $estimate['attachments'] = ORM::forTable('estimate_attachments')
-            ->where('estimate_id', $estimate['id'])
-            ->findArray();
-        $this->renderJson($estimate);
+        $estimate = null;
+        if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
+            $currentUserName = $this->getCurrentUserName();
+            $estimate = ORM::forTable('estimates')
+                ->whereAnyIs([
+                    ['sold_by_1' => $currentUserName],
+                    ['sold_by_2' => $currentUserName]
+                ])
+                ->findOne($id);
+        } else {
+            $estimate = ORM::forTable('estimates')->findOne($id);
+        }
+        if ($estimate) {
+            $estimate = $estimate->asArray();
+            $estimate['lines'] = ORM::forTable('estimate_lines')
+                ->where('estimate_id', $id)
+                ->findArray();
+            $estimate['attachments'] = ORM::forTable('estimate_attachments')
+                ->where('estimate_id', $id)
+                ->where('is_customer_signature', 0)
+                ->findArray();
+            $this->renderJson($estimate);
+        } else {
+            $this->render404();
+        }
     }
 
     public function update() {
@@ -210,10 +234,12 @@ class EstimateController extends BaseController {
         if (isset($updateData['customer_signature_encoded'])) { // This mean the signature has changed
             $encodedSignature = $updateData['customer_signature_encoded'];
             $atmModel = new AttachmentModel;
+            $needUpdateSyncToken = false;
             if ($encodedSignature) {
                 // Upload to QB
                 $decodedSignature = Base64Encoder::decode($encodedSignature);
                 $atmModel->uploadSignature($id, $decodedSignature);
+                $needUpdateSyncToken = true;
                 // Save signature to local-disk
                 $signatureFileName = 'customer-signature-' . time() . '.png';
                 file_put_contents(
@@ -228,14 +254,20 @@ class EstimateController extends BaseController {
                 // Remove the signature attachments if exists
                 $signatureAttachment = ORM::forTable('estimate_attachments')
                     ->where('estimate_id', $id)
-                    ->where('is_customer_signature', true)
+                    ->where('is_customer_signature', 1)
                     ->findOne();
                 if ($signatureAttachment) {
                     $atmModel->delete($signatureAttachment->id);
+                    $needUpdateSyncToken = true;
                 }
             }
-            $newToken = $estimateM->updateSyncToken($id);
-            $estimate->sync_token = $newToken;
+            if ($needUpdateSyncToken) {
+                $newToken = $estimateM->updateSyncToken($id);
+                $estimate->sync_token = $newToken;
+            }
+        } else {
+            // Keep the old url
+            $updateData['customer_signature'] = $estimate->customer_signature;
         }
         $updateData['sync_token'] = $estimate->sync_token;
         $params = $sync->decodeEstimate($updateData);
@@ -257,13 +289,12 @@ class EstimateController extends BaseController {
                 throw $e;
             }
         }
-        $parsedEstimateData = $sync->parseEstimate($result, $updateData);
-
+        $parsedEstimateData = ERPDataParser::parseEstimate($result, $updateData);
         // Start sync lines
         $estimateLineModel = new EstimateLineModel();
         $newEstimateLines = [];
         foreach ($result->Line as $line) {
-            $result_line = $sync->parseEstimateLine($line, $id);
+            $result_line = ERPDataParser::parseEstimateLine($line, $id);
             if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
                 $lineInfo = [
                     'line_id' => $result_line['line_id'],
@@ -313,6 +344,7 @@ class EstimateController extends BaseController {
         $id = $this->data['id'];
         $attachments = ORM::forTable('estimate_attachments')
             ->where('estimate_id', $id)
+            ->where('is_customer_signature', 0)
             ->findArray();
         $this->renderJson($attachments);
     }
@@ -341,7 +373,13 @@ class EstimateController extends BaseController {
         $estimateM = new EstimateModel;
         $attachment = $estAtM->delete($this->data['id']);
         if ($attachment) {
-            $estimateM->updateSyncToken($attachment->estimate_id);
+            $estimateId = $attachment->estimate_id;
+            if ($attachment->is_customer_signature) {
+                $estimate = ORM::forTable('estimates')->findOne($estimateId);
+                $estimate->customer_signature = NULL;
+                $estimate->save();
+            }
+            $estimateM->updateSyncToken($estimateId);
             $this->renderJson([
                 'success' => true,
                 'message' => 'An attachment has been deleted'
@@ -359,114 +397,124 @@ class EstimateController extends BaseController {
         $companyInfo = ORM::forTable('company_info')->findOne();
         $estimateId = $_REQUEST['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
-        $lines = ORM::forTable('estimate_lines')
-                ->tableAlias('el')
-                ->join(
-                    'products_and_services',
-                    ['el.product_service_id', '=', 'ps.id'],
-                    'ps'
-                )
-                ->where('el.estimate_id', $estimateId)
-                ->select('el.*')
-                ->select('ps.name', 'product_service_name')
-                ->findArray();
-        require TEMPLATES_DIR . '/print/estimate.php';
-        exit();
+        if ($estimate) {
+            $lines = ORM::forTable('estimate_lines')
+                    ->tableAlias('el')
+                    ->join(
+                        'products_and_services',
+                        ['el.product_service_id', '=', 'ps.id'],
+                        'ps'
+                    )
+                    ->where('el.estimate_id', $estimateId)
+                    ->select('el.*')
+                    ->select('ps.name', 'product_service_name')
+                    ->findArray();
+            require TEMPLATES_DIR . '/print/estimate.php';
+        } else {
+            $this->render404();
+        }
     }
 
     public function sendEstimate() {
         $companyInfo = ORM::forTable('company_info')->findOne();
         $estimateId = $this->data['id'];
-        $estimate = $estimate = $this->getEstimateDataForPrint($estimateId);
-        $lines = ORM::forTable('estimate_lines')
-                ->tableAlias('el')
-                ->join(
-                    'products_and_services',
-                    ['el.product_service_id', '=', 'ps.id'],
-                    'ps'
-                )
-                ->where('el.estimate_id', $estimateId)
-                ->select('el.*')
-                ->select('ps.name', 'product_service_name')
-                ->findArray();
-        ob_start();
-        require TEMPLATES_DIR . '/print/estimate.dompdf.php';
-        $html = ob_get_clean();
-        $dompdf = new DOMPDF();
-        $dompdf->load_html($html);
-        $dompdf->set_paper('legal');
-        $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
-        $dompdf->render();
-        $pdfPath = TMP_DIR . 'estimate-' . $estimateId . '-' . time() . '.pdf';
-        file_put_contents($pdfPath, $dompdf->output());
-        $STMPSetting = PreferenceModel::getSMTPSetting();
-        if (is_null($STMPSetting)) {
-            $this->renderJson([
-                'success' => false,
-                'message' => 'Error: SMTP setting is not configured properly or missing'
-            ]);
-        }
-        $mailer = new ERPMailer($STMPSetting);
-        $cc = [];
-        if (strpos($this->data['to'], ',')) {
-            $recipients = explode(',' , $this->data['to']);
-            $to = trim($recipients[0]);
-            for($i = 1; $i < count($recipients); $i++) {
-                $cc[] = trim($recipients[$i]);
+        $estimate = $this->getEstimateDataForPrint($estimateId);
+        if ($estimate) {
+            $lines = ORM::forTable('estimate_lines')
+                    ->tableAlias('el')
+                    ->join(
+                        'products_and_services',
+                        ['el.product_service_id', '=', 'ps.id'],
+                        'ps'
+                    )
+                    ->where('el.estimate_id', $estimateId)
+                    ->select('el.*')
+                    ->select('ps.name', 'product_service_name')
+                    ->findArray();
+            ob_start();
+            require TEMPLATES_DIR . '/print/estimate.dompdf.php';
+            $html = ob_get_clean();
+            $dompdf = new DOMPDF();
+            $dompdf->load_html($html);
+            $dompdf->set_paper('legal');
+            $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
+            $dompdf->render();
+            $pdfPath = TMP_DIR . 'estimate-' . $estimateId . '-' . time() . '.pdf';
+            file_put_contents($pdfPath, $dompdf->output());
+            $STMPSetting = PreferenceModel::getSMTPSetting();
+            if (is_null($STMPSetting)) {
+                $this->renderJson([
+                    'success' => false,
+                    'message' => 'Error: SMTP setting is not configured properly or missing'
+                ]);
+            } else {
+                $mailer = new ERPMailer($STMPSetting);
+                $cc = [];
+                if (strpos($this->data['to'], ',')) {
+                    $recipients = explode(',' , $this->data['to']);
+                    $to = trim($recipients[0]);
+                    for($i = 1; $i < count($recipients); $i++) {
+                        $cc[] = trim($recipients[$i]);
+                    }
+                } else {
+                    $to = $this->data['to'];
+                }
+
+                if (isset($this->data['subject'])) {
+                    $subject = $this->data['subject'];
+                } else {
+                    $subject = $companyInfo['name'];
+                }
+
+                if (isset($this->data['body'])) {
+                    $body = $this->data['body'];
+                } else {
+                    $body = $this->data['estimate_footer'];
+                }
+
+                $options = [
+                    'fromName' => $companyInfo['name'],
+                    'attachments' => [
+                        $pdfPath
+                    ],
+                    'cc' => $cc
+                ];
+
+                if ($mailer->sendmail($subject, $body, $to, $options)) {
+                    @unlink($pdfPath);
+                    $this->renderJson([
+                        'success' => true,
+                        'message' => 'Email was send successfully'
+                    ]);
+                } else {
+                    @unlink($pdfPath);
+                    $this->renderJson([
+                        'success' => false,
+                        'message' => 'Error occurred while sending mail'
+                    ]);
+                }
             }
         } else {
-            $to = $this->data['to'];
-        }
-
-        if (isset($this->data['subject'])) {
-            $subject = $this->data['subject'];
-        } else {
-            $subject = $companyInfo['name'];
-        }
-
-        if (isset($this->data['body'])) {
-            $body = $this->data['body'];
-        } else {
-            $body = $this->data['estimate_footer'];
-        }
-
-        $options = [
-            'fromName' => $companyInfo['name'],
-            'attachments' => [
-                $pdfPath
-            ],
-            'cc' => $cc
-        ];
-
-        if ($mailer->sendmail($subject, $body, $to, $options)) {
-            @unlink($pdfPath);
-            $this->renderJson([
-                'success' => true,
-                'message' => 'Email was send successfully'
-            ]);
-        } else {
-            @unlink($pdfPath);
-            $this->renderJson([
-                'success' => false,
-                'message' => 'Error occurred while sending mail'
-            ]);
+            $this->render404();
         }
     }
 
     private function getEstimateDataForPrint($id) {
-        return
-            ORM::forTable('estimates')
+        $query = ORM::forTable('estimates')
             ->tableAlias('e')
             ->leftOuterJoin('customers', ['e.customer_id' ,'=', 'cus.id'], 'cus')
             ->leftOuterJoin('customers', ['e.job_customer_id' ,'=', 'jobcus.id'], 'jobcus')
-            ->leftOuterJoin('employees', ['e.sold_by_1' ,'=', 'emp1.id'], 'emp1')
-            ->leftOuterJoin('employees', ['e.sold_by_2' ,'=', 'emp2.id'], 'emp2')
             ->select('e.*')
             ->select('cus.display_name', 'customer_display_name')
-            ->select('jobcus.display_name', 'job_customer_display_name')
-            ->select('emp1.display_name', 'sold_by_1_display_name')
-            ->select('emp2.display_name', 'sold_by_2_display_name')
-            ->findOne($id);
+            ->select('jobcus.display_name', 'job_customer_display_name');
+        if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
+            $currentUserName = $this->getCurrentUserName();
+            $query = $query->whereAnyIs([
+                    ['e.sold_by_1' => $currentUserName],
+                    ['e.sold_by_2' => $currentUserName]
+                ]);
+        }
+        return $query->findOne($id);
     }
 
     private function collectCustomerInfo() {
@@ -501,7 +549,7 @@ class EstimateController extends BaseController {
         $sync = Asynchronzier::getInstance();
         $qbcustomerObj = $sync->createCustomer($attrs);
         $customerRecord = ORM::forTable('customers')->create();
-        $customerRecord->set($sync->parseCustomer($qbcustomerObj));
+        $customerRecord->set(ERPDataParser::parseCustomer($qbcustomerObj));
         $customerRecord->save();
         return $customerRecord;
     }

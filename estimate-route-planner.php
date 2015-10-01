@@ -2,11 +2,11 @@
 /**
 * Plugin Name: Estimate and Route Planner Pro
 * Description: Estimate and route planning
-* Version: 1.0.11
+* Version: 1.1.0
 * Author: SFR Software
 * Author URI: http://sfr-creative.com/
 */
-define('ERP_VERSION', '1.0.11');
+define('ERP_VERSION', '1.1.0');
 define('ERP_PLUGIN_URL', plugin_dir_url(__FILE__));  // Http URL to plugin
 define('ERP_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Physical root path of plugin
 define('ROOT_MENU_SLUG', 'erpp');

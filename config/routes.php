@@ -1,6 +1,5 @@
 <?php
 return [
-    'getSessionData'        => 'App@sessionData',
     'getSharedData'         => 'App@sharedData',
     'getCustomers'          => 'Customer@index',
     'showCustomer'          => 'Customer@show',

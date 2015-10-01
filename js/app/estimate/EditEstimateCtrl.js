@@ -43,9 +43,9 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
     });
 
     $scope.soldBySelectConfig = {
-        valueField: 'display_name',
-        labelField: 'display_name',
-        searchField: 'display_name',
+        valueField: 'name',
+        labelField: 'name',
+        searchField: 'name',
         maxItems: 1
     };
 
@@ -397,6 +397,7 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                     $scope.estimate.job_lng = location.lng();
                     var estimate = {};
                     angular.copy($scope.estimate, estimate);
+                    delete estimate.attachments;
                     if (estimate.txn_date) {
                         estimate.txn_date = $filter('date')(
                             estimate.txn_date,
@@ -423,9 +424,6 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                     estimateFactory.update(estimate)
                         .success(function(response) {
                             if (response.success) {
-                                if ($scope.isChangedSignature) {
-                                    reloadAttachments();
-                                }
                                 $scope.isChangedSignature = false;
                                 toastr.success(response.message);
                                 if (sendMail) {

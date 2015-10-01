@@ -26,7 +26,7 @@ function quickbooksSyncFactory($http) {
         reconnect: function() {
             return $http.post(ERPApp.baseAPIPath, {
                 _do: 'reconnectQuickbooks'
-            });            
+            });
         }
-    }
+    };
 }

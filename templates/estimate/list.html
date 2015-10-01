@@ -1,7 +1,7 @@
 <div id="list-estimate" ng-controller="ListEstimateCtrl">
     <div class="row header-estimate" style="margin-bottom:10px">
       <div class="col-md-2">
-        <a href="#/new-estimate" class="btn btn-success" ng-if="hasCap('erpp_create_estimates')">Add new</a>
+        <a href="#/new-estimate" class="btn btn-success" ng-if="::hasCap('erpp_create_estimates')">Add new</a>
       </div>
       <div class="col-md-10">
         <form name="searchEstimateForm"
@@ -40,7 +40,7 @@
             <th style="width: 100;">Number</th>
             <th style="width: 120px;">Source</th>
             <th style="width: 130px;">Due Date</th>
-            <th ng-if="hasCap('erpp_view_estimate_total')">Total</th>
+            <th ng-if="::hasCap('erpp_view_estimate_total')">Total</th>
             <th style="width: 100px;">Status</th>
             <th style="width: 60px;">Action</th>
           </tr>
@@ -48,22 +48,22 @@
         <tbody>
             <tr ng-repeat="est in estimates">
                 <td>
-                  <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{::est.txn_date}}</span></a>
-                  <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.txn_date}}</span>
+                  <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.txn_date}}</span></a>
+                  <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.txn_date}}</span>
                 </td>
                 <td>
-                  <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{est.customer_display_name}}</span></a>
-                  <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.customer_display_name}}</span>
+                  <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{est.customer_display_name}}</span></a>
+                  <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.customer_display_name}}</span>
                 </td>
                 <td>
-                  <a href="#/edit-estimate/{{::est.id}}" ng-if="hasCap('erpp_edit_estimates')"><span>{{est.doc_number}}</span></a>
-                  <span ng-if="!hasCap('erpp_edit_estimates')">{{::est.doc_number}}</span>
+                  <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{est.doc_number}}</span></a>
+                  <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.doc_number}}</span>
                 </td>
                 <td><span>{{est.source}}</span></td>
 
                 <td><span>{{est.due_date}}</span></td>
 
-                <td ng-if="hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
+                <td ng-if="::hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
 
                 <td><span>{{est.status}}</span></td>
                 <td>
@@ -72,12 +72,12 @@
                       <span class="caret"></span></button>
                       <ul class="dropdown-menu">
                         <li>
-                          <a href="#/edit-estimate/{{est.id}}" ng-if="hasCap('erpp_edit_estimates')">Edit</a>
+                          <a href="#/edit-estimate/{{est.id}}" ng-if="::hasCap('erpp_edit_estimates')">Edit</a>
                         </li>
                         <li>
-                          <a target="_blank" href="{{$root.baseAPIPath}}&_do=printEstimate&id={{est.id}}" ng-if="hasCap('erpp_print_estimates')">Print</a></li>
+                          <a target="_blank" href="{{$root.baseAPIPath}}&_do=printEstimate&id={{est.id}}" ng-if="::hasCap('erpp_print_estimates')">Print</a></li>
                         <li>
-                          <a ng-click="openSendMailModal(est)" ng-if="hasCap('erpp_send_estimates')">Send</a>
+                          <a ng-click="openSendMailModal(est)" ng-if="::hasCap('erpp_send_estimates')">Send</a>
                         </li>
                       </ul>
                     </div>

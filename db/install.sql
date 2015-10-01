@@ -27,9 +27,6 @@ CREATE TABLE `company_info` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `company_info`
---
 
 LOCK TABLES `company_info` WRITE;
 /*!40000 ALTER TABLE `company_info` DISABLE KEYS */;
@@ -59,25 +56,29 @@ CREATE TABLE `customers` (
   `alternate_phone_number` varchar(255) DEFAULT NULL,
   `fax` varchar(50) DEFAULT NULL,
   `company_name` varchar(100) DEFAULT NULL,
+  `bill_address_id` int(11) DEFAULT NULL,
   `bill_address` text,
   `bill_city` varchar(255) DEFAULT NULL COMMENT 'Print on check name',
   `bill_state` varchar(255) DEFAULT NULL,
   `bill_zip_code` varchar(255) DEFAULT NULL,
   `bill_country` varchar(255) DEFAULT NULL,
+  `ship_address_id` int(11) DEFAULT NULL,
+  `ship_address` text,
+  `ship_city` varchar(255) DEFAULT NULL,
+  `ship_state` varchar(255) DEFAULT NULL,
+  `ship_zip_code` varchar(255) DEFAULT NULL,
+  `ship_country` varchar(255) DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` datetime NOT NULL,
   `last_updated_at` datetime NOT NULL COMMENT 'useful for synchronize',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 --
 -- Table structure for table `estimates`
 --
 
 DROP TABLE IF EXISTS `estimates`;
-
-
 CREATE TABLE `estimates` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) NOT NULL DEFAULT '0',
@@ -92,13 +93,15 @@ CREATE TABLE `estimates` (
   `customer_signature` varchar(255) DEFAULT NULL COMMENT 'the path to image of signature',
   `location_notes` text,
   `date_of_signature` date DEFAULT NULL,
-  `sold_by_1` int(11) DEFAULT NULL,
-  `sold_by_2` int(11) DEFAULT NULL,
+  `sold_by_1` varchar(255) DEFAULT NULL,
+  `sold_by_2` varchar(255) DEFAULT NULL,
   `job_customer_id` bigint(20) DEFAULT NULL,
+  `job_address_id` int(11) DEFAULT NULL,
   `job_address` text COMMENT 'worker',
-  `job_city` varchar(100) DEFAULT NULL,
-  `job_state` varchar(100) DEFAULT NULL,
-  `job_zip_code` varchar(100) DEFAULT NULL,
+  `job_city` varchar(255) DEFAULT NULL,
+  `job_state` varchar(255) DEFAULT NULL,
+  `job_zip_code` varchar(255) DEFAULT NULL,
+  `job_country` varchar(255) DEFAULT NULL,
   `job_lat` float DEFAULT NULL,
   `job_lng` float DEFAULT NULL,
   `primary_phone_number` varchar(255) DEFAULT NULL,
@@ -117,15 +120,11 @@ CREATE TABLE `estimates` (
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `referral_routes`
 --
 
 DROP TABLE IF EXISTS `referral_routes`;
-
-
 CREATE TABLE `referral_routes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -134,16 +133,13 @@ CREATE TABLE `referral_routes` (
   `assigned_at` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `estimate_attachments`
 --
 
 DROP TABLE IF EXISTS `estimate_attachments`;
-
-
 CREATE TABLE `estimate_attachments` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) DEFAULT NULL,
@@ -155,53 +151,9 @@ CREATE TABLE `estimate_attachments` (
   `file_name` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `last_updated_at` datetime NOT NULL,
+  `is_customer_signature` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
---
--- Table structure for table `estimate_routes`
---
-
-DROP TABLE IF EXISTS `estimate_routes`;
-CREATE TABLE `estimate_routes` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `status` varchar(50) NOT NULL,
-  `employee_id` bigint(20) DEFAULT NULL,
-  `assigned_at` datetime DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
---
--- Table structure for table `referrals`
---
-
-DROP TABLE IF EXISTS `referrals`;
-CREATE TABLE `referrals` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `referral_route_id` bigint(20) DEFAULT NULL,
-  `route_order` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(255) NOT NULL,
-  `address` text,
-  `city` varchar(100) DEFAULT NULL,
-  `state` varchar(100) DEFAULT NULL,
-  `zip_code` varchar(100) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `primary_phone` varchar(100) DEFAULT NULL,
-  `date_service` date DEFAULT NULL,
-  `how_find_us` varchar(255) DEFAULT NULL,
-  `type_of_service_description` text,
-  `status` varchar(50) DEFAULT NULL,
-  `date_requested` date DEFAULT NULL,
-  `lat` float DEFAULT NULL,
-  `lng` float DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-
 
 --
 -- Table structure for table `products_and_services`
@@ -220,7 +172,48 @@ CREATE TABLE `products_and_services` (
   `last_updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--
+-- Table structure for table `referrals`
+--
 
+DROP TABLE IF EXISTS `referrals`;
+CREATE TABLE `referrals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` bigint(20) DEFAULT NULL,
+  `referral_route_id` bigint(20) DEFAULT NULL,
+  `route_order` int(11) NOT NULL DEFAULT '0',
+  `address` text,
+  `city` varchar(100) DEFAULT NULL,
+  `state` varchar(100) DEFAULT NULL,
+  `zip_code` varchar(100) DEFAULT NULL,
+  `country` varchar(100) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `primary_phone_number` varchar(100) DEFAULT NULL,
+  `date_service` date DEFAULT NULL,
+  `how_find_us` varchar(255) DEFAULT NULL,
+  `type_of_service_description` text,
+  `status` varchar(50) DEFAULT NULL,
+  `date_requested` date DEFAULT NULL,
+  `lat` float DEFAULT NULL,
+  `lng` float DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `estimate_routes`
+--
+
+DROP TABLE IF EXISTS `estimate_routes`;
+CREATE TABLE `estimate_routes` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `employee_id` bigint(20) DEFAULT NULL,
+  `assigned_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `preferences`
@@ -243,8 +236,7 @@ CREATE TABLE `preferences` (
   `gmail_server` varchar(255) DEFAULT NULL,
   `gmail_port` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `employees`
@@ -274,7 +266,6 @@ CREATE TABLE `employees` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 --
 -- Table structure for table `estimate_lines`
 --
@@ -290,8 +281,7 @@ CREATE TABLE `estimate_lines` (
   `rate` float NOT NULL DEFAULT '0' COMMENT 'UnitPrice',
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB AUTO_INCREMENT=2751 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `sync_histories`
@@ -306,7 +296,7 @@ CREATE TABLE `sync_histories` (
   `note` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

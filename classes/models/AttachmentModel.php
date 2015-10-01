@@ -20,16 +20,15 @@ class AttachmentModel extends BaseModel {
     }
 
     public function uploadSignature($estimateId, $content) {
-        $sync = Asynchronzier::getInstance();
         $attachableObj = $this->_uploadToQB(
             $estimateId,
             $content,
             'customer-signature.png',
             'image/png'
         );
-        $attachmentData = $sync->parseAttachment($attachableObj);
-        $attachmentData['is_customer_signature'] = true;
-        $this->insert($attachmentData);
+        $attachmentData = ERPDataParser::parseAttachment($attachableObj);
+        $attachmentData['is_customer_signature'] = 1;
+        ORM::forTable('estimate_attachments')->create($attachmentData)->save();
         return $attachmentData;
     }
 
@@ -38,15 +37,14 @@ class AttachmentModel extends BaseModel {
      * @return array
      */
     public function upload($estimateId, $uploadedFile) {
-        $sync = Asynchronzier::getInstance();
         $attachableObj = $this->_uploadToQB(
             $estimateId,
             file_get_contents($uploadedFile['tmp_name']),
             $uploadedFile['name'],
             $uploadedFile['type']
         );
-        $attachmentData = $sync->parseAttachment($attachableObj);
-        $this->insert($attachmentData);
+        $attachmentData = ERPDataParser::parseAttachment($attachableObj);
+        ORM::forTable('estimate_attachments')->create($attachmentData)->save();
         return $attachmentData;
     }
 
@@ -74,7 +72,7 @@ class AttachmentModel extends BaseModel {
         if ($attachment) {
             $objAttachable = new IPPAttachable();
             $objAttachable->Id = $id;
-            $sync = new Asynchronzier(PreferenceModel::getQuickbooksCreds());
+            $sync = Asynchronzier::getInstance();
             try {
                 // Delete from quickbooks
                 $sync->Delete($objAttachable);

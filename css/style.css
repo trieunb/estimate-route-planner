@@ -25,7 +25,7 @@
     height: 30px;
     top: 50%;
     left: 50%;
-    position: absolute;
+    position: fixed;
 }
 #erp-content .loading-overlay {
     position: absolute;
@@ -427,4 +427,7 @@ label.required span {
 }
 .estimate-total {
     font-size: 18px;
+}
+[ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
 }

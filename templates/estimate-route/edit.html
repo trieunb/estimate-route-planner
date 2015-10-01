@@ -13,8 +13,8 @@
                     <li class="box-assign" ng-repeat="estimate in assignedEstimates"
                         dnd-draggable="estimate"
                         dnd-moved="onAssignedMoved(estimate, $index)">
-                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                        <span ng-if="!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                         <br>
                         {{::estimate.job_address}}<br>
                         {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
@@ -39,8 +39,8 @@
                     <li class="box-assign" ng-repeat="estimate in pendingEstimates"
                         dnd-draggable="estimate"
                         dnd-moved="onPendingMoved(estimate, $index)">
-                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                        <span ng-if="!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                         <br>
                         {{::estimate.job_address}}<br>
                         {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
@@ -73,8 +73,8 @@
                     </div>
                     <div class="col-md-4">
                         <div class="btn-action text-right">
-                            <a href="#/new-estimate-route" class="btn btn-success" ng-if="hasCap('erpp_create_estimate_routes')">Add new</a>
-                            <button ng-click="printRoute()" class="btn btn-default" type="button" ng-if="hasCap('erpp_print_estimate_routes')">Print</button>
+                            <a href="#/new-estimate-route" class="btn btn-success" ng-if="::hasCap('erpp_create_estimate_routes')">Add new</a>
+                            <button ng-click="printRoute()" class="btn btn-default" type="button" ng-if="::hasCap('erpp_print_estimate_routes')">Print</button>
                             <button class="btn btn-primary" type="submit" ng-disabled="routeForm.$invalid">Update</button>
                         </div>
                     </div>
@@ -88,8 +88,8 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                                <span ng-if="!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
                                 {{::estimate.job_address}}<br>
                                 {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
@@ -106,8 +106,8 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                                <span ng-if="!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
                                 {{::estimate.job_address}}<br>
                                 {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
@@ -136,9 +136,9 @@
                     <th>Date</th>
                     <th>Customer</th>
                     <th>Number</th>
-                    <th ng-if="hasCap('erpp_view_estimate_total')">Total</th>
+                    <th ng-if="::hasCap('erpp_view_estimate_total')">Total</th>
                     <th>Status</th>
-                    <th ng-if="hasCap('erpp_edit_estimates')">
+                    <th ng-if="::hasCap('erpp_edit_estimates')">
                     </th>
                   </tr>
                 </thead>
@@ -147,9 +147,9 @@
                     <td><span>{{::est.txn_date}}</span></td>
                     <td><span>{{::est.job_customer_display_name}}</span></td>
                     <td><span>{{::est.doc_number}}</span></td>
-                    <td ng-if="hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
+                    <td ng-if="::hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
                     <td><span>{{::est.status}}</span></td>
-                    <td ng-if="hasCap('erpp_edit_estimates')">
+                    <td ng-if="::hasCap('erpp_edit_estimates')">
                         <a href="#/edit-estimate/{{est.id}}">Edit</a>
                     </td>
                   </tr>

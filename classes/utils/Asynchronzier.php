@@ -57,7 +57,7 @@ class Asynchronzier
 
     public static function getInstance() {
         if (!$instance) {
-            self::$instance = new static(PreferenceModel::getQuickbooksCreds());
+            self::$instance = new self(PreferenceModel::getQuickbooksCreds());
         }
         return self::$instance;
     }
@@ -93,7 +93,7 @@ class Asynchronzier
                 $loger->log("Got $resCount records.");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $cusObj) {
-                    $parsedCus = $this->parseCustomer($cusObj);
+                    $parsedCus = ERPDataParser::parseCustomer($cusObj);
                     if (array_search($parsedCus['id'], $localCusIds) !== false) {
                         // The customer is already exists in local DB
                         $cusRecord = ORM::forTable('customers')->hydrate();
@@ -144,7 +144,7 @@ class Asynchronzier
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $empObj) {
-                    $parsedEmpData = $this->parseEmployee($empObj);
+                    $parsedEmpData = ERPDataParser::parseEmployee($empObj);
                     if (array_search($parsedEmpData['id'], $localEmpIds) !== false) {
                         // The employee is already exists in local DB
                         $empRecord = ORM::forTable('employees')->hydrate();
@@ -162,57 +162,6 @@ class Asynchronzier
         }
         $endAt = time();
         $loger->log('= Sync employee done, taken: '.($endAt - $startedAt)." secs\n");
-    }
-
-    public function parseEmployee($data)
-    {
-        $primary_address
-            = $primary_city
-            = $primary_state
-            = $primary_zip_code
-            = $primary_country
-            = null;
-        $primaryAddress = $data->PrimaryAddr;
-        if (null != $primaryAddress) {
-            $primary_address = $primaryAddress->Line1;
-            $primary_city = $primaryAddress->City;
-            $primary_state = $primaryAddress->CountrySubDivisionCode;
-            $primary_zip_code = $primaryAddress->PostalCode;
-            $primary_country = $primaryAddress->Country;
-        }
-        $primary_phone_number = $email = null;
-        if (null != $data->PrimaryPhone) {
-            $primary_phone_number = $data->PrimaryPhone->FreeFormNumber;
-        }
-        if (null != $data->PrimaryEmailAddr) {
-            $email = $data->PrimaryEmailAddr->Address;
-        }
-
-        $last_updated_at = date('Y-m-d H:i:s',  strtotime($data->MetaData->LastUpdatedTime));
-        $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
-        $active = $data->Active == 'true';
-
-        return [
-            'id' => $data->Id,
-            'sync_token' => $data->SyncToken,
-            'primary_address' => $primary_address,
-            'primary_city' => $primary_city,
-            'primary_state' => $primary_state,
-            'primary_zip_code' => $primary_zip_code,
-            'primary_country' => $primary_country,
-            'given_name' => $data->GivenName,
-            'middle_name' => $data->MiddleName,
-            'family_name' => $data->FamilyName,
-            'suffix' => $data->Suffix,
-            'display_name' => $data->DisplayName,
-            'print_name' => $data->PrintOnCheckName,
-            'email' => $email,
-            'primary_phone_number' => $primary_phone_number,
-            'ssn' => $data->SSN,
-            'active' => $active,
-            'created_at' => $created_at,
-            'last_updated_at' => $last_updated_at,
-        ];
     }
 
     public function syncEstimate($lastSyncedTime = null)
@@ -257,7 +206,7 @@ class Asynchronzier
                         }
                     }
                     if ($estRecord) {
-                        $parsedEstimateData = $this->parseEstimate($estimateObj, $localEstimateData);
+                        $parsedEstimateData = ERPDataParser::parseEstimate($estimateObj, $localEstimateData);
                         $estRecord->set($parsedEstimateData)->save();
 
                         // Sync lines
@@ -271,7 +220,7 @@ class Asynchronzier
                             }
                         }
                         foreach ($estimateObj->Line as $lineObj) {
-                            $parsedLine = $this->parseEstimateLine($lineObj, $estimateObj->Id);
+                            $parsedLine = ERPDataParser::parseEstimateLine($lineObj, $estimateObj->Id);
                             if ($parsedLine) {
                                 $exists = false;
                                 foreach ($localEstLines as $index => $localLine) {
@@ -323,128 +272,7 @@ class Asynchronzier
         $loger->log('= Sync estimate done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function parseEstimate($data, $data_local = null)
-    {
-        $txn_date = $expiration_date = null;
-        if ($data->TxnDate) {
-            $txn_date = $data->TxnDate;
-        }
-        $expiration_date = $data_local['expiration_date'];
-        if ($data->ExpirationDate) {
-            $expiration_date = date('Y-m-d H:i:s',  strtotime($data->ExpirationDate));
-        }
-        $billAddress = $data->BillAddr;
-        $bill_address_id
-            = $bill_address
-            = $bill_city
-            = $bill_state
-            = $bill_zip_code
-            = $bill_country
-            = null;
-        if (null != $billAddress) {
-            $bill_address_id = $billAddress->Id;
-            $bill_address = $billAddress->Line1;
-            $bill_city = $billAddress->City;
-            $bill_state = $billAddress->CountrySubDivisionCode;
-            $bill_zip_code = $billAddress->PostalCode;
-            $bill_country = $billAddress->Country;
-        }
 
-        $shipAddress = $data->ShipAddr;
-        $job_address_id
-            = $job_address
-            = $job_city
-            = $job_state
-            = $job_zip_code
-            = $job_country
-            = null;
-        if (null != $shipAddress) {
-            $job_address_id = $shipAddress->Id;
-            $job_address = $shipAddress->Line1;
-            $job_city = $shipAddress->City;
-            $job_state = $shipAddress->CountrySubDivisionCode;
-            $job_zip_code = $shipAddress->PostalCode;
-            $job_country = $shipAddress->Country;
-        }
-
-        $email = null;
-        if (null != ($data->BillEmail)) {
-            $email = $data->BillEmail->Address;
-        }
-        $estimate_footer = $data->CustomerMemo;
-        $last_updated_at = date('Y-m-d H:i:s',  strtotime($data->MetaData->LastUpdatedTime));
-        $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
-
-        if (($data_local != null) && ($data->TxnStatus == 'Accepted') &&
-            ($data_local['status'] == 'Completed')) {
-            $status = 'Completed';
-        } else {
-            $status = $data->TxnStatus;
-        }
-        if ($data_local['job_customer_id']) {
-            $job_customer_id = $data_local['job_customer_id'];
-        } else {
-            $job_customer_id = $data->CustomerRef;
-        }
-        $sold_by_1 = $sold_by_2 = null;
-        try {
-            if (null != $data->CustomField && is_array($data->CustomField)) {
-                foreach ($data->CustomField as $customField) {
-                    if ($customField->DefinitionId == 2) {
-                        $sold_by_1 = $customField->StringValue;
-                    }
-                    if ($customField->DefinitionId == 3) {
-                        $sold_by_2 = $customField->StringValue;
-                    }
-                }
-            }
-        } catch(Exception $e) {}
-
-        // TODO: issue on address lines vs country/city/state
-        return [
-            'id' => $data->Id,
-            'customer_id' => $data->CustomerRef,
-            'sync_token' => $data->SyncToken,
-            'doc_number' => $data->DocNumber,
-            'estimate_footer' => $estimate_footer,
-            'txn_date' => $txn_date,
-            'expiration_date' => $expiration_date,
-            'email' => $email,
-
-            'bill_address_id' => $bill_address_id,
-            'bill_address' => $bill_address,
-            'bill_city' => $bill_city,
-            'bill_state' => $bill_state,
-            'bill_zip_code' => $bill_zip_code,
-            'bill_country' => $bill_country,
-
-            'status' => $status,
-            'created_at' => $created_at,
-            'last_updated_at' => $last_updated_at,
-            'total' => $data->TotalAmt,
-            'primary_phone_number' => $data_local['primary_phone_number'],
-            'alternate_phone_number' => $data_local['alternate_phone_number'],
-            'due_date' => $data_local['due_date'],
-            'estimate_route_id' => $data_local['estimate_route_id'],
-            'source' => $data_local['source'],
-            'customer_signature' => $data_local['customer_signature'],
-            'location_notes' => $data_local['location_notes'],
-            'date_of_signature' => $data_local['date_of_signature'],
-            'sold_by_1' => $sold_by_1,
-            'sold_by_2' => $sold_by_2,
-
-            'job_customer_id'   => $job_customer_id,
-            'job_address_id'    => $job_address_id,
-            'job_address'       => $job_address,
-            'job_city'          => $job_city,
-            'job_state'         => $job_state,
-            'job_zip_code'      => $job_zip_code,
-            'job_country'       => $job_country,
-
-            'job_lat' => $data_local['job_lat'],
-            'job_lng' => $data_local['job_lng'],
-        ];
-    }
     /**
      * Sync all employees.
      *
@@ -477,9 +305,9 @@ class Asynchronzier
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $PDObj) {
-                    $parsedPDData = $this->parseProductService($PDObj);
+                    $parsedPDData = ERPDataParser::parseProductService($PDObj);
                     if (array_search($parsedPDData['id'], $localPDIds) !== false) {
-                        // The employee is already exists in local DB
+                        // The entry is already exists in local DB
                         $PDRecord = ORM::forTable('products_and_services')->hydrate();
                     } else {
                         $PDRecord = ORM::forTable('products_and_services')->create();
@@ -524,15 +352,36 @@ class Asynchronzier
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $attachableObj) {
-                    $parsedAtData = $this->parseAttachment($attachableObj);
-                    if ($parsedAtData) {
-                        if (array_search($parsedAtData['id'], $localAtIds) !== false) {
-                            // The employee is already exists in local DB
+                    $parsedAtData = ERPDataParser::parseAttachment($attachableObj);
+                    if (array_search($parsedAtData['id'], $localAtIds) !== false) {
+                        // The attachment is already exists in local DB
+                        if ($parsedAtData['estimate_id']) {
                             $atRecord = ORM::forTable('estimate_attachments')->hydrate();
-                        } else {
-                            $atRecord = ORM::forTable('estimate_attachments')->create();
+                            $atRecord->set($parsedAtData);
+                            $atRecord->save();
+                        } else { // Detach from estimate
+                            $localAt = ORM::forTable('estimate_attachments')
+                                ->findOne($parsedAtData['id']);
+                            if ($localAt) {
+                                // Check to remove customer signature from estimate
+                                if ($localAt->is_customer_signature) {
+                                    $est = ORM::forTable('estimates')
+                                        ->findOne($localAt->estimate_id);
+                                        if ($est) {
+                                            $est->customer_signature = null;
+                                            $est->save();
+                                            $loger->log("\n= Remove customer signature from estimate #" . $est->id);
+                                        }
+                                }
+                                $localAt->delete();
+                                $loger->log("\n= Delete attachment: " . $parsedAtData['id']);
+                            }
                         }
-                        $atRecord->set($parsedAtData)->save();
+                    } else {
+                        if ($parsedAtData['estimate_id']) { // Only save if it attach to estimate
+                            $atRecord = ORM::forTable('estimate_attachments')->create();
+                            $atRecord->set($parsedAtData)->save();
+                        }
                     }
                 }
                 ORM::getDB()->commit();
@@ -595,55 +444,6 @@ class Asynchronzier
         return $this->dataService->Query($query);
     }
 
-    /*
-        Param Entity of function Create is array
-        Ex:
-        $entity = array(
-            'name' => 'IPPCustomer',
-            'attributes' => array(
-                'Name' => 'SFR-SOFTWARE',
-                'Display' => 'SFR Company'
-                'BillAddr' => array(
-                    array(
-                        'name' => 'IPPPhysicalAddress'
-                        'attributes' => array(
-                            'City' => 'DaNang'
-                            )
-                        )
-                    )
-                ),
-                'Line'  => array(
-                    array(
-                        'name' => 'IPPLine',
-                        'attributes' => array(
-                            'SalesItemLineDetail' => array(
-                                array(
-                                    'name' => 'IPPSalesItemLineDetail',
-                                    'attributes' => array(
-                                        'ItemRef' => '1'
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'name' => 'IPPLine',
-                        'attributes' => array(
-                            'SalesItemLineDetail' => array(
-                                array(
-                                    'name' => 'IPPSalesItemLineDetail',
-                                    'attributes' => array(
-                                        'ItemRef' => '1'
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                )
-                ....
-            )
-        );
-    */
     public function Create($entity)
     {
         $object = new $entity['name']();
@@ -761,189 +561,16 @@ class Asynchronzier
         return $this->dataService->Add($object);
     }
 
-    public function parseCustomer($data)
-    {
-        // Parse billing address
-        $billAddress = $data->BillAddr;
-        $bill_address_id
-            = $bill_address
-            = $bill_city
-            = $bill_state
-            = $bill_zip_code
-            = $bill_country
-            = null;
-        if (null != $billAddress) {
-            $bill_address_id = $billAddress->Id;
-            $bill_address = $billAddress->Line1;
-            $bill_city = $billAddress->City;
-            $bill_state = $billAddress->CountrySubDivisionCode;
-            $bill_zip_code = $billAddress->PostalCode;
-            $bill_country = $billAddress->Country;
-        }
-        // Parse shipping address
-        $shipAddr = $data->ShipAddr;
-        $shipAddressId
-            = $shipAddress
-            = $shipCity
-            = $shipState
-            = $shipZipCode
-            = $shipCountry
-            = null;
-        if (null != $shipAddr) {
-            $shipAddressId = $shipAddr->Id;
-            $shipAddress = $shipAddr->Line1;
-            $shipCity = $shipAddr->City;
-            $shipState = $shipAddr->CountrySubDivisionCode;
-            $shipZipCode = $shipAddr->PostalCode;
-            $shipCountry = $shipAddr->Country;
-        }
-
-        $primary_phone_number
-            = $mobile_phone_number
-            = $alternate_phone_number
-            = $fax
-            = $email
-            = $parentId
-            = null;
-        if (null != $data->PrimaryPhone) {
-            $primary_phone_number = $data->PrimaryPhone->FreeFormNumber;
-        }
-        if (null != $data->Mobile) {
-            $mobile_phone_number = $data->Mobile->FreeFormNumber;
-        }
-        if (null != $data->AlternatePhone) {
-            $alternate_phone_number = $data->AlternatePhone->FreeFormNumber;
-        }
-        if (null != $data->Fax) {
-            $fax = $data->Fax->FreeFormNumber;
-        }
-        if (null != $data->PrimaryEmailAddr) {
-            $email = $data->PrimaryEmailAddr->Address;
-        }
-        if (null != $data->ParentRef) {
-            $parentId = $data->ParentRef->value;
-        }
-        $last_updated_at = date('Y-m-d H:i:s', strtotime($data->MetaData->LastUpdatedTime));
-        $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
-        $active = $data->Active == 'true';
-
-        return [
-            'id' => $data->Id,
-            'sync_token' => $data->SyncToken,
-            'parent_id' => $parentId,
-            'title' => $data->Title,
-            'given_name' => $data->GivenName,
-            'middle_name' => $data->MiddleName,
-            'family_name' => $data->FamilyName,
-            'suffix' => $data->Suffix,
-            'display_name' => $data->DisplayName,
-            'print_name' => $data->PrintOnCheckName,
-            'company_name' => $data->CompanyName,
-            'email' => $email,
-            'primary_phone_number' => $primary_phone_number,
-            'mobile_phone_number' => $mobile_phone_number,
-            'alternate_phone_number' => $alternate_phone_number,
-            'fax' => $fax,
-
-            'bill_address_id' => $bill_address_id,
-            'bill_address' => $bill_address,
-            'bill_city' => $bill_city,
-            'bill_state' => $bill_state,
-            'bill_zip_code' => $bill_zip_code,
-            'bill_country' => $bill_country,
-
-            'ship_address_id' => $shipAddressId,
-            'ship_address' => $shipAddress,
-            'ship_city' => $shipCity,
-            'ship_state' => $shipState,
-            'ship_zip_code' => $shipZipCode,
-            'ship_country' => $shipCountry,
-
-            'active' => $active,
-            'created_at' => $created_at,
-            'last_updated_at' => $last_updated_at,
-        ];
-    }
-
-    public function parseEstimateLine($data, $estimateId)
-    {
-        if (null != $data->SalesItemLineDetail) {
-            $qty = $rate = 0;
-            if ($data->SalesItemLineDetail->Qty) {
-                $qty = $data->SalesItemLineDetail->Qty;
-            }
-            if ($data->SalesItemLineDetail->UnitPrice) {
-                $rate = $data->SalesItemLineDetail->UnitPrice;
-            }
-            $product_service_id = $data->SalesItemLineDetail->ItemRef;
-
-            return [
-                'line_id' => $data->Id,
-                'line_num' => $data->LineNum,
-                'estimate_id' => $estimateId,
-                'product_service_id' => $product_service_id,
-                'qty' => $qty,
-                'rate' => $rate,
-                'description' => $data->Description,
-            ];
-        } else {
-            return;
-        }
-    }
-
-    public function parseAttachment($data)
-    {
-        if (null != $data->AttachableRef) {
-            $estimate_id = $data->AttachableRef->EntityRef;
-            $last_updated_at = date('Y-m-d H:i:s',  strtotime($data->MetaData->LastUpdatedTime));
-            $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
-
-            return [
-                'id' => $data->Id,
-                'sync_token' => $data->SyncToken,
-                'estimate_id' => $estimate_id,
-                'size' => $data->Size,
-                'content_type' => $data->ContentType,
-                'access_uri' => $data->FileAccessUri,
-                'tmp_download_uri' => $data->TempDownloadUri,
-                'file_name' => $data->FileName,
-                'created_at' => $created_at,
-                'last_updated_at' => $last_updated_at,
-            ];
-        } else {
-            return;
-        }
-    }
-
-    public function parseProductService($data)
-    {
-        $active = $data->Active == 'true';
-        $taxable = $data->Taxable == 'true';
-        $last_updated_at = date('Y-m-d H:i:s', strtotime($data->MetaData->LastUpdatedTime));
-        $created_at = date('Y-m-d H:i:s', strtotime($data->MetaData->CreateTime));
-
-        return [
-            'id' => $data->Id,
-            'sync_token' => $data->SyncToken,
-            'name' => $data->Name,
-            'description' => $data->Description,
-            'rate' => $data->UnitPrice,
-            'active' => $active,
-            'taxable' => $taxable,
-            'created_at' => $created_at,
-            'last_updated_at' => $last_updated_at,
-        ];
-    }
-
-    public function createCustomer($data)
-    {
+    public function createCustomer($data) {
         $customerObj = new IPPCustomer();
         $customerObj->DisplayName = $data['display_name'];
         if (isset($data['bill_address'])) {
             $billAddr = new IPPPhysicalAddress();
             $billAddr->Line1                    = @$data['bill_address'];
             $billAddr->City                     = @$data['bill_city'];
-            $billAddr->Country                  = @$data['bill_country'];
+            if (@$data['bill_country']) {
+                $billAddr->Country              = $data['bill_country'];
+            }
             $billAddr->CountrySubDivisionCode   = @$data['bill_state'];
             $billAddr->PostalCode               = @$data['bill_zip_code'];
             $customerObj->BillAddr = $billAddr;
@@ -952,7 +579,9 @@ class Asynchronzier
             $shipAddr = new IPPPhysicalAddress();
             $shipAddr->Line1                    = @$data['ship_address'];
             $shipAddr->City                     = @$data['ship_city'];
-            $shipAddr->Country                  = @$data['ship_country'];
+            if (@$data['ship_country']) {
+                $shipAddr->Country              = @$data['ship_country'];
+            }
             $shipAddr->CountrySubDivisionCode   = @$data['ship_state'];
             $shipAddr->PostalCode               = @$data['ship_zip_code'];
 

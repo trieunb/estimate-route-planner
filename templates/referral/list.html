@@ -2,7 +2,7 @@
     <div class="row" style="margin-bottom: 10px;">
         <div class="col-md-4 col-xs-12">
             <a href="#/new-referral" class="btn btn-success"
-              ng-if="hasCap('erpp_create_referrals')">
+              ng-if="::hasCap('erpp_create_referrals')">
               Add new
             </a>
         </div>
@@ -37,29 +37,29 @@
     <tbody>
       <tr ng-repeat="ref in referrals | orderBy:'date_requested'">
         <td>
-          <a href="#/edit-referral/{{ref.id}}" ng-if="hasCap('erpp_edit_referrals')"><span>{{ref.customer_display_name}}</span></a>
-          <span ng-if="!hasCap('erpp_edit_referrals')">{{ref.customer_display_name}}</span>
+          <a href="#/edit-referral/{{ref.id}}" ng-if="::hasCap('erpp_edit_referrals')"><span>{{ref.customer_display_name}}</span></a>
+          <span ng-if="::!hasCap('erpp_edit_referrals')">{{ref.customer_display_name}}</span>
         </td>
         <td><span>{{ref.date_requested}}</span></td>
         <td><span>{{ref.address}}</span></td>
         <td><span>{{ref.primary_phone}}</span></td>
         <td><span>{{ref.date_service}}</span></td>
         <td>
-            <select ng-if="hasCap('erpp_edit_referrals')"
+            <select ng-if="::hasCap('erpp_edit_referrals')"
                 ng-init="ref.new_status = ref.status"
                 ng-model="ref.new_status"
                 ng-options="status.value as status.label for status in $root.referralStatuses"
                 ng-change="showModalUpdateStatus(ref)">
             </select>
-            <span ng-if="!hasCap('erpp_edit_referrals')">{{::ref.status}}</span>
+            <span ng-if="::!hasCap('erpp_edit_referrals')">{{::ref.status}}</span>
         </td>
         <td>
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown">View
               <span class="caret"></span></button>
               <ul class="dropdown-menu">
-                <li ng-if="hasCap('erpp_edit_referrals')"><a href="#/edit-referral/{{ref.id}}">Edit</a></li>
-                <li ng-if="hasCap('erpp_print_referrals')"><a target="_blank" href="{{$root.baseAPIPath}}&_do=printReferral&id={{ref.id}}">Print</a></li>
+                <li ng-if="::hasCap('erpp_edit_referrals')"><a href="#/edit-referral/{{ref.id}}">Edit</a></li>
+                <li ng-if="::hasCap('erpp_print_referrals')"><a target="_blank" href="{{$root.baseAPIPath}}&_do=printReferral&id={{ref.id}}">Print</a></li>
               </ul>
             </div>
         </td>
