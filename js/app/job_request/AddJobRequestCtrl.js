@@ -1,22 +1,22 @@
  angular.module('Erp')
     .controller(
-        'AddReferralCtrl',
+        'AddJobRequestCtrl',
         [
             '$scope',
             '$rootScope',
-            'referralFactory',
+            'jobRequestFactory',
             'customerFactory',
             'sharedData',
             '$location',
             '$filter',
-            AddReferralCtrl
+            AddJobRequestCtrl
         ]
     );
 
-function AddReferralCtrl(
+function AddJobRequestCtrl(
     $scope,
     $rootScope,
-    referralFactory,
+    jobRequestFactory,
     customerFactory,
     sharedData,
     $location,
@@ -101,7 +101,7 @@ function AddReferralCtrl(
                 referral.lng = location.lng();
                 referral.date_service = ($filter('date')(referral.date_service, "yyyy-MM-dd"));
                 referral.date_requested = ($filter('date')(referral.date_requested, "yyyy-MM-dd"));
-                referralFactory.save(referral)
+                jobRequestFactory.save(referral)
                     .success(function(response) {
                         if (response.success) {
                             toastr.success(response.message);
@@ -109,7 +109,7 @@ function AddReferralCtrl(
                                 // To force reload customer list
                                 $rootScope.customers = undefined;
                             }
-                            $location.path('/edit-referral/' + response.data.id);
+                            $location.path('/edit-job-request/' + response.data.id);
                         } else {
                             var msg = response.message || 'An error occurred while saving job request';
                             toastr.error(msg);

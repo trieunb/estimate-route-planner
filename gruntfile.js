@@ -47,7 +47,7 @@ module.exports = function (grunt) {
                         'js/app/crew_route/*.js',
                         'js/app/product_service/*.js',
                         'js/app/quickbooks_sync/*.js',
-                        'js/app/referral/*.js',
+                        'js/app/job_request/*.js',
                         'js/app/referral_route/*.js',
                         'js/app/settings/*.js',
                     ]

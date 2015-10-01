@@ -1,15 +1,15 @@
 angular
     .module('Erp')
-    .controller('ListReferralCtrl', [
+    .controller('ListJobRequestCtrl', [
         '$scope',
         '$routeParams',
-        'referralFactory',
+        'jobRequestFactory',
         'referralRouteFactory',
         '$ngBootbox',
-        ListReferralCtrl
+        ListJobRequestCtrl
     ]);
 
-function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFactory, $ngBootbox) {
+function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, referralRouteFactory, $ngBootbox) {
     $scope.setPageTitle('List Job Requests');
     $scope.referrals = {};
     $scope.date = new Date();
@@ -34,7 +34,7 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
             page: $scope.currentPage,
             keyword: $scope.filter.keyword
         };
-        referralFactory.list(query)
+        jobRequestFactory.list(query)
             .success(function(response){
                 $scope.referrals = response.data;
                 $scope.total = parseInt(response.total);
@@ -90,7 +90,7 @@ function ListReferralCtrl($scope, $routeParams, referralFactory, referralRouteFa
     $scope.updateReferralStatus = function() {
         if ($scope.currentReferral) {
             $scope.showAssignModal = false;
-            referralFactory.updateStatus($scope.currentReferral)
+            jobRequestFactory.updateStatus($scope.currentReferral)
                 .success(function(response) {
 
                 })

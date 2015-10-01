@@ -83,16 +83,16 @@ function erp_setup_admin_menu() {
         ROOT_MENU_SLUG,
         'New Job Request',
         'New Job Request',
-        'erpp_create_referrals',
-        ROOT_MENU_SLUG . '#new-referral',
+        'erpp_create_job_requests',
+        ROOT_MENU_SLUG . '#new-job-request',
         'erp_load'
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
         'Job Requests',
         'Job Requests',
-        'erpp_list_referrals',
-        ROOT_MENU_SLUG . '#referrals',
+        'erpp_list_job_requests',
+        ROOT_MENU_SLUG . '#job-requests',
         'erp_load'
     );
 
@@ -256,7 +256,7 @@ function erp_enqueue_scripts() {
             // Auto scan and load all files in js/app/controllers
             $appComponentLocations = [
                 'js/app/estimate',
-                'js/app/referral',
+                'js/app/job_request',
                 'js/app/settings',
                 'js/app/company_info',
                 'js/app/customer',

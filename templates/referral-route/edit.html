@@ -14,8 +14,8 @@
                         dnd-draggable="referral"
                         dnd-type="'assigned'"
                         dnd-moved="onAssignedMoved(referral, $index)">
-                            <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</a>
-                            <span ng-if="::!hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</span>
+                            <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                             <br>
                             <span>{{::referral.address}}</span><br>
                             <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
@@ -40,8 +40,8 @@
                             dnd-draggable="referral"
                             dnd-type="'pending'"
                             dnd-moved="onPendingMoved(referral, $index)">
-                            <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</a>
-                            <span ng-if="::!hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</span>
+                            <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                             <br>
                             <span>{{::referral.address}}</span><br>
                             <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
@@ -89,8 +89,8 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</a>
-                                <span ng-if="::!$root.hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</span>
+                                <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 <span>{{::referral.address}}</span><br>
                                 <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
@@ -106,8 +106,8 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-referral/{{referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</a>
-                                <span ng-if="::!$root.hasCap('erpp_edit_referrals')">{{::referral.customer_display_name}}</span>
+                                <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 <span>{{::referral.address}}</span><br>
                                 <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>

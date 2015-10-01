@@ -4,7 +4,7 @@
         [
             '$scope',
             '$rootScope',
-            'referralFactory',
+            'jobRequestFactory',
             'referralRouteFactory',
             '$location',
             '$filter',
@@ -17,7 +17,7 @@
 function AddReferralRouteCtrl(
     $scope,
     $rootScope,
-    referralFactory,
+    jobRequestFactory,
     referralRouteFactory,
     $location,
     $filter,
@@ -55,7 +55,7 @@ function AddReferralRouteCtrl(
       }
     ];
     // Loading referrals
-    referralFactory.listPending()
+    jobRequestFactory.listPending()
         .success(function(response) {
             // Collect pending referrals for dragging
             angular.forEach(response, function(referral) {

@@ -4,7 +4,7 @@ angular.module('Erp')
         [
             '$scope',
             '$rootScope',
-            'referralFactory',
+            'jobRequestFactory',
             'referralRouteFactory',
             '$location',
             '$routeParams',
@@ -17,7 +17,7 @@ angular.module('Erp')
 
 function EditReferralRouteCtrl($scope,
     $rootScope,
-    referralFactory,
+    jobRequestFactory,
     referralRouteFactory,
     $location,
     $routeParams,
@@ -56,7 +56,7 @@ function EditReferralRouteCtrl($scope,
       }
     ];
     // Loading referrals
-    referralFactory.listPending()
+    jobRequestFactory.listPending()
         .success(function(response) {
             // Collect pending referral for dragging
             angular.forEach(response, function(referral) {

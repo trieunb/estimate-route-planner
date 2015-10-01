@@ -4,11 +4,11 @@ return [
     // Basic capability to see plugin menu
     'erpp_access',
 
-    // Referral
-    'erpp_create_referrals',
-    'erpp_edit_referrals',
-    'erpp_list_referrals',
-    'erpp_print_referrals',
+    // Job request
+    'erpp_create_job_requests',
+    'erpp_edit_job_requests',
+    'erpp_list_job_requests',
+    'erpp_print_job_requests',
 
     // Referral route
     'erpp_create_referral_routes',
@@ -34,5 +34,4 @@ return [
     // Settings
     'erpp_settings'
 ];
-
 ?>

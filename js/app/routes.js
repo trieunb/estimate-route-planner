@@ -5,17 +5,14 @@ angular
             when('/', {
                templateUrl: ERPApp.templatesPath + 'dashboard.html?version=' + ERPApp.version
             }).
-            when('/new-referral', {
-               templateUrl: ERPApp.templatesPath + 'referral/add.html?version=' + ERPApp.version
+            when('/new-job-request', {
+               templateUrl: ERPApp.templatesPath + 'job-request/add.html?version=' + ERPApp.version
             }).
-            when('/edit-referral/:id', {
-               templateUrl: ERPApp.templatesPath + 'referral/edit.html?version=' + ERPApp.version
+            when('/edit-job-request/:id', {
+               templateUrl: ERPApp.templatesPath + 'job-request/edit.html?version=' + ERPApp.version
             }).
-            when('/referrals', {
-               templateUrl: ERPApp.templatesPath + 'referral/list.html?version=' + ERPApp.version
-            }).
-            when('/print-referral/:id', {
-               templateUrl: ERPApp.templatesPath + 'print-referral.html?version=' + ERPApp.version
+            when('/job-requests', {
+               templateUrl: ERPApp.templatesPath + 'job-request/list.html?version=' + ERPApp.version
             }).
             when('/referral-routes', {
                templateUrl: ERPApp.templatesPath + 'referral-route/list.html?version=' + ERPApp.version
