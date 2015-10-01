@@ -38,7 +38,7 @@ class EstimateRouteController extends BaseController {
             $response['assigned_estimates'] = ORM::forTable('estimates')
                 ->tableAlias('e')
                 ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
-                ->where('e.estimate_route_id', $routeId)
+                ->where('e.route_id', $routeId)
                 ->selectMany(
                     'e.id', 'e.doc_number', 'e.status', 'e.txn_date',
                     'e.due_date', 'e.job_address', 'e.job_city',
@@ -61,7 +61,7 @@ class EstimateRouteController extends BaseController {
             foreach ($this->data['assigned_estimate_ids'] as $index => $estimateId) {
                 $estimate = ORM::forTable('estimates')
                     ->findOne($estimateId);
-                $estimate->estimate_route_id = $route->id;
+                $estimate->route_id = $route->id;
                 $estimate->route_order = $index;
                 $estimate->save();
             }
@@ -87,13 +87,13 @@ class EstimateRouteController extends BaseController {
         if ($route->save()) {
             if (isset($this->data['assigned_estimate_ids'])) {
                 $oldAssignedEstimates = ORM::forTable('estimates')
-                    ->where('estimate_route_id', $routeId)
+                    ->where('route_id', $routeId)
                     ->findMany();
 
                 foreach ($oldAssignedEstimates as $estimate) {
                     if (!in_array($estimate->id, $this->data['assigned_estimate_ids'])) {
                         // Un-assign to the route
-                        $estimate->estimate_route_id = NULL;
+                        $estimate->route_id = NULL;
                         $estimate->route_order = 0;
                         $estimate->save();
                     }
@@ -102,7 +102,7 @@ class EstimateRouteController extends BaseController {
                 foreach ($this->data['assigned_estimate_ids'] as $index => $id) {
                     $estimate = ORM::forTable('estimates')
                         ->findOne($id);
-                    $estimate->estimate_route_id = $routeId;
+                    $estimate->route_id = $routeId;
                     $estimate->route_order = $index;
                     $estimate->save();
                 }

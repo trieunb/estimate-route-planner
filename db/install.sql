@@ -83,7 +83,7 @@ CREATE TABLE `estimates` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) NOT NULL DEFAULT '0',
   `customer_id` bigint(20) NOT NULL,
-  `estimate_route_id` bigint(20) DEFAULT NULL,
+  `route_id` bigint(20) DEFAULT NULL,
   `route_order` int(11) NOT NULL DEFAULT '0',
   `estimate_footer` text COMMENT 'the customer memo',
   `due_date` date DEFAULT NULL,
