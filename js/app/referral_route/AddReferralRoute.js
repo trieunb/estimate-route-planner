@@ -29,7 +29,7 @@ function AddReferralRouteCtrl(
     var directionsDisplay = new google.maps.DirectionsRenderer({
         suppressMarkers: true // Hide direction marker
     });
-    $scope.setPageTitle('Referral route planner');
+    $scope.setPageTitle('New Estimate Route');
     $scope.route = {}; // Form data
     $scope.pendingReferrals = [];
     $scope.assignedReferrals = [];
@@ -39,7 +39,7 @@ function AddReferralRouteCtrl(
     $scope.map.options = {};
     $scope.assigned_queue_sort_by = '';
     $scope.pending_queue_sort_by = '';
-    
+
     $scope.sortOptions = [
       {
         label: 'Custom',

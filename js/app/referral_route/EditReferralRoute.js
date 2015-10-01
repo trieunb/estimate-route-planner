@@ -30,7 +30,7 @@ function EditReferralRouteCtrl($scope,
         suppressMarkers: true // Hide direction marker
     });
 
-    $scope.setPageTitle('Referral route planner');
+    $scope.setPageTitle('Estimate Route Planner');
     $scope.route = {}; // Form data
     $scope.pendingReferrals = [];
     $scope.assignedReferrals = [];

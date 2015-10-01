@@ -12,7 +12,7 @@
     );
 
 function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFactory, $ngBootbox) {
-    $scope.setPageTitle('Referral routes list');
+    $scope.setPageTitle('Estimate Routes List');
     $scope.referralRoutes = [];
 
     $scope.filter = {};
