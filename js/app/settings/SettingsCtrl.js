@@ -15,9 +15,9 @@ function SettingsCtrl($scope, settingsFactory) {
         settingsFactory.save($scope.setting)
             .success(function(response) {
                 if (response.success) {
-                    toastr['success'](response.message);
+                    toastr.success(response.message);
                 } else {
-                    toastr['error'](response.message);
+                    toastr.error(response.message);
                 }
             });
     };
@@ -28,16 +28,16 @@ function SettingsCtrl($scope, settingsFactory) {
             settingsFactory.sendTestEmail(to, $scope.setting)
                 .success(function(response) {
                     if (response.success) {
-                        toastr['success'](response.message);
+                        toastr.success(response.message);
                     } else {
-                        toastr['error'](response.message);
+                        toastr.error(response.message);
                     }
                 })
                 .error(function(data, status, header, config) {
                     if (status == 408) {
                         toastr['warning']("Timeout waiting for response!");
                     } else {
-                        toastr['error']("An error has occurred while sending email");
+                        toastr.error("An error has occurred while sending email");
                     }
                 });
         }

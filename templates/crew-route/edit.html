@@ -1,0 +1,165 @@
+<div ng-controller="EditCrewRouteCtrl">
+    <div class="row">
+        <div class="col-sm-3">
+            <h4 class="h4-title">Assigned Routes</h4>
+            <div class="assigned-routes">
+                Sort by:
+                <select class="sort-by-select"
+                    ng-model="assigned_queue_sort_by"
+                    ng-change="sortAssignedQueue()"
+                    ng-options="sort.value as sort.label for sort in sortOptions">
+                </select>
+                <ul dnd-list="assignedEstimates" dnd-drop="onDropToAssignedQueue(event, index, item, external, type)">
+                    <li class="box-assign" ng-repeat="estimate in assignedEstimates"
+                        dnd-draggable="estimate"
+                        dnd-moved="onAssignedMoved(estimate, $index)">
+                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                        <br>
+                        {{::estimate.job_address}}<br>
+                        {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                        Phone: {{::estimate.primary_phone_number}}<br>
+                        Due: {{::estimate.due_date}}<br>
+                        Total: ${{::estimate.total}}<br>
+                        Status: {{::estimate.status}}
+                    </li>
+                </ul>
+            </div>
+
+            <h4 class="h4-title">Pending Routes</h4>
+
+            <div class="assigned-routes">
+                Sort by:
+                <select class="sort-by-select"
+                    ng-model="pending_queue_sort_by"
+                    ng-change="sortPendingQueue()"
+                    ng-options="sort.value as sort.label for sort in sortOptions">
+                </select>
+                <ul dnd-list="pendingEstimates" dnd-drop="onDropToPendingQueue(event, index, item, external, type)">
+                    <li class="box-assign" ng-repeat="estimate in pendingEstimates"
+                        dnd-draggable="estimate"
+                        dnd-moved="onPendingMoved(estimate, $index)">
+                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                        <br>
+                        {{::estimate.job_address}}<br>
+                        {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                        Phone: {{::estimate.primary_phone_number}}<br>
+                        Due: {{::estimate.due_date}}<br>
+                        Total: ${{::estimate.total}}<br>
+                        Status: {{::estimate.status}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+                <form name="routeForm" ng-submit="saveRoute()">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="title" class="required">Title</label>
+                                <input class="form-control inline" type="text" name="title"
+                                    ng-model="route.title" ng-required="true"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Status:</label>
+                                <select class="form-control inline"
+                                    ng-model="route.status"
+                                    ng-options="status.value as status.label for status in $root.routeStatuses">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="btn-action text-right">
+                            <a href="#/new-crew-route" class="btn btn-success" ng-if="::hasCap('erpp_create_crew_routes')">Add new</a>
+                            <button ng-click="printRoute()" class="btn btn-default" type="button" ng-if="::hasCap('erpp_print_crew_routes')">Print</button>
+                            <button class="btn btn-primary" type="submit" ng-disabled="routeForm.$invalid">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="gmap-container">
+                <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
+                    <ui-gmap-marker ng-repeat="estimate in pendingEstimates"
+                        icon="pendingMarkerIcon"
+                        idkey="$index" coords="estimate.coords"
+                        >
+                        <ui-gmap-window>
+                            <p>
+                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                                <br>
+                                {{::estimate.job_address}}<br>
+                                {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                                Phone: {{::estimate.primary_phone_number}}<br>
+                                Due: {{::estimate.due_date}}<br>
+                                Total: ${{::estimate.total}}<br>
+                                Status: {{::estimate.status}}
+                            </p>
+                        </ui-gmap-window>
+                    </ui-gmap-marker>
+
+                    <ui-gmap-marker ng-repeat="estimate in assignedEstimates"
+                        idkey="$index" coords="estimate.coords"
+                        >
+                        <ui-gmap-window>
+                            <p>
+                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                                <br>
+                                {{::estimate.job_address}}<br>
+                                {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                                Phone: {{::estimate.primary_phone_number}}<br>
+                                Due: {{::estimate.due_date}}<br>
+                                Total: ${{::estimate.total}}<br>
+                                Status: {{::estimate.status}}
+                            </p>
+                        </ui-gmap-window>
+                    </ui-gmap-marker>
+
+                </ui-gmap-google-map>
+            </div>
+
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-6">
+                    <h4 class="h4-title">Current Assigned Estimates</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a href="#/crew-route/{{:: route.id}}/work-order" class="btn btn-success">Create Work Order</a>
+                </div>
+            </div>
+            <table class="table table-bordered table-fixed header-fixed">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Number</th>
+                    <th ng-if="::hasCap('erpp_view_estimate_total')">Total</th>
+                    <th>Status</th>
+                    <th ng-if="::hasCap('erpp_edit_estimates')">
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="est in currentAssignedEstimates">
+                    <td><span>{{::est.txn_date}}</span></td>
+                    <td><span>{{::est.job_customer_display_name}}</span></td>
+                    <td><span>{{::est.doc_number}}</span></td>
+                    <td ng-if="::hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
+                    <td><span>{{::est.status}}</span></td>
+                    <td ng-if="::hasCap('erpp_edit_estimates')">
+                        <a href="#/edit-estimate/{{est.id}}">Edit</a>
+                    </td>
+                  </tr>
+                  <tr ng-if="!$root.isBusy && currentAssignedEstimates.length == 0">
+                      <td colspan="4" class="text-center">
+                          There is no assigned estimates
+                      </td>
+                  </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

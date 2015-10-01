@@ -1,25 +1,25 @@
 angular.module('Erp')
    .controller(
-       'EditEstimateRouteCtrl',
+       'EditCrewRouteCtrl',
        [
            '$scope',
            '$rootScope',
            'estimateFactory',
-           'estimateRouteFactory',
+           'crewRouteFactory',
            '$location',
            '$routeParams',
            'uiGmapGoogleMapApi',
            'uiGmapIsReady',
            '$filter',
-           EditEstimateRouteCtrl
+           EditCrewRouteCtrl
         ]
     );
 
-function EditEstimateRouteCtrl(
+function EditCrewRouteCtrl(
     $scope,
     $rootScope,
     estimateFactory,
-    estimateRouteFactory,
+    crewRouteFactory,
     $location,
     $routeParams,
     uiGmapGoogleMapApi,
@@ -73,7 +73,7 @@ function EditEstimateRouteCtrl(
            });
 
            // Get route data
-            estimateRouteFactory.get($routeParams.id)
+            crewRouteFactory.get($routeParams.id)
                .success(function(response) {
                    $scope.route.id = response.id;
                    $scope.route.title = response.title;
@@ -229,7 +229,7 @@ function EditEstimateRouteCtrl(
            angular.forEach($scope.assignedEstimates, function(estimate) {
                data.assigned_estimate_ids.push(estimate.id);
            });
-           estimateRouteFactory.update(data)
+           crewRouteFactory.update(data)
                .success(function(response) {
                    if (response.success) {
                        toastr.success(response.message);

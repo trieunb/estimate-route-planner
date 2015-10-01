@@ -1,19 +1,20 @@
 <?php
+
 return [
     // Basic capability to see plugin menu
     'erpp_access',
 
-    // Referral
-    'erpp_create_referrals',
-    'erpp_edit_referrals',
-    'erpp_list_referrals',
-    'erpp_print_referrals',
+    // Job request
+    'erpp_create_job_requests',
+    'erpp_edit_job_requests',
+    'erpp_list_job_requests',
+    'erpp_print_job_requests',
 
-    // Referral route
-    'erpp_create_referral_routes',
-    'erpp_edit_referral_routes',
-    'erpp_list_referral_routes',
-    'erpp_print_referral_routes',
+    // Estimate route
+    'erpp_create_estimate_routes',
+    'erpp_edit_estimate_routes',
+    'erpp_list_estimate_routes',
+    'erpp_print_estimate_routes',
 
     // Estimate
     'erpp_create_estimates',
@@ -24,11 +25,11 @@ return [
     'erpp_send_estimates',
     'erpp_view_sales_estimates',
 
-    // Estimate route
-    'erpp_create_estimate_routes',
-    'erpp_edit_estimate_routes',
-    'erpp_list_estimate_routes',
-    'erpp_print_estimate_routes',
+    // Crew route
+    'erpp_create_crew_routes',
+    'erpp_edit_crew_routes',
+    'erpp_list_crew_routes',
+    'erpp_print_crew_routes',
 
     // Settings
     'erpp_settings'

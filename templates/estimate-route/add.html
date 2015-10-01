@@ -9,19 +9,19 @@
                     ng-change="sortAssignedQueue()"
                     ng-options="sort.value as sort.label for sort in sortOptions">
                 </select>
-                <ul dnd-list="assignedEstimates" dnd-drop="onDropToAssignedQueue(event, index, item, external, type)">
-                    <li class="box-assign" ng-repeat="estimate in assignedEstimates"
-                        dnd-draggable="estimate"
-                        dnd-moved="onAssignedMoved(estimate, $index)">
-                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
-                        <br>
-                        {{::estimate.job_address}}<br>
-                        {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
-                        Phone: {{::estimate.primary_phone_number}}<br>
-                        Due: {{::estimate.due_date}}<br>
-                        Total: ${{::estimate.total}}<br>
-                        Status: {{::estimate.status}}
+                <ul dnd-list="assignedReferrals" dnd-drop="onDropToAssignedQueue(event, index, item, external, type)">
+                    <li class="box-assign" ng-repeat="referral in assignedReferrals"
+                        dnd-draggable="referral"
+                        dnd-type="'assigned'"
+                        dnd-moved="onAssignedMoved(referral, $index)">
+                            <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
+                            <br>
+                            <span>{{::referral.address}}</span><br>
+                            <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
+                            <span>Phone: {{::referral.primary_phone_number}}</span><br>
+                            <span>Date Requested: {{::referral.date_requested}}</span><br>
+                            <span>Status: {{::referral.status}}</span>
                     </li>
                 </ul>
             </div>
@@ -35,19 +35,19 @@
                     ng-change="sortPendingQueue()"
                     ng-options="sort.value as sort.label for sort in sortOptions">
                 </select>
-                <ul dnd-list="pendingEstimates" dnd-drop="onDropToPendingQueue(event, index, item, external, type)">
-                    <li class="box-assign" ng-repeat="estimate in pendingEstimates"
-                        dnd-draggable="estimate"
-                        dnd-moved="onPendingMoved(estimate, $index)">
-                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
-                        <br>
-                        {{::estimate.job_address}}<br>
-                        {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
-                        Phone: {{::estimate.primary_phone_number}}<br>
-                        Due: {{::estimate.due_date}}<br>
-                        Total: ${{::estimate.total}}<br>
-                        Status: {{::estimate.status}}
+                <ul dnd-list="pendingReferrals" dnd-drop="onDropToPendingQueue(event, index, item, external, type)">
+                    <li class="box-assign" ng-repeat="referral in pendingReferrals"
+                            dnd-draggable="referral"
+                            dnd-type="'pending'"
+                            dnd-moved="onPendingMoved(referral, $index)">
+                            <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
+                            <br>
+                            <span>{{::referral.address}}</span><br>
+                            <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
+                            <span>Phone: {{::referral.primary_phone_number}}</span><br>
+                            <span>Date Requested: {{::referral.date_requested}}</span><br>
+                            <span>Status: {{::referral.status}}</span>
                     </li>
                 </ul>
             </div>
@@ -62,47 +62,46 @@
                     </div>
                     <div class="col-md-4 col-md-offset-2">
                         <div class="btn-action text-right">
-                            <button ng-click="printRoute()" class="btn btn-default" type="button">Print</button>
-                            <button class="btn btn-primary" ng-disabled="routeForm.$invalid">Save</button>
+                            <button class="btn btn-default" type="button" ng-click="printRoute()" ng-if="::hasCap('erpp_print_estimate_routes')">Print</button>
+                            <button class="btn btn-primary" type="submit"
+                                ng-disabled="routeForm.$invalid">Save</button>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
-                    <ui-gmap-marker ng-repeat="estimate in pendingEstimates"
+                    <ui-gmap-marker ng-repeat="referral in pendingReferrals"
                         icon="pendingMarkerIcon"
-                        idkey="$index" coords="estimate.coords"
+                        idkey="$index" coords="referral.coords"
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                                <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                                <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
-                                {{::estimate.job_address}}<br>
-                                {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
-                                Phone: {{::estimate.primary_phone_number}}<br>
-                                Due: {{::estimate.due_date}}<br>
-                                Total: ${{::estimate.total}}<br>
-                                Status: {{::estimate.status}}
+                                {{::referral.address}}<br/>
+                                {{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}<br/>
+                                Phone: {{::referral.primary_phone_number}}<br/>
+                                Date Requested: {{::referral.date_requested}}<br/>
+                                Status: {{::referral.status}}
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
 
-                    <ui-gmap-marker ng-repeat="estimate in assignedEstimates"
-                        idkey="$index" coords="estimate.coords"
+                    <ui-gmap-marker ng-repeat="referral in assignedReferrals"
+                        idkey="$index" coords="referral.coords"
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                                <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                                <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
-                                {{::estimate.job_address}}<br>
-                                {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
-                                Phone: {{::estimate.primary_phone_number}}<br>
-                                Due: {{::estimate.due_date}}<br>
-                                Total: ${{::estimate.total}}<br>
-                                Status: {{::estimate.status}}
+                                {{::referral.address}}<br/>
+                                {{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}<br/>
+                                Phone: {{::referral.primary_phone_number}}<br/>
+                                Date Requested: {{::referral.date_requested}}<br/>
+                                Status: {{::referral.status}}
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
@@ -111,7 +110,7 @@
             </div>
 
             <h4 class="h4-title">Recent Saved Routes</h4>
-            <table class="table table-bordered table-striped table-fixed header-fixed">
+            <table class="table table-bordered table-fixed header-fixed">
                 <thead>
                   <tr>
                     <th>Title</th>
@@ -126,7 +125,7 @@
                     <td><span>{{::route.created_at}}</span></td>
                     <td><span>{{::route.status}}</span></td>
                     <td>
-                        <a href="#/edit-estimate-route/{{route.id}}">View</a>
+                      <a href="#/edit-estimate-route/{{route.id}}">View</a>
                     </td>
                   </tr>
                   <tr ng-if="!$root.isBusy && recentRoutes.length == 0">

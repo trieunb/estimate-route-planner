@@ -1,8 +1,8 @@
 angular
     .module('Erp')
-    .factory('referralFactory', ['$http', referralFactory]);
+    .factory('jobRequestFactory', ['$http', jobRequestFactory]);
 
-function referralFactory($http) {
+function jobRequestFactory($http) {
     return {
         save: function(referral) {
             return $http.post(ERPApp.baseAPIPath, {

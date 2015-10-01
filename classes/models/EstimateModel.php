@@ -4,7 +4,7 @@ class EstimateModel extends BaseModel {
     protected $fillable = [
         'id',
         'customer_id',
-        'estimate_route_id',
+        'route_id',
         'sync_token',
         'doc_number',
         'estimate_footer',

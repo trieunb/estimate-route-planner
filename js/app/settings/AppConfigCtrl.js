@@ -26,11 +26,11 @@ function AppConfigCtrl($scope, $rootScope, $window, settingsFactory) {
                 if (response.success) {
                     $scope.step = 2;
                 } else {
-                    toastr['error']('An error occurred while saving the configuration');
+                    toastr.error('An error occurred while saving the configuration');
                 }
             })
             .error(function() {
-                toastr['error']('An error occurred while saving the configuration');
+                toastr.error('An error occurred while saving the configuration');
             });
     }
 

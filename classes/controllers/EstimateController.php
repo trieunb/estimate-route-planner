@@ -64,7 +64,7 @@ class EstimateController extends BaseController {
             )
             ->select('c.display_name', 'job_customer_display_name')
             ->orderByDesc('e.id')
-            ->whereNull('e.estimate_route_id')
+            ->whereNull('e.route_id')
             ->whereIn('e.status', ['Pending', 'Accepted'])
             ->findArray();
         $this->renderJson($estimates);
@@ -86,7 +86,7 @@ class EstimateController extends BaseController {
             )
             ->select('c.display_name', 'job_customer_display_name')
             ->orderByDesc('e.id')
-            ->where('e.estimate_route_id', $routeId)
+            ->where('e.route_id', $routeId)
             ->findArray();
         # Get lines
         $estimateIds = [];
@@ -134,7 +134,7 @@ class EstimateController extends BaseController {
             }
         }
         $keepNullColumns = [
-            'estimate_route_id', 'date_of_signature', 'accepted_date',
+            'route_id', 'date_of_signature', 'accepted_date',
             'expiration_date'
         ];
         foreach ($keepNullColumns as $column) {
@@ -223,7 +223,7 @@ class EstimateController extends BaseController {
         $newCustomerData = $this->_checkForCreateNewCustomers();
         $updateData = array_merge($this->data, $newCustomerData);
         $keepNullColumns = [
-            'estimate_route_id', 'date_of_signature', 'accepted_date',
+            'route_id', 'date_of_signature', 'accepted_date',
             'expiration_date'
         ];
         foreach ($keepNullColumns as $column) {
