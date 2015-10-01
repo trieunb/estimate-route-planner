@@ -14,6 +14,8 @@
 --
 
 DROP TABLE IF EXISTS `company_info`;
+
+
 CREATE TABLE `company_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -28,6 +30,7 @@ CREATE TABLE `company_info` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 
+
 LOCK TABLES `company_info` WRITE;
 /*!40000 ALTER TABLE `company_info` DISABLE KEYS */;
 INSERT INTO `company_info` VALUES (1,'Your Company Name','Company address','(123) 456-7890','123-456-789','company-name@example.com','http://example.com','Thank you for your business and have a great day!',NULL);
@@ -39,6 +42,8 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `customers`;
+
+
 CREATE TABLE `customers` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) DEFAULT NULL,
@@ -74,11 +79,14 @@ CREATE TABLE `customers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 --
 -- Table structure for table `estimates`
 --
 
 DROP TABLE IF EXISTS `estimates`;
+
+
 CREATE TABLE `estimates` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) NOT NULL DEFAULT '0',
@@ -120,26 +128,15 @@ CREATE TABLE `estimates` (
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
---
--- Table structure for table `estimate_routes`
---
 
-DROP TABLE IF EXISTS `estimate_routes`;
-CREATE TABLE `estimate_routes` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `status` varchar(50) NOT NULL,
-  `employee_id` bigint(20) DEFAULT NULL,
-  `assigned_at` datetime DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `estimate_attachments`
 --
 
 DROP TABLE IF EXISTS `estimate_attachments`;
+
+
 CREATE TABLE `estimate_attachments` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) DEFAULT NULL,
@@ -155,28 +152,14 @@ CREATE TABLE `estimate_attachments` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `products_and_services`
---
 
-DROP TABLE IF EXISTS `products_and_services`;
-CREATE TABLE `products_and_services` (
-  `id` bigint(20) NOT NULL,
-  `sync_token` bigint(20) DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `rate` float NOT NULL DEFAULT '0' COMMENT 'Unit price',
-  `active` tinyint(1) NOT NULL,
-  `taxable` tinyint(1) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `last_updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
 -- Table structure for table `referrals`
 --
 
 DROP TABLE IF EXISTS `referrals`;
+
+
 CREATE TABLE `referrals` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` bigint(20) DEFAULT NULL,
@@ -198,13 +181,37 @@ CREATE TABLE `referrals` (
   `lng` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+--
+-- Table structure for table `products_and_services`
+--
+
+DROP TABLE IF EXISTS `products_and_services`;
+
+
+CREATE TABLE `products_and_services` (
+  `id` bigint(20) NOT NULL,
+  `sync_token` bigint(20) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `rate` float NOT NULL DEFAULT '0' COMMENT 'Unit price',
+  `active` tinyint(1) NOT NULL,
+  `taxable` tinyint(1) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `last_updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- Table structure for table `crew_routes`
 --
 
 DROP TABLE IF EXISTS `crew_routes`;
+
+
 CREATE TABLE `crew_routes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -213,13 +220,34 @@ CREATE TABLE `crew_routes` (
   `assigned_at` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+--
+-- Table structure for table `estimate_routes`
+--
+
+DROP TABLE IF EXISTS `estimate_routes`;
+
+
+CREATE TABLE `estimate_routes` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `employee_id` bigint(20) DEFAULT NULL,
+  `assigned_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
 
 --
 -- Table structure for table `preferences`
 --
 
 DROP TABLE IF EXISTS `preferences`;
+
+
 CREATE TABLE `preferences` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `gmap_api_key` varchar(255) DEFAULT NULL,
@@ -236,13 +264,16 @@ CREATE TABLE `preferences` (
   `gmail_server` varchar(255) DEFAULT NULL,
   `gmail_port` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
 
 --
 -- Table structure for table `employees`
 --
 
 DROP TABLE IF EXISTS `employees`;
+
+
 CREATE TABLE `employees` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) NOT NULL,
@@ -266,11 +297,14 @@ CREATE TABLE `employees` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 --
 -- Table structure for table `estimate_lines`
 --
 
 DROP TABLE IF EXISTS `estimate_lines`;
+
+
 CREATE TABLE `estimate_lines` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `line_id` bigint(20) DEFAULT '0',
@@ -278,25 +312,28 @@ CREATE TABLE `estimate_lines` (
   `estimate_id` bigint(20) NOT NULL,
   `product_service_id` bigint(20) DEFAULT NULL,
   `qty` int(11) NOT NULL DEFAULT '0',
-  `rate` float NOT NULL DEFAULT '0' COMMENT 'UnitPrice',
+  `rate` float NOT NULL DEFAULT '0' COMMENT 'UnitPrice on QB',
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2751 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5509 DEFAULT CHARSET=utf8;
+
 
 --
 -- Table structure for table `sync_histories`
 --
 
 DROP TABLE IF EXISTS `sync_histories`;
+
+
 CREATE TABLE `sync_histories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `status` varchar(50) NOT NULL COMMENT 'inprogress,',
+  `status` varchar(50) NOT NULL,
   `start_at` datetime NOT NULL,
   `end_at` datetime DEFAULT NULL,
   `note` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

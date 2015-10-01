@@ -33,7 +33,7 @@ function active_plugin() {
     global $wpdb;
     $sql = file_get_contents(ERP_PLUGIN_DIR . '/db/install.sql');
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    // dbDelta($sql);
+    dbDelta($sql);
 
     /* Add all plugin capabilities to all roles */
     global $wp_roles;
@@ -52,7 +52,7 @@ function deactive_plugin() {
     /* Remove tables from DB */
     global $wpdb;
     $sql = file_get_contents(ERP_PLUGIN_DIR . '/db/uninstall.sql');
-    // $wpdb->query($sql);
+    $wpdb->query($sql);
 
     /* Remove all role capabitities */
     global $wp_roles;
