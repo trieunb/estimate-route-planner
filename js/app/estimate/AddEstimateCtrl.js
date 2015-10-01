@@ -33,7 +33,7 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     // Auto fill estimate footer
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
-
+    $scope.estimate.sold_by_1 = sharedData.currentUserName;
     // Filter active product services
     angular.forEach(sharedData.productServices, function(pd) {
         if (pd.active == 1) {
@@ -42,9 +42,9 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
     });
 
     $scope.soldBySelectConfig = {
-        valueField: 'display_name',
-        labelField: 'display_name',
-        searchField: 'display_name',
+        valueField: 'name',
+        labelField: 'name',
+        searchField: 'name',
         maxItems: 1
     };
 

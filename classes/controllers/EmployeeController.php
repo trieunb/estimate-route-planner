@@ -2,9 +2,13 @@
 class EmployeeController extends BaseController {
 
     public function index() {
-        $emps = ORM::forTable('employees')
-            ->selectMany('id', 'display_name')
-            ->findArray();
+        $emps = [];
+        foreach (get_users() as $user) {
+            $emps[] = [
+                'id' => $user->id,
+                'name' => ERPWordpress::getNameOfUser($user)
+            ];
+        }
         $this->renderJson($emps);
     }
 }

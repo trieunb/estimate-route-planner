@@ -197,10 +197,13 @@ $http.get(ERPApp.baseAPIPath, {
         angular.module('Erp')
             .constant('USER_CAPABILITIES', response.data.currentUser.capabilities)
             .constant('USER_ROLES', response.data.currentUser.roles)
-            .value('sharedData', {
-                companyInfo: response.data.companyInfo,
-                productServices: response.data.productServices
-            });
+            .value('sharedData',
+                {
+                    companyInfo: response.data.companyInfo,
+                    productServices: response.data.productServices,
+                    currentUserName: response.data.currentUser.name
+                }
+            );
         angular.element(document).ready(function() {
             angular.bootstrap(document, ['Erp']);
         });

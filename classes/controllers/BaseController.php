@@ -75,5 +75,11 @@ class BaseController {
             return false;
         }
     }
+
+    protected function getCurrentUserName() {
+        if ($this->currentUser) {
+            return ERPWordpress::getNameOfUser($this->currentUser);
+        }
+    }
 }
 ?>

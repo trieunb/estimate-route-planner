@@ -43,9 +43,9 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
     });
 
     $scope.soldBySelectConfig = {
-        valueField: 'display_name',
-        labelField: 'display_name',
-        searchField: 'display_name',
+        valueField: 'name',
+        labelField: 'name',
+        searchField: 'name',
         maxItems: 1
     };
 
