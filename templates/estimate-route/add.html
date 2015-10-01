@@ -1,4 +1,4 @@
-<div ng-controller="AddReferralRouteCtrl">
+<div ng-controller="AddEstimateRouteCtrl">
     <div class="row">
         <div class="col-sm-3">
             <h4 class="h4-title">Assigned Routes</h4>
@@ -62,7 +62,7 @@
                     </div>
                     <div class="col-md-4 col-md-offset-2">
                         <div class="btn-action text-right">
-                            <button class="btn btn-default" type="button" ng-click="printRoute()" ng-if="::hasCap('erpp_print_referral_routes')">Print</button>
+                            <button class="btn btn-default" type="button" ng-click="printRoute()" ng-if="::hasCap('erpp_print_estimate_routes')">Print</button>
                             <button class="btn btn-primary" type="submit"
                                 ng-disabled="routeForm.$invalid">Save</button>
                         </div>
@@ -125,7 +125,7 @@
                     <td><span>{{::route.created_at}}</span></td>
                     <td><span>{{::route.status}}</span></td>
                     <td>
-                      <a href="#/edit-referral-route/{{route.id}}">View</a>
+                      <a href="#/edit-estimate-route/{{route.id}}">View</a>
                     </td>
                   </tr>
                   <tr ng-if="!$root.isBusy && recentRoutes.length == 0">

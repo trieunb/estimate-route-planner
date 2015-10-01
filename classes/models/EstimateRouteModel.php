@@ -1,10 +1,10 @@
 <?php
-class ReferralRouteModel extends BaseModel {
+class EstimateRouteModel extends BaseModel {
 
     protected $fillable = ['title', 'created_at', 'status'];
 
     public function getTableName() {
-        return 'referral_routes';
+        return 'estimate_routes';
     }
 
 }

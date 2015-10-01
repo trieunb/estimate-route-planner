@@ -4,12 +4,12 @@ angular
         '$scope',
         '$routeParams',
         'jobRequestFactory',
-        'referralRouteFactory',
+        'estimateRouteFactory',
         '$ngBootbox',
         ListJobRequestCtrl
     ]);
 
-function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, referralRouteFactory, $ngBootbox) {
+function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, estimateRouteFactory, $ngBootbox) {
     $scope.setPageTitle('List Job Requests');
     $scope.referrals = {};
     $scope.date = new Date();
@@ -23,7 +23,7 @@ function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, referralRou
     }
     $scope.currentPage = currentPage;
 
-    referralRouteFactory.all()
+    estimateRouteFactory.all()
         .success(function(responseData){
             $scope.routes = responseData;
         });

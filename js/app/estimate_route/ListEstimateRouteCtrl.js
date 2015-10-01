@@ -1,19 +1,19 @@
  angular.module('Erp')
     .controller(
-        'ListReferralRouteCtrl',
+        'ListEstimateRouteCtrl',
         [
             '$scope',
             '$rootScope',
             '$routeParams',
-            'referralRouteFactory',
+            'estimateRouteFactory',
             '$ngBootbox',
-            ListReferralRouteCtrl
+            ListEstimateRouteCtrl
         ]
     );
 
-function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFactory, $ngBootbox) {
+function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFactory, $ngBootbox) {
     $scope.setPageTitle('Estimate Routes List');
-    $scope.referralRoutes = [];
+    $scope.routes = [];
 
     $scope.filter = {};
     $scope.saveRouteStatus = function(route) {
@@ -24,7 +24,7 @@ function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFa
                     data.id = route.id;
                     data.status = route.new_status;
                     data.title = route.title;
-                    referralRouteFactory.update(data)
+                    estimateRouteFactory.update(data)
                         .success(function(response) {
                             route.status = route.new_status;
                             if (response.success) {
@@ -49,13 +49,13 @@ function ListReferralRouteCtrl($scope, $rootScope, $routeParams, referralRouteFa
     $scope.currentPage = currentPage;
     var paginate = function() {
         var query = {
-            _do: 'filterReferralRoutes',
+            _do: 'filterEstimateRoutes',
             page: $scope.currentPage,
             keyword: $scope.filter.keyword
         };
-        referralRouteFactory.filter(query)
+        estimateRouteFactory.filter(query)
             .success(function(response) {
-                $scope.referralRoutes = response.routes;
+                $scope.routes = response.routes;
                 $scope.total = parseInt(response.total);
             });
     };

@@ -100,16 +100,16 @@ function erp_setup_admin_menu() {
         ROOT_MENU_SLUG,
         'New Estimate Route',
         'New Estimate Route',
-        'erpp_create_referral_routes',
-        ROOT_MENU_SLUG . '#new-referral-route',
+        'erpp_create_estimate_routes',
+        ROOT_MENU_SLUG . '#new-estimate-route',
         'erp_load'
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
         'List Estimate Routes',
         'Estimate Routes',
-        'erpp_list_referral_routes',
-        ROOT_MENU_SLUG . '#referral-routes',
+        'erpp_list_estimate_routes',
+        ROOT_MENU_SLUG . '#estimate-routes',
         'erp_load'
     );
     add_submenu_page(
@@ -262,7 +262,7 @@ function erp_enqueue_scripts() {
                 'js/app/customer',
                 'js/app/employee',
                 'js/app/product_service',
-                'js/app/referral_route',
+                'js/app/estimate_route',
                 'js/app/crew_route',
                 'js/app/quickbooks_sync'
             ];

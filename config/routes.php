@@ -37,13 +37,13 @@ return [
 
     'getEmployees'          => 'Employee@index',
 
-    // Referral routes
-    'getRecentReferralRoutes' => 'ReferralRoute@recent',
-    'getReferralRoutes'     => 'ReferralRoute@all',
-    'filterReferralRoutes'  => 'ReferralRoute@index',
-    'getReferralRoute'      => 'ReferralRoute@show',
-    'saveReferralRoute'     => 'ReferralRoute@save',
-    'updateReferralRoute'   => 'ReferralRoute@update',
+    // Estimate routes
+    'getRecentEstimateRoutes'   => 'EstimateRoute@recent',
+    'getEstimateRoutes'         => 'EstimateRoute@all',
+    'filterEstimateRoutes'      => 'EstimateRoute@index',
+    'getEstimateRoute'          => 'EstimateRoute@show',
+    'saveEstimateRoute'         => 'EstimateRoute@save',
+    'updateEstimateRoute'       => 'EstimateRoute@update',
 
     // Crew routes
     'getRecentCrewRoutes' => 'CrewRoute@recent',

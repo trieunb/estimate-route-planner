@@ -1,8 +1,8 @@
-<div id="list-referral" ng-controller="ListReferralRouteCtrl">
+<div id="list-referral" ng-controller="ListEstimateRouteCtrl">
     <div class="row" style="margin-bottom: 10px">
         <div class="col-md-4 col-xs-12">
-            <a href="#/new-referral-route" class="btn btn-success"
-                ng-if="::hasCap('erpp_create_referral_routes')">
+            <a href="#/new-estimate-route" class="btn btn-success"
+                ng-if="::hasCap('erpp_create_estimate_routes')">
                 Add new
             </a>
         </div>
@@ -33,35 +33,35 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="route in referralRoutes">
+      <tr ng-repeat="route in routes">
         <td>
-          <a href="#/edit-referral-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_referral_routes')"><span>{{::route.id}}</span></a>
-          <span ng-if="::!hasCap('erpp_edit_referral_routes')">{{::route.id}}</span>
+          <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')"><span>{{::route.id}}</span></a>
+          <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.id}}</span>
         </td>
 
         <td>
-          <a href="#/edit-referral-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_referral_routes')"><span>{{route.title}}</span></a>
-          <span ng-if="::!hasCap('erpp_edit_referral_routes')">{{::route.title}}</span>
+          <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')"><span>{{route.title}}</span></a>
+          <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.title}}</span>
         </td>
 
         <td><span>{{route.created_at}}</span></td>
         <td>
           <select
-            ng-if="::hasCap('erpp_edit_referral_routes')"
+            ng-if="::hasCap('erpp_edit_estimate_routes')"
             ng-init="route.new_status = route.status"
             ng-model="route.new_status"
             ng-options="status.value as status.label for status in $root.routeStatuses"
             ng-change="saveRouteStatus(route)">
           </select>
-          <span ng-if="::!hasCap('erpp_edit_referral_routes')">{{route.status}}</span>
+          <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{route.status}}</span>
         </td>
         <td>
-          <a href="#/edit-referral-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_referral_routes')">Edit</a>
+          <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')">Edit</a>
         </td>
       </tr>
     </tbody>
   </table>
-  <p ng-if="!$root.isBusy && referralRoutes.length == 0"
+  <p ng-if="!$root.isBusy && routes.length == 0"
     class="text-center">
     No results were found!
   </p>

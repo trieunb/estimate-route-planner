@@ -1,24 +1,24 @@
  angular.module('Erp')
     .controller(
-        'AddReferralRouteCtrl',
+        'AddEstimateRouteCtrl',
         [
             '$scope',
             '$rootScope',
             'jobRequestFactory',
-            'referralRouteFactory',
+            'estimateRouteFactory',
             '$location',
             '$filter',
             'uiGmapGoogleMapApi',
             'uiGmapIsReady',
-            AddReferralRouteCtrl
+            AddEstimateRouteCtrl
         ]
     );
 
-function AddReferralRouteCtrl(
+function AddEstimateRouteCtrl(
     $scope,
     $rootScope,
     jobRequestFactory,
-    referralRouteFactory,
+    estimateRouteFactory,
     $location,
     $filter,
     uiGmapGoogleMapApi,
@@ -88,7 +88,7 @@ function AddReferralRouteCtrl(
                 directionsDisplay.setMap($scope.map.control.getGMap());
             });
             // Load recent saved routes
-            referralRouteFactory.recent()
+            estimateRouteFactory.recent()
                 .success(function(response) {
                     $scope.recentRoutes = response;
                 });
@@ -176,8 +176,8 @@ function AddReferralRouteCtrl(
     };
 
     $scope.saveRoute = function() {
-        if ($scope.assignedReferrals.length == 0) {
-            toastr['error']("A route could not be saved without any assigned referrals!");
+        if ($scope.assignedReferrals.length === 0) {
+            toastr.error("A route could not be saved without any assigned referrals!");
         } else {
             var data = {};
             data.title = $scope.route.title;
@@ -185,14 +185,14 @@ function AddReferralRouteCtrl(
             angular.forEach($scope.assignedReferrals, function(referral) {
                 data.assigned_referral_ids.push(referral.id);
             });
-            referralRouteFactory.save(data)
+            estimateRouteFactory.save(data)
                 .success(function(response) {
                     if (response.success) {
-                        toastr['success'](response.message);
-                        $location.path('/edit-referral-route/' + response.data.id);
+                        toastr.success(response.message);
+                        $location.path('/edit-estimate-route/' + response.data.id);
                     } else {
-                        var msg = response.message || 'An error occurred while saving referral';
-                        toastr['error'](msg);
+                        var msg = response.message || 'An error occurred while saving route';
+                        toastr.error(msg);
                     }
                 });
         }
@@ -200,7 +200,7 @@ function AddReferralRouteCtrl(
 
     $scope.printRoute = function() {
         if ($scope.assignedReferrals.length < 2) {
-            toastr['error']("Print route require at least two assigned referrals!");
+            toastr.error("Print route require at least two assigned referrals!");
         } else {
             var url = 'https://www.google.com/maps/dir/am=t' + getGmapURL();
             window.open(url, '_blank');

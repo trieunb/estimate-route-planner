@@ -1,8 +1,8 @@
 <?php
-class ReferralRouteController extends BaseController {
+class EstimateRouteController extends BaseController {
 
     public function recent() {
-        $routes = ORM::forTable('referral_routes')
+        $routes = ORM::forTable('estimate_routes')
             ->orderByDesc('created_at')
             ->limit(5)
             ->findArray();
@@ -10,7 +10,7 @@ class ReferralRouteController extends BaseController {
     }
 
     public function all() {
-        $routes = ORM::forTable('referral_routes')
+        $routes = ORM::forTable('estimate_routes')
             ->orderByDesc('created_at')
             ->limit(self::PAGE_SIZE)
             ->findArray();
@@ -20,13 +20,13 @@ class ReferralRouteController extends BaseController {
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
-        $routes = ORM::forTable('referral_routes')
+        $routes = ORM::forTable('estimate_routes')
             ->whereLike('title', "%$keyword%")
             ->orderByDesc('created_at')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
-        $counter = ORM::forTable('referral_routes')
+        $counter = ORM::forTable('estimate_routes')
             ->whereLike('title', "%$keyword%")
             ->selectExpr('COUNT(*)', 'count')
             ->findMany();
@@ -38,7 +38,7 @@ class ReferralRouteController extends BaseController {
 
     public function show() {
         $routeId = $this->data['id'];
-        $route = ORM::forTable('referral_routes')
+        $route = ORM::forTable('estimate_routes')
             ->findOne($routeId);
 
         $response = $route->asArray();
@@ -61,7 +61,7 @@ class ReferralRouteController extends BaseController {
     }
 
     public function save() {
-        $route = ORM::forTable('referral_routes')->create();
+        $route = ORM::forTable('estimate_routes')->create();
         $route->title = $this->data['title'];
         $route->created_at = date('Y-m-d H:i:s');
         $route->status = 'Pending';
@@ -89,7 +89,7 @@ class ReferralRouteController extends BaseController {
 
     public function update() {
         $routeId = $this->data['id'];
-        $route = ORM::forTable('referral_routes')->findOne($routeId);
+        $route = ORM::forTable('estimate_routes')->findOne($routeId);
         $route->title = $this->data['title'];
         $route->status = $this->data['status'];
 

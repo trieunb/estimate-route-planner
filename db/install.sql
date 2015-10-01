@@ -121,11 +121,11 @@ CREATE TABLE `estimates` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
--- Table structure for table `referral_routes`
+-- Table structure for table `estimate_routes`
 --
 
-DROP TABLE IF EXISTS `referral_routes`;
-CREATE TABLE `referral_routes` (
+DROP TABLE IF EXISTS `estimate_routes`;
+CREATE TABLE `estimate_routes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `status` varchar(50) NOT NULL,
@@ -201,11 +201,11 @@ CREATE TABLE `referrals` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
--- Table structure for table `estimate_routes`
+-- Table structure for table `crew_routes`
 --
 
-DROP TABLE IF EXISTS `estimate_routes`;
-CREATE TABLE `estimate_routes` (
+DROP TABLE IF EXISTS `crew_routes`;
+CREATE TABLE `crew_routes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `status` varchar(50) NOT NULL,

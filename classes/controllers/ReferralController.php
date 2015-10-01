@@ -98,7 +98,7 @@ class ReferralController extends BaseController {
         $ref = ORM::forTable('referrals')
             ->findOne($this->data['id']);
         if ($this->data['status'] == 'Assigned' && $this->data['route_id']) {
-            $route = ORM::forTable('referral_routes')
+            $route = ORM::forTable('estimate_routes')
                 ->findOne($this->data['route_id']);
             $assignedReferralsCount = ORM::forTable('referrals')
                 ->select('id')

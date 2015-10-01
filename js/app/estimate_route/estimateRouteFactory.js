@@ -1,12 +1,12 @@
 angular
     .module('Erp')
-    .factory('referralRouteFactory', ['$http', referralRouteFactory]);
+    .factory('estimateRouteFactory', ['$http', estimateRouteFactory]);
 
-function referralRouteFactory($http) {
+function estimateRouteFactory($http) {
     return {
         get: function(id) {
             return $http.post(ERPApp.baseAPIPath, {
-                _do: 'getReferralRoute',
+                _do: 'getEstimateRoute',
                 data: {id: id}
             });
         },
@@ -17,25 +17,25 @@ function referralRouteFactory($http) {
         },
         all: function() {
             return $http.get(ERPApp.baseAPIPath, {
-                params: {_do: 'getReferralRoutes'}
+                params: {_do: 'getEstimateRoutes'}
             });
         },
         save: function(data) {
             return $http.post(ERPApp.baseAPIPath, {
-                _do: 'saveReferralRoute',
+                _do: 'saveEstimateRoute',
                 data: data
             });
         },
         update: function(data) {
             return $http.post(ERPApp.baseAPIPath, {
-                _do: 'updateReferralRoute',
+                _do: 'updateEstimateRoute',
                 data: data
             });
         },
         recent: function() {
             return $http.get(ERPApp.baseAPIPath, {
                 params: {
-                    _do: 'getRecentReferralRoutes'
+                    _do: 'getRecentEstimateRoutes'
                 }
             });
         }

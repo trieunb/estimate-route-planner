@@ -18,10 +18,10 @@ function userPermission(USER_CAPABILITIES) {
         'erpp_edit_job_requests' : '^/edit-job-request/\\d+$',
         'erpp_list_job_requests' : '^/job-requests$',
 
-        // Referral route
-        'erpp_create_referral_routes' : '^/new-referral-route$',
-        'erpp_edit_referral_routes': '^/edit-referral-route/\\d+$',
-        'erpp_list_referral_routes': '^/referral-routes$',
+        // Estimate route
+        'erpp_create_estimate_routes' : '^/new-estimate-route$',
+        'erpp_edit_estimate_routes': '^/edit-estimate-route/\\d+$',
+        'erpp_list_estimate_routes': '^/estimate-routes$',
 
         // Crew route
         'erpp_create_crew_routes': '^/new-crew-route$',

@@ -13,7 +13,7 @@
 
 function ListCrewRouteCtrl($scope, $rootScope, $routeParams, crewRouteFactory, $ngBootbox) {
     $scope.setPageTitle('Crew Routes List');
-    $scope.estimateRoutes = [];
+    $scope.routes = [];
     $scope.filter = {};
 
     $scope.total = 0;
@@ -31,7 +31,7 @@ function ListCrewRouteCtrl($scope, $rootScope, $routeParams, crewRouteFactory, $
         };
         crewRouteFactory.all(query)
             .success(function(response) {
-                $scope.estimateRoutes = response.routes;
+                $scope.routes = response.routes;
                 $scope.total = parseInt(response.total);
             });
     };

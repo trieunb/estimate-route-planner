@@ -10,11 +10,11 @@ return [
     'erpp_list_job_requests',
     'erpp_print_job_requests',
 
-    // Referral route
-    'erpp_create_referral_routes',
-    'erpp_edit_referral_routes',
-    'erpp_list_referral_routes',
-    'erpp_print_referral_routes',
+    // Estimate route
+    'erpp_create_estimate_routes',
+    'erpp_edit_estimate_routes',
+    'erpp_list_estimate_routes',
+    'erpp_print_estimate_routes',
 
     // Estimate
     'erpp_create_estimates',

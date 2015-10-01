@@ -14,14 +14,14 @@ angular
             when('/job-requests', {
                templateUrl: ERPApp.templatesPath + 'job-request/list.html?version=' + ERPApp.version
             }).
-            when('/referral-routes', {
-               templateUrl: ERPApp.templatesPath + 'referral-route/list.html?version=' + ERPApp.version
+            when('/estimate-routes', {
+               templateUrl: ERPApp.templatesPath + 'estimate-route/list.html?version=' + ERPApp.version
             }).
-            when('/new-referral-route', {
-               templateUrl: ERPApp.templatesPath + 'referral-route/add.html?version=' + ERPApp.version
+            when('/new-estimate-route', {
+               templateUrl: ERPApp.templatesPath + 'estimate-route/add.html?version=' + ERPApp.version
             }).
-            when('/edit-referral-route/:id', {
-               templateUrl: ERPApp.templatesPath + 'referral-route/edit.html?version=' + ERPApp.version
+            when('/edit-estimate-route/:id', {
+               templateUrl: ERPApp.templatesPath + 'estimate-route/edit.html?version=' + ERPApp.version
             }).
             when('/new-estimate', {
                templateUrl: ERPApp.templatesPath + 'estimate/add.html?version=' + ERPApp.version
