@@ -1,4 +1,4 @@
-<div ng-controller="AddCrewRouteCtrl">
+<div ng-controller="EditCrewRouteCtrl">
     <div class="row">
         <div class="col-sm-3">
             <h4 class="h4-title">Assigned Routes</h4>
@@ -55,15 +55,27 @@
         <div class="col-sm-9">
             <div class="row">
                 <form name="routeForm" ng-submit="saveRoute()">
-                    <div class="col-md-6">
-                        <label for="title" class="required">Title</label>
-                        <input class="form-control inline" type="text" name="title"
-                            ng-model="route.title" ng-required="true"/>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="title" class="required">Title</label>
+                                <input class="form-control inline" type="text" name="title"
+                                    ng-model="route.title" ng-required="true"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Status:</label>
+                                <select class="form-control inline"
+                                    ng-model="route.status"
+                                    ng-options="status.value as status.label for status in $root.routeStatuses">
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4 col-md-offset-2">
+                    <div class="col-md-4">
                         <div class="btn-action text-right">
-                            <button ng-click="printRoute()" class="btn btn-default" type="button">Print</button>
-                            <button class="btn btn-primary" ng-disabled="routeForm.$invalid">Save</button>
+                            <a href="#/new-crew-route" class="btn btn-success" ng-if="::hasCap('erpp_create_crew_routes')">Add new</a>
+                            <button ng-click="printRoute()" class="btn btn-default" type="button" ng-if="::hasCap('erpp_print_estimate_routes')">Print</button>
+                            <button class="btn btn-primary" type="submit" ng-disabled="routeForm.$invalid">Update</button>
                         </div>
                     </div>
                 </form>
@@ -110,28 +122,40 @@
                 </ui-gmap-google-map>
             </div>
 
-            <h4 class="h4-title">Recent Saved Routes</h4>
-            <table class="table table-bordered table-striped table-fixed header-fixed">
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-6">
+                    <h4 class="h4-title">Current Assigned Estimates</h4>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a href="#/crew-route/{{:: route.id}}/work-order" class="btn btn-success">Create Work Order</a>
+                </div>
+            </div>
+            <table class="table table-bordered table-fixed header-fixed">
                 <thead>
                   <tr>
-                    <th>Title</th>
-                    <th>Created At</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Number</th>
+                    <th ng-if="::hasCap('erpp_view_estimate_total')">Total</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th ng-if="::hasCap('erpp_edit_estimates')">
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="route in recentRoutes">
-                    <td><span>{{::route.title}}</span></td>
-                    <td><span>{{::route.created_at}}</span></td>
-                    <td><span>{{::route.status}}</span></td>
-                    <td>
-                        <a href="#/edit-estimate-route/{{route.id}}">View</a>
+                  <tr ng-repeat="est in currentAssignedEstimates">
+                    <td><span>{{::est.txn_date}}</span></td>
+                    <td><span>{{::est.job_customer_display_name}}</span></td>
+                    <td><span>{{::est.doc_number}}</span></td>
+                    <td ng-if="::hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
+                    <td><span>{{::est.status}}</span></td>
+                    <td ng-if="::hasCap('erpp_edit_estimates')">
+                        <a href="#/edit-estimate/{{est.id}}">Edit</a>
                     </td>
                   </tr>
-                  <tr ng-if="!$root.isBusy && recentRoutes.length == 0">
+                  <tr ng-if="!$root.isBusy && currentAssignedEstimates.length == 0">
                       <td colspan="4" class="text-center">
-                          No routes created yet
+                          There is no assigned estimates
                       </td>
                   </tr>
                 </tbody>

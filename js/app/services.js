@@ -25,9 +25,9 @@ function userPermission(USER_CAPABILITIES) {
         'erpp_list_referral_routes': '^/referral-routes$',
 
         // Estimate route
-        'erpp_create_estimate_routes': '^/new-estimate-route$',
-        'erpp_edit_estimate_routes' : '^/edit-referral-route/\\d+$',
-        'erpp_list_estimate_routes' :'^/estimate-routes$',
+        'erpp_create_crew_routes': '^/new-crew-route$',
+        'erpp_edit_crew_routes' : '^/edit-crew-route/\\d+$',
+        'erpp_list_crew_routes' :'^/crew-routes$',
 
         // Settings
         'erpp_settings' : '^/settings$',

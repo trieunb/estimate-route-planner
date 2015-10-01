@@ -33,7 +33,7 @@ function active_plugin() {
     global $wpdb;
     $sql = file_get_contents(ERP_PLUGIN_DIR . '/db/install.sql');
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
+    // dbDelta($sql);
 
     /* Add all plugin capabilities to all roles */
     global $wp_roles;
@@ -52,7 +52,7 @@ function deactive_plugin() {
     /* Remove tables from DB */
     global $wpdb;
     $sql = file_get_contents(ERP_PLUGIN_DIR . '/db/uninstall.sql');
-    $wpdb->query($sql);
+    // $wpdb->query($sql);
 
     /* Remove all role capabitities */
     global $wp_roles;
@@ -132,16 +132,16 @@ function erp_setup_admin_menu() {
         ROOT_MENU_SLUG,
         'New Crew Route',
         'New Crew Route',
-        'erpp_create_estimate_routes',
-        ROOT_MENU_SLUG . '#new-estimate-route',
+        'erpp_create_crew_routes',
+        ROOT_MENU_SLUG . '#new-crew-route',
         'erp_load'
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
         'List Crew Routes',
         'Crew Routes',
-        'erpp_list_estimate_routes',
-        ROOT_MENU_SLUG . '#estimate-routes',
+        'erpp_list_crew_routes',
+        ROOT_MENU_SLUG . '#crew-routes',
         'erp_load'
     );
 
@@ -263,7 +263,7 @@ function erp_enqueue_scripts() {
                 'js/app/employee',
                 'js/app/product_service',
                 'js/app/referral_route',
-                'js/app/estimate_route',
+                'js/app/crew_route',
                 'js/app/quickbooks_sync'
             ];
 

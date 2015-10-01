@@ -189,9 +189,9 @@ function AddCrewRouteCtrl(
                 .success(function(response) {
                     if (response.success) {
                         toastr.success(response.message);
-                        $location.path('/edit-estimate-route/' + response.data.id);
+                        $location.path('/edit-crew-route/' + response.data.id);
                     } else {
-                        var msg = response.message || 'An error occurred while saving estimate';
+                        var msg = response.message || 'An error occurred while saving route';
                         toastr.error(msg);
                     }
                 });
