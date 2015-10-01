@@ -13,7 +13,7 @@ function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, referralRou
     $scope.setPageTitle('List Job Requests');
     $scope.referrals = {};
     $scope.date = new Date();
-    $scope.referralRoutes = [];
+    $scope.routes = [];
     $scope.showAssignModal = false;
     $scope.filter = {};
     $scope.total = 0;
@@ -25,7 +25,7 @@ function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, referralRou
 
     referralRouteFactory.all()
         .success(function(responseData){
-            $scope.referralRoutes = responseData;
+            $scope.routes = responseData;
         });
 
     var paginate = function() {

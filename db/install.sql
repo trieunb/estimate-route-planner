@@ -180,7 +180,7 @@ DROP TABLE IF EXISTS `referrals`;
 CREATE TABLE `referrals` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` bigint(20) DEFAULT NULL,
-  `referral_route_id` bigint(20) DEFAULT NULL,
+  `route_id` bigint(20) DEFAULT NULL,
   `route_order` int(11) NOT NULL DEFAULT '0',
   `address` text,
   `city` varchar(100) DEFAULT NULL,

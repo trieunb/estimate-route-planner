@@ -53,7 +53,7 @@ class ReferralRouteController extends BaseController {
                     'r.status', 'r.date_requested', 'r.lat', 'r.lng'
                 )
                 ->select('c.display_name', 'customer_display_name')
-                ->where('referral_route_id', $routeId)
+                ->where('route_id', $routeId)
                 ->orderByAsc('route_order')
                 ->findArray();
         }
@@ -69,7 +69,7 @@ class ReferralRouteController extends BaseController {
             foreach ($this->data['assigned_referral_ids'] as $index => $referralId) {
                 $referral = ORM::forTable('referrals')
                     ->findOne($referralId);
-                $referral->referral_route_id = $route->id;
+                $referral->route_id = $route->id;
                 $referral->status = 'Assigned';
                 $referral->route_order = $index;
                 $referral->save();
@@ -96,12 +96,12 @@ class ReferralRouteController extends BaseController {
         if ($route->save()) {
             if (isset($this->data['assigned_referral_ids'])) {
                 $oldAssignedReferrals = ORM::forTable('referrals')
-                    ->where('referral_route_id', $routeId)
+                    ->where('route_id', $routeId)
                     ->findMany();
                 foreach ($oldAssignedReferrals as $referral) {
                     if (!in_array($referral->id, $this->data['assigned_referral_ids'])) {
                         $referral->status = 'Pending';
-                        $referral->referral_route_id = NULL;
+                        $referral->route_id = NULL;
                         $referral->route_order = 0;
                         $referral->save();
                     }
@@ -111,7 +111,7 @@ class ReferralRouteController extends BaseController {
                     $referral = ORM::forTable('referrals')
                         ->findOne($id);
                     $referral->status = 'Assigned';
-                    $referral->referral_route_id = $routeId;
+                    $referral->route_id = $routeId;
                     $referral->route_order = $index;
                     $referral->save();
                 }

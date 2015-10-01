@@ -39,7 +39,7 @@ class ReferralController extends BaseController {
             )
             ->select('c.display_name', 'customer_display_name')
             ->where('r.status', 'Pending')
-            ->whereNull('r.referral_route_id')
+            ->whereNull('r.route_id')
             ->orderByDesc('r.date_requested')
             ->findArray();
         $this->renderJson($refs);
@@ -76,8 +76,8 @@ class ReferralController extends BaseController {
         $ref = $model->findOne($updateData['id']);
         if ($ref) {
             $ref->set($updateData);
-            if (!$updateData['referral_route_id']) {
-                $ref->referral_route_id = NULL;
+            if (!$updateData['route_id']) {
+                $ref->route_id = NULL;
             }
             $ref->save();
             $this->renderJson([
@@ -97,21 +97,21 @@ class ReferralController extends BaseController {
     public function updateStatus() {
         $ref = ORM::forTable('referrals')
             ->findOne($this->data['id']);
-        if ($this->data['status'] == 'Assigned' && $this->data['referral_route_id']) {
+        if ($this->data['status'] == 'Assigned' && $this->data['route_id']) {
             $route = ORM::forTable('referral_routes')
-                ->findOne($this->data['referral_route_id']);
+                ->findOne($this->data['route_id']);
             $assignedReferralsCount = ORM::forTable('referrals')
                 ->select('id')
-                ->where('referral_route_id', $route->id)
+                ->where('route_id', $route->id)
                 ->count();
-            $ref->referral_route_id = $this->data['referral_route_id'];
+            $ref->route_id = $this->data['route_id'];
             $ref->status = 'Assigned';
             $ref->route_order = $assignedReferralsCount;
 
         } elseif($this->data['status'] == 'Pending') {
             $ref->status = 'Pending';
             $ref->route_order = 0;
-            $ref->referral_route_id = NULL;
+            $ref->route_id = NULL;
         } else {
             $ref->status = $this->data['status'];
         }
