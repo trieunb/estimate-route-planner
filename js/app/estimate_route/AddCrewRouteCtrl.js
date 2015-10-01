@@ -1,21 +1,21 @@
  angular.module('Erp')
-    .controller('AddEstimateRouteCtrl', [
+    .controller('AddCrewRouteCtrl', [
         '$scope',
         '$rootScope',
         'estimateFactory',
-        'estimateRouteFactory',
+        'crewRouteFactory',
         '$location',
         'uiGmapGoogleMapApi',
         'uiGmapIsReady',
         '$filter',
-        AddEstimateRouteCtrl
+        AddCrewRouteCtrl
     ]);
 
-function AddEstimateRouteCtrl(
+function AddCrewRouteCtrl(
     $scope,
     $rootScope,
     estimateFactory,
-    estimateRouteFactory,
+    crewRouteFactory,
     $location,
     uiGmapGoogleMapApi,
     uiGmapIsReady,
@@ -88,7 +88,7 @@ function AddEstimateRouteCtrl(
                 directionsDisplay.setMap($scope.map.control.getGMap());
             });
             // Load recent saved routes
-            estimateRouteFactory.recent()
+            crewRouteFactory.recent()
                 .success(function(response) {
                     $scope.recentRoutes = response;
                 });
@@ -146,7 +146,7 @@ function AddEstimateRouteCtrl(
 
         angular.forEach($scope.assignedEstimates, function(estimate, index) {
             var point = {};
-            var latLng = new google.maps.LatLng(estimate.coords.latitude, estimate.coords.longitude);;
+            var latLng = new google.maps.LatLng(estimate.coords.latitude, estimate.coords.longitude);
             point.location = latLng;
 
             if (index === 0) {
@@ -176,8 +176,8 @@ function AddEstimateRouteCtrl(
     };
 
     $scope.saveRoute = function() {
-        if ($scope.assignedEstimates.length == 0) {
-            toastr['error']("A route could not be saved without any assigned estimates!");
+        if ($scope.assignedEstimates.length === 0) {
+            toastr.error("A route could not be saved without any assigned estimates!");
         } else {
             var data = {};
             data.title = $scope.route.title;
@@ -185,22 +185,22 @@ function AddEstimateRouteCtrl(
             angular.forEach($scope.assignedEstimates, function(estimate) {
                 data.assigned_estimate_ids.push(estimate.id);
             });
-            estimateRouteFactory.save(data)
+            crewRouteFactory.save(data)
                 .success(function(response) {
                     if (response.success) {
-                        toastr['success'](response.message);
+                        toastr.success(response.message);
                         $location.path('/edit-estimate-route/' + response.data.id);
                     } else {
                         var msg = response.message || 'An error occurred while saving estimate';
-                        toastr['error'](msg);
+                        toastr.error(msg);
                     }
                 });
         }
-    }
+    };
 
    $scope.printRoute = function() {
         if ($scope.assignedEstimates.length < 2) {
-            toastr['error']("Print route require at least two assigned estimates!");
+            toastr.error("Print route require at least two assigned estimates!");
         } else {
             var url = 'https://www.google.com/maps/dir/am=t' + getGmapURL();
             window.open(url, '_blank');

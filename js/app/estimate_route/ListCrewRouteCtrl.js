@@ -1,17 +1,17 @@
  angular.module('Erp')
     .controller(
-        'ListEstimateRouteCtrl',
+        'ListCrewRouteCtrl',
         [
             '$scope',
             '$rootScope',
             '$routeParams',
-            'estimateRouteFactory',
+            'crewRouteFactory',
             '$ngBootbox',
-            ListEstimateRouteCtrl
+            ListCrewRouteCtrl
         ]
     );
 
-function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFactory, $ngBootbox) {
+function ListCrewRouteCtrl($scope, $rootScope, $routeParams, crewRouteFactory, $ngBootbox) {
     $scope.setPageTitle('Crew Routes List');
     $scope.estimateRoutes = [];
     $scope.filter = {};
@@ -28,7 +28,7 @@ function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFa
             page: $scope.currentPage,
             keyword: $scope.filter.keyword
         };
-        estimateRouteFactory.all(query)
+        crewRouteFactory.all(query)
             .success(function(response) {
                 $scope.estimateRoutes = response.routes;
                 $scope.total = parseInt(response.total);
@@ -57,7 +57,7 @@ function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFa
                     data.id = route.id;
                     data.status = route.new_status;
                     data.title = route.title;
-                    estimateRouteFactory.update(data)
+                    crewRouteFactory.update(data)
                         .success(function(response) {
                             route.status = route.new_status;
                             if (response.success) {

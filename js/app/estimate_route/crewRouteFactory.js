@@ -1,8 +1,8 @@
 angular
     .module('Erp')
-    .factory('estimateRouteFactory', ['$http', estimateRouteFactory]);
+    .factory('crewRouteFactory', ['$http', crewRouteFactory]);
 
-function estimateRouteFactory($http) {
+function crewRouteFactory($http) {
     return {
         get: function(id) {
             return $http.post(ERPApp.baseAPIPath, {
@@ -14,18 +14,18 @@ function estimateRouteFactory($http) {
             return $http.get(ERPApp.baseAPIPath, {
                 params: query
             });
-        },        
+        },
         save: function(data) {
             return $http.post(ERPApp.baseAPIPath, {
                 _do: 'saveEstimateRoute',
                 data: data
-            });            
+            });
         },
         update: function(data) {
             return $http.post(ERPApp.baseAPIPath, {
                 _do: 'updateEstimateRoute',
                 data: data
-            });            
+            });
         },
         recent: function() {
             return $http.get(ERPApp.baseAPIPath, {
