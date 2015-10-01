@@ -11,7 +11,7 @@ angular
                     });
                 });
             }
-        }
+        };
     })
     .directive('multipleEmails', function () {
         return {

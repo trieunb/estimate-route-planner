@@ -1,24 +1,12 @@
 <?php
 class AppController extends BaseController {
 
-    public function sessionData() {
-        $currentUser = wp_get_current_user();
-        $userData = [];
-        if ($currentUser) {
-            $userData['capabilities'] = $currentUser->allcaps;
-            $userData['roles'] = $currentUser->roles;
-        }
-        $this->renderJson([
-            'currentUser' => $userData
-        ]);
-    }
-
     public function sharedData() {
-        $currentUser = wp_get_current_user();
         $userData = [];
-        if ($currentUser) {
-            $userData['capabilities'] = $currentUser->allcaps;
-            $userData['roles'] = $currentUser->roles;
+        if ($this->currentUser) {
+            $userData['capabilities'] = $this->currentUser->allcaps;
+            $userData['roles'] = $this->currentUser->roles;
+            $userData['name'] = $this->getCurrentUserName();
         }
 
         // Company Info

@@ -8,12 +8,6 @@ function employeeFactory($http) {
             return $http.get(ERPApp.baseAPIPath, {
                 params: {_do: 'getEmployees'}
             });
-        },
-        get: function(id) {
-            return $http.post(ERPApp.baseAPIPath, {
-                _do: 'getEmployee',
-                data: {id : id}
-            });
         }
     };
 }

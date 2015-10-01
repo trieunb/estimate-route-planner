@@ -324,12 +324,16 @@
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="email"
                             ng-model="estimate.email"
+                            multiple-emails
                             ng-required="true">
                         <div class="help-block"
                             ng-messages="estimateForm.email.$error"
                             ng-if="estimateForm.email.$touched && estimateForm.email.$invalid">
                             <p ng-message="required" class="text-danger">
                                 This field is required!
+                            </p>
+                            <p ng-message="multipleEmails" class="text-danger">
+                                Multiple emails separate by a comma
                             </p>
                         </div>
                     </div>
@@ -352,33 +356,33 @@
                 <table class="table table-bordered table-striped table-fixed header-fixed wpt-table lines-table">
                     <thead>
                       <tr>
-                        <th style="width: 30px;" ng-if="hasCap('erpp_view_estimate_total')"></th>
+                        <th style="width: 30px;" ng-if="::hasCap('erpp_view_estimate_total')"></th>
                         <th style="width: 30px;">#</th>
                         <th style="width: 280px;">Product/Service</th>
                         <th style="width: 370px;">Description</th>
                         <th style="width: 50px;">QTY</th>
 
-                        <th style="width: 70px;" ng-if="hasCap('erpp_view_estimate_total')">Rate</th>
-                        <th style="width: 100px;" ng-if="hasCap('erpp_view_estimate_total')">Amount</th>
-                        <th style="width: 30px;" ng-if="hasCap('erpp_view_estimate_total')"></th>
+                        <th style="width: 70px;" ng-if="::hasCap('erpp_view_estimate_total')">Rate</th>
+                        <th style="width: 100px;" ng-if="::hasCap('erpp_view_estimate_total')">Amount</th>
+                        <th style="width: 30px;" ng-if="::hasCap('erpp_view_estimate_total')"></th>
                       </tr>
                     </thead>
                     <tbody as-sortable="lineItemsDragListeners" data-ng-model="estimate.lines" is-disabled="estimate.lines.length == 1">
                       <tr ng-repeat="line in estimate.lines" as-sortable-item>
-                        <td ng-if="hasCap('erpp_view_estimate_total')"><span class="glyphicon glyphicon-th" data-as-sortable-item-handle></span></td>
+                        <td ng-if="::hasCap('erpp_view_estimate_total')"><span class="glyphicon glyphicon-th" data-as-sortable-item-handle></span></td>
                         <td><span ng-bind="$index + 1"></span></td>
                         <td>
-                            <select ng-disabled="!hasCap('erpp_view_estimate_total')"
+                            <select ng-disabled="::!hasCap('erpp_view_estimate_total')"
                                 ng-model="line.product_service_id"
                                 ng-change="changeLineProductService(line)"
                                 ng-options="ps.id as ps.name for ps in productServices">
                             </select>
                         </td>
-                        <td><input type="text" ng-model="line.description" ng-readonly="!hasCap('erpp_view_estimate_total')"/></td>
-                        <td><input type="number" ng-pattern="/^\d+$/" ng-model="line.qty" ng-change="updateTotal()"  ng-readonly="!hasCap('erpp_view_estimate_total')"/></td>
-                        <td ng-if="hasCap('erpp_view_estimate_total')"><input type="number" ng-model="line.rate" ng-change="updateTotal()"/></td>
-                        <td ng-if="hasCap('erpp_view_estimate_total')"><span ng-bind="line.rate * line.qty" ng-if="line.rate >=0 && line.qty >= 0"></span></td>
-                        <td ng-if="hasCap('erpp_view_estimate_total')"><span ng-click="removeLine(line)" class="glyphicon glyphicon-trash text-danger"></span></td>
+                        <td><input type="text" ng-model="line.description" ng-readonly="::!hasCap('erpp_view_estimate_total')"/></td>
+                        <td><input type="number" ng-pattern="/^\d+$/" ng-model="line.qty" ng-change="updateTotal()"  ng-readonly="::!hasCap('erpp_view_estimate_total')"/></td>
+                        <td ng-if="::hasCap('erpp_view_estimate_total')"><input type="number" ng-model="line.rate" ng-change="updateTotal()"/></td>
+                        <td ng-if="::hasCap('erpp_view_estimate_total')"><span ng-bind="line.rate * line.qty" ng-if="line.rate >=0 && line.qty >= 0"></span></td>
+                        <td ng-if="::hasCap('erpp_view_estimate_total')"><span ng-click="removeLine(line)" class="glyphicon glyphicon-trash text-danger"></span></td>
                       </tr>
                     </tbody>
                 </table>
@@ -387,13 +391,13 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="col-sm-6">
-                    <div ng-if="hasCap('erpp_view_estimate_total')">
+                    <div ng-if="::hasCap('erpp_view_estimate_total')">
                         <button type="button" class="btn btn-default btn-lines" ng-click="addLine()">Add Line</button>
                         <button type="button" class="btn btn-default btn-lines" ng-click="removeAllLines()">Clean All Lines</button>
                     </div>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <span class="estimate-total" ng-if="hasCap('erpp_view_estimate_total')">
+                    <span class="estimate-total" ng-if="::hasCap('erpp_view_estimate_total')">
                         Estimate total: $<span ng-bind="estimate.total"></span>
                     </span>
                     </br>

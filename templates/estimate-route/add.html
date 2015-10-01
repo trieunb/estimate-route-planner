@@ -13,8 +13,8 @@
                     <li class="box-assign" ng-repeat="estimate in assignedEstimates"
                         dnd-draggable="estimate"
                         dnd-moved="onAssignedMoved(estimate, $index)">
-                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                        <span ng-if="!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                         <br>
                         {{::estimate.job_address}}<br>
                         {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
@@ -39,8 +39,8 @@
                     <li class="box-assign" ng-repeat="estimate in pendingEstimates"
                         dnd-draggable="estimate"
                         dnd-moved="onPendingMoved(estimate, $index)">
-                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                        <span ng-if="!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                         <br>
                         {{::estimate.job_address}}<br>
                         {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
@@ -76,8 +76,8 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                                <span ng-if="!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
                                 {{::estimate.job_address}}<br>
                                 {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
@@ -94,8 +94,8 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                                <span ng-if="!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                                <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                                <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
                                 {{::estimate.job_address}}<br>
                                 {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
