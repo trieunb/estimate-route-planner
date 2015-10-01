@@ -11,10 +11,14 @@ class BaseController {
     /* @var WP_User */
     protected $currentUser;
 
+    /* @var array */
+    protected $headers;
+
     public function __construct($data, ERPLogger $logger) {
         $this->data = $data;
         $this->logger = $logger;
         $this->currentUser = wp_get_current_user();
+        $this->headers = getallheaders();
     }
 
     /**
@@ -30,13 +34,19 @@ class BaseController {
     }
 
     protected function renderEmpty() {
-        header('Content-Type: application/json');
-        $this->render(json_encode(new stdClass));
+        if ($this->wantsJson()) {
+            header('Content-Type: application/json');
+            $this->render(json_encode(new stdClass));
+        }
     }
 
     protected function render404() {
-        header('Content-Type: application/json');
-        $this->render(json_encode(new stdClass), 404);
+        if ($this->wantsJson()) {
+            header('Content-Type: application/json');
+            $this->render(json_encode(new stdClass), 404);
+        } else {
+            echo "Not Found";
+        }
     }
 
     protected function render($rawResponse = '', $statusCode = 200) {
@@ -79,6 +89,17 @@ class BaseController {
     protected function getCurrentUserName() {
         if ($this->currentUser) {
             return ERPWordpress::getNameOfUser($this->currentUser);
+        }
+    }
+    /**
+     * Check expected response type of request
+     */
+    protected function wantsJson() {
+        try {
+            $acceptTypes = @explode(",", $this->headers['Accept']);
+            return isset($acceptTypes[0]) && $acceptTypes[0] === 'application/json';
+        } catch(Exception $e) {
+            return false;
         }
     }
 }

@@ -397,109 +397,124 @@ class EstimateController extends BaseController {
         $companyInfo = ORM::forTable('company_info')->findOne();
         $estimateId = $_REQUEST['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
-        $lines = ORM::forTable('estimate_lines')
-                ->tableAlias('el')
-                ->join(
-                    'products_and_services',
-                    ['el.product_service_id', '=', 'ps.id'],
-                    'ps'
-                )
-                ->where('el.estimate_id', $estimateId)
-                ->select('el.*')
-                ->select('ps.name', 'product_service_name')
-                ->findArray();
-        require TEMPLATES_DIR . '/print/estimate.php';
+        if ($estimate) {
+            $lines = ORM::forTable('estimate_lines')
+                    ->tableAlias('el')
+                    ->join(
+                        'products_and_services',
+                        ['el.product_service_id', '=', 'ps.id'],
+                        'ps'
+                    )
+                    ->where('el.estimate_id', $estimateId)
+                    ->select('el.*')
+                    ->select('ps.name', 'product_service_name')
+                    ->findArray();
+            require TEMPLATES_DIR . '/print/estimate.php';
+        } else {
+            $this->render404();
+        }
     }
 
     public function sendEstimate() {
         $companyInfo = ORM::forTable('company_info')->findOne();
         $estimateId = $this->data['id'];
-        $estimate = $estimate = $this->getEstimateDataForPrint($estimateId);
-        $lines = ORM::forTable('estimate_lines')
-                ->tableAlias('el')
-                ->join(
-                    'products_and_services',
-                    ['el.product_service_id', '=', 'ps.id'],
-                    'ps'
-                )
-                ->where('el.estimate_id', $estimateId)
-                ->select('el.*')
-                ->select('ps.name', 'product_service_name')
-                ->findArray();
-        ob_start();
-        require TEMPLATES_DIR . '/print/estimate.dompdf.php';
-        $html = ob_get_clean();
-        $dompdf = new DOMPDF();
-        $dompdf->load_html($html);
-        $dompdf->set_paper('legal');
-        $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
-        $dompdf->render();
-        $pdfPath = TMP_DIR . 'estimate-' . $estimateId . '-' . time() . '.pdf';
-        file_put_contents($pdfPath, $dompdf->output());
-        $STMPSetting = PreferenceModel::getSMTPSetting();
-        if (is_null($STMPSetting)) {
-            $this->renderJson([
-                'success' => false,
-                'message' => 'Error: SMTP setting is not configured properly or missing'
-            ]);
-        }
-        $mailer = new ERPMailer($STMPSetting);
-        $cc = [];
-        if (strpos($this->data['to'], ',')) {
-            $recipients = explode(',' , $this->data['to']);
-            $to = trim($recipients[0]);
-            for($i = 1; $i < count($recipients); $i++) {
-                $cc[] = trim($recipients[$i]);
+        $estimate = $this->getEstimateDataForPrint($estimateId);
+        if ($estimate) {
+            $lines = ORM::forTable('estimate_lines')
+                    ->tableAlias('el')
+                    ->join(
+                        'products_and_services',
+                        ['el.product_service_id', '=', 'ps.id'],
+                        'ps'
+                    )
+                    ->where('el.estimate_id', $estimateId)
+                    ->select('el.*')
+                    ->select('ps.name', 'product_service_name')
+                    ->findArray();
+            ob_start();
+            require TEMPLATES_DIR . '/print/estimate.dompdf.php';
+            $html = ob_get_clean();
+            $dompdf = new DOMPDF();
+            $dompdf->load_html($html);
+            $dompdf->set_paper('legal');
+            $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
+            $dompdf->render();
+            $pdfPath = TMP_DIR . 'estimate-' . $estimateId . '-' . time() . '.pdf';
+            file_put_contents($pdfPath, $dompdf->output());
+            $STMPSetting = PreferenceModel::getSMTPSetting();
+            if (is_null($STMPSetting)) {
+                $this->renderJson([
+                    'success' => false,
+                    'message' => 'Error: SMTP setting is not configured properly or missing'
+                ]);
+            } else {
+                $mailer = new ERPMailer($STMPSetting);
+                $cc = [];
+                if (strpos($this->data['to'], ',')) {
+                    $recipients = explode(',' , $this->data['to']);
+                    $to = trim($recipients[0]);
+                    for($i = 1; $i < count($recipients); $i++) {
+                        $cc[] = trim($recipients[$i]);
+                    }
+                } else {
+                    $to = $this->data['to'];
+                }
+
+                if (isset($this->data['subject'])) {
+                    $subject = $this->data['subject'];
+                } else {
+                    $subject = $companyInfo['name'];
+                }
+
+                if (isset($this->data['body'])) {
+                    $body = $this->data['body'];
+                } else {
+                    $body = $this->data['estimate_footer'];
+                }
+
+                $options = [
+                    'fromName' => $companyInfo['name'],
+                    'attachments' => [
+                        $pdfPath
+                    ],
+                    'cc' => $cc
+                ];
+
+                if ($mailer->sendmail($subject, $body, $to, $options)) {
+                    @unlink($pdfPath);
+                    $this->renderJson([
+                        'success' => true,
+                        'message' => 'Email was send successfully'
+                    ]);
+                } else {
+                    @unlink($pdfPath);
+                    $this->renderJson([
+                        'success' => false,
+                        'message' => 'Error occurred while sending mail'
+                    ]);
+                }
             }
         } else {
-            $to = $this->data['to'];
-        }
-
-        if (isset($this->data['subject'])) {
-            $subject = $this->data['subject'];
-        } else {
-            $subject = $companyInfo['name'];
-        }
-
-        if (isset($this->data['body'])) {
-            $body = $this->data['body'];
-        } else {
-            $body = $this->data['estimate_footer'];
-        }
-
-        $options = [
-            'fromName' => $companyInfo['name'],
-            'attachments' => [
-                $pdfPath
-            ],
-            'cc' => $cc
-        ];
-
-        if ($mailer->sendmail($subject, $body, $to, $options)) {
-            @unlink($pdfPath);
-            $this->renderJson([
-                'success' => true,
-                'message' => 'Email was send successfully'
-            ]);
-        } else {
-            @unlink($pdfPath);
-            $this->renderJson([
-                'success' => false,
-                'message' => 'Error occurred while sending mail'
-            ]);
+            $this->render404();
         }
     }
 
     private function getEstimateDataForPrint($id) {
-        return
-            ORM::forTable('estimates')
+        $query = ORM::forTable('estimates')
             ->tableAlias('e')
             ->leftOuterJoin('customers', ['e.customer_id' ,'=', 'cus.id'], 'cus')
             ->leftOuterJoin('customers', ['e.job_customer_id' ,'=', 'jobcus.id'], 'jobcus')
             ->select('e.*')
             ->select('cus.display_name', 'customer_display_name')
-            ->select('jobcus.display_name', 'job_customer_display_name')
-            ->findOne($id);
+            ->select('jobcus.display_name', 'job_customer_display_name');
+        if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
+            $currentUserName = $this->getCurrentUserName();
+            $query = $query->whereAnyIs([
+                    ['e.sold_by_1' => $currentUserName],
+                    ['e.sold_by_2' => $currentUserName]
+                ]);
+        }
+        return $query->findOne($id);
     }
 
     private function collectCustomerInfo() {

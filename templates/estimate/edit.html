@@ -324,12 +324,16 @@
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="email"
                             ng-model="estimate.email"
+                            multiple-emails
                             ng-required="true">
                         <div class="help-block"
                             ng-messages="estimateForm.email.$error"
                             ng-if="estimateForm.email.$touched && estimateForm.email.$invalid">
                             <p ng-message="required" class="text-danger">
                                 This field is required!
+                            </p>
+                            <p ng-message="multipleEmails" class="text-danger">
+                                Multiple emails separate by a comma
                             </p>
                         </div>
                     </div>
