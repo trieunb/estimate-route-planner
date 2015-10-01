@@ -186,7 +186,6 @@ class EstimateController extends BaseController {
     }
 
     public function show() {
-        // TODO: add check for Sales Rep permission
         $id = $this->data['id'];
         $estimate = null;
         if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
