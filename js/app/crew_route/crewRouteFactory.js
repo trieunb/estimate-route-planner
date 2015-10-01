@@ -6,7 +6,7 @@ function crewRouteFactory($http) {
     return {
         get: function(id) {
             return $http.post(ERPApp.baseAPIPath, {
-                _do: 'getEstimateRoute',
+                _do: 'getCrewRoute',
                 data: {id: id}
             });
         },
@@ -17,20 +17,20 @@ function crewRouteFactory($http) {
         },
         save: function(data) {
             return $http.post(ERPApp.baseAPIPath, {
-                _do: 'saveEstimateRoute',
+                _do: 'saveCrewRoute',
                 data: data
             });
         },
         update: function(data) {
             return $http.post(ERPApp.baseAPIPath, {
-                _do: 'updateEstimateRoute',
+                _do: 'updateCrewRoute',
                 data: data
             });
         },
         recent: function() {
             return $http.get(ERPApp.baseAPIPath, {
                 params: {
-                    _do: 'getRecentEstimateRoutes'
+                    _do: 'getRecentCrewRoutes'
                 }
             });
         },

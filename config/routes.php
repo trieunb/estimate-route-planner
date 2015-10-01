@@ -45,12 +45,12 @@ return [
     'saveReferralRoute'     => 'ReferralRoute@save',
     'updateReferralRoute'   => 'ReferralRoute@update',
 
-    // Estimate routes
-    'getRecentEstimateRoutes' => 'EstimateRoute@recent',
-    'getEstimateRoutes'       => 'EstimateRoute@index',
-    'getEstimateRoute'        => 'EstimateRoute@show',
-    'saveEstimateRoute'       => 'EstimateRoute@save',
-    'updateEstimateRoute'     => 'EstimateRoute@update',
+    // Crew routes
+    'getRecentCrewRoutes' => 'CrewRoute@recent',
+    'getCrewRoutes'       => 'CrewRoute@index',
+    'getCrewRoute'        => 'CrewRoute@show',
+    'saveCrewRoute'       => 'CrewRoute@save',
+    'updateCrewRoute'     => 'CrewRoute@update',
 
     // Settings
     'getSyncInfo'             => 'QuickbooksSync@getInfo',

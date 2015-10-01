@@ -12,7 +12,6 @@ function userPermission(USER_CAPABILITIES) {
         'erpp_create_estimates': '^/new-estimate$',
         'erpp_edit_estimates' : '^/edit-estimate/\\d+$',
         'erpp_list_estimates' : '^/estimates$',
-        'erpp_list_estimates' : '^/estimates/page/\\d+$',
 
         // Referral
         'erpp_create_referrals' : '^/new-referral$',
@@ -24,7 +23,7 @@ function userPermission(USER_CAPABILITIES) {
         'erpp_edit_referral_routes': '^/edit-referral-route/\\d+$',
         'erpp_list_referral_routes': '^/referral-routes$',
 
-        // Estimate route
+        // Crew route
         'erpp_create_crew_routes': '^/new-crew-route$',
         'erpp_edit_crew_routes' : '^/edit-crew-route/\\d+$',
         'erpp_list_crew_routes' :'^/crew-routes$',

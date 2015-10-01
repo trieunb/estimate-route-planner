@@ -22,9 +22,10 @@ function ListCrewRouteCtrl($scope, $rootScope, $routeParams, crewRouteFactory, $
         currentPage = $routeParams.pageNumber;
     }
     $scope.currentPage = currentPage;
+
     var paginate = function() {
         var query = {
-            _do: 'getEstimateRoutes',
+            _do: 'getCrewRoutes',
             page: $scope.currentPage,
             keyword: $scope.filter.keyword
         };

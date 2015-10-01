@@ -29,7 +29,7 @@ return [
     'erpp_create_crew_routes',
     'erpp_edit_crew_routes',
     'erpp_list_crew_routes',
-    'erpp_print_estimate_routes',
+    'erpp_print_crew_routes',
 
     // Settings
     'erpp_settings'
