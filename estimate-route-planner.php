@@ -39,6 +39,11 @@ function active_plugin() {
         $role = get_role($roleName);
         if ($role) {
             foreach ($pluginCaps as $cap) {
+                // Skip set erpp_view_sales_estimates for admin role
+                if ($roleName === 'administrator' &&
+                    $cap === 'erpp_view_sales_estimates') {
+                    continue;
+                }
                 $role->add_cap($cap);
             }
         }
