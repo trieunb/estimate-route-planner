@@ -12,7 +12,6 @@ define('ERP_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Physical root path of pl
 define('ROOT_MENU_SLUG', 'erpp');
 define('ERP_CONFIG_PAGE_SLUG', 'estimate-route-planner-config');
 define('ERPP_NAVIGATION_CLASS', 'estimate-route-planner-menu');
-define('ERP_SESSION_SAVE_PATH', '/tmp');
 define('ERP_PLUGIN_NAME', 'ER Planner Pro');
 
 require_once(ERP_PLUGIN_DIR . '/config/plugin.php');
