@@ -1,0 +1,15 @@
+## 1.1.0
+  - New terms:
+    - `Referral` to `Job Request`
+    - `Referral Route` to `Estimate Route`
+    - `Estimate Route` to `Crew Route`
+  - Add searching:
+    - Customer name for job requests
+    - `Customer name`, `id` for estimates
+    - Title for estimate and crew routes
+  - Add sales rep permission:
+    - Name: `erpp_view_sales_estimates`
+    - Restrict to see estimates base on current user name, set by Sold By fields.
+    - Disabled for administrator by default.
+  - Add country to billing address and job information for job request and estimate
+  - Fix some bug and typos
