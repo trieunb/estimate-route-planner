@@ -6,7 +6,7 @@ angular
             '$scope',
             '$rootScope',
             '$routeParams',
-            'estimateRouteFactory',
+            'crewRouteFactory',
             'estimateFactory',
             WorkOrderCtrl
         ]
@@ -16,14 +16,14 @@ function WorkOrderCtrl(
         $scope,
         $rootScope,
         $routeParams,
-        estimateRouteFactory,
+        crewRouteFactory,
         estimateFactory) {
     $scope.setPageTitle('Create Work Order');
     $scope.route = {
         assignedEstimates: []
     };
     var routeId = $routeParams.id;
-    estimateRouteFactory.get(routeId).
+    crewRouteFactory.get(routeId).
         success(function(data) {
             $scope.route = data;
 

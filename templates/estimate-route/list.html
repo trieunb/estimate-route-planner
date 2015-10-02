@@ -1,20 +1,21 @@
 <div id="list-referral" ng-controller="ListEstimateRouteCtrl">
-  <div class="row" style="margin-bottom: 10px">
+    <div class="row" style="margin-bottom: 10px">
         <div class="col-md-4 col-xs-12">
-            <a href="#/new-estimate-route" ng-if="::hasCap('erpp_create_estimate_routes')"
-                class="btn btn-success">Add new</a>
+            <a href="#/new-estimate-route" class="btn btn-success"
+                ng-if="::hasCap('erpp_create_estimate_routes')">
+                Add new
+            </a>
         </div>
         <div class="col-md-8 col-xs-12">
             <form name="searchRouteForm" ng-submit="searchRoute()">
                 <div class="col-md-9 n-p">
-                    <input class="form-control" name="search" placeholder="Search in title .."
-                        ng-model="filter.keyword">
+                    <input class="form-control" ng-model="filter.keyword" placeholder="Search in title ...">
                 </div>
                 <div class="col-md-3 text-right n-p">
                     <button class="btn btn-info" type="submit">Search</button>
                     <button class="btn btn-default btn-sm" type="button"
-                      name="search" ng-click="clearSearch()">
-                      Clear
+                        ng-click="clearSearch()">
+                        Clear
                     </button>
                 </div>
             </form>
@@ -23,40 +24,44 @@
 
   <table class="table table-bordered table-hover table-fixed header-fixed">
     <thead>
-        <tr>
-          <th style="width: 50px">ID</th>
-          <th>Title</th>
-          <th style="width: 155px">Date</th>
-          <th style="width: 130px">Status</th>
-          <th style="width: 120px">Action</th>
-        </tr>
+      <tr>
+        <th style="width: 50px">ID</th>
+        <th>Title</th>
+        <th style="width: 155px">Date</th>
+        <th style="width: 130px">Status</th>
+        <th style="width: 120px">Action</th>
+      </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="route in estimateRoutes">
-          <td>
-            <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')"><span>{{::route.id}}</span></a>
-            <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.id}}</span>
-          </td>
-          <td>
-            <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')"><span>{{::route.title}}</span></a>
-            <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.title}}</span>
-          </td>
-          <td><span>{{route.created_at}}</span></td>
-          <td>
-            <select
-              ng-if="::hasCap('erpp_edit_estimate_routes')"
-              ng-init="route.new_status = route.status" ng-model="route.new_status" ng-options="status.value as status.label for status in $root.routeStatuses"
-              ng-change="saveRouteStatus(route)">
-            </select>
-            <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.status}}</span>
-          </td>
-          <td>
-            <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')">Edit</a>
-          </td>
-        </tr>
+      <tr ng-repeat="route in routes">
+        <td>
+          <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')"><span>{{::route.id}}</span></a>
+          <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.id}}</span>
+        </td>
+
+        <td>
+          <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')"><span>{{route.title}}</span></a>
+          <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.title}}</span>
+        </td>
+
+        <td><span>{{route.created_at}}</span></td>
+        <td>
+          <select
+            ng-if="::hasCap('erpp_edit_estimate_routes')"
+            ng-init="route.new_status = route.status"
+            ng-model="route.new_status"
+            ng-options="status.value as status.label for status in $root.routeStatuses"
+            ng-change="saveRouteStatus(route)">
+          </select>
+          <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{route.status}}</span>
+        </td>
+        <td>
+          <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')">Edit</a>
+        </td>
+      </tr>
     </tbody>
   </table>
-  <p ng-if="!$root.isBusy && estimateRoutes.length == 0"
+  <p ng-if="!$root.isBusy && routes.length == 0"
     class="text-center">
     No results were found!
   </p>

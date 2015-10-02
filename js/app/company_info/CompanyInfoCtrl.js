@@ -21,12 +21,12 @@ function CompanyInfoCtrl($scope, $rootScope, companyInfoFactory, sharedData) {
         companyInfoFactory.save($scope.info)
             .success(function(response) {
                 if (response.success) {
-                    toastr['success'](response.message);
+                    toastr.success(response.message);
                     // Update global data of company info
                     sharedData.companyInfo = response.data;
                 } else {
                     var msg = response.message || 'An error occurred while saving info';
-                    toastr['error'](msg);
+                    toastr.error(msg);
                 }
             });
     };
@@ -51,12 +51,12 @@ function CompanyInfoCtrl($scope, $rootScope, companyInfoFactory, sharedData) {
                 .success(function(response) {
                     if (response.success) {
                         $scope.photofile = null;
-                        toastr['success'](response.message);
+                        toastr.success(response.message);
                         angular.element('#logo-form').get(0).reset();
                         sharedData.companyInfo = response.data;
                     } else {
                         var msg = response.message || 'An error occurred while uploading logo';
-                        toastr['error'](msg);
+                        toastr.error(msg);
                     }
                 });
         };

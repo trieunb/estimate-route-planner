@@ -12,43 +12,10 @@
     );
 
 function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFactory, $ngBootbox) {
-    $scope.setPageTitle('Crew Routes List');
-    $scope.estimateRoutes = [];
+    $scope.setPageTitle('Estimate Routes List');
+    $scope.routes = [];
+
     $scope.filter = {};
-
-    $scope.total = 0;
-    var currentPage = 1;
-    if ('undefined' != typeof($routeParams.pageNumber)) {
-        currentPage = $routeParams.pageNumber;
-    }
-    $scope.currentPage = currentPage;
-    var paginate = function() {
-        var query = {
-            _do: 'getEstimateRoutes',
-            page: $scope.currentPage,
-            keyword: $scope.filter.keyword
-        };
-        estimateRouteFactory.all(query)
-            .success(function(response) {
-                $scope.estimateRoutes = response.routes;
-                $scope.total = parseInt(response.total);
-            });
-    };
-
-    $scope.pageChanged = function() {
-        paginate();
-    };
-
-    $scope.searchRoute = function() {
-        $scope.currentPage = 1;
-        paginate();
-    };
-
-    $scope.clearSearch = function() {
-        $scope.filter = {};
-        paginate();
-    };
-
     $scope.saveRouteStatus = function(route) {
         $ngBootbox.confirm("Do want to save this route?")
             .then(
@@ -72,6 +39,39 @@ function ListEstimateRouteCtrl($scope, $rootScope, $routeParams, estimateRouteFa
                     route.new_status = route.status;
                 }
             );
+    };
+    //pagination
+    $scope.total = 0;
+    var currentPage = 1;
+    if ('undefined' != typeof($routeParams.pageNumber)) {
+        currentPage = $routeParams.pageNumber;
+    }
+    $scope.currentPage = currentPage;
+    var paginate = function() {
+        var query = {
+            _do: 'filterEstimateRoutes',
+            page: $scope.currentPage,
+            keyword: $scope.filter.keyword
+        };
+        estimateRouteFactory.filter(query)
+            .success(function(response) {
+                $scope.routes = response.routes;
+                $scope.total = parseInt(response.total);
+            });
+    };
+
+    $scope.pageChanged = function() {
+        paginate();
+    };
+
+    $scope.clearSearch = function() {
+        $scope.filter = {};
+        paginate();
+    };
+
+    $scope.searchRoute = function() {
+        $scope.currentPage = 1;
+        paginate();
     };
     paginate();
 }

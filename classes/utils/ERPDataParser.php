@@ -325,7 +325,7 @@ final class ERPDataParser {
             'primary_phone_number' => $data_local['primary_phone_number'],
             'alternate_phone_number' => $data_local['alternate_phone_number'],
             'due_date' => $data_local['due_date'],
-            'estimate_route_id' => $data_local['estimate_route_id'],
+            'route_id' => $data_local['route_id'],
             'source' => $data_local['source'],
             'customer_signature' => $data_local['customer_signature'],
             'location_notes' => $data_local['location_notes'],

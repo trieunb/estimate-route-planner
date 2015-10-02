@@ -12,13 +12,10 @@ define('ERP_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Physical root path of pl
 define('ROOT_MENU_SLUG', 'erpp');
 define('ERP_CONFIG_PAGE_SLUG', 'estimate-route-planner-config');
 define('ERPP_NAVIGATION_CLASS', 'estimate-route-planner-menu');
-define('ERP_TIMEZONE', 'UTC');
 define('ERP_SESSION_SAVE_PATH', '/tmp');
 define('ERP_PLUGIN_NAME', 'ER Planner Pro');
 
-date_default_timezone_set(ERP_TIMEZONE);
-
-define('MINIFY_ASSETS', false);
+require_once(ERP_PLUGIN_DIR . '/config/plugin.php');
 
 add_action('admin_menu', 'erp_setup_admin_menu');
 add_action('admin_enqueue_scripts', 'erp_enqueue_scripts');
@@ -42,6 +39,11 @@ function active_plugin() {
         $role = get_role($roleName);
         if ($role) {
             foreach ($pluginCaps as $cap) {
+                // Skip set erpp_view_sales_estimates for admin role
+                if ($roleName === 'administrator' &&
+                    $cap === 'erpp_view_sales_estimates') {
+                    continue;
+                }
                 $role->add_cap($cap);
             }
         }
@@ -83,16 +85,16 @@ function erp_setup_admin_menu() {
         ROOT_MENU_SLUG,
         'New Job Request',
         'New Job Request',
-        'erpp_create_referrals',
-        ROOT_MENU_SLUG . '#new-referral',
+        'erpp_create_job_requests',
+        ROOT_MENU_SLUG . '#new-job-request',
         'erp_load'
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
         'Job Requests',
         'Job Requests',
-        'erpp_list_referrals',
-        ROOT_MENU_SLUG . '#referrals',
+        'erpp_list_job_requests',
+        ROOT_MENU_SLUG . '#job-requests',
         'erp_load'
     );
 
@@ -100,16 +102,16 @@ function erp_setup_admin_menu() {
         ROOT_MENU_SLUG,
         'New Estimate Route',
         'New Estimate Route',
-        'erpp_create_referral_routes',
-        ROOT_MENU_SLUG . '#new-referral-route',
+        'erpp_create_estimate_routes',
+        ROOT_MENU_SLUG . '#new-estimate-route',
         'erp_load'
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
         'List Estimate Routes',
         'Estimate Routes',
-        'erpp_list_referral_routes',
-        ROOT_MENU_SLUG . '#referral-routes',
+        'erpp_list_estimate_routes',
+        ROOT_MENU_SLUG . '#estimate-routes',
         'erp_load'
     );
     add_submenu_page(
@@ -132,16 +134,16 @@ function erp_setup_admin_menu() {
         ROOT_MENU_SLUG,
         'New Crew Route',
         'New Crew Route',
-        'erpp_create_estimate_routes',
-        ROOT_MENU_SLUG . '#new-estimate-route',
+        'erpp_create_crew_routes',
+        ROOT_MENU_SLUG . '#new-crew-route',
         'erp_load'
     );
     add_submenu_page(
         ROOT_MENU_SLUG,
         'List Crew Routes',
         'Crew Routes',
-        'erpp_list_estimate_routes',
-        ROOT_MENU_SLUG . '#estimate-routes',
+        'erpp_list_crew_routes',
+        ROOT_MENU_SLUG . '#crew-routes',
         'erp_load'
     );
 
@@ -193,7 +195,7 @@ function erp_load() {
 
 function erp_enqueue_scripts() {
     if (is_plugin_page(ROOT_MENU_SLUG)) {
-        if (!MINIFY_ASSETS) {
+        if (!ERP_MINIFY_ASSETS) {
             $libJS = [
                 'signature-pad'         => 'js/lib/signature_pad.js',
                 'dropzone'              => 'js/lib/dropzone.js',
@@ -235,7 +237,7 @@ function erp_enqueue_scripts() {
             wp_enqueue_script('erp-js-lib');
         }
 
-        if (!MINIFY_ASSETS) {
+        if (!ERP_MINIFY_ASSETS) {
             $appJS = [
                 'erp-js-app'            => 'js/app/main.js',
                 'erp-js-app-routes'     => 'js/app/routes.js',
@@ -256,14 +258,14 @@ function erp_enqueue_scripts() {
             // Auto scan and load all files in js/app/controllers
             $appComponentLocations = [
                 'js/app/estimate',
-                'js/app/referral',
+                'js/app/job_request',
                 'js/app/settings',
                 'js/app/company_info',
                 'js/app/customer',
                 'js/app/employee',
                 'js/app/product_service',
-                'js/app/referral_route',
                 'js/app/estimate_route',
+                'js/app/crew_route',
                 'js/app/quickbooks_sync'
             ];
 
@@ -384,6 +386,7 @@ function erp_start_session() {
 
 add_filter('query_vars', 'erp_query_vars');
 
+// TODO: move it to another file
 function erp_parse_request($wp) {
     require_once 'init.php';
     if (array_key_exists('_do', $wp->query_vars)) {

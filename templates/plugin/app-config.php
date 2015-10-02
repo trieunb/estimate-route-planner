@@ -8,15 +8,15 @@
     function onSuccessAuthenticed() {
         window.location.hash = '#quickbooks-sync';
         window.location.reload();
-    }    
+    }
 </script>
 
 <div id="erp-wrapper">
     <h1 id="erp-header">ER Planner Pro - Quickbooks Online authorization</h1>
-    <div id="erp-content" ng-class="{busy: isBusy}">
+    <div id="erp-content" ng-class="{busy: isBusy}" ng-cloak>
         <div class="loading-overlay" ng-if="isBusy">
             <div id="spinner"></div>
-        </div>        
+        </div>
         <div>
             <div ng-controller="AppConfigCtrl">
                 <div ng-show="step == 1">
@@ -45,10 +45,10 @@
                                     <div class="col-md-offset-4 col-md-8">
                                         <button type="submit" class="btn btn-primary" ng-disabled="appConfigForm.$invalid || $root.isBusy">Continue</button>
                                     </div>
-                                </div>                            
+                                </div>
                             </div>
                         </div>
-                    </form>                    
+                    </form>
                 </div>
 
                 <div ng-show="step == 2">
@@ -59,7 +59,7 @@
                             <br>
                             <br>
                             <button type="button" class="btn btn-default" ng-click="backToSetConsumerKeys()"> Back</button>
-                        </div>             
+                        </div>
                     </div>
                 </div>
             </div>

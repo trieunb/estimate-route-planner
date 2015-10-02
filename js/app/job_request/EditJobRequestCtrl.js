@@ -1,24 +1,24 @@
 angular
     .module('Erp')
     .controller(
-        'EditReferralCtrl',
+        'EditJobRequestCtrl',
         [
             '$scope',
             '$rootScope',
-            'referralFactory',
+            'jobRequestFactory',
             'customerFactory',
             'sharedData',
             '$routeParams',
             '$filter',
             '$window',
-            EditReferralCtrl
+            EditJobRequestCtrl
         ]
     );
 
-function EditReferralCtrl(
+function EditJobRequestCtrl(
     $scope,
     $rootScope,
-    referralFactory,
+    jobRequestFactory,
     customerFactory,
     sharedData,
     $routeParams,
@@ -31,7 +31,7 @@ function EditReferralCtrl(
 
     var init = function() {
         $scope.referral = $routeParams.id;
-        referralFactory.show($scope.referral)
+        jobRequestFactory.show($scope.referral)
             .success(function(response) {
                 $scope.referral = response;
             });
@@ -133,7 +133,7 @@ function EditReferralCtrl(
         angular.copy($scope.referral, referral);
         referral.date_service = ($filter('date')(referral.date_service, "yyyy-MM-dd"));
         referral.date_requested = ($filter('date')(referral.date_requested, "yyyy-MM-dd"));
-        referralFactory.update(referral)
+        jobRequestFactory.update(referral)
             .success(function(response) {
                 if (response.success) {
                     toastr.success(response.message);
@@ -143,7 +143,7 @@ function EditReferralCtrl(
                         $window.location.reload();
                     }
                 } else {
-                    var msg = response.message || 'An error occurred while saving referral';
+                    var msg = response.message || 'An error occurred while saving job request';
                     toastr.error(msg);
                 }
             });

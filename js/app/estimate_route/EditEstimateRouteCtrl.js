@@ -1,45 +1,46 @@
- angular.module('Erp')
+angular.module('Erp')
     .controller(
-        'AddReferralRouteCtrl',
+        'EditEstimateRouteCtrl',
         [
             '$scope',
             '$rootScope',
-            'referralFactory',
-            'referralRouteFactory',
+            'jobRequestFactory',
+            'estimateRouteFactory',
             '$location',
-            '$filter',
+            '$routeParams',
             'uiGmapGoogleMapApi',
             'uiGmapIsReady',
-            AddReferralRouteCtrl
+            '$filter',
+            EditEstimateRouteCtrl
         ]
     );
 
-function AddReferralRouteCtrl(
-    $scope,
+function EditEstimateRouteCtrl($scope,
     $rootScope,
-    referralFactory,
-    referralRouteFactory,
+    jobRequestFactory,
+    estimateRouteFactory,
     $location,
-    $filter,
+    $routeParams,
     uiGmapGoogleMapApi,
-    uiGmapIsReady) {
-
+    uiGmapIsReady,
+    $filter) {
     var orderBy = $filter('orderBy');
     var directionsService = new google.maps.DirectionsService();
     var directionsDisplay = new google.maps.DirectionsRenderer({
         suppressMarkers: true // Hide direction marker
     });
-    $scope.setPageTitle('Referral route planner');
+
+    $scope.setPageTitle('Estimate Route Planner');
     $scope.route = {}; // Form data
     $scope.pendingReferrals = [];
     $scope.assignedReferrals = [];
     $scope.recentRoutes = [];
     $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png' };
-    $scope.map = {control: {}};  // Hold map instance
+    $scope.map = {control: {}}; // Hold map instance
     $scope.map.options = {};
     $scope.assigned_queue_sort_by = '';
     $scope.pending_queue_sort_by = '';
-    
+
     $scope.sortOptions = [
       {
         label: 'Custom',
@@ -55,40 +56,54 @@ function AddReferralRouteCtrl(
       }
     ];
     // Loading referrals
-    referralFactory.listPending()
+    jobRequestFactory.listPending()
         .success(function(response) {
-            // Collect pending referrals for dragging
+            // Collect pending referral for dragging
             angular.forEach(response, function(referral) {
-                referral.coords = {
-                    latitude: referral.lat,
-                    longitude: referral.lng
-                };
-                $scope.pendingReferrals.push(referral);
+                if(referral.lat && referral.lng) {
+                    referral.coords = {
+                        latitude: referral.lat,
+                        longitude: referral.lng
+                    };
+                    $scope.pendingReferrals.push(referral);
+                }
             });
 
-            // Setting gmap
-            uiGmapGoogleMapApi.then(function(maps) {
-                var bounds = new google.maps.LatLngBounds();
-                angular.forEach($scope.pendingReferrals, function(referral) {
-                    bounds.extend(new google.maps.LatLng(referral.coords.latitude, referral.coords.longitude));
+            // Get route data
+            estimateRouteFactory.get($routeParams.id)
+                .success(function(response) {
+                    $scope.route.id = response.id;
+                    $scope.route.title = response.title;
+                    $scope.route.status = response.status;
+                    // Collect assigned referrals for dragging
+
+                    angular.forEach(response.assigned_referrals, function(referral) {
+                        referral.coords = {
+                            latitude: referral.lat,
+                            longitude: referral.lng
+                        };
+
+                        $scope.assignedReferrals.push(referral);
+                    });
+                    // Setting gmap
+                    uiGmapGoogleMapApi.then(function(maps) {
+                        $scope.map.options = {
+                            center: {
+                                latitude: $scope.assignedReferrals[0].coords.latitude,
+                                longitude: $scope.assignedReferrals[0].coords.longitude
+                            },
+                            zoom: 14,
+                            MapTypeId: maps.MapTypeId.HYBRID
+                        };
+                        return maps;
+                    });
                 });
-                $scope.map.options = {
-                    center: {
-                        latitude: bounds.getCenter().lat(),
-                        longitude: bounds.getCenter().lng()
-                    },
-                    zoom: 14,
-                    MapTypeId: maps.MapTypeId.HYBRID
-                };
-
-                return maps;
-            });
-
            uiGmapIsReady.promise(1).then(function(instances) {
                 directionsDisplay.setMap($scope.map.control.getGMap());
+                $scope.drawAssignedReferralsDirection(); // Render direction after loaded
             });
             // Load recent saved routes
-            referralRouteFactory.recent()
+            estimateRouteFactory.recent()
                 .success(function(response) {
                     $scope.recentRoutes = response;
                 });
@@ -136,7 +151,6 @@ function AddReferralRouteCtrl(
      */
     $scope.drawAssignedReferralsDirection = function() {
         if ($scope.assignedReferrals.length < 2) {
-            // Clear drawed direction
             directionsDisplay.set('directions', null);
             return;
         }
@@ -176,23 +190,24 @@ function AddReferralRouteCtrl(
     };
 
     $scope.saveRoute = function() {
-        if ($scope.assignedReferrals.length == 0) {
-            toastr['error']("A route could not be saved without any assigned referrals!");
+        if ($scope.assignedReferrals.length === 0) {
+            toastr.error("A route could not be saved without any assigned referrals!");
         } else {
             var data = {};
+            data.id = $scope.route.id;
             data.title = $scope.route.title;
+            data.status = $scope.route.status;
             data.assigned_referral_ids = [];
             angular.forEach($scope.assignedReferrals, function(referral) {
                 data.assigned_referral_ids.push(referral.id);
             });
-            referralRouteFactory.save(data)
+            estimateRouteFactory.update(data)
                 .success(function(response) {
                     if (response.success) {
-                        toastr['success'](response.message);
-                        $location.path('/edit-referral-route/' + response.data.id);
+                        toastr.success(response.message);
                     } else {
                         var msg = response.message || 'An error occurred while saving referral';
-                        toastr['error'](msg);
+                        toastr.error(msg);
                     }
                 });
         }
@@ -200,7 +215,7 @@ function AddReferralRouteCtrl(
 
     $scope.printRoute = function() {
         if ($scope.assignedReferrals.length < 2) {
-            toastr['error']("Print route require at least two assigned referrals!");
+            toastr.error("Print route require at least two assigned referrals!");
         } else {
             var url = 'https://www.google.com/maps/dir/am=t' + getGmapURL();
             window.open(url, '_blank');

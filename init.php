@@ -1,21 +1,12 @@
 <?php
 define('ERP_ROOT_DIR', __DIR__);
-
-if (!defined('ERP_TIMEZONE')) {
-    define('ERP_TIMEZONE', 'UTC');
-}
-if (date_default_timezone_get() != ERP_TIMEZONE) {
-    date_default_timezone_set(ERP_TIMEZONE);
-}
-// Increase max excution time
-set_time_limit(600); // 10 mins
-
-define('QBO_SDK_ROOT', ERP_ROOT_DIR . '/lib/quickbooks-sdk/');
-define('LOG_STORAGE_PATH', ERP_ROOT_DIR . '/log');
+define('ERP_LOG_STORAGE_PATH', ERP_ROOT_DIR . '/log');
 define('ERP_UPLOADS_DIR', ERP_ROOT_DIR . '/uploads/');
 define('ERP_IMAGES_DIR', ERP_ROOT_DIR . '/images/');
 define('TEMPLATES_DIR', ERP_ROOT_DIR . '/templates/');
-define('TMP_DIR', ERP_ROOT_DIR . '/tmp/');
+define('ERP_TMP_DIR', ERP_ROOT_DIR . '/tmp/');
+
+require_once(ERP_ROOT_DIR . '/config/plugin.php');
 
 // Some global functions use in plugin
 require_once(ERP_ROOT_DIR . '/lib/helper.php');
@@ -25,7 +16,7 @@ require_once(ERP_ROOT_DIR . '/lib/idiorm.php');
 ORM::configure('mysql:dbname=' . DB_NAME . ';host=' . DB_HOST);
 ORM::configure('username', DB_USER);
 ORM::configure('password', DB_PASSWORD);
-ORM::configure('logging', true);
+ORM::configure('logging', ERP_DEBUG);
 
 // Autoload plugin classes
 spl_autoload_register(function($class) {
@@ -45,7 +36,7 @@ spl_autoload_register(function($class) {
 });
 
 // Autoload QBO SDK
-
+define('QBO_SDK_ROOT', ERP_ROOT_DIR . '/lib/quickbooks-sdk/');
 require_once(QBO_SDK_ROOT . 'config.php');
 require_once(QBO_SDK_ROOT . 'Security/OAuthRequestValidator.php');
 require_once(QBO_SDK_ROOT . 'Core/ServiceContext.php');

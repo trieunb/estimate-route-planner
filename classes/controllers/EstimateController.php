@@ -52,19 +52,23 @@ class EstimateController extends BaseController {
 
     /**
      * Get all estimates which non-assigned to any routes
+     * For listing on pending routes when creating crew routes
      */
     public function unassigned() {
         $estimates = ORM::forTable('estimates')
             ->tableAlias('e')
             ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
             ->selectMany(
-                'e.id', 'e.due_date', 'e.job_address', 'e.job_city',
+                'e.id', 'e.due_date', 'e.txn_date', 'e.doc_number',
+                'e.job_address', 'e.job_city',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
                 'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
             )
             ->select('c.display_name', 'job_customer_display_name')
             ->orderByDesc('e.id')
-            ->whereNull('e.estimate_route_id')
+            ->whereNull('e.route_id')
+            ->whereNotNull('e.job_lat')
+            ->whereNotNull('e.job_lng')
             ->whereIn('e.status', ['Pending', 'Accepted'])
             ->findArray();
         $this->renderJson($estimates);
@@ -81,12 +85,12 @@ class EstimateController extends BaseController {
             ->selectMany(
                 'e.id', 'e.due_date', 'e.job_address', 'e.job_city',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
-                'e.location_notes', 'e.doc_number',
+                'e.location_notes', 'e.doc_number', 'e.txn_date',
                 'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
             )
             ->select('c.display_name', 'job_customer_display_name')
             ->orderByDesc('e.id')
-            ->where('e.estimate_route_id', $routeId)
+            ->where('e.route_id', $routeId)
             ->findArray();
         # Get lines
         $estimateIds = [];
@@ -134,7 +138,7 @@ class EstimateController extends BaseController {
             }
         }
         $keepNullColumns = [
-            'estimate_route_id', 'date_of_signature', 'accepted_date',
+            'route_id', 'date_of_signature', 'accepted_date',
             'expiration_date'
         ];
         foreach ($keepNullColumns as $column) {
@@ -223,7 +227,7 @@ class EstimateController extends BaseController {
         $newCustomerData = $this->_checkForCreateNewCustomers();
         $updateData = array_merge($this->data, $newCustomerData);
         $keepNullColumns = [
-            'estimate_route_id', 'date_of_signature', 'accepted_date',
+            'route_id', 'date_of_signature', 'accepted_date',
             'expiration_date'
         ];
         foreach ($keepNullColumns as $column) {
@@ -439,7 +443,7 @@ class EstimateController extends BaseController {
             $dompdf->set_paper('legal');
             $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
             $dompdf->render();
-            $pdfPath = TMP_DIR . 'estimate-' . $estimateId . '-' . time() . '.pdf';
+            $pdfPath = ERP_TMP_DIR . 'estimate-' . $estimateId . '-' . time() . '.pdf';
             file_put_contents($pdfPath, $dompdf->output());
             $STMPSetting = PreferenceModel::getSMTPSetting();
             if (is_null($STMPSetting)) {
