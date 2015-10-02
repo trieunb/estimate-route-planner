@@ -52,19 +52,23 @@ class EstimateController extends BaseController {
 
     /**
      * Get all estimates which non-assigned to any routes
+     * For listing on pending routes when creating crew routes
      */
     public function unassigned() {
         $estimates = ORM::forTable('estimates')
             ->tableAlias('e')
             ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
             ->selectMany(
-                'e.id', 'e.due_date', 'e.job_address', 'e.job_city',
+                'e.id', 'e.due_date', 'e.txn_date', 'e.doc_number',
+                'e.job_address', 'e.job_city',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
                 'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
             )
             ->select('c.display_name', 'job_customer_display_name')
             ->orderByDesc('e.id')
             ->whereNull('e.route_id')
+            ->whereNotNull('e.job_lat')
+            ->whereNotNull('e.job_lng')
             ->whereIn('e.status', ['Pending', 'Accepted'])
             ->findArray();
         $this->renderJson($estimates);
@@ -81,7 +85,7 @@ class EstimateController extends BaseController {
             ->selectMany(
                 'e.id', 'e.due_date', 'e.job_address', 'e.job_city',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
-                'e.location_notes', 'e.doc_number',
+                'e.location_notes', 'e.doc_number', 'e.txn_date',
                 'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
             )
             ->select('c.display_name', 'job_customer_display_name')
