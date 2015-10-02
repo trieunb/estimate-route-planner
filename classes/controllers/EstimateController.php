@@ -443,7 +443,7 @@ class EstimateController extends BaseController {
             $dompdf->set_paper('legal');
             $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
             $dompdf->render();
-            $pdfPath = TMP_DIR . 'estimate-' . $estimateId . '-' . time() . '.pdf';
+            $pdfPath = ERP_TMP_DIR . 'estimate-' . $estimateId . '-' . time() . '.pdf';
             file_put_contents($pdfPath, $dompdf->output());
             $STMPSetting = PreferenceModel::getSMTPSetting();
             if (is_null($STMPSetting)) {

@@ -16,7 +16,7 @@ class ERPApp {
         $this->routes = include_once ERP_ROOT_DIR . '/config/routes.php';
         $this->errorHandler = new ERPErrorHandler();
         $this->logger = new ERPLogger('app.log');
-        $this->logging = true;
+        $this->logging = ERP_DEBUG;
         // set_error_handler([$this->errorHandler, 'handleError']);
         // set_exception_handler([$this->errorHandler, 'handleException']);
         // register_shutdown_function([$this->errorHandler, 'handleShutdown']);

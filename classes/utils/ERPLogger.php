@@ -12,7 +12,7 @@ class ERPLogger {
     }
 
     protected function getRealFilePath() {
-        return LOG_STORAGE_PATH . '/' . $this->fileName;
+        return ERP_LOG_STORAGE_PATH . '/' . $this->fileName;
     }
 
     /**
