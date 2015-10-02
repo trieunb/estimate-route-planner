@@ -9,5 +9,4 @@ customers,
 referrals,
 crew_routes,
 estimate_routes,
-referral_routes,
 employees

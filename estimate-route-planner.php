@@ -386,6 +386,7 @@ function erp_start_session() {
 
 add_filter('query_vars', 'erp_query_vars');
 
+// TODO: move it to another file
 function erp_parse_request($wp) {
     require_once 'init.php';
     if (array_key_exists('_do', $wp->query_vars)) {
