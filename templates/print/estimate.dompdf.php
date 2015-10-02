@@ -124,7 +124,7 @@
                             <label>Estimate Date:</label>
                             <span><?php echo $estimate->txn_date ?></span>
                         <br>
-                            <label>Dua Date:</label>
+                            <label>Due Date:</label>
                             <span><?php echo $estimate->due_date ?></span>
                         <br>
                             <label>Status:</label>
