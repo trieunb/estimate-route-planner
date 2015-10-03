@@ -25,7 +25,7 @@ if (ERPConfig::isOAuthTokenValid()) {
             $syncFromTime = date("c", strtotime($prefs->last_sync_at));
         }
         try {
-            $syncService = new Asynchronzier(PreferenceModel::getQuickbooksCreds());
+            $syncService = Asynchronzier::getInstance();
             $syncService->syncProductService($syncFromTime);
             $syncService->syncEmployee($syncFromTime);
             $syncService->syncCustomer($syncFromTime);

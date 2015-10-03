@@ -73,11 +73,11 @@ class Asynchronzier
         $loger->log('== Sync customer started');
         $maxResults = 1000;
         $startPos = 1;
-        $localCus = ORM::forTable('customers')->select('id')->findArray();
-        $localCusIds = [];
-        foreach ($localCus as $cus) {
-            $localCusIds[] = $cus['id'];
-        }
+        $localCus = ORM::forTable('customers')
+            ->selectMany('id', 'sync_token')
+            ->findMany();
+        $loger->log('Local count: ' . count($localCus));
+        $updateCount = $createCount = 0;
         while (true) {
             if ($lastSyncedTime) {
                 $query
@@ -93,14 +93,27 @@ class Asynchronzier
                 $loger->log("Got $resCount records.");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $cusObj) {
-                    $parsedCus = ERPDataParser::parseCustomer($cusObj);
-                    if (array_search($parsedCus['id'], $localCusIds) !== false) {
+                    $cusRecord = null;
+                    $exists = false;
+                    foreach ($localCus as $index => $cus) {
                         // The customer is already exists in local DB
-                        $cusRecord = ORM::forTable('customers')->hydrate();
-                    } else {
+                        if ($cusObj->Id == $cus->id) {
+                            $exists = true;
+                            if ($cusObj->SyncToken !== $cus->sync_token) {
+                                ++$updateCount;
+                                $cusRecord = ORM::forTable('customers')->hydrate();
+                            }
+                            unset($localCus[$index]); break;
+                        }
+                    }
+                    if (!$exists) {
+                        ++$createCount;
                         $cusRecord = ORM::forTable('customers')->create();
                     }
-                    $cusRecord->set($parsedCus)->save();
+                    if (null != $cusRecord) {
+                        $parsedCus = ERPDataParser::parseCustomer($cusObj);
+                        $cusRecord->set($parsedCus)->save();
+                    }
                 }
                 ORM::getDB()->commit();
             } else {
@@ -109,6 +122,8 @@ class Asynchronzier
             }
             $startPos += $maxResults;
         }
+        $loger->log("Update: $updateCount");
+        $loger->log("Create: $createCount");
         $loger->log('== Sync customer done, taken: '.(time() - $startedAt)." secs\n");
     }
 
@@ -171,9 +186,11 @@ class Asynchronzier
         $loger->log("\n= Sync estimate started");
         $maxResults = 1000;
         $startPos = 1;
-        $localEstimates = ORM::forTable('estimates')->findMany();
+        $localEstimates = ORM::forTable('estimates')
+            ->selectMany('id', 'sync_token')
+            ->findMany();
         $localLines = ORM::forTable('estimate_lines')->findMany();
-        $loger->log('Local count: '.count($localEstimates));
+        $loger->log('Local count: ' . count($localEstimates));
         $updateCount = $createCount = 0;
         while (true) {
             $query = 'SELECT * FROM Estimate';
@@ -194,7 +211,9 @@ class Asynchronzier
                     foreach ($localEstimates as $index => $estimate) {
                         if ($estimateObj->Id == $estimate->id) {
                             if ($estimateObj->SyncToken != $estimate->sync_token) {
-                                $localEstimateData = $estimate->asArray();
+                                $localEstimateData = ORM::forTable('estimates')
+                                    ->findOne($estimate->id)
+                                    ->asArray();
                                 $estRecord = ORM::forTable('estimates')->hydrate();
                                 ++$updateCount;
                             } else {
@@ -285,7 +304,8 @@ class Asynchronzier
         $loger->log("\n= Sync product/services started");
         $maxResults = 1000;
         $startPos = 1;
-        $localPDs = ORM::forTable('products_and_services')->select('id')->findArray();
+        $localPDs = ORM::forTable('products_and_services')
+            ->select('id')->findArray();
         $localPDIds = [];
         foreach ($localPDs as $item) {
             $localPDIds[] = $item['id'];
