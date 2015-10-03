@@ -202,7 +202,9 @@ class Asynchronzier
         $localEstimates = ORM::forTable('estimates')
             ->selectMany('id', 'sync_token')
             ->findMany();
-        $localLines = ORM::forTable('estimate_lines')->findMany();
+        $localLines = ORM::forTable('estimate_lines')
+            ->selectMany('estimate_id', 'line_id')
+            ->findMany();
         $loger->log('Local count: ' . count($localEstimates));
         $updateCount = $createCount = 0;
         while (true) {
@@ -242,9 +244,8 @@ class Asynchronzier
                         $estRecord->set($parsedEstimateData)->save();
 
                         // Sync lines
-                        $data_line_sync = [];
                         $estimateLineModel = new EstimateLineModel();
-                        $localEstLines = $remoteLines = [];
+                        $localEstLines = [];
                         foreach ($localLines as $index => $localLine) {
                             if ($localLine->estimate_id == $estimateObj->Id) {
                                 $localEstLines[] = $localLine;
