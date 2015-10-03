@@ -139,11 +139,11 @@ class Asynchronzier
         $loger->log("\n= Sync employee started");
         $maxResults = 1000;
         $startPos = 1;
-        $localEmps = ORM::forTable('employees')->select('id')->findArray();
-        $localEmpIds = [];
-        foreach ($localEmps as $emp) {
-            $localEmpIds[] = $emp['id'];
-        }
+        $localEmps = ORM::forTable('employees')
+            ->selectMany('id', 'sync_token')
+            ->findMany();
+        $loger->log('Local count: ' . count($localEmps));
+        $updateCount = $createCount = 0;
         while (true) {
             if ($lastSyncedTime) {
                 $query
@@ -159,14 +159,27 @@ class Asynchronzier
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $empObj) {
-                    $parsedEmpData = ERPDataParser::parseEmployee($empObj);
-                    if (array_search($parsedEmpData['id'], $localEmpIds) !== false) {
+                    $empRecord = null;
+                    $exists = false;
+                    foreach ($localEmps as $index => $emp) {
                         // The employee is already exists in local DB
-                        $empRecord = ORM::forTable('employees')->hydrate();
-                    } else {
+                        if ($empObj->Id == $emp->id) {
+                            $exists = true;
+                            if ($empObj->SyncToken !== $emp->sync_token) {
+                                ++$updateCount;
+                                $empRecord = ORM::forTable('employees')->hydrate();
+                            }
+                            unset($localEmps[$index]); break;
+                        }
+                    }
+                    if (!$exists) {
+                        ++$createCount;
                         $empRecord = ORM::forTable('employees')->create();
                     }
-                    $empRecord->set($parsedEmpData)->save();
+                    if (null != $empRecord) {
+                        $parsedEmpData = ERPDataParser::parseEmployee($empObj);
+                        $empRecord->set($parsedEmpData)->save();
+                    }
                 }
                 ORM::getDB()->commit();
             } else {
@@ -176,6 +189,8 @@ class Asynchronzier
             $startPos += $maxResults;
         }
         $endAt = time();
+        $loger->log("Update: $updateCount");
+        $loger->log("Create: $createCount");
         $loger->log('= Sync employee done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
