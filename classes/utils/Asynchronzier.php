@@ -2,6 +2,7 @@
 
 class Asynchronzier
 {
+    const QB_QUERY_SIZE = 1000;
     public $access_token;
     public $access_token_secret;
     public $consumer_key;
@@ -71,13 +72,12 @@ class Asynchronzier
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log('== Sync customer started');
-        $maxResults = 1000;
         $startPos = 1;
-        $localCus = ORM::forTable('customers')->select('id')->findArray();
-        $localCusIds = [];
-        foreach ($localCus as $cus) {
-            $localCusIds[] = $cus['id'];
-        }
+        $localCus = ORM::forTable('customers')
+            ->selectMany('id', 'sync_token')
+            ->findMany();
+        $loger->log('Local count: ' . count($localCus));
+        $updateCount = $createCount = 0;
         while (true) {
             if ($lastSyncedTime) {
                 $query
@@ -86,29 +86,44 @@ class Asynchronzier
             } else {
                 $query = 'SELECT * FROM Customer WHERE Active IN (true, false)';
             }
-            $query .= " startPosition $startPos maxResults $maxResults";
+            $query .= " startPosition $startPos maxResults " . self::QB_QUERY_SIZE;
             $res = $this->Query($query);
             $resCount = count($res);
             if ($resCount !== 0) {
                 $loger->log("Got $resCount records.");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $cusObj) {
-                    $parsedCus = ERPDataParser::parseCustomer($cusObj);
-                    if (array_search($parsedCus['id'], $localCusIds) !== false) {
+                    $cusRecord = null;
+                    $exists = false;
+                    foreach ($localCus as $index => $cus) {
                         // The customer is already exists in local DB
-                        $cusRecord = ORM::forTable('customers')->hydrate();
-                    } else {
+                        if ($cusObj->Id == $cus->id) {
+                            $exists = true;
+                            if ($cusObj->SyncToken !== $cus->sync_token) {
+                                ++$updateCount;
+                                $cusRecord = ORM::forTable('customers')->hydrate();
+                            }
+                            unset($localCus[$index]); break;
+                        }
+                    }
+                    if (!$exists) {
+                        ++$createCount;
                         $cusRecord = ORM::forTable('customers')->create();
                     }
-                    $cusRecord->set($parsedCus)->save();
+                    if (null != $cusRecord) {
+                        $parsedCus = ERPDataParser::parseCustomer($cusObj);
+                        $cusRecord->set($parsedCus)->save();
+                    }
                 }
                 ORM::getDB()->commit();
             } else {
                 $loger->log('End of data.');
                 break;
             }
-            $startPos += $maxResults;
+            $startPos += self::QB_QUERY_SIZE;
         }
+        $loger->log("Update: $updateCount");
+        $loger->log("Create: $createCount");
         $loger->log('== Sync customer done, taken: '.(time() - $startedAt)." secs\n");
     }
 
@@ -122,13 +137,12 @@ class Asynchronzier
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync employee started");
-        $maxResults = 1000;
         $startPos = 1;
-        $localEmps = ORM::forTable('employees')->select('id')->findArray();
-        $localEmpIds = [];
-        foreach ($localEmps as $emp) {
-            $localEmpIds[] = $emp['id'];
-        }
+        $localEmps = ORM::forTable('employees')
+            ->selectMany('id', 'sync_token')
+            ->findMany();
+        $loger->log('Local count: ' . count($localEmps));
+        $updateCount = $createCount = 0;
         while (true) {
             if ($lastSyncedTime) {
                 $query
@@ -137,30 +151,45 @@ class Asynchronzier
             } else {
                 $query = 'SELECT * FROM Employee WHERE Active IN (true, false)';
             }
-            $query .= " startPosition $startPos maxResults $maxResults";
+            $query .= " startPosition $startPos maxResults " . self::QB_QUERY_SIZE;
             $res = $this->Query($query);
             $resCount = count($res);
             if ($resCount !== 0) {
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $empObj) {
-                    $parsedEmpData = ERPDataParser::parseEmployee($empObj);
-                    if (array_search($parsedEmpData['id'], $localEmpIds) !== false) {
+                    $empRecord = null;
+                    $exists = false;
+                    foreach ($localEmps as $index => $emp) {
                         // The employee is already exists in local DB
-                        $empRecord = ORM::forTable('employees')->hydrate();
-                    } else {
+                        if ($empObj->Id == $emp->id) {
+                            $exists = true;
+                            if ($empObj->SyncToken !== $emp->sync_token) {
+                                ++$updateCount;
+                                $empRecord = ORM::forTable('employees')->hydrate();
+                            }
+                            unset($localEmps[$index]); break;
+                        }
+                    }
+                    if (!$exists) {
+                        ++$createCount;
                         $empRecord = ORM::forTable('employees')->create();
                     }
-                    $empRecord->set($parsedEmpData)->save();
+                    if (null != $empRecord) {
+                        $parsedEmpData = ERPDataParser::parseEmployee($empObj);
+                        $empRecord->set($parsedEmpData)->save();
+                    }
                 }
                 ORM::getDB()->commit();
             } else {
                 $loger->log('End of data.');
                 break;
             }
-            $startPos += $maxResults;
+            $startPos += self::QB_QUERY_SIZE;
         }
         $endAt = time();
+        $loger->log("Update: $updateCount");
+        $loger->log("Create: $createCount");
         $loger->log('= Sync employee done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
@@ -169,18 +198,21 @@ class Asynchronzier
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync estimate started");
-        $maxResults = 1000;
         $startPos = 1;
-        $localEstimates = ORM::forTable('estimates')->findMany();
-        $localLines = ORM::forTable('estimate_lines')->findMany();
-        $loger->log('Local count: '.count($localEstimates));
+        $localEstimates = ORM::forTable('estimates')
+            ->selectMany('id', 'sync_token')
+            ->findMany();
+        $localLines = ORM::forTable('estimate_lines')
+            ->selectMany('estimate_id', 'line_id')
+            ->findMany();
+        $loger->log('Local count: ' . count($localEstimates));
         $updateCount = $createCount = 0;
         while (true) {
             $query = 'SELECT * FROM Estimate';
             if ($lastSyncedTime) {
                 $query .= " WHERE MetaData.LastUpdatedTime >= '$lastSyncedTime'";
             }
-            $query .= " startPosition $startPos maxResults $maxResults";
+            $query .= " startPosition $startPos maxResults " . self::QB_QUERY_SIZE;
             $res = $this->Query($query);
             $resCount = count($res);
             if ($resCount !== 0) {
@@ -194,7 +226,9 @@ class Asynchronzier
                     foreach ($localEstimates as $index => $estimate) {
                         if ($estimateObj->Id == $estimate->id) {
                             if ($estimateObj->SyncToken != $estimate->sync_token) {
-                                $localEstimateData = $estimate->asArray();
+                                $localEstimateData = ORM::forTable('estimates')
+                                    ->findOne($estimate->id)
+                                    ->asArray();
                                 $estRecord = ORM::forTable('estimates')->hydrate();
                                 ++$updateCount;
                             } else {
@@ -210,9 +244,8 @@ class Asynchronzier
                         $estRecord->set($parsedEstimateData)->save();
 
                         // Sync lines
-                        $data_line_sync = [];
                         $estimateLineModel = new EstimateLineModel();
-                        $localEstLines = $remoteLines = [];
+                        $localEstLines = [];
                         foreach ($localLines as $index => $localLine) {
                             if ($localLine->estimate_id == $estimateObj->Id) {
                                 $localEstLines[] = $localLine;
@@ -249,7 +282,7 @@ class Asynchronzier
                 $loger->log('End of data.');
                 break;
             }
-            $startPos += $maxResults;
+            $startPos += self::QB_QUERY_SIZE;
         }
         $loger->log("Update: $updateCount");
         $loger->log("Create: $createCount");
@@ -283,9 +316,9 @@ class Asynchronzier
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync product/services started");
-        $maxResults = 1000;
         $startPos = 1;
-        $localPDs = ORM::forTable('products_and_services')->select('id')->findArray();
+        $localPDs = ORM::forTable('products_and_services')
+            ->select('id')->findArray();
         $localPDIds = [];
         foreach ($localPDs as $item) {
             $localPDIds[] = $item['id'];
@@ -298,7 +331,7 @@ class Asynchronzier
             } else {
                 $query = 'SELECT * FROM Item WHERE Active IN (true, false)';
             }
-            $query .= " startPosition $startPos maxResults $maxResults";
+            $query .= " startPosition $startPos maxResults " . self::QB_QUERY_SIZE;
             $res = $this->Query($query);
             $resCount = count($res);
             if ($resCount !== 0) {
@@ -319,7 +352,7 @@ class Asynchronzier
                 $loger->log('End of data.');
                 break;
             }
-            $startPos += $maxResults;
+            $startPos += self::QB_QUERY_SIZE;
         }
         $endAt = time();
         $loger->log('= Sync product/services done, taken: '.($endAt - $startedAt)." secs\n");
@@ -330,7 +363,6 @@ class Asynchronzier
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync attachments started");
-        $maxResults = 1000;
         $startPos = 1;
         $localAts = ORM::forTable('estimate_attachments')->select('id')->findArray();
         $localAtIds = [];
@@ -345,7 +377,7 @@ class Asynchronzier
             } else {
                 $query = "SELECT * FROM Attachable WHERE ContentType LIKE '%image%'";
             }
-            $query .= " startPosition $startPos maxResults $maxResults";
+            $query .= " startPosition $startPos maxResults " . self::QB_QUERY_SIZE;
             $res = $this->Query($query);
             $resCount = count($res);
             if ($resCount !== 0) {
@@ -389,7 +421,7 @@ class Asynchronzier
                 $loger->log('End of data.');
                 break;
             }
-            $startPos += $maxResults;
+            $startPos += self::QB_QUERY_SIZE;
         }
         $endAt = time();
         $loger->log('= Sync attachments done, taken: '.($endAt - $startedAt)." secs\n");
