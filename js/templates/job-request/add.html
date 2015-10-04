@@ -191,12 +191,12 @@
                                 This field is required!
                             </p>
                             <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 100 characters!
+                                Maximum by 100 characters!
                             </p>
                         </div>
                     </div>
                     <label class="control-label col-sm-2 required" for="date_service">
-                        Date service is Needed<span>(*)</span></label>
+                        Date service is needed<span>(*)</span></label>
                     <div class="col-sm-3">
                        <input type="text" class="form-control"
                             datepicker-popup ng-init="openDateServicePicker = false"
@@ -241,7 +241,7 @@
                             ng-messages="referralForm.type_of_service_description.$error"
                             ng-if="referralForm.type_of_service_description.$touched && referralForm.type_of_service_description.$invalid">
                             <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 10000 characters!
+                                Maximum by 10000 characters!
                             </p>
                             <p ng-message="required" class="text-danger">
                                 This field is required!
