@@ -1,3 +1,0 @@
-ALTER TABLE `estimates`
-CHANGE COLUMN `sold_by_1` `sold_by_1` VARCHAR(255) NULL DEFAULT NULL ,
-CHANGE COLUMN `sold_by_2` `sold_by_2` VARCHAR(255) NULL DEFAULT NULL ;

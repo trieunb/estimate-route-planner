@@ -53,12 +53,27 @@ module.exports = function (grunt) {
                     ]
                 }
             }
+        },
+        ngtemplates: {
+          app: {
+            cwd: 'js',
+            src: 'templates/**/*.html',
+            dest: 'js/templates.min.js',
+            options: {
+                module: 'Erp'
+            }
+          }
         }
     });
 
-// load plugins
-grunt.loadNpmTasks('grunt-contrib-uglify');
+    // load plugins
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-angular-templates');
 
-// Register at least this one task
-grunt.registerTask('default', [ 'uglify:compress_lib', 'uglify:compress_app' ]);
+    // Minify JS, CSS, angular templates
+    grunt.registerTask('default', [
+        'uglify:compress_lib',
+        'uglify:compress_app',
+        'ngtemplates'
+    ]);
 };

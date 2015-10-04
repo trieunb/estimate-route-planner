@@ -2,15 +2,14 @@
 /**
 * Plugin Name: Estimate and Route Planner Pro
 * Description: Estimate and route planning
-* Version: 1.1.0
+* Version: 1.1.1
 * Author: SFR Software
 * Author URI: http://sfr-creative.com/
 */
-define('ERP_VERSION', '1.1.0');
+define('ERP_VERSION', '1.1.1');
 define('ERP_PLUGIN_URL', plugin_dir_url(__FILE__));  // Http URL to plugin
 define('ERP_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Physical root path of plugin
 define('ROOT_MENU_SLUG', 'erpp');
-define('ERP_CONFIG_PAGE_SLUG', 'estimate-route-planner-config');
 define('ERPP_NAVIGATION_CLASS', 'estimate-route-planner-menu');
 define('ERP_PLUGIN_NAME', 'ER Planner Pro');
 
@@ -194,8 +193,10 @@ function erp_load() {
 
 function erp_enqueue_scripts() {
     if (is_plugin_page(ROOT_MENU_SLUG)) {
-        if (!ERP_MINIFY_ASSETS) {
+        if (ERP_DEBUG) {
+            // Note: The order is important for make the plugins work together
             $libJS = [
+                // JS plugins
                 'signature-pad'         => 'js/lib/signature_pad.js',
                 'dropzone'              => 'js/lib/dropzone.js',
                 'lodash'                => 'js/lib/lodash.js',
@@ -203,6 +204,7 @@ function erp_enqueue_scripts() {
                 'toastr'                => 'js/lib/toastr.js',
                 'bootstrap'             => 'js/lib/bootstrap.js',
                 'selectize'             => 'js/lib/selectize.js',
+                // Angular libraries
                 'angular-core'          => 'js/lib/angular.js',
                 'angular-animate'       => 'js/lib/angular-animate.js',
                 'angular-route'         => 'js/lib/angular-route.js',
@@ -236,7 +238,7 @@ function erp_enqueue_scripts() {
             wp_enqueue_script('erp-js-lib');
         }
 
-        if (!ERP_MINIFY_ASSETS) {
+        if (ERP_DEBUG) {
             $appJS = [
                 'erp-js-app'            => 'js/app/main.js',
                 'erp-js-app-routes'     => 'js/app/routes.js',
@@ -254,7 +256,7 @@ function erp_enqueue_scripts() {
                 wp_enqueue_script($name);
             }
 
-            // Auto scan and load all files in js/app/controllers
+            // Scan and load all components in js/app/
             $appComponentLocations = [
                 'js/app/estimate',
                 'js/app/job_request',
@@ -293,6 +295,13 @@ function erp_enqueue_scripts() {
                 [], ERP_VERSION, true
             );
             wp_enqueue_script('erp-js-app');
+
+            wp_register_script(
+                'erp-js-templates',
+                plugins_url('js/templates.min.js', __FILE__),
+                [], ERP_VERSION, true
+            );
+            wp_enqueue_script('erp-js-templates');
         }
         // Google map API js
         wp_register_script(
@@ -302,13 +311,19 @@ function erp_enqueue_scripts() {
         );
         wp_enqueue_script('gmap-api-js');
 
-        // Global JS variables required in app
+        // Register global JS variables required in app
+        if (ERP_DEBUG) {
+            $templatesPath = plugins_url('js/templates' . '/', __FILE__);
+        } else {
+            // Use preload templates
+            $templatesPath = 'templates/';
+        }
         wp_localize_script(
             'erp-js-app',
             'ERPApp',
             [
                 'baseAPIPath'       => admin_url('admin-ajax.php' . '?action=erp'),
-                'templatesPath'     => plugins_url('templates' . '/', __FILE__),
+                'templatesPath'     => $templatesPath,
                 'baseERPPluginUrl'  => ERP_PLUGIN_URL,
                 'navigationClass'   => ERPP_NAVIGATION_CLASS,
                 'version'           => ERP_VERSION,

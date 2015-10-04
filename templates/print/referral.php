@@ -65,7 +65,7 @@
                                     <label>Address</label>
                                 </td>
                                 <td colspan="3">
-                                    <span><?php echo $referral['address'] . ' ' . $referral['city']  .', ' . $referral['state'] . ' ' . $referral['zip_code'] ?></span>
+                                    <span><?php echo $referral['address'] . ' ' . $referral['city']  .', ' . $referral['state'] . ' ' . $referral['zip_code'] . ' ' . $referral['country'] ?></span>
                                 </td>
                             </tr>
                             <tr>
@@ -86,7 +86,7 @@
                             </tr>
                             <tr>
                                 <td class="wpt10">
-                                    <label>Date Service is Needed</label>
+                                    <label>Date Service is needed</label>
                                 </td>
                                 <td colspan="3">
                                     <span><?php echo $referral['date_service'] ?></span>
@@ -103,7 +103,7 @@
                             <tr>
                                 <td class="wpt10">
                                     <label>
-                                        Discribe the type of<br>
+                                        Describe the type of<br>
                                         tree service you require
                                     </label>
                                 </td>
