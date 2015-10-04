@@ -194,7 +194,9 @@ function erp_load() {
 function erp_enqueue_scripts() {
     if (is_plugin_page(ROOT_MENU_SLUG)) {
         if (ERP_DEBUG) {
+            // Note: The order is important for make the plugins work together
             $libJS = [
+                // JS plugins
                 'signature-pad'         => 'js/lib/signature_pad.js',
                 'dropzone'              => 'js/lib/dropzone.js',
                 'lodash'                => 'js/lib/lodash.js',
@@ -202,6 +204,7 @@ function erp_enqueue_scripts() {
                 'toastr'                => 'js/lib/toastr.js',
                 'bootstrap'             => 'js/lib/bootstrap.js',
                 'selectize'             => 'js/lib/selectize.js',
+                // Angular libraries
                 'angular-core'          => 'js/lib/angular.js',
                 'angular-animate'       => 'js/lib/angular-animate.js',
                 'angular-route'         => 'js/lib/angular-route.js',
