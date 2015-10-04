@@ -1,3 +1,7 @@
+## 1.1.1
+  - Fix some typos on job request printing
+  - Add pre-loading angular templates
+
 ## 1.1.0
   - New terms:
     - `Referral` to `Job Request`
