@@ -13,9 +13,9 @@ function erp_define_if_not($name, $val) {
 }
 
 /* Debugging flag */
-erp_define_if_not('ERP_DEBUG', false);
+erp_define_if_not('ERP_DEBUG', true);
 
-/* Css and Js minify */
+/* Css, Js, templates minify */
 erp_define_if_not('ERP_MINIFY_ASSETS', true);
 
 /* Timezone */

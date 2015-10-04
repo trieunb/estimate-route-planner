@@ -254,7 +254,7 @@ function erp_enqueue_scripts() {
                 wp_enqueue_script($name);
             }
 
-            // Auto scan and load all files in js/app/controllers
+            // Scan and load all components in js/app/
             $appComponentLocations = [
                 'js/app/estimate',
                 'js/app/job_request',
@@ -293,6 +293,13 @@ function erp_enqueue_scripts() {
                 [], ERP_VERSION, true
             );
             wp_enqueue_script('erp-js-app');
+
+            wp_register_script(
+                'erp-js-templates',
+                plugins_url('js/templates.min.js', __FILE__),
+                [], ERP_VERSION, true
+            );
+            wp_enqueue_script('erp-js-templates');
         }
         // Google map API js
         wp_register_script(
@@ -302,13 +309,19 @@ function erp_enqueue_scripts() {
         );
         wp_enqueue_script('gmap-api-js');
 
-        // Global JS variables required in app
+        // Register global JS variables required in app
+        if (ERP_MINIFY_ASSETS) {
+            // Use preload templates
+            $templatesPath = 'templates/';
+        } else {
+            $templatesPath = plugins_url('js/templates' . '/', __FILE__);
+        }
         wp_localize_script(
             'erp-js-app',
             'ERPApp',
             [
                 'baseAPIPath'       => admin_url('admin-ajax.php' . '?action=erp'),
-                'templatesPath'     => plugins_url('templates' . '/', __FILE__),
+                'templatesPath'     => $templatesPath,
                 'baseERPPluginUrl'  => ERP_PLUGIN_URL,
                 'navigationClass'   => ERPP_NAVIGATION_CLASS,
                 'version'           => ERP_VERSION,
