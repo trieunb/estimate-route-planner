@@ -10,7 +10,6 @@ define('ERP_VERSION', '1.1.0');
 define('ERP_PLUGIN_URL', plugin_dir_url(__FILE__));  // Http URL to plugin
 define('ERP_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Physical root path of plugin
 define('ROOT_MENU_SLUG', 'erpp');
-define('ERP_CONFIG_PAGE_SLUG', 'estimate-route-planner-config');
 define('ERPP_NAVIGATION_CLASS', 'estimate-route-planner-menu');
 define('ERP_PLUGIN_NAME', 'ER Planner Pro');
 
@@ -194,7 +193,7 @@ function erp_load() {
 
 function erp_enqueue_scripts() {
     if (is_plugin_page(ROOT_MENU_SLUG)) {
-        if (!ERP_MINIFY_ASSETS) {
+        if (ERP_DEBUG) {
             $libJS = [
                 'signature-pad'         => 'js/lib/signature_pad.js',
                 'dropzone'              => 'js/lib/dropzone.js',
@@ -236,7 +235,7 @@ function erp_enqueue_scripts() {
             wp_enqueue_script('erp-js-lib');
         }
 
-        if (!ERP_MINIFY_ASSETS) {
+        if (ERP_DEBUG) {
             $appJS = [
                 'erp-js-app'            => 'js/app/main.js',
                 'erp-js-app-routes'     => 'js/app/routes.js',
@@ -310,11 +309,11 @@ function erp_enqueue_scripts() {
         wp_enqueue_script('gmap-api-js');
 
         // Register global JS variables required in app
-        if (ERP_MINIFY_ASSETS) {
+        if (ERP_DEBUG) {
+            $templatesPath = plugins_url('js/templates' . '/', __FILE__);
+        } else {
             // Use preload templates
             $templatesPath = 'templates/';
-        } else {
-            $templatesPath = plugins_url('js/templates' . '/', __FILE__);
         }
         wp_localize_script(
             'erp-js-app',

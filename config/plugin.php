@@ -1,6 +1,6 @@
 <?php
 /**
- * Constants for configurations
+ * Plugin configurations constants
  */
 
 /**
@@ -14,9 +14,6 @@ function erp_define_if_not($name, $val) {
 
 /* Debugging flag */
 erp_define_if_not('ERP_DEBUG', true);
-
-/* Css, Js, templates minify */
-erp_define_if_not('ERP_MINIFY_ASSETS', true);
 
 /* Timezone */
 erp_define_if_not('ERP_TIMEZONE', 'UTC');
