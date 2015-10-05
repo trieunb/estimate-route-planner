@@ -134,12 +134,9 @@ final class ERPDataParser {
         if (null != $entity->PrimaryEmailAddr) {
             $email = $entity->PrimaryEmailAddr->Address;
         }
-        if (null != $entity->ParentRef) {
-            $parentId = $entity->ParentRef->value;
-        }
         list($created_at, $last_updated_at) = self::parseMetaTime($entity->MetaData);
         $active = $entity->Active == 'true';
-
+        $parentId = $entity->ParentRef;
         return [
             'id'                => $entity->Id,
             'sync_token'        => $entity->SyncToken,
