@@ -55,18 +55,18 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-5 required" for="due_date">
+                    <label class="control-label col-sm-5 required" for="expiration_date">
                         Due Date<span>(*)</span></label>
                     <div class="col-sm-7">
-                        <input class="form-control" type="text" name="due_date"
-                            datepicker-popup ng-init="openDateduePicker = false"
-                            is-open="openDateduePicker"
-                            ng-click="openDateduePicker = !openDateduePicker"
+                        <input class="form-control" type="text" name="expiration_date"
+                            datepicker-popup ng-init="openExpDatePicker = false"
+                            is-open="openExpDatePicker"
+                            ng-click="openExpDatePicker = !openExpDatePicker"
                             placeholder="yyyy-mm-dd" ng-required="true"
-                            ng-model="estimate.due_date" close-text="Close">
+                            ng-model="estimate.expiration_date" close-text="Close">
                         <div class="help-block"
-                            ng-messages="estimateForm.due_date.$error"
-                            ng-if="estimateForm.due_date.$touched && estimateForm.due_date.$invalid">
+                            ng-messages="estimateForm.expiration_date.$error"
+                            ng-if="estimateForm.expiration_date.$touched && estimateForm.expiration_date.$invalid">
                             <p ng-message="required" class="text-danger">
                                 This field is required!
                             </p>

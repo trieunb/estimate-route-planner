@@ -264,8 +264,8 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
                     if (estimate.txn_date) {
                         estimate.txn_date = ($filter('date')(estimate.txn_date, "yyyy-MM-dd"));
                     }
-                    if (estimate.due_date) {
-                        estimate.due_date = ($filter('date')(estimate.due_date, "yyyy-MM-dd"));
+                    if (estimate.expiration_date) {
+                        estimate.expiration_date = ($filter('date')(estimate.expiration_date, "yyyy-MM-dd"));
                     }
                     if (estimate.date_of_signature) {
                         estimate.date_of_signature = ($filter('date')(estimate.date_of_signature, "yyyy-MM-dd"));

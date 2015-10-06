@@ -48,7 +48,7 @@ function AddCrewRouteCtrl(
         },
         {
             label: 'Due date',
-            value: 'due_date'
+            value: 'expiration_date'
         }
     ];
     // Loading non-assigned estimates

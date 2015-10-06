@@ -125,7 +125,7 @@
                             <span><?php echo $estimate->txn_date ?></span>
                         <br>
                             <label>Due Date:</label>
-                            <span><?php echo $estimate->due_date ?></span>
+                            <span><?php echo $estimate->expiration_date ?></span>
                         <br>
                             <label>Status:</label>
                             <span><?php echo $estimate->status ?></span>

@@ -230,13 +230,16 @@ final class ERPDataParser {
     }
 
     public function parseEstimate($data, $data_local = null) {
-        $txn_date = $expiration_date = null;
+        $txn_date = $expiration_date = $due_date = null;
         if ($data->TxnDate) {
             $txn_date = $data->TxnDate;
         }
         $expiration_date = $data_local['expiration_date'];
         if ($data->ExpirationDate) {
-            $expiration_date = date('Y-m-d H:i:s',  strtotime($data->ExpirationDate));
+            $expiration_date = date('Y-m-d H:i:s', strtotime($data->ExpirationDate));
+        }
+        if ($data->DueDate) {
+            $due_date = date('Y-m-d H:i:s', strtotime($data->DueDate));
         }
         $billAddress = $data->BillAddr;
         $bill_address_id
@@ -311,6 +314,7 @@ final class ERPDataParser {
             'estimate_footer' => $estimate_footer,
             'txn_date' => $txn_date,
             'expiration_date' => $expiration_date,
+            'due_date' => $due_date,
             'email' => $email,
 
             'bill_address_id' => $bill_address_id,
@@ -326,7 +330,6 @@ final class ERPDataParser {
             'total' => $data->TotalAmt,
             'primary_phone_number' => $data_local['primary_phone_number'],
             'alternate_phone_number' => $data_local['alternate_phone_number'],
-            'due_date' => $data_local['due_date'],
             'route_id' => $data_local['route_id'],
             'source' => $data_local['source'],
             'customer_signature' => $data_local['customer_signature'],

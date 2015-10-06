@@ -35,7 +35,7 @@ class EstimateController extends BaseController {
         $estimates = $searchQuery
             ->selectMany(
                 'e.id', 'e.txn_date', 'e.doc_number',
-                'e.source', 'e.due_date', 'e.total',
+                'e.source', 'e.expiration_date', 'e.total',
                 'e.status', 'e.email'
             )
             ->select('c.display_name', 'customer_display_name')
@@ -59,7 +59,7 @@ class EstimateController extends BaseController {
             ->tableAlias('e')
             ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
             ->selectMany(
-                'e.id', 'e.due_date', 'e.txn_date', 'e.doc_number',
+                'e.id', 'e.expiration_date', 'e.txn_date', 'e.doc_number',
                 'e.job_address', 'e.job_city',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
                 'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
@@ -83,7 +83,7 @@ class EstimateController extends BaseController {
             ->tableAlias('e')
             ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
             ->selectMany(
-                'e.id', 'e.due_date', 'e.job_address', 'e.job_city',
+                'e.id', 'e.expiration_date', 'e.job_address', 'e.job_city',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
                 'e.location_notes', 'e.doc_number', 'e.txn_date',
                 'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
@@ -138,8 +138,7 @@ class EstimateController extends BaseController {
             }
         }
         $keepNullColumns = [
-            'route_id', 'date_of_signature', 'accepted_date',
-            'expiration_date'
+            'route_id', 'date_of_signature', 'accepted_date', 'expiration_date'
         ];
         foreach ($keepNullColumns as $column) {
             if (!@$insertData[$column]) {
@@ -227,8 +226,7 @@ class EstimateController extends BaseController {
         $newCustomerData = $this->_checkForCreateNewCustomers();
         $updateData = array_merge($this->data, $newCustomerData);
         $keepNullColumns = [
-            'route_id', 'date_of_signature', 'accepted_date',
-            'expiration_date'
+            'route_id', 'date_of_signature', 'accepted_date', 'expiration_date'
         ];
         foreach ($keepNullColumns as $column) {
             if (!@$updateData[$column]) {

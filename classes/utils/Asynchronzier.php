@@ -203,7 +203,7 @@ class Asynchronzier
             ->selectMany('id', 'sync_token')
             ->findMany();
         $localLines = ORM::forTable('estimate_lines')
-            ->selectMany('estimate_id', 'line_id')
+            ->selectMany('id', 'estimate_id', 'line_id')
             ->findMany();
         $loger->log('Local count: ' . count($localEstimates));
         $updateCount = $createCount = 0;
@@ -686,7 +686,7 @@ class Asynchronzier
                 'SyncToken'     => $localData['sync_token'],
                 'DocNumber'     => $localData['doc_number'],
                 'TxnDate'       => $localData['txn_date'],
-                'DueDate'       => $localData['due_date'],
+                'ExpirationDate'=> $localData['expiration_date'],
                 'CustomerMemo'  => $localData['estimate_footer'],
                 'CustomField'   => [
                     // Sold by 1

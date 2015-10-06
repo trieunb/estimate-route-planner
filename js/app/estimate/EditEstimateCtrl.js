@@ -403,9 +403,9 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
                             estimate.txn_date,
                             "yyyy-MM-dd");
                     }
-                    if (estimate.due_date) {
-                        estimate.due_date = $filter('date')(
-                            estimate.due_date, "yyyy-MM-dd");
+                    if (estimate.expiration_date) {
+                        estimate.expiration_date = $filter('date')(
+                            estimate.expiration_date, "yyyy-MM-dd");
                     }
                     if (estimate.date_of_signature) {
                         estimate.date_of_signature = $filter('date')(
