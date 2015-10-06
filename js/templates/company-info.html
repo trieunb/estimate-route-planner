@@ -29,7 +29,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3">Full Address</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control textarea_size" type="text" name="full_address" ng-model="info.full_address" required></textarea>
+                                    <textarea rows="3" class="form-control" type="text" name="full_address" ng-model="info.full_address" required></textarea>
                                     <span style="color:red" ng-show="companyForm.full_address.$dirty && companyForm.full_address.$invalid">
                                         <span ng-show="companyForm.full_address.$error.required">Address is required.</span>
                                     </span>
@@ -87,7 +87,9 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3">Estimate Footer</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control textarea_size" type="text" name="setting.estimate_footer"
+                                    <textarea class="form-control textarea_size" type="text"
+                                        name="setting.estimate_footer"
+                                        rows="5"
                                     ng-model="info.estimate_footer" ng-required="true"></textarea>
                                 </div>
                             </div>
