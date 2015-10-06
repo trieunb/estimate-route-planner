@@ -6,10 +6,13 @@
             '$rootScope',
             'jobRequestFactory',
             'estimateRouteFactory',
+            'sharedData',
             '$location',
             '$filter',
+            'erpOptions',
             'uiGmapGoogleMapApi',
             'uiGmapIsReady',
+            'erpGeoLocation',
             AddEstimateRouteCtrl
         ]
     );
@@ -19,10 +22,13 @@ function AddEstimateRouteCtrl(
     $rootScope,
     jobRequestFactory,
     estimateRouteFactory,
+    sharedData,
     $location,
     $filter,
+    erpOptions,
     uiGmapGoogleMapApi,
-    uiGmapIsReady) {
+    uiGmapIsReady,
+    erpGeoLocation) {
 
     var orderBy = $filter('orderBy');
     var directionsService = new google.maps.DirectionsService();
@@ -35,25 +41,45 @@ function AddEstimateRouteCtrl(
     $scope.assignedReferrals = [];
     $scope.recentRoutes = [];
     $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png' };
+    $scope.startMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/start-marker.png' };
     $scope.map = {control: {}};  // Hold map instance
     $scope.map.options = {};
     $scope.assigned_queue_sort_by = '';
     $scope.pending_queue_sort_by = '';
+    $scope.routeOrigin = null;
+    $scope.routeOriginAddress = sharedData.companyInfo.full_address;
+    $scope.sortOptions = erpOptions.sortEstimateRoute;
 
-    $scope.sortOptions = [
-      {
-        label: 'Custom',
-        value: ''
-      },
-      {
-        label: 'Status',
-        value: 'status'
-      },
-      {
-        label: 'Date Requested',
-        value: 'date_requested'
-      }
-    ];
+    // Find start location for route(use company address)
+    erpGeoLocation.resolve($scope.routeOriginAddress)
+        .then(
+            function(result) {
+                $scope.routeOrigin = {
+                    latitude: result.lat(),
+                    longitude: result.lng()
+                };
+
+                // Setting gmap
+                uiGmapGoogleMapApi.then(function(maps) {
+                    $scope.map.options = {
+                        center: {
+                            latitude: $scope.routeOrigin.latitude,
+                            longitude: $scope.routeOrigin.longitude
+                        },
+                        zoom: 14
+                    };
+                    return maps;
+                });
+
+               uiGmapIsReady.promise(1).then(function(instances) {
+                    directionsDisplay.setMap($scope.map.control.getGMap());
+                });
+            },
+            function() {
+                toastr.error('Could not find geo location of company address! The route could not draw!');
+            }
+        );
+
     // Loading referrals
     jobRequestFactory.listPending()
         .success(function(response) {
@@ -65,33 +91,11 @@ function AddEstimateRouteCtrl(
                 };
                 $scope.pendingReferrals.push(referral);
             });
-
-            // Setting gmap
-            uiGmapGoogleMapApi.then(function(maps) {
-                var bounds = new google.maps.LatLngBounds();
-                angular.forEach($scope.pendingReferrals, function(referral) {
-                    bounds.extend(new google.maps.LatLng(referral.coords.latitude, referral.coords.longitude));
-                });
-                $scope.map.options = {
-                    center: {
-                        latitude: bounds.getCenter().lat(),
-                        longitude: bounds.getCenter().lng()
-                    },
-                    zoom: 14,
-                    MapTypeId: maps.MapTypeId.HYBRID
-                };
-
-                return maps;
-            });
-
-           uiGmapIsReady.promise(1).then(function(instances) {
-                directionsDisplay.setMap($scope.map.control.getGMap());
-            });
-            // Load recent saved routes
-            estimateRouteFactory.recent()
-                .success(function(response) {
-                    $scope.recentRoutes = response;
-                });
+        });
+    // Load recent saved routes
+    estimateRouteFactory.recent()
+        .success(function(response) {
+            $scope.recentRoutes = response;
         });
 
     $scope.onDropToAssignedQueue = function(event, index, item, external, type) {
@@ -135,24 +139,28 @@ function AddEstimateRouteCtrl(
      * Repaint direction
      */
     $scope.drawAssignedReferralsDirection = function() {
-        if ($scope.assignedReferrals.length < 2) {
+        if ($scope.routeOrigin === null) {
+            toastr.error('Could not find geo location of company address! The route could not draw!');
+            return;
+        }
+        if ($scope.assignedReferrals.length < 1) {
             // Clear drawed direction
             directionsDisplay.set('directions', null);
             return;
         }
-        console.log('draw');
-        var origin = {}; // start
+        var originLatLng = new google.maps.LatLng(
+            $scope.routeOrigin.latitude, $scope.routeOrigin.longitude);
         var destination = {}; // end
-        var waypts = [];
+        var waypts = [
+            {
+                location: originLatLng
+            }
+        ];
 
         angular.forEach($scope.assignedReferrals, function(referral, index) {
             var point = {};
             var latLng = new google.maps.LatLng(referral.coords.latitude, referral.coords.longitude);
             point.location = latLng;
-
-            if (index === 0) {
-                origin = latLng;
-            }
 
             if( (index + 1) === $scope.assignedReferrals.length ) {
                 point.stopover = true;
@@ -162,7 +170,7 @@ function AddEstimateRouteCtrl(
         });
 
         var request = {
-            origin : origin,
+            origin: originLatLng,
             waypoints: waypts,
             destination: destination,
             optimizeWaypoints: true,
@@ -172,6 +180,8 @@ function AddEstimateRouteCtrl(
         directionsService.route(request, function(response, status) {
             if (status == google.maps.DirectionsStatus.OK) {
                 directionsDisplay.setDirections(response);
+            } else {
+                toastr.error("Could not find route on the map!");
             }
         });
     };
@@ -200,8 +210,12 @@ function AddEstimateRouteCtrl(
     };
 
     $scope.printRoute = function() {
-        if ($scope.assignedReferrals.length < 2) {
-            toastr.error("Print route require at least two assigned referrals!");
+        if ($scope.routeOrigin === null) {
+            toastr.error('Could not find geo location of company address! The route could not print!');
+            return;
+        }
+        if ($scope.assignedReferrals.length < 1) {
+            toastr.error("Print route require at least 1 assigned referral!");
         } else {
             var url = 'https://www.google.com/maps/dir/am=t' + getGmapURL();
             window.open(url, '_blank');
@@ -209,21 +223,18 @@ function AddEstimateRouteCtrl(
     };
 
     var getGmapURL = function() {
-        var latlng = [] ;
+        var latlngs = [] ;
+        latlngs.push({
+            latitude: $scope.routeOrigin.latitude,
+            longitude: $scope.routeOrigin.longitude
+        });
         angular.forEach($scope.assignedReferrals, function(referral) {
-            var tmp = [];
-            referral.coords = {
-                latitude: referral.lat,
-                longitude: referral.lng
-            };
-            tmp.push(referral.coords.latitude);
-            tmp.push(referral.coords.longitude);
-            latlng.push(tmp);
+            latlngs.push(referral.coords);
         });
 
         var result = '';
-        angular.forEach(latlng, function(value) {
-            result += '/' + value[0] + ',' + value[1];
+        angular.forEach(latlngs, function(point) {
+            result += '/' + point.latitude + ',' + point.longitude;
         });
         return result;
     };

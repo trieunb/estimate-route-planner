@@ -11,6 +11,9 @@ angular.module('Erp')
            'uiGmapGoogleMapApi',
            'uiGmapIsReady',
            '$filter',
+           'erpOptions',
+           'sharedData',
+           'erpGeoLocation',
            EditCrewRouteCtrl
         ]
     );
@@ -24,7 +27,10 @@ function EditCrewRouteCtrl(
     $routeParams,
     uiGmapGoogleMapApi,
     uiGmapIsReady,
-    $filter) {
+    $filter,
+    erpOptions,
+    sharedData,
+    erpGeoLocation) {
 
     var orderBy = $filter('orderBy');
     var directionsService = new google.maps.DirectionsService();
@@ -38,24 +44,63 @@ function EditCrewRouteCtrl(
     $scope.assignedEstimates = [];
     $scope.currentAssignedEstimates = [];
     $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png' };
+    $scope.startMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/start-marker.png' };
     $scope.map = {control: {}};  // Hold map instance
     $scope.map.options = {};
     $scope.assigned_queue_sort_by = '';
     $scope.pending_queue_sort_by = '';
-    $scope.sortOptions = [
-        {
-           label: 'Custom',
-           value: ''
-        },
-        {
-           label: 'Total',
-           value: 'total'
-        },
-        {
-           label: 'Due date',
-           value: 'expiration_date'
-        }
-    ];
+    $scope.routeOrigin = null;
+    $scope.routeOriginAddress = sharedData.companyInfo.full_address;
+    $scope.sortOptions = erpOptions.sortCrewRoute;
+
+    // Get route data
+    crewRouteFactory.get($routeParams.id)
+        .success(function(response) {
+            $scope.route.id = response.id;
+            $scope.route.title = response.title;
+            $scope.route.status = response.status;
+            // Collect assigned estimates for dragging
+            angular.forEach(response.assigned_estimates, function(estimate) {
+                estimate.coords = {
+                    latitude: estimate.job_lat,
+                    longitude: estimate.job_lng
+                };
+                estimate.total = parseFloat(estimate.total);
+                $scope.assignedEstimates.push(estimate);
+                $scope.currentAssignedEstimates.push(estimate);
+            });
+
+            // Find start location for route(use company address)
+            erpGeoLocation.resolve($scope.routeOriginAddress)
+                .then(
+                    function(result) {
+                        $scope.routeOrigin = {
+                            latitude: result.lat(),
+                            longitude: result.lng()
+                        };
+
+                        // Setting gmap
+                        uiGmapGoogleMapApi.then(function(maps) {
+                            $scope.map.options = {
+                                center: {
+                                    latitude: $scope.routeOrigin.latitude,
+                                    longitude: $scope.routeOrigin.longitude
+                                },
+                                zoom: 14
+                            };
+                            return maps;
+                        });
+
+                       uiGmapIsReady.promise(1).then(function(instances) {
+                            directionsDisplay.setMap($scope.map.control.getGMap());
+                            $scope.drawAssignedEstimatesDirection();
+                        });
+                    },
+                    function() {
+                        toastr.error('Could not find geo location of company address! The route could not draw!');
+                    }
+                );
+        });
 
    // Loading non-assigned estimates
     estimateFactory.listUnassigned()
@@ -70,68 +115,6 @@ function EditCrewRouteCtrl(
                     estimate.total = parseFloat(estimate.total);
                     $scope.pendingEstimates.push(estimate);
                }
-           });
-
-           // Get route data
-            crewRouteFactory.get($routeParams.id)
-               .success(function(response) {
-                   $scope.route.id = response.id;
-                   $scope.route.title = response.title;
-                   $scope.route.status = response.status;
-                   // Collect assigned estimates for dragging
-                   angular.forEach(response.assigned_estimates, function(estimate) {
-                       estimate.coords = {
-                           latitude: estimate.job_lat,
-                           longitude: estimate.job_lng
-                       };
-                       estimate.total = parseFloat(estimate.total);
-                       $scope.assignedEstimates.push(estimate);
-                       $scope.currentAssignedEstimates.push(estimate);
-                   });
-                   // Setting gmap
-                   uiGmapGoogleMapApi.then(function(maps) {
-                       var center  = {};
-                       if ($scope.assignedEstimates.length) {
-                           center = {
-                               latitude: $scope.assignedEstimates[0].coords.latitude,
-                               longitude: $scope.assignedEstimates[0].coords.longitude
-                           };
-                       } else if($scope.pendingEstimates.length) {
-                           center = {
-                               latitude: $scope.pendingEstimates[0].coords.latitude,
-                               longitude: $scope.pendingEstimates[0].coords.longitude
-                           };
-                       }
-
-                       $scope.map.options = {
-                           center: center,
-                           zoom: 14,
-                           MapTypeId: maps.MapTypeId.HYBRID
-                       };
-                       return maps;
-                   });
-               });
-
-           // Setting gmap
-           uiGmapGoogleMapApi.then(function(maps) {
-               var bounds = new google.maps.LatLngBounds();
-               angular.forEach($scope.pendingEstimates, function(estimate) {
-                   bounds.extend(new google.maps.LatLng(estimate.coords.latitude, estimate.coords.longitude));
-               });
-               $scope.map.options = {
-                   center: {
-                       latitude: bounds.getCenter().lat(),
-                       longitude: bounds.getCenter().lng()
-                   },
-                   zoom: 14,
-                   MapTypeId: maps.MapTypeId.HYBRID
-               };
-               return maps;
-           });
-
-          uiGmapIsReady.promise(1).then(function(instances) {
-               directionsDisplay.setMap($scope.map.control.getGMap());
-               $scope.drawAssignedEstimatesDirection(); // Render direction after loaded
            });
        });
 
@@ -164,88 +147,99 @@ function EditCrewRouteCtrl(
        $scope.drawAssignedEstimatesDirection();
    };
 
-   $scope.sortPendingQueue = function() {
-       $scope.pendingEstimates = orderBy(
+    $scope.sortPendingQueue = function() {
+        $scope.pendingEstimates = orderBy(
            $scope.pendingEstimates,
            $scope.pending_queue_sort_by,
            false
-       );
-   };
+        );
+    };
 
-   /**
-    * Repaint direction
-    */
-   $scope.drawAssignedEstimatesDirection = function() {
-       if ($scope.assignedEstimates.length < 2) {
-           // Clear drawed direction
-           directionsDisplay.set('directions', null);
-           return;
-       }
-       var origin = {}; // start
-       var destination = {}; // end
-       var waypts = [];
+    /**
+     * Repaint direction
+     */
+    $scope.drawAssignedEstimatesDirection = function() {
+        if ($scope.routeOrigin === null) {
+            toastr.error('Could not find geo location of company address! The route could not draw!');
+            return;
+        }
+        if ($scope.assignedEstimates.length < 1) {
+            // Clear drawed direction
+            directionsDisplay.set('directions', null);
+            return;
+        }
+        var originLatLng = new google.maps.LatLng(
+            $scope.routeOrigin.latitude, $scope.routeOrigin.longitude);
+        var destination = {};
+        var waypts = [
+            {
+                location: originLatLng
+            }
+        ];
 
-       angular.forEach($scope.assignedEstimates, function(estimate, index) {
-           var point = {};
-           var latLng = new google.maps.LatLng(estimate.coords.latitude, estimate.coords.longitude);
-           point.location = latLng;
+        angular.forEach($scope.assignedEstimates, function(estimate, index) {
+            var point = {};
+            var latLng = new google.maps.LatLng(estimate.coords.latitude, estimate.coords.longitude);
+            point.location = latLng;
 
-           if (index === 0) {
-               origin = latLng;
-           }
+            if( (index + 1) === $scope.assignedEstimates.length ) {
+                point.stopover = true;
+                destination = latLng;
+            }
+            waypts.push(point);
+        });
 
-           if( (index + 1) === $scope.assignedEstimates.length ) {
-               point.stopover = true;
-               destination = latLng;
-           }
-           waypts.push(point);
-       });
+        var request = {
+            origin: originLatLng,
+            waypoints: waypts,
+            destination: destination,
+            optimizeWaypoints: true,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
 
-       var request = {
-           origin : origin,
-           waypoints: waypts,
-           destination: destination,
-           optimizeWaypoints: true,
-           travelMode: google.maps.TravelMode.DRIVING
-       };
+        directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+            } else {
+                toastr.error("Could not find route on the map!");
+            }
+        });
+    };
 
-       directionsService.route(request, function(response, status) {
-           if (status == google.maps.DirectionsStatus.OK) {
-               directionsDisplay.setDirections(response);
-           }
-       });
-   };
+    $scope.saveRoute = function() {
+        if ($scope.assignedEstimates.length === 0) {
+            toastr.error("A route could not be saved without any assigned estimates!");
+        } else {
+            var data = {};
+            data.id = $scope.route.id;
+            data.title = $scope.route.title;
+            data.status = $scope.route.status;
+            data.assigned_estimate_ids = [];
 
-   $scope.saveRoute = function() {
-       if ($scope.assignedEstimates.length === 0) {
-           toastr.error("A route could not be saved without any assigned estimates!");
-       } else {
-           var data = {};
-           data.id = $scope.route.id;
-           data.title = $scope.route.title;
-           data.status = $scope.route.status;
-           data.assigned_estimate_ids = [];
-
-           angular.forEach($scope.assignedEstimates, function(estimate) {
-               data.assigned_estimate_ids.push(estimate.id);
-           });
-           crewRouteFactory.update(data)
-               .success(function(response) {
-                   if (response.success) {
+            angular.forEach($scope.assignedEstimates, function(estimate) {
+                data.assigned_estimate_ids.push(estimate.id);
+            });
+            crewRouteFactory.update(data)
+                .success(function(response) {
+                    if (response.success) {
                        toastr.success(response.message);
                        $scope.currentAssignedEstimates = [];
                        angular.copy($scope.assignedEstimates, $scope.currentAssignedEstimates);
-                   } else {
+                    } else {
                        var msg = response.message || 'An error occurred while saving estimate';
                        toastr.error(msg);
-                   }
-               });
+                    }
+                });
        }
-   };
+    };
 
-   $scope.printRoute = function() {
-        if ($scope.assignedEstimates.length < 2) {
-            toastr.error("Print route require at least two assigned estimates!");
+    $scope.printRoute = function() {
+        if ($scope.routeOrigin === null) {
+           toastr.error('Could not find geo location of company address! The route could not draw!');
+           return;
+        }
+        if ($scope.assignedEstimates.length < 1) {
+            toastr.error("Print route require at least 1 estimate!");
         } else {
             var url = 'https://www.google.com/maps/dir/am=t' + getGmapURL();
             window.open(url, '_blank');
@@ -253,21 +247,18 @@ function EditCrewRouteCtrl(
     };
 
     var getGmapURL = function() {
-        var latlng = [] ;
+        var latlngs = [] ;
+        latlngs.push({
+            latitude: $scope.routeOrigin.latitude,
+            longitude: $scope.routeOrigin.longitude
+        });
         angular.forEach($scope.assignedEstimates, function(estimate) {
-            var tmp = [];
-            estimate.coords = {
-                latitude: estimate.job_lat,
-                longitude: estimate.job_lng
-            };
-            tmp.push(estimate.coords.latitude);
-            tmp.push(estimate.coords.longitude);
-            latlng.push(tmp);
+            latlngs.push(estimate.coords);
         });
 
         var result = '';
-        angular.forEach(latlng, function(value) {
-            result += '/' + value[0] + ',' + value[1];
+        angular.forEach(latlngs, function(point) {
+            result += '/' + point.latitude + ',' + point.longitude;
         });
         return result;
     };

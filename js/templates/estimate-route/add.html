@@ -71,6 +71,16 @@
             </div>
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
+                    <ui-gmap-marker
+                        icon="startMarkerIcon"
+                        idkey="routeOrigin"
+                        coords="routeOrigin">
+                        <ui-gmap-window>
+                            <p>
+                                {{::routeOriginAddress}}
+                            </p>
+                        </ui-gmap-window>
+                    </ui-gmap-marker>
                     <ui-gmap-marker ng-repeat="referral in pendingReferrals"
                         icon="pendingMarkerIcon"
                         idkey="$index" coords="referral.coords"

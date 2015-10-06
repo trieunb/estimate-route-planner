@@ -1,3 +1,8 @@
+## 1.1.2
+  - Add sub-level to customers
+  - Make customers dropdown order by sub-customers
+  - Remove country fields from customer(estimate) information
+  - Use company address as start location for every route
 ## 1.1.1
   - Fix some typos on job request printing
   - Add pre-loading angular templates
