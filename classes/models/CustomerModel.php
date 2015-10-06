@@ -5,6 +5,7 @@ class CustomerModel extends BaseModel {
         'id',
         'sync_token',
         'parent_id',
+        'sub_level',
         'title',
         'given_name',
         'middle_name',

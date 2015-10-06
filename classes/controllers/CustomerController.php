@@ -3,21 +3,43 @@ class CustomerController extends BaseController {
 
     public function index() {
         $customers = ORM::forTable('customers')
+            ->tableAlias('c')
+            ->leftOuterJoin('customers', ['c.parent_id', '=', 'pc.id'], 'pc')
             ->selectMany(
-                'id', 'display_name', 'email',
-                'primary_phone_number', 'alternate_phone_number',
-                'mobile_phone_number',
-                'bill_address', 'bill_city', 'bill_state', 'bill_zip_code',
-                'bill_country',
-                'ship_address', 'ship_city', 'ship_state', 'ship_zip_code',
-                'ship_country'
-            )->findArray();
+                'c.id', 'c.display_name',
+                'c.parent_id', 'c.sub_level', 'c.email',
+                'c.primary_phone_number', 'c.alternate_phone_number',
+                'c.mobile_phone_number',
+                'c.bill_address', 'c.bill_city', 'c.bill_state', 'c.bill_zip_code',
+                'c.bill_country',
+                'c.ship_address', 'c.ship_city', 'c.ship_state', 'c.ship_zip_code',
+                'c.ship_country'
+            )
+            ->select('pc.display_name', 'parent_display_name')
+            ->orderByAsc('c.display_name')
+            ->findArray();
         $this->renderJson($customers);
     }
 
     public function show() {
         $customer = ORM::forTable('customers')->findOne($this->data['id']);
         $this->renderJson($customer->asArray());
+    }
+
+    private function _buildTree($itemList, $parentId) {
+        $result = [];
+        foreach ($itemList as $item) {
+            if ($item['parent_id'] == $parentId) {
+              $newItem = $item;
+              $newItem['childs'] = $this->_buildTree($itemList, $newItem['id']);
+              $result[] = $newItem;
+            }
+        }
+
+        if (count($result) > 0) {
+            return $result;
+        }
+        return null;
     }
 }
 ?>

@@ -526,7 +526,6 @@ class EstimateController extends BaseController {
         $customerInfo['display_name']   = trim($this->data['customer_display_name']);
         $customerInfo['bill_address']   = @$this->data['bill_address'];
         $customerInfo['bill_city']      = @$this->data['bill_city'];
-        $customerInfo['bill_country']   = @$this->data['bill_country'];
         $customerInfo['bill_state']     = @$this->data['bill_state'];
         $customerInfo['bill_zip_code']  = @$this->data['bill_zip_code'];
         $customerInfo['primary_phone_number']    = @$this->data['primary_phone_number'];
@@ -540,7 +539,6 @@ class EstimateController extends BaseController {
         $customerInfo['display_name']   = trim(@$this->data['job_customer_display_name']);
         $customerInfo['ship_address']   = @$this->data['job_address'];
         $customerInfo['ship_city']      = @$this->data['job_city'];
-        $customerInfo['ship_country']   = @$this->data['job_country'];
         $customerInfo['ship_state']     = @$this->data['job_state'];
         $customerInfo['ship_zip_code']  = @$this->data['job_zip_code'];
         return $customerInfo;
