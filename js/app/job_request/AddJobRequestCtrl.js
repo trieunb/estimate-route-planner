@@ -9,6 +9,7 @@
             'sharedData',
             '$location',
             '$filter',
+            'erpGeoLocation',
             AddJobRequestCtrl
         ]
     );
@@ -20,7 +21,8 @@ function AddJobRequestCtrl(
     customerFactory,
     sharedData,
     $location,
-    $filter) {
+    $filter,
+    erpGeoLocation) {
 
     $scope.setPageTitle('New Job Request');
     $scope.companyInfo = {};
@@ -103,34 +105,34 @@ function AddJobRequestCtrl(
     });
 
     $scope.submitForm = function() {
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode( { address: getFullAddress() }, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
-                var referral = {};
-                angular.copy($scope.referral, referral);
-                var location = results[0].geometry.location;
-                referral.lat = location.lat();
-                referral.lng = location.lng();
-                referral.date_service = ($filter('date')(referral.date_service, "yyyy-MM-dd"));
-                referral.date_requested = ($filter('date')(referral.date_requested, "yyyy-MM-dd"));
-                jobRequestFactory.save(referral)
-                    .success(function(response) {
-                        if (response.success) {
-                            toastr.success(response.message);
-                            if ($scope.referral.customer_id == 0) {
-                                // To force reload customer list
-                                $rootScope.customers = undefined;
+        erpGeoLocation.resolve(getFullAddress())
+            .then(
+                function(result) {
+                    var referral = {};
+                    angular.copy($scope.referral, referral);
+                    referral.lat = result.lat();
+                    referral.lng = result.lng();
+                    referral.date_service = ($filter('date')(referral.date_service, "yyyy-MM-dd"));
+                    referral.date_requested = ($filter('date')(referral.date_requested, "yyyy-MM-dd"));
+                    jobRequestFactory.save(referral)
+                        .success(function(response) {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                if ($scope.referral.customer_id == 0) {
+                                    // To force reload customer list
+                                    $rootScope.customers = undefined;
+                                }
+                                $location.path('/edit-job-request/' + response.data.id);
+                            } else {
+                                var msg = response.message || 'An error occurred while saving job request';
+                                toastr.error(msg);
                             }
-                            $location.path('/edit-job-request/' + response.data.id);
-                        } else {
-                            var msg = response.message || 'An error occurred while saving job request';
-                            toastr.error(msg);
-                        }
-                    });
-            } else {
-                toastr.error('Could not find geo location. Please check the address!');
-            }
-        });
+                        });
+                },
+                function() {
+                    toastr.error('Could not find geo location. Please check the address!');
+                }
+            );
     };
 
     function getFullAddress() {

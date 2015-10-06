@@ -12,15 +12,26 @@ angular
             'customerFactory',
             'estimateFactory',
             'employeeFactory',
+            'erpGeoLocation',
             '$ngBootbox',
             'sharedData',
             AddEstimateCtrl
         ]
     );
 
-function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
-    $location, customerFactory, estimateFactory, employeeFactory, $ngBootbox,
-    sharedData) {
+function AddEstimateCtrl(
+        $scope,
+        $rootScope,
+        $http,
+        $routeParams,
+        $filter,
+        $location,
+        customerFactory,
+        estimateFactory,
+        employeeFactory,
+        erpGeoLocation,
+        $ngBootbox,
+        sharedData) {
     $scope.setPageTitle('New estimate');
     $scope.customers = [];
     $scope.jobCustomers = [];
@@ -262,51 +273,50 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
         if (isEmptyLines()) {
             toastr.error('You must fill out at least one split line.');
         } else {
-            // Get geolocation from job info
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode( { address: getJobFullAddress() }, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
-                    var location = results[0].geometry.location;
-                    $scope.estimate.job_lat = location.lat();
-                    $scope.estimate.job_lng = location.lng();
-                    var estimate = {};
-                    angular.copy($scope.estimate, estimate);
-                    if (estimate.txn_date) {
-                        estimate.txn_date = ($filter('date')(estimate.txn_date, "yyyy-MM-dd"));
-                    }
-                    if (estimate.expiration_date) {
-                        estimate.expiration_date = ($filter('date')(estimate.expiration_date, "yyyy-MM-dd"));
-                    }
-                    if (estimate.date_of_signature) {
-                        estimate.date_of_signature = ($filter('date')(estimate.date_of_signature, "yyyy-MM-dd"));
-                    }
-                    // Get base64 of customer signature
-                    var signaturePad =  $scope.signature_pad;
-                    if (!signaturePad.isEmpty()) {
-                        estimate.customer_signature_encoded = signaturePad.toDataURL();
-                    }
-                    estimateFactory.save(estimate)
-                        .success(function(response) {
-                            if (response.success) {
-                                toastr.success(response.message);
-                                if ($scope.estimate.customer_id == 0 ||
-                                    $scope.estimate.job_customer_id == 0) {
-                                    // To force reload customer list
-                                    $rootScope.customers = undefined;
+            erpGeoLocation.resolve(getJobFullAddress())
+                .then(
+                    function(result) {
+                        $scope.estimate.job_lat = result.lat();
+                        $scope.estimate.job_lng = result.lng();
+                        var estimate = {};
+                        angular.copy($scope.estimate, estimate);
+                        if (estimate.txn_date) {
+                            estimate.txn_date = ($filter('date')(estimate.txn_date, "yyyy-MM-dd"));
+                        }
+                        if (estimate.expiration_date) {
+                            estimate.expiration_date = ($filter('date')(estimate.expiration_date, "yyyy-MM-dd"));
+                        }
+                        if (estimate.date_of_signature) {
+                            estimate.date_of_signature = ($filter('date')(estimate.date_of_signature, "yyyy-MM-dd"));
+                        }
+                        // Get base64 of customer signature
+                        var signaturePad =  $scope.signature_pad;
+                        if (!signaturePad.isEmpty()) {
+                            estimate.customer_signature_encoded = signaturePad.toDataURL();
+                        }
+                        estimateFactory.save(estimate)
+                            .success(function(response) {
+                                if (response.success) {
+                                    toastr.success(response.message);
+                                    if ($scope.estimate.customer_id == 0 ||
+                                        $scope.estimate.job_customer_id == 0) {
+                                        // To force reload customer list
+                                        $rootScope.customers = undefined;
+                                    }
+                                    $location.path('/edit-estimate/' + response.data.id);
+                                } else {
+                                    var msg = response.message || 'An error occurred while saving estimate';
+                                    toastr.error(msg);
                                 }
-                                $location.path('/edit-estimate/' + response.data.id);
-                            } else {
-                                var msg = response.message || 'An error occurred while saving estimate';
-                                toastr.error(msg);
-                            }
-                        })
-                        .error(function() {
-                            toastr.error('An error occurred while saving estimate');
-                        });
-                } else {
-                    toastr.error('Could not find geo location of job info. Please check the job address!');
-                }
-            });
+                            })
+                            .error(function() {
+                                toastr.error('An error occurred while saving estimate');
+                            });
+                    },
+                    function() {
+                        toastr.error('Could not find geo location of job address!');
+                    }
+                );
         }
     };
 

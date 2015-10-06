@@ -12,6 +12,7 @@ angular
             'customerFactory',
             'estimateFactory',
             'employeeFactory',
+            'erpGeoLocation',
             'attachmentUploader',
             'sharedData',
             '$ngBootbox',
@@ -20,9 +21,21 @@ angular
         ]
     );
 
-function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $location,
-    customerFactory, estimateFactory, employeeFactory, attachmentUploader, sharedData,
-    $ngBootbox, $window) {
+function EditEstimateCtrl(
+        $scope,
+        $rootScope,
+        $http,
+        $routeParams,
+        $filter,
+        $location,
+        customerFactory,
+        estimateFactory,
+        employeeFactory,
+        erpGeoLocation,
+        attachmentUploader,
+        sharedData,
+        $ngBootbox,
+        $window) {
 
     $scope.setPageTitle('Estimate');
     $scope.customers = [];
@@ -399,70 +412,70 @@ function EditEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter, $loc
         if (isEmptyLines()) {
             toastr.error('You must fill out at least one split line.');
         } else {
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ address: getJobFullAddress() }, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
-                    var location = results[0].geometry.location;
-                    $scope.estimate.job_lat = location.lat();
-                    $scope.estimate.job_lng = location.lng();
-                    var estimate = {};
-                    angular.copy($scope.estimate, estimate);
-                    delete estimate.attachments;
-                    if (estimate.txn_date) {
-                        estimate.txn_date = $filter('date')(
-                            estimate.txn_date,
-                            "yyyy-MM-dd");
-                    }
-                    if (estimate.expiration_date) {
-                        estimate.expiration_date = $filter('date')(
-                            estimate.expiration_date, "yyyy-MM-dd");
-                    }
-                    if (estimate.date_of_signature) {
-                        estimate.date_of_signature = $filter('date')(
-                            estimate.date_of_signature, "yyyy-MM-dd");
-                    }
-
-                    if ($scope.isChangedSignature) {
-                        // Get base64 of customer signature
-                        var signaturePad = $scope.signature_pad;
-                        if (signaturePad.isEmpty()) {
-                            estimate.customer_signature_encoded = '';
-                        } else {
-                            estimate.customer_signature_encoded = signaturePad.toDataURL();
+            erpGeoLocation.resolve(getJobFullAddress())
+                .then(
+                    function(result) {
+                        $scope.estimate.job_lat = result.lat();
+                        $scope.estimate.job_lng = result.lng();
+                        var estimate = {};
+                        angular.copy($scope.estimate, estimate);
+                        delete estimate.attachments;
+                        if (estimate.txn_date) {
+                            estimate.txn_date = $filter('date')(
+                                estimate.txn_date,
+                                "yyyy-MM-dd");
                         }
-                    }
-                    estimateFactory.update(estimate)
-                        .success(function(response) {
-                            if (response.success) {
-                                $scope.isChangedSignature = false;
-                                toastr.success(response.message);
-                                if (sendMail) {
-                                    $scope.sendMailData = {
-                                        id: $scope.estimate.id,
-                                        to: $scope.estimate.email,
-                                        subject: 'Estimate from ' + $scope.companyInfo.name
-                                    };
-                                    $scope.sendMailForm.$setPristine();
-                                    $scope.showSendModal = true;
-                                } else {
-                                    // Reload to get refresh customer
-                                    if ($scope.estimate.customer_id == 0 ||
-                                        $scope.estimate.job_customer_id == 0) {
-                                        $window.location.reload();
-                                    }
-                                }
+                        if (estimate.expiration_date) {
+                            estimate.expiration_date = $filter('date')(
+                                estimate.expiration_date, "yyyy-MM-dd");
+                        }
+                        if (estimate.date_of_signature) {
+                            estimate.date_of_signature = $filter('date')(
+                                estimate.date_of_signature, "yyyy-MM-dd");
+                        }
+
+                        if ($scope.isChangedSignature) {
+                            // Get base64 of customer signature
+                            var signaturePad = $scope.signature_pad;
+                            if (signaturePad.isEmpty()) {
+                                estimate.customer_signature_encoded = '';
                             } else {
-                                var msg = response.message || 'An error occurred while saving estimate';
-                                toastr.error(msg);
+                                estimate.customer_signature_encoded = signaturePad.toDataURL();
                             }
-                        })
-                        .error(function() {
-                            toastr.error('An error occurred while updating estimate');
-                        });
-                } else {
-                    toastr.error('Could not find geo location of job info. Please check the job address!');
-                }
-            });
+                        }
+                        estimateFactory.update(estimate)
+                            .success(function(response) {
+                                if (response.success) {
+                                    $scope.isChangedSignature = false;
+                                    toastr.success(response.message);
+                                    if (sendMail) {
+                                        $scope.sendMailData = {
+                                            id: $scope.estimate.id,
+                                            to: $scope.estimate.email,
+                                            subject: 'Estimate from ' + $scope.companyInfo.name
+                                        };
+                                        $scope.sendMailForm.$setPristine();
+                                        $scope.showSendModal = true;
+                                    } else {
+                                        // Reload to get refresh customer
+                                        if ($scope.estimate.customer_id == 0 ||
+                                            $scope.estimate.job_customer_id == 0) {
+                                            $window.location.reload();
+                                        }
+                                    }
+                                } else {
+                                    var msg = response.message || 'An error occurred while saving estimate';
+                                    toastr.error(msg);
+                                }
+                            })
+                            .error(function() {
+                                toastr.error('An error occurred while updating estimate');
+                            });
+                    },
+                    function() {
+                        toastr.error('Could not find geo location of job address!');
+                    }
+                );
         }
     };
 

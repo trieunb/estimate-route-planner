@@ -11,6 +11,7 @@ angular
             '$routeParams',
             '$filter',
             '$window',
+            'erpGeoLocation',
             EditJobRequestCtrl
         ]
     );
@@ -23,7 +24,8 @@ function EditJobRequestCtrl(
     sharedData,
     $routeParams,
     $filter,
-    $window) {
+    $window,
+    erpGeoLocation) {
     $scope.setPageTitle('Edit Job Request');
     $scope.companyInfo = {};
     $scope.customers = [];
@@ -49,65 +51,64 @@ function EditJobRequestCtrl(
             });
     }
 
-
-        $scope.customersSelectConfig = {
-            valueField: 'id',
-            labelField: 'display_name',
-            sortField: 'display_name',
-            searchField: 'display_name',
-            selectOnTab: true,
-            maxItems: 1,
-            maxOptions: 10000,
-            create: function(input, callback) {
-                var newCustomer = {
-                    id: 0,
-                    display_name: input
-                };
-                angular.forEach($scope.customers, function(cus, index) {
-                    // Remove last new customer
-                    if (cus.id == 0) {
-                        $scope.customers.splice(index, 1);
-                        return;
-                    }
-                });
-                $scope.customers.push(newCustomer);
-                $scope.referral.customer_display_name = input;
-                callback(newCustomer);
-            },
-            render: {
-                option: function(item, escape) {
-                    var itemClass = 'option ';
-                    var itemText = item.display_name;
-                    if (null !== item.parent_id && item.parent_id !== '0') {
-                        itemClass += 'sub ';
-                        itemClass += 'sub-level-' + item.sub_level;
-                        itemText += '<small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
-                    }
-                    return '<div class="' + itemClass + '">' + itemText + '</div>';
+    $scope.customersSelectConfig = {
+        valueField: 'id',
+        labelField: 'display_name',
+        sortField: 'display_name',
+        searchField: 'display_name',
+        selectOnTab: true,
+        maxItems: 1,
+        maxOptions: 10000,
+        create: function(input, callback) {
+            var newCustomer = {
+                id: 0,
+                display_name: input
+            };
+            angular.forEach($scope.customers, function(cus, index) {
+                // Remove last new customer
+                if (cus.id == 0) {
+                    $scope.customers.splice(index, 1);
+                    return;
                 }
+            });
+            $scope.customers.push(newCustomer);
+            $scope.referral.customer_display_name = input;
+            callback(newCustomer);
+        },
+        render: {
+            option: function(item, escape) {
+                var itemClass = 'option ';
+                var itemText = item.display_name;
+                if (null !== item.parent_id && item.parent_id !== '0') {
+                    itemClass += 'sub ';
+                    itemClass += 'sub-level-' + item.sub_level;
+                    itemText += '<small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
+                }
+                return '<div class="' + itemClass + '">' + itemText + '</div>';
             }
-        };
+        }
+    };
 
-        // What customer change to populate customer fields
-        $scope.$watch('referral.customer_id', function(newVal, oldVal) {
-            if ($scope.referralForm.$dirty && ('undefined' != typeof(newVal))) {
-                angular.forEach($scope.customers, function(cus) {
-                    if (cus.id == newVal) {
-                        if (newVal != 0) { // Keep entered info if new client
-                            $scope.referral.address = cus.ship_address;
-                            $scope.referral.city = cus.ship_city;
-                            $scope.referral.state = cus.ship_state;
-                            $scope.referral.zip_code = cus.ship_zip_code;
-                            $scope.referral.country = cus.ship_country;
-                            $scope.referral.primary_phone_number = cus.primary_phone_number;
-                            $scope.referral.email = cus.email;
-                        }
-                        $scope.referral.customer_display_name = cus.display_name;
-                        return;
+    // What customer change to populate customer fields
+    $scope.$watch('referral.customer_id', function(newVal, oldVal) {
+        if ($scope.referralForm.$dirty && ('undefined' != typeof(newVal))) {
+            angular.forEach($scope.customers, function(cus) {
+                if (cus.id == newVal) {
+                    if (newVal != 0) { // Keep entered info if new client
+                        $scope.referral.address = cus.ship_address;
+                        $scope.referral.city = cus.ship_city;
+                        $scope.referral.state = cus.ship_state;
+                        $scope.referral.zip_code = cus.ship_zip_code;
+                        $scope.referral.country = cus.ship_country;
+                        $scope.referral.primary_phone_number = cus.primary_phone_number;
+                        $scope.referral.email = cus.email;
                     }
-                });
-            }
-        });
+                    $scope.referral.customer_display_name = cus.display_name;
+                    return;
+                }
+            });
+        }
+    });
 
     $scope.submitForm = function() {
         // Check address files changed to regeolocation
@@ -116,23 +117,21 @@ function EditJobRequestCtrl(
                 $scope.referralForm.state.$dirty ||
                 $scope.referralForm.zip_code.$dirty
             ) {
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode( { address: getFullAddress() }, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
-                    var location = results[0].geometry.location;
-                    $scope.referral.lat = location.lat();
-                    $scope.referral.lng = location.lng();
-                    doSubmit();
-                } else {
-                    toastr.error('Could not find geo location. Please check the address!');
-                }
-            });
+            erpGeoLocation.resolve(getFullAddress())
+                .then(
+                    function(result) {
+                        $scope.referral.lat = result.lat();
+                        $scope.referral.lng = result.lng();
+                        doSubmit();
+                    },
+                    function() {
+                        toastr.error('Could not find geo location. Please check the address!');
+                    }
+                );
         } else {
             doSubmit();
         }
     };
-
-
 
     function doSubmit() {
         var referral = {};

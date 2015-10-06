@@ -140,6 +140,7 @@ function AddEstimateRouteCtrl(
             directionsDisplay.set('directions', null);
             return;
         }
+        console.log('draw');
         var origin = {}; // start
         var destination = {}; // end
         var waypts = [];
