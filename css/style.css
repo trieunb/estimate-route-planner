@@ -435,3 +435,18 @@ label.required span {
 [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }
+
+/* Sub-customer dropdown */
+/*.selectize-dropdown-content .sub.sub-level-1 {
+    padding-left: 25px;
+}
+.selectize-dropdown-content .sub.sub-level-2 {
+    padding-left: 35px;
+}
+.selectize-dropdown-content .sub.sub-level-2 {
+    padding-left: 45px;
+}*/
+.selectize-dropdown-content .sub small {
+    font-style: italic;
+    float: right;
+}
