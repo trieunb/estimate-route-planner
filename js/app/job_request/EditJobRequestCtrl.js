@@ -120,13 +120,7 @@ function EditJobRequestCtrl(
         }
     };
 
-    function getFullAddress() {
-        return $scope.referral.address + ' ' +
-            $scope.referral.city + ' ' +
-            $scope.referral.state + ' ' +
-            $scope.referral.zip_code + ' ' +
-            $scope.referral.country;
-    }
+
 
     function doSubmit() {
         var referral = {};
@@ -147,6 +141,13 @@ function EditJobRequestCtrl(
                     toastr.error(msg);
                 }
             });
+    }
+
+    function getFullAddress() {
+        return $scope.referral.address + ' ' +
+            $scope.referral.city + ' ' +
+            $scope.referral.state + ' ' +
+            $scope.referral.zip_code;
     }
 
     init();

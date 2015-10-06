@@ -142,8 +142,7 @@
                                     echo $estimate->bill_address .
                                     ' ' . $estimate->bill_city .
                                     ', ' . $estimate->bill_state .
-                                    ' ' . $estimate->bill_zip_code .
-                                    ' ' . $estimate->bill_country ;
+                                    ' ' . $estimate->bill_zip_code;
                                     ?>
                                 <?php } ?>
                             </td>
@@ -154,8 +153,7 @@
                                     echo $estimate->job_address .
                                     ' ' . $estimate->job_city .
                                     ', ' . $estimate->job_state .
-                                    ' ' . $estimate->job_zip_code .
-                                    ' ' . $estimate->job_country ;
+                                    ' ' . $estimate->job_zip_code;
                                     ?>
                                 <?php } ?>
                             </td>

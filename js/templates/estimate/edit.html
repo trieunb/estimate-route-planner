@@ -320,11 +320,12 @@
                         </div>
                     </div>
                     <label class="control-label col-sm-1 required" for="email">
-                    Email<span>(*)</span></label>
+                        Email<span>(*)</span></label>
                     <div class="col-sm-3">
                         <input type="text" class="form-control" name="email"
                             ng-model="estimate.email"
                             multiple-emails
+                            ng-maxlength="100"
                             ng-required="true">
                         <div class="help-block"
                             ng-messages="estimateForm.email.$error"
@@ -333,7 +334,10 @@
                                 This field is required!
                             </p>
                             <p ng-message="multipleEmails" class="text-danger">
-                                Multiple emails separate by a comma
+                                Separate multiple emails with commas
+                            </p>
+                            <p ng-message="maxlength" class="text-danger">
+                                Maximum by 100 characters!
                             </p>
                         </div>
                     </div>

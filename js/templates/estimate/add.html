@@ -182,7 +182,7 @@
                                 ng-messages="estimateForm.bill_country.$error"
                                 ng-if="estimateForm.bill_country.$touched && estimateForm.bill_country.$invalid">
                                 <p ng-message="maxlength" class="text-danger">
-                                    Please enter less than 255 characters!
+                                    Please enter less than 256 characters!
                                 </p>
                             </div>
                         </div>
@@ -310,8 +310,8 @@
                         Secondary Phone</label>
                     <div class="col-sm-2">
                         <input class="form-control" name="alternate_phone_number"
-                        ng-model="estimate.alternate_phone_number"
-                        ng-maxlength="255">
+                            ng-model="estimate.alternate_phone_number"
+                            ng-maxlength="255">
                         <div class="help-block"
                             ng-messages="estimateForm.alternate_phone_number.$error"
                             ng-if="estimateForm.alternate_phone_number.$touched && estimateForm.alternate_phone_number.$invalid">
@@ -326,12 +326,19 @@
                         <input type="text" class="form-control" name="email"
                             ng-model="estimate.email"
                             multiple-emails
+                            ng-maxlength="100"
                             ng-required="true">
                         <div class="help-block"
                             ng-messages="estimateForm.email.$error"
                             ng-if="estimateForm.email.$touched && estimateForm.email.$invalid">
                             <p ng-message="required" class="text-danger">
                                 This field is required!
+                            </p>
+                            <p ng-message="multipleEmails" class="text-danger">
+                                Separate multiple emails with commas
+                            </p>
+                            <p ng-message="maxlength" class="text-danger">
+                                Maximum by 100 characters!
                             </p>
                         </div>
                     </div>

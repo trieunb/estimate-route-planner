@@ -46,7 +46,7 @@ function AddJobRequestCtrl(
     $scope.customersSelectConfig = {
         valueField: 'id',
         labelField: 'display_name',
-        sortField: 'display_name',
+        sortField: 'order',
         searchField: 'display_name',
         selectOnTab: true,
         maxItems: 1,
@@ -58,7 +58,7 @@ function AddJobRequestCtrl(
             };
             angular.forEach($scope.customers, function(cus, index) {
                 // Remove last new customer
-                if (cus.id == 0) {
+                if (cus.id === 0) {
                     $scope.customers.splice(index, 1);
                     return;
                 }
@@ -66,6 +66,18 @@ function AddJobRequestCtrl(
             $scope.customers.push(newCustomer);
             $scope.referral.customer_display_name = input;
             callback(newCustomer);
+        },
+        render: {
+            option: function(item, escape) {
+                var itemClass = 'option ';
+                var itemText = item.display_name;
+                if (null !== item.parent_id && item.parent_id !== '0') {
+                    itemClass += 'sub ';
+                    itemClass += 'sub-level-' + item.sub_level;
+                    itemText += '<small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
+                }
+                return '<div class="' + itemClass + '">' + itemText + '</div>';
+            }
         }
     };
 
@@ -125,7 +137,6 @@ function AddJobRequestCtrl(
         return $scope.referral.address + ' ' +
             $scope.referral.city + ' ' +
             $scope.referral.state + ' ' +
-            $scope.referral.zip_code + ' ' +
-            $scope.referral.country;
+            $scope.referral.zip_code;
     }
 }

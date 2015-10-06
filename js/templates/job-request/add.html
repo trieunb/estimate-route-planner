@@ -78,7 +78,7 @@
                             ng-messages="referralForm.address.$error"
                             ng-if="referralForm.address.$touched && referralForm.address.$invalid">
                             <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 255 characters!
+                                Maximum by 255 characters!
                             </p>
                             <p ng-message="required" class="text-danger">
                                 This field is required!
@@ -130,27 +130,22 @@
                         <div class="help-block" ng-messages="referralForm.zip_code.$error"
                             ng-if="referralForm.zip_code.$touched && referralForm.zip_code.$invalid">
                             <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 32 characters!
+                                Maximum by 31 characters!
                             </p>
                             <p ng-message="required" class="text-danger">
                                 This field is required!
                             </p>
                         </div>
                     </div>
-                    <label class="control-label col-sm-2 required" for="country">Country
-                        <span>(*)</span></label>
+                    <label class="control-label col-sm-2" for="country">Country</label>
                     <div class="col-sm-3">
                         <input class="form-control" type="text" name="country"
                             ng-model="referral.country"
-                            ng-required="true"
                             ng-maxlength="100">
                         <div class="help-block" ng-messages="referralForm.country.$error"
                             ng-if="referralForm.country.$touched && referralForm.country.$invalid">
                             <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 100 characters!
-                            </p>
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
+                                Maximum by 100 characters!
                             </p>
                         </div>
                     </div>
@@ -169,7 +164,7 @@
                                 This field is required!
                             </p>
                             <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 256 characters!
+                                Maximum by 255 characters!
                             </p>
                         </div>
                     </div>
@@ -218,11 +213,12 @@
                     <div class="col-sm-8">
                         <input class="form-control" type="text" name="how_find_us"
                             ng-required="true"
-                            ng-model="referral.how_find_us" ng-maxlength="255">
+                            ng-model="referral.how_find_us"
+                            ng-maxlength="255">
                         <div class="help-block" ng-messages="referralForm.how_find_us.$error"
                             ng-if="referralForm.how_find_us.$touched && referralForm.how_find_us.$invalid">
                             <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 256 characters!
+                                Maximum by 255 characters!
                             </p>
                             <p ng-message="required" class="text-danger">
                                 This field is required!

@@ -65,7 +65,7 @@
                                     <label>Address</label>
                                 </td>
                                 <td colspan="3">
-                                    <span><?php echo $referral['address'] . ' ' . $referral['city']  .', ' . $referral['state'] . ' ' . $referral['zip_code'] . ' ' . $referral['country'] ?></span>
+                                    <span><?php echo $referral['address'] . ' ' . $referral['city']  .', ' . $referral['state'] . ' ' . $referral['zip_code'] ?></span>
                                 </td>
                             </tr>
                             <tr>
