@@ -9,19 +9,19 @@
       <!-- Tab panes -->
       <div class="tab-content">
         <!-- Content of Sync -->
-        <div role="tabpanel" class="tab-pane active" id="gmap_api" ng-controller="SettingsCtrl">
+        <div role="tabpanel" class="tab-pane active" ng-controller="SettingsCtrl">
             <div class="row">
-                <form class="form-horizontal" method="post" name="gmap_api" ng-submit="submitForm()" novalidate>
+                <form class="form-horizontal" method="post" ng-submit="submitForm()" novalidate autocomplete="off">
                     <!-- Content left of Company Info-->
                     <div class="col-sm-6">
                         <div class="space_nomal">
                             <div class="form-group">
                                 <label class="control-label col-sm-4">Gmap API Key</label>
                                 <div class="col-sm-8">
-                                    <input class="form-control" type="text" name="gmap_api_key" ng-model="setting.gmap_api_key" required>
-                                    <span style="color:red" ng-show="gmap_api.gmap_api_key.$dirty && gmap_api.gmap_api_key.$invalid">
-                                        <span ng-show="gmap_api.gmap_api_key.$error.required">Google Maps API is required.</span>
-                                    </span>
+                                    <input class="form-control"
+                                        type="text"
+                                        name="gmap_api_key"
+                                        ng-model="setting.gmap_api_key">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -29,17 +29,20 @@
                                 for="gmail_username">Gmail Username</label>
                                 <div class="col-sm-8">
                                     <input class="form-control" type="text"
-                                    name="gmail_username"
-                                    ng-model="setting.gmail_username">
+                                        name="gmail_username"
+                                        autocomplete="false"
+                                        ng-model="setting.gmail_username">
                                 </div>
                             </div>
                             <div class="form-group">
+                                <input style="display:none" type="password" name="fakepasswordremembered"/>
                                 <label class="control-label col-sm-4"
                                 for="gmail_password">Gmail Password</label>
                                 <div class="col-sm-8">
                                     <input class="form-control" type="password"
-                                    name="gmail_password"
-                                    ng-model="setting.gmail_password">
+                                        name="gmail_password"
+                                        autocomplete="false"
+                                        ng-model="setting.gmail_password">
                                 </div>
                             </div>
                             <div class="form-group">

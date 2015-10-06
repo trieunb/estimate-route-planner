@@ -48,6 +48,7 @@ CREATE TABLE `customers` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) DEFAULT NULL,
   `parent_id` bigint(20) DEFAULT NULL,
+  `sub_level` int(11) NOT NULL DEFAULT 0,
   `title` varchar(100) DEFAULT NULL,
   `given_name` varchar(100) DEFAULT NULL,
   `middle_name` varchar(100) DEFAULT NULL,
