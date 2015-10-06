@@ -247,7 +247,6 @@ final class ERPDataParser {
             = $bill_city
             = $bill_state
             = $bill_zip_code
-            = $bill_country
             = null;
         if (null != $billAddress) {
             $bill_address_id = $billAddress->Id;
@@ -255,7 +254,6 @@ final class ERPDataParser {
             $bill_city = $billAddress->City;
             $bill_state = $billAddress->CountrySubDivisionCode;
             $bill_zip_code = $billAddress->PostalCode;
-            $bill_country = $billAddress->Country;
         }
 
         $shipAddress = $data->ShipAddr;
@@ -264,7 +262,6 @@ final class ERPDataParser {
             = $job_city
             = $job_state
             = $job_zip_code
-            = $job_country
             = null;
         if (null != $shipAddress) {
             $job_address_id = $shipAddress->Id;
@@ -272,7 +269,6 @@ final class ERPDataParser {
             $job_city = $shipAddress->City;
             $job_state = $shipAddress->CountrySubDivisionCode;
             $job_zip_code = $shipAddress->PostalCode;
-            $job_country = $shipAddress->Country;
         }
 
         $email = null;
@@ -305,7 +301,6 @@ final class ERPDataParser {
                 }
             }
         } catch(Exception $e) {}
-        // TODO: issue on address lines vs country/city/state
         return [
             'id' => $data->Id,
             'customer_id' => $data->CustomerRef,
@@ -322,7 +317,7 @@ final class ERPDataParser {
             'bill_city' => $bill_city,
             'bill_state' => $bill_state,
             'bill_zip_code' => $bill_zip_code,
-            'bill_country' => $bill_country,
+            'bill_country' => $data_local['bill_country'],
 
             'status' => $status,
             'created_at' => $created_at,
@@ -344,7 +339,7 @@ final class ERPDataParser {
             'job_city'          => $job_city,
             'job_state'         => $job_state,
             'job_zip_code'      => $job_zip_code,
-            'job_country'       => $job_country,
+            'job_country'       => $data_local['job_country'],
 
             'job_lat' => $data_local['job_lat'],
             'job_lng' => $data_local['job_lng'],

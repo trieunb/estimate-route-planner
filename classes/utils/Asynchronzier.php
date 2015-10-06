@@ -718,8 +718,7 @@ class Asynchronzier
                             'Line1' => $localData['bill_address'],
                             'City' => $localData['bill_city'],
                             'CountrySubDivisionCode' => $localData['bill_state'],
-                            'PostalCode' => $localData['bill_zip_code'],
-                            'Country' => $localData['bill_country'],
+                            'PostalCode' => $localData['bill_zip_code']
                         ],
                     ],
                 ],
@@ -731,8 +730,7 @@ class Asynchronzier
                             'Line1' => $localData['job_address'],
                             'City' => $localData['job_city'],
                             'CountrySubDivisionCode' => $localData['job_state'],
-                            'PostalCode' => $localData['job_zip_code'],
-                            'Country' => $localData['job_country'],
+                            'PostalCode' => $localData['job_zip_code']
                         ],
                     ],
                 ],

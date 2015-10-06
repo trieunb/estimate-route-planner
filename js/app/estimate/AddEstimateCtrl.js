@@ -55,7 +55,19 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
         searchField: 'display_name',
         selectOnTab: true,
         maxItems: 1,
-        maxOptions: 10000
+        maxOptions: 10000,
+        render: {
+            option: function(item, escape) {
+                var itemClass = 'option ';
+                var itemText = item.display_name;
+                if (null !== item.parent_id && item.parent_id !== '0') {
+                    itemClass += 'sub ';
+                    itemClass += 'sub-level-' + item.sub_level;
+                    itemText += '<br><small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
+                }
+                return '<div class="' + itemClass + '">' + itemText + '</div>';
+            }
+        }
     };
     $scope.customersSelectConfig = {};
     angular.copy(selectOptions, $scope.customersSelectConfig);
@@ -189,7 +201,6 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
                         $scope.estimate.bill_city = cus.bill_city;
                         $scope.estimate.bill_state = cus.bill_state;
                         $scope.estimate.bill_zip_code = cus.bill_zip_code;
-                        $scope.estimate.bill_country = cus.bill_country;
                         $scope.estimate.primary_phone_number = cus.primary_phone_number;
                         $scope.estimate.alternate_phone_number = cus.alternate_phone_number;
                         $scope.estimate.email = cus.email;
@@ -210,7 +221,6 @@ function AddEstimateCtrl($scope, $rootScope, $http, $routeParams, $filter,
                         $scope.estimate.job_city = cus.ship_city;
                         $scope.estimate.job_state = cus.ship_state;
                         $scope.estimate.job_zip_code = cus.ship_zip_code;
-                        $scope.estimate.job_country = cus.ship_country;
                     }
                     $scope.estimate.job_customer_display_name = cus.display_name;
                     return;

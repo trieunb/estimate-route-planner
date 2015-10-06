@@ -73,6 +73,18 @@ function EditJobRequestCtrl(
                 $scope.customers.push(newCustomer);
                 $scope.referral.customer_display_name = input;
                 callback(newCustomer);
+            },
+            render: {
+                option: function(item, escape) {
+                    var itemClass = 'option ';
+                    var itemText = item.display_name;
+                    if (null !== item.parent_id && item.parent_id !== '0') {
+                        itemClass += 'sub ';
+                        itemClass += 'sub-level-' + item.sub_level;
+                        itemText += '<small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
+                    }
+                    return '<div class="' + itemClass + '">' + itemText + '</div>';
+                }
             }
         };
 

@@ -46,7 +46,7 @@ function AddJobRequestCtrl(
     $scope.customersSelectConfig = {
         valueField: 'id',
         labelField: 'display_name',
-        sortField: 'order',
+        sortField: 'display_name',
         searchField: 'display_name',
         selectOnTab: true,
         maxItems: 1,
