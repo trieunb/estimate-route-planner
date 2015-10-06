@@ -210,6 +210,8 @@ function EditEstimateCtrl(
                 if (line.qty != null) {
                     line.qty = parseInt(line.qty);
                 }
+                var lineTotal = line.qty * line.rate;
+                line.total = parseFloat(lineTotal.toFixed(2));
                 // Check for add inactive products to the selections
                 // if a line has assigned with inactive product
                 if (line.product_service_id) {
@@ -284,10 +286,11 @@ function EditEstimateCtrl(
 
     $scope.addLine = function() {
         $scope.estimate.lines.push({
-            'product_service_id': null,
-            'line_id': null,
-            'qty': null,
-            'rate': null
+            product_service_id: null,
+            line_id: null,
+            qty: 0,
+            rate: 0,
+            total: 0
         });
         $scope.updateTotal();
     };
@@ -375,7 +378,9 @@ function EditEstimateCtrl(
                 if (line.rate) {
                     rate = parseFloat(line.rate);
                 }
-                total += rate * qty;
+                var lineTotal = rate * qty;
+                total += lineTotal;
+                line.total = lineTotal;
             });
         }
         $scope.estimate.total = parseFloat(total.toFixed(2));

@@ -382,9 +382,20 @@
                             </select>
                         </td>
                         <td><input type="text" ng-model="line.description"/></td>
-                        <td><input type="number" ng-pattern="/^\d+$/" ng-model="line.qty" ng-change="updateTotal()"/></td>
-                        <td><input type="number" ng-model="line.rate" ng-change="updateTotal()"/></td>
-                        <td><span ng-bind="line.rate * line.qty" ng-if="line.rate >=0 && line.qty >= 0"></span></td>
+                        <td>
+                            <input type="number"
+                                ng-pattern="/^\d+$/"
+                                ng-model="line.qty"
+                                ng-change="updateTotal()"/>
+                        </td>
+                        <td>
+                            <input type="number"
+                                ng-model="line.rate"
+                                ng-change="updateTotal()"/>
+                        </td>
+                        <td>
+                            <span ng-bind="line.total"></span>
+                        </td>
                         <td><span ng-click="removeLine(line)" class="glyphicon glyphicon-trash text-danger"></span></td>
                       </tr>
                     </tbody>

@@ -161,10 +161,11 @@ function AddEstimateCtrl(
 
     $scope.addLine = function() {
         $scope.estimate.lines.push({
-            'product_service_id': null,
-            'line_id': null,
-            'qty': null,
-            'rate': null
+            product_service_id: null,
+            line_id: null,
+            qty: 0,
+            rate: 0,
+            total: 0
         });
         $scope.updateTotal();
     };
@@ -252,7 +253,9 @@ function AddEstimateCtrl(
                 if (line.rate) {
                     rate = parseFloat(line.rate);
                 }
-                total += rate * qty;
+                var lineTotal = rate * qty;
+                total += lineTotal;
+                line.total = lineTotal;
             });
         }
         $scope.estimate.total = parseFloat(total.toFixed(2));

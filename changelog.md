@@ -1,3 +1,6 @@
+## 1.2.1
+  - Fix lines with rate less than 0
+  - Some code optimize
 ## 1.1.2
   - Add sub-level to customers
   - Make customers dropdown order by sub-customers
