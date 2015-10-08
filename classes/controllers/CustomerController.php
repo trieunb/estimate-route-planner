@@ -15,7 +15,6 @@ class CustomerController extends BaseController {
             )
             ->select('pc.display_name', 'parent_display_name')
             ->orderByAsc('c.display_name')
-            ->limit(5000)
             ->findArray();
         $this->renderJson(
             $this->_sortCustomers($customers)
