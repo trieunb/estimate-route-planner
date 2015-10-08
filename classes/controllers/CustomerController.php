@@ -11,9 +11,7 @@ class CustomerController extends BaseController {
                 'c.primary_phone_number', 'c.alternate_phone_number',
                 'c.mobile_phone_number',
                 'c.bill_address', 'c.bill_city', 'c.bill_state', 'c.bill_zip_code',
-                'c.bill_country',
-                'c.ship_address', 'c.ship_city', 'c.ship_state', 'c.ship_zip_code',
-                'c.ship_country'
+                'c.ship_address', 'c.ship_city', 'c.ship_state', 'c.ship_zip_code'
             )
             ->select('pc.display_name', 'parent_display_name')
             ->orderByAsc('c.display_name')
