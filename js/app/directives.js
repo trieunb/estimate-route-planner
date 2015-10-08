@@ -94,7 +94,9 @@ angular
                     option: function(item, escape) {
                         var itemClass = 'option ';
                         var itemText = item.display_name;
-                        if (null !== item.parent_id && item.parent_id !== '0') {
+                        if (null !== item.parent_id &&
+                                ('undefined' !== typeof(item.parent_display_name)) &&
+                                item.parent_id !== '0') {
                             itemClass += 'sub ';
                             itemClass += 'sub-level-' + item.sub_level;
                             itemText += '<small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
