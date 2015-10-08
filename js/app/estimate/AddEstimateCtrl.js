@@ -59,65 +59,6 @@ function AddEstimateCtrl(
         maxItems: 1
     };
 
-    var selectOptions = {
-        valueField: 'id',
-        labelField: 'display_name',
-        sortField: 'display_name',
-        searchField: 'display_name',
-        selectOnTab: true,
-        maxItems: 1,
-        maxOptions: 10000,
-        render: {
-            option: function(item, escape) {
-                var itemClass = 'option ';
-                var itemText = item.display_name;
-                if (null !== item.parent_id && item.parent_id !== '0') {
-                    itemClass += 'sub ';
-                    itemClass += 'sub-level-' + item.sub_level;
-                    itemText += '<br><small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
-                }
-                return '<div class="' + itemClass + '">' + itemText + '</div>';
-            }
-        }
-    };
-    $scope.customersSelectConfig = {};
-    angular.copy(selectOptions, $scope.customersSelectConfig);
-
-    $scope.customersSelectConfig.create = function(input, callback) {
-        var newCustomer = {
-            id: 0,
-            display_name: input
-        };
-        angular.forEach($scope.customers, function(cus, index) {
-            // Remove last new customer
-            if (cus.id == 0) {
-                $scope.customers.splice(index, 1);
-                return;
-            }
-        });
-        $scope.customers.push(newCustomer);
-        $scope.estimate.customer_display_name = input;
-        callback(newCustomer);
-    };
-
-    $scope.jobCustomersSelectConfig = {};
-    angular.copy(selectOptions, $scope.jobCustomersSelectConfig);
-    $scope.jobCustomersSelectConfig.create = function(input, callback) {
-        var newJobCustomer = {
-            id: 0,
-            display_name: input
-        };
-        angular.forEach($scope.jobCustomers, function(cus, index) {
-            if (cus.id == 0) {
-                $scope.jobCustomers.splice(index, 1);
-                return;
-            }
-        });
-        $scope.jobCustomers.push(newJobCustomer);
-        $scope.estimate.job_customer_display_name = input;
-        callback(newJobCustomer);
-    };
-
     // Load customers list
     if (typeof($rootScope.customers) !== 'undefined') {
         angular.copy($rootScope.customers, $scope.customers);
@@ -142,6 +83,14 @@ function AddEstimateCtrl(
                 angular.copy($scope.employees, $rootScope.employees);
             });
     }
+
+    $scope.onAddCustomer = function(input) {
+        $scope.estimate.customer_display_name = input;
+    };
+
+    $scope.onAddJobCustomer = function(input) {
+        $scope.estimate.job_customer_display_name = input;
+    };
 
     $scope.clearCustomerSignature = function() {
         var signaturePad = $scope.signature_pad;

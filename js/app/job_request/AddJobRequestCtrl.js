@@ -45,42 +45,8 @@ function AddJobRequestCtrl(
             });
     }
 
-    $scope.customersSelectConfig = {
-        valueField: 'id',
-        labelField: 'display_name',
-        sortField: 'display_name',
-        searchField: 'display_name',
-        selectOnTab: true,
-        maxItems: 1,
-        maxOptions: 10000,
-        create: function(input, callback) {
-            var newCustomer = {
-                id: 0,
-                display_name: input
-            };
-            angular.forEach($scope.customers, function(cus, index) {
-                // Remove last new customer
-                if (cus.id === 0) {
-                    $scope.customers.splice(index, 1);
-                    return;
-                }
-            });
-            $scope.customers.push(newCustomer);
-            $scope.referral.customer_display_name = input;
-            callback(newCustomer);
-        },
-        render: {
-            option: function(item, escape) {
-                var itemClass = 'option ';
-                var itemText = item.display_name;
-                if (null !== item.parent_id && item.parent_id !== '0') {
-                    itemClass += 'sub ';
-                    itemClass += 'sub-level-' + item.sub_level;
-                    itemText += '<small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
-                }
-                return '<div class="' + itemClass + '">' + itemText + '</div>';
-            }
-        }
+    $scope.onAddCustomer = function(input) {
+        $scope.referral.customer_display_name = input;
     };
 
     // What customer change to populate customer fields

@@ -63,8 +63,8 @@ angular
                 var selectConfig = {
                     valueField: 'id',
                     labelField: 'display_name',
-                    sortField: 'display_name',
-                    searchField: 'display_name',
+                    searchField: ['display_name', 'parent_display_name'],
+                    sortField: 'order',
                     selectOnTab: true,
                     maxItems: 1,
                     maxOptions: 10000,
@@ -74,7 +74,8 @@ angular
                 selectConfig.create = function(input, callback) {
                     var newCustomer = {
                         id: 0,
-                        display_name: input
+                        display_name: input,
+                        order: $scope.selectOptions.length
                     };
                     // Remove the last new customer
                     angular.forEach($scope.selectOptions, function(cus, index) {
@@ -84,23 +85,22 @@ angular
                         }
                     });
                     $scope.selectOptions.push(newCustomer);
-                    // scope.referral.customer_display_name = input;
-                    $scope.onAdd(input);
+                    $scope.onAdd({input: input});
                     callback(newCustomer);
                 };
 
                 // Custom rendering for displaying sub-customers
                 selectConfig.render = {
-                        option: function(item, escape) {
-                            var itemClass = 'option ';
-                            var itemText = item.display_name;
-                            if (null !== item.parent_id && item.parent_id !== '0') {
-                                itemClass += 'sub ';
-                                itemClass += 'sub-level-' + item.sub_level;
-                                itemText += '<small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
-                            }
-                            return '<div class="' + itemClass + '">' + itemText + '</div>';
+                    option: function(item, escape) {
+                        var itemClass = 'option ';
+                        var itemText = item.display_name;
+                        if (null !== item.parent_id && item.parent_id !== '0') {
+                            itemClass += 'sub ';
+                            itemClass += 'sub-level-' + item.sub_level;
+                            itemText += '<small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
                         }
+                        return '<div class="' + itemClass + '">' + itemText + '</div>';
+                    }
                     };
                 $scope.selectConfig = selectConfig;
             }]

@@ -53,12 +53,12 @@
                 <div class="form-group">
                     <label class="control-label col-sm-3 required" for="name">Name<span>(*)</span></label>
                     <div class="col-sm-8">
-                        <selectize
-                            ng-required="true"
-                            config="customersSelectConfig"
+                        <customers-select
+                            options="customers"
                             ng-model="referral.customer_id"
-                            options="customers">
-                        </selectize>
+                            ng-required="true"
+                            on-add="onAddCustomer(input)">
+                        </customers-select>
                         <div class="help-block" ng-messages="referralForm.customer_id.$error"
                             ng-if="referralForm.customer_id.$touched && referralForm.customer_id.$invalid">
                             <p ng-message="required" class="text-danger">
@@ -157,6 +157,7 @@
                         <input type="text" class="form-control" name="email"
                             ng-model="referral.email"
                             ng-required="true"
+                            multiple-emails
                             ng-maxlength="255">
                         <div class="help-block" ng-messages="referralForm.email.$error"
                             ng-if="referralForm.email.$touched && referralForm.email.$invalid">
@@ -165,6 +166,9 @@
                             </p>
                             <p ng-message="maxlength" class="text-danger">
                                 Maximum by 255 characters!
+                            </p>
+                            <p ng-message="multipleEmails" class="text-danger">
+                                Separate multiple emails with commas
                             </p>
                         </div>
                     </div>

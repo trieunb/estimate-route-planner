@@ -62,103 +62,6 @@ function EditEstimateCtrl(
         maxItems: 1
     };
 
-    var selectOptions = {
-        valueField: 'id',
-        labelField: 'display_name',
-        sortField: 'display_name',
-        searchField: 'display_name',
-        selectOnTab: true,
-        maxItems: 1,
-        maxOptions: 10000,
-        render: {
-            option: function(item, escape) {
-                var itemClass = 'option ';
-                var itemText = item.display_name;
-                if (null !== item.parent_id && item.parent_id !== '0') {
-                    itemClass += 'sub ';
-                    itemClass += 'sub-level-' + item.sub_level;
-                    itemText += '<br><small> Sub-customer of <b>' + item.parent_display_name + '</b></small>';
-                }
-                return '<div class="' + itemClass + '">' + itemText + '</div>';
-            }
-        }
-    };
-    $scope.customersSelectConfig = {};
-    angular.copy(selectOptions, $scope.customersSelectConfig);
-
-    $scope.customersSelectConfig.create = function(input, callback) {
-        var newCustomer = {
-            id: 0,
-            display_name: input
-        };
-        angular.forEach($scope.customers, function(cus, index) {
-            // Remove last new customer
-            if (cus.id == 0) {
-                $scope.customers.splice(index, 1);
-                return;
-            }
-        });
-        $scope.customers.push(newCustomer);
-        $scope.estimate.customer_display_name = input;
-        callback(newCustomer);
-    };
-
-    $scope.jobCustomersSelectConfig = {};
-    angular.copy(selectOptions, $scope.jobCustomersSelectConfig);
-    $scope.jobCustomersSelectConfig.create = function(input, callback) {
-        var newJobCustomer = {
-            id: 0,
-            display_name: input
-        };
-        angular.forEach($scope.jobCustomers, function(cus, index) {
-            if (cus.id == 0) {
-                $scope.jobCustomers.splice(index, 1);
-                return;
-            }
-        });
-        $scope.jobCustomers.push(newJobCustomer);
-        $scope.estimate.job_customer_display_name = input;
-        callback(newJobCustomer);
-    };
-
-    $scope.dropzoneConfig = {
-        url: 'fake',
-        clickable: '.drop-clickable',
-        parallelUploads: 1,
-        uploadMultiple: false,
-        maxFileSize: 30,
-        paramName: "file", // The name that will be used to transfer the file
-        maxFilesize: 5, // MB
-        accept: function(file, done) {
-            $scope.isUploading = true;
-            $scope.$apply();
-            done();
-        },
-        success: function(file, response) {
-            if (response.success) {
-                $scope.estimate.attachments.push(response.attachment);
-                $scope.$apply();
-            }
-        },
-        previewTemplate: angular.element('#dropzone-preview-template').html(), // Empty for now
-        previewsContainer: '#attachment-previews', // Hidden for now
-        complete: function(file) {
-            $scope.isUploading = false;
-            $scope.$apply();
-        },
-        uploadprogress: function(file, progress, bytesSent) {
-            $scope.uploadProgress = progress.toFixed(0);
-            $scope.$apply();
-        },
-        init: function() {
-            this.on("processing", function(file) {
-                this.options.url = ERPApp.baseAPIPath +
-                    '&_do=uploadAttachment&data[id]=' +
-                    $scope.estimate.id;
-            });
-        }
-    };
-
     // Load customers list
     if (typeof($rootScope.customers) !== 'undefined') {
         angular.copy($rootScope.customers, $scope.customers);
@@ -246,6 +149,52 @@ function EditEstimateCtrl(
             $scope.estimate = estimate;
             $scope.updateTotal();
         });
+
+    $scope.onAddCustomer = function(input) {
+        $scope.estimate.customer_display_name = input;
+    };
+
+    $scope.onAddJobCustomer = function(input) {
+        $scope.estimate.job_customer_display_name = input;
+    };
+
+    $scope.dropzoneConfig = {
+        url: 'fake',
+        clickable: '.drop-clickable',
+        parallelUploads: 1,
+        uploadMultiple: false,
+        maxFileSize: 30,
+        paramName: "file", // The name that will be used to transfer the file
+        maxFilesize: 5, // MB
+        accept: function(file, done) {
+            $scope.isUploading = true;
+            $scope.$apply();
+            done();
+        },
+        success: function(file, response) {
+            if (response.success) {
+                $scope.estimate.attachments.push(response.attachment);
+                $scope.$apply();
+            }
+        },
+        previewTemplate: angular.element('#dropzone-preview-template').html(), // Empty for now
+        previewsContainer: '#attachment-previews', // Hidden for now
+        complete: function(file) {
+            $scope.isUploading = false;
+            $scope.$apply();
+        },
+        uploadprogress: function(file, progress, bytesSent) {
+            $scope.uploadProgress = progress.toFixed(0);
+            $scope.$apply();
+        },
+        init: function() {
+            this.on("processing", function(file) {
+                this.options.url = ERPApp.baseAPIPath +
+                    '&_do=uploadAttachment&data[id]=' +
+                    $scope.estimate.id;
+            });
+        }
+    };
 
     $scope.removeAttachment = function(attachment) {
         $ngBootbox.confirm('Are you sure want to remove the attachment?')

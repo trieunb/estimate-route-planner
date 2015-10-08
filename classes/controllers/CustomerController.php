@@ -17,8 +17,11 @@ class CustomerController extends BaseController {
             )
             ->select('pc.display_name', 'parent_display_name')
             ->orderByAsc('c.display_name')
+            ->limit(5000)
             ->findArray();
-        $this->renderJson($customers);
+        $this->renderJson(
+            $this->_sortCustomers($customers)
+        );
     }
 
     public function show() {
@@ -30,9 +33,9 @@ class CustomerController extends BaseController {
         $result = [];
         foreach ($itemList as $item) {
             if ($item['parent_id'] == $parentId) {
-              $newItem = $item;
-              $newItem['childs'] = $this->_buildTree($itemList, $newItem['id']);
-              $result[] = $newItem;
+                $newItem = $item;
+                $newItem['childs'] = $this->_buildTree($itemList, $newItem['id']);
+                $result[] = $newItem;
             }
         }
 
@@ -40,6 +43,35 @@ class CustomerController extends BaseController {
             return $result;
         }
         return null;
+    }
+
+    private function _flattern(&$item) {
+        $results = [];
+        $results[0] = $item;
+        if (is_array($item['childs']) && count($item['childs']) > 0) {
+            $childs = $item['childs'];
+            usort($childs, function($a, $b) {
+                return strcmp($a['display_name'], $b['display_name']);
+            });
+            foreach($childs as $child) {
+                $results = array_merge($results, $this->_flattern($child));
+            }
+        }
+        // Sort child to get the next;
+        return $results;
+    }
+
+    private function _sortCustomers($customers) {
+        $customersTree = array_values($this->_buildTree($customers, null));
+        $results = [];
+        foreach ($customersTree as $node) {
+            $results = array_merge($results, $this->_flattern($node));
+        }
+        foreach ($results as $index => &$node) {
+            $node['order'] = $index;
+            unset($node['childs']);
+        }
+        return $results;
     }
 }
 ?>

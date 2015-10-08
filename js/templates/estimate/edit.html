@@ -94,8 +94,12 @@
                         <label class="control-label col-sm-2 required" for="customer_id">
                          Name<span>(*)</span></label>
                         <div class="col-sm-10">
-                            <selectize ng-required="true" config="customersSelectConfig" ng-model="estimate.customer_id" options="customers">
-                            </selectize>
+                            <customers-select
+                                options="customers"
+                                ng-model="estimate.customer_id"
+                                ng-required="true"
+                                on-add="onAddCustomer(input)">
+                            </customers-select>
                             <div class="help-block"
                                 ng-messages="estimateForm.customer_id.$error"
                                 ng-if="estimateForm.customer_id.$touched && estimateForm.customer_id.$invalid">
@@ -195,9 +199,12 @@
                         <label class="control-label col-sm-2 required" for="job_customer_id">
                             Name<span>(*)</span></label>
                         <div class="col-sm-10">
-                            <selectize ng-required="true"
-                                config="jobCustomersSelectConfig" ng-model="estimate.job_customer_id" options="jobCustomers">
-                            </selectize>
+                            <customers-select
+                                options="jobCustomers"
+                                ng-model="estimate.job_customer_id"
+                                ng-required="true"
+                                on-add="onAddJobCustomer(input)">
+                            </customers-select>
                             <div class="help-block"
                                 ng-messages="estimateForm.job_customer_id.$error"
                                 ng-if="estimateForm.job_customer_id.$touched && estimateForm.job_customer_id.$invalid">
