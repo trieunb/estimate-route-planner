@@ -15,6 +15,7 @@ angular
             'erpGeoLocation',
             '$ngBootbox',
             'sharedData',
+            'erpLocalStorage',
             AddEstimateCtrl
         ]
     );
@@ -31,7 +32,8 @@ function AddEstimateCtrl(
         employeeFactory,
         erpGeoLocation,
         $ngBootbox,
-        sharedData) {
+        sharedData,
+        erpLocalStorage) {
     $scope.setPageTitle('New estimate');
     $scope.customers = [];
     $scope.jobCustomers = [];
@@ -60,29 +62,29 @@ function AddEstimateCtrl(
     };
 
     // Load customers list
-    if (typeof($rootScope.customers) !== 'undefined') {
-        angular.copy($rootScope.customers, $scope.customers);
-        angular.copy($rootScope.customers, $scope.jobCustomers);
-    } else {
-        customerFactory.all()
-            .success(function(response) {
-                $scope.customers = response;
-                angular.copy($scope.customers, $scope.jobCustomers);
-                $rootScope.customers = [];
-                angular.copy($scope.customers, $rootScope.customers);
-            });
-    }
+    erpLocalStorage.getCustomers()
+        .then(function(data) {
+            angular.copy(data, $scope.customers);
+            angular.copy(data, $scope.jobCustomers);
+        });
     // Load employees
-    if (typeof($rootScope.employees) !== 'undefined') {
-        angular.copy($rootScope.employees, $scope.employees);
-    } else {
-        employeeFactory.all()
-            .success(function(response) {
-                $scope.employees = response;
-                $rootScope.employees = [];
-                angular.copy($scope.employees, $rootScope.employees);
-            });
-    }
+    erpLocalStorage.getEmployees()
+        .then(function(data) {
+            angular.copy(data, $scope.employees);
+            console.log('employees scope:', $scope.employees);
+        });
+
+    console.log('employees scope:', $scope.employees);
+    // if (typeof($rootScope.employees) !== 'undefined') {
+    //     angular.copy($rootScope.employees, $scope.employees);
+    // } else {
+    //     employeeFactory.all()
+    //         .success(function(response) {
+    //             $scope.employees = response;
+    //             $rootScope.employees = [];
+    //             angular.copy($scope.employees, $rootScope.employees);
+    //         });
+    // }
 
     $scope.onAddCustomer = function(input) {
         $scope.estimate.customer_display_name = input;
@@ -109,6 +111,7 @@ function AddEstimateCtrl(
     };
 
     $scope.addLine = function() {
+        console.log('employees scope:', $scope.employees);
         $scope.estimate.lines.push({
             product_service_id: null,
             line_id: null,

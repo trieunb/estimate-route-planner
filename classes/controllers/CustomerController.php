@@ -14,6 +14,7 @@ class CustomerController extends BaseController {
                 'c.ship_address', 'c.ship_city', 'c.ship_state', 'c.ship_zip_code'
             )
             ->select('pc.display_name', 'parent_display_name')
+            ->where('c.active', true)
             ->orderByAsc('c.display_name')
             ->findArray();
         $this->renderJson(
@@ -28,11 +29,12 @@ class CustomerController extends BaseController {
 
     private function _buildTree($itemList, $parentId) {
         $result = [];
-        foreach ($itemList as $item) {
+        foreach ($itemList as $index => $item) {
             if ($item['parent_id'] == $parentId) {
                 $newItem = $item;
                 $newItem['childs'] = $this->_buildTree($itemList, $newItem['id']);
                 $result[] = $newItem;
+                unset($itemList[$index]);
             }
         }
 
@@ -42,7 +44,7 @@ class CustomerController extends BaseController {
         return null;
     }
 
-    private function _flattern(&$item) {
+    private function _flatternCustomer(&$item) {
         $results = [];
         $results[0] = $item;
         if (is_array($item['childs']) && count($item['childs']) > 0) {
@@ -51,10 +53,9 @@ class CustomerController extends BaseController {
                 return strcmp($a['display_name'], $b['display_name']);
             });
             foreach($childs as $child) {
-                $results = array_merge($results, $this->_flattern($child));
+                $results = array_merge($results, $this->_flatternCustomer($child));
             }
         }
-        // Sort child to get the next;
         return $results;
     }
 
@@ -62,7 +63,7 @@ class CustomerController extends BaseController {
         $customersTree = array_values($this->_buildTree($customers, null));
         $results = [];
         foreach ($customersTree as $node) {
-            $results = array_merge($results, $this->_flattern($node));
+            $results = array_merge($results, $this->_flatternCustomer($node));
         }
         foreach ($results as $index => &$node) {
             $node['order'] = $index;

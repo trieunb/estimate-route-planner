@@ -2,6 +2,7 @@
 return [
     'getSharedData'         => 'App@sharedData',
     'getCustomers'          => 'Customer@index',
+    'getProductServices'    => 'App@productServices',
     'showCustomer'          => 'Customer@show',
 
     'getEstimates'          => 'Estimate@index',

@@ -103,7 +103,7 @@ angular
                         }
                         return '<div class="' + itemClass + '">' + itemText + '</div>';
                     }
-                    };
+                };
                 $scope.selectConfig = selectConfig;
             }]
         };

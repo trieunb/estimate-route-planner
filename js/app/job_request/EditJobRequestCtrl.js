@@ -6,7 +6,7 @@ angular
             '$scope',
             '$rootScope',
             'jobRequestFactory',
-            'customerFactory',
+            'erpLocalStorage',
             'sharedData',
             '$routeParams',
             '$filter',
@@ -20,7 +20,7 @@ function EditJobRequestCtrl(
     $scope,
     $rootScope,
     jobRequestFactory,
-    customerFactory,
+    erpLocalStorage,
     sharedData,
     $routeParams,
     $filter,
@@ -32,24 +32,24 @@ function EditJobRequestCtrl(
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
     var init = function() {
-        $scope.referral = $routeParams.id;
-        jobRequestFactory.show($scope.referral)
+        jobRequestFactory.show($routeParams.id)
             .success(function(response) {
                 $scope.referral = response;
+                // Load customers list
+                erpLocalStorage.getCustomers()
+                    .then(function(data) {
+                        var customers = data;
+                        if ($scope.referral.customer_active == '0') {
+                            customers.push({
+                                id: $scope.referral.customer_id,
+                                display_name: $scope.referral.customer_display_name,
+                                order: customers.length
+                            });
+                        }
+                        angular.copy(customers, $scope.customers);
+                    });
             });
     };
-
-    // Load customers list
-    if (typeof($rootScope.customers) !== 'undefined') {
-        angular.copy($rootScope.customers, $scope.customers);
-    } else {
-        customerFactory.all()
-            .success(function(response) {
-                $scope.customers = response;
-                $rootScope.customers = [];
-                angular.copy($scope.customers, $rootScope.customers);
-            });
-    }
 
     $scope.onAddCustomer = function(input) {
         $scope.referral.customer_display_name = input;
@@ -110,7 +110,7 @@ function EditJobRequestCtrl(
                     toastr.success(response.message);
                     $scope.referralForm.$setPristine();
                     // Reload to get refresh customer
-                    if ($scope.referral.customer_id == 0) {
+                    if ($scope.referral.customer_id === 0) {
                         $window.location.reload();
                     }
                 } else {

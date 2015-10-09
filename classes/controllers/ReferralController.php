@@ -61,6 +61,11 @@ class ReferralController extends BaseController {
 
     public function show() {
         $ref = ORM::forTable('referrals')
+            ->tableAlias('r')
+            ->leftOuterJoin('customers', ['r.customer_id', '=', 'c.id'], 'c')
+            ->select('r.*')
+            ->select('c.display_name', 'customer_display_name')
+            ->select('c.active', 'customer_active')
             ->findOne($this->data['id']);
         if ($ref) {
             $this->renderJson($ref->asArray());

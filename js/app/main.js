@@ -137,8 +137,7 @@ angular
         $rootScope.loadSharedData = function() {
             dataFactory.getSharedData()
                 .success(function(response) {
-                    sharedData.companyInfo      = response.companyInfo;
-                    sharedData.productServices  = response.productServices;
+                    sharedData.companyInfo = response.companyInfo;
                 });
         };
 
@@ -195,13 +194,13 @@ $http.get(ERPApp.baseAPIPath, {
 .then(
     function(response) {
         angular.module('Erp')
-            .constant('USER_CAPABILITIES', response.data.currentUser.capabilities)
-            .constant('USER_ROLES', response.data.currentUser.roles)
+            .constant('USER_CAPABILITIES', response.data.userData.capabilities)
+            .constant('USER_ROLES', response.data.userData.roles)
             .value('sharedData',
                 {
                     companyInfo: response.data.companyInfo,
-                    productServices: response.data.productServices,
-                    currentUserName: response.data.currentUser.name
+                    currentUserName: response.data.userData.name,
+                    lastSyncAt: response.data.lastSyncAt
                 }
             );
         angular.element(document).ready(function() {

@@ -5,7 +5,7 @@
             '$scope',
             '$rootScope',
             'jobRequestFactory',
-            'customerFactory',
+            'erpLocalStorage',
             'sharedData',
             '$location',
             '$filter',
@@ -18,7 +18,7 @@ function AddJobRequestCtrl(
     $scope,
     $rootScope,
     jobRequestFactory,
-    customerFactory,
+    erpLocalStorage,
     sharedData,
     $location,
     $filter,
@@ -34,16 +34,11 @@ function AddJobRequestCtrl(
     };
 
     // Load customers list
-    if (typeof($rootScope.customers) !== 'undefined') {
-        angular.copy($rootScope.customers, $scope.customers);
-    } else {
-        customerFactory.all()
-            .success(function(response) {
-                $scope.customers = response;
-                $rootScope.customers = [];
-                angular.copy($scope.customers, $rootScope.customers);
-            });
-    }
+    erpLocalStorage.getCustomers()
+        .then(function(data) {
+            $scope.customers = [];
+            angular.copy(data, $scope.customers);
+        });
 
     $scope.onAddCustomer = function(input) {
         $scope.referral.customer_display_name = input;
@@ -86,7 +81,7 @@ function AddJobRequestCtrl(
                                 toastr.success(response.message);
                                 if ($scope.referral.customer_id == 0) {
                                     // To force reload customer list
-                                    $rootScope.customers = undefined;
+                                    erpLocalStorage.clearCustomers();
                                 }
                                 $location.path('/edit-job-request/' + response.data.id);
                             } else {

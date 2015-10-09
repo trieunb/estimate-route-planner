@@ -126,7 +126,9 @@
                         <span>(*)</span></label>
                     <div class="col-sm-3">
                         <input class="form-control" type="text" name="zip_code"
-                            ng-model="referral.zip_code" ng-required="true" ng-maxlength="31">
+                            ng-model="referral.zip_code"
+                            ng-required="true"
+                            ng-maxlength="31">
                         <div class="help-block" ng-messages="referralForm.zip_code.$error"
                             ng-if="referralForm.zip_code.$touched && referralForm.zip_code.$invalid">
                             <p ng-message="maxlength" class="text-danger">

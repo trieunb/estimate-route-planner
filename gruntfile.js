@@ -39,7 +39,7 @@ module.exports = function (grunt) {
                         'js/app/routes.js',
                         'js/app/factories.js',
                         'js/app/directives.js',
-                        'js/app/services.js',
+                        'js/app/services/*.js',
                         'js/app/company_info/*.js',
                         'js/app/customer/*.js',
                         'js/app/employee/*.js',

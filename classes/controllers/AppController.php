@@ -20,16 +20,22 @@ class AppController extends BaseController {
             $companyInfo = [];
         }
 
-        // All product services
+        $lastSyncAt = null;
+        $prefs = ORM::forTable('preferences')->findOne();
+        if ($prefs && $prefs->last_sync_at) {
+            $lastSyncAt = strtotime($prefs->last_sync_at);
+        }
+        $this->renderJson(
+            compact('companyInfo', 'userData', 'lastSyncAt')
+        );
+    }
+
+    public function productServices() {
         $productServices = ORM::forTable('products_and_services')
             ->selectMany('id', 'name', 'description', 'active', 'rate')
             ->orderByAsc('name')
             ->findArray();
-        $this->renderJson([
-            'companyInfo'       => $companyInfo,
-            'productServices'   => $productServices,
-            'currentUser'       => $userData
-        ]);
+        $this->renderJson($productServices);
     }
 }
 ?>
