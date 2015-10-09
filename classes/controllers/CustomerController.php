@@ -59,6 +59,7 @@ class CustomerController extends BaseController {
         return $results;
     }
 
+    // TODO: this should move to model
     private function _sortCustomers($customers) {
         $customersTree = array_values($this->_buildTree($customers, null));
         $results = [];

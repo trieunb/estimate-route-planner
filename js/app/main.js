@@ -1,3 +1,5 @@
+var ERPApp = ERPApp || {};
+
 /**
  * Convert an image
  * to a base64 url
@@ -5,8 +7,6 @@
  * @param  {Function} callback
  * @param  {String}   [outputFormat=image/png]
  */
-var ERPApp = ERPApp || {};
-
 function convertImgToBase64URL(url, callback, outputFormat) {
     var img = new Image();
     img.crossOrigin = 'Anonymous';
