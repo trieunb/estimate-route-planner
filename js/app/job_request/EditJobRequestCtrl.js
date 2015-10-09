@@ -110,7 +110,7 @@ function EditJobRequestCtrl(
                     toastr.success(response.message);
                     $scope.referralForm.$setPristine();
                     // Reload to get refresh customer
-                    if ($scope.referral.customer_id === 0) {
+                    if ($scope.referral.customer_id == 0) {
                         $window.location.reload();
                     }
                 } else {

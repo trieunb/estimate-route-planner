@@ -4,15 +4,21 @@ angular
         'QuickbooksSyncCtrl',
         [
             '$scope',
-            '$rootScope',
             '$window',
             'quickbooksSyncFactory',
+            'erpLocalStorage',
             '$ngBootbox',
             QuickbooksSyncCtrl
         ]
     );
 
-function QuickbooksSyncCtrl($scope, $rootScope, $window, quickbooksSyncFactory, $ngBootbox) {
+function QuickbooksSyncCtrl(
+    $scope,
+    $window,
+    quickbooksSyncFactory,
+    erpLocalStorage,
+    $ngBootbox) {
+
     $scope.setPageTitle('Quickbooks Synchronize');
     $scope.info = {};
 
@@ -23,9 +29,8 @@ function QuickbooksSyncCtrl($scope, $rootScope, $window, quickbooksSyncFactory, 
                 if (response.success) {
                     toastr.success(response.message);
                     // Expire cached data
-                    $rootScope.customers = undefined;
-                    $rootScope.employees = undefined;
-                    $rootScope.loadSharedData();
+                    erpLocalStorage.clearCustomers();
+                    erpLocalStorage.clearProductServices();
                 } else {
                     var msg = response.message || 'An error has occurred while synchrinize data';
                     toastr.error(msg);
@@ -73,5 +78,6 @@ function QuickbooksSyncCtrl($scope, $rootScope, $window, quickbooksSyncFactory, 
                 $scope.info = info;
             });
     };
+
     loadInfo();
 }

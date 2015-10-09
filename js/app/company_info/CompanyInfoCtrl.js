@@ -46,7 +46,7 @@ function CompanyInfoCtrl($scope, $rootScope, companyInfoFactory, sharedData) {
     };
 
     $scope.uploadLogo = function() {
-        if ($scope.photofile != null) {
+        if ($scope.photofile !== null) {
             companyInfoFactory.uploadLogo($scope.photofile)
                 .success(function(response) {
                     if (response.success) {
@@ -59,6 +59,6 @@ function CompanyInfoCtrl($scope, $rootScope, companyInfoFactory, sharedData) {
                         toastr.error(msg);
                     }
                 });
-        };
+        }
     };
 }

@@ -286,7 +286,7 @@ function EditEstimateCtrl(
         if ($scope.estimateForm.$dirty && ('undefined' != typeof(newVal))) {
             angular.forEach($scope.customers, function(cus) {
                 if (cus.id == newVal) {
-                    if (newVal !== 0) { // Keep entered info if new client
+                    if (newVal != 0) { // Keep entered info if new client
                         $scope.estimate.bill_address = cus.bill_address;
                         $scope.estimate.bill_city = cus.bill_city;
                         $scope.estimate.bill_state = cus.bill_state;
@@ -306,7 +306,7 @@ function EditEstimateCtrl(
         if ($scope.estimateForm.$dirty && ('undefined' != typeof(newVal))) {
             angular.forEach($scope.jobCustomers, function(cus) {
                 if (cus.id == newVal) {
-                    if (newVal !== 0) {
+                    if (newVal != 0) {
                         $scope.estimate.job_address = cus.ship_address;
                         $scope.estimate.job_city = cus.ship_city;
                         $scope.estimate.job_state = cus.ship_state;
@@ -416,8 +416,8 @@ function EditEstimateCtrl(
                                         $scope.showSendModal = true;
                                     } else {
                                         // Reload to get refresh customer
-                                        if ($scope.estimate.customer_id === 0 ||
-                                            $scope.estimate.job_customer_id === 0) {
+                                        if ($scope.estimate.customer_id == 0 ||
+                                            $scope.estimate.job_customer_id == 0) {
                                             $window.location.reload();
                                         }
                                     }
