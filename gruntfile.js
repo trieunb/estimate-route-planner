@@ -37,8 +37,7 @@ module.exports = function (grunt) {
                     'js/app.min.js': [
                         'js/app/main.js',
                         'js/app/routes.js',
-                        'js/app/factories.js',
-                        'js/app/directives.js',
+                        'js/app/directives/*.js',
                         'js/app/services/*.js',
                         'js/app/company_info/*.js',
                         'js/app/customer/*.js',

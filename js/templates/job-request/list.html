@@ -37,13 +37,13 @@
     <tbody>
       <tr ng-repeat="ref in referrals | orderBy:'date_requested'">
         <td>
-          <a href="#/edit-job-request/{{ref.id}}" ng-if="::hasCap('erpp_edit_job_requests')"><span>{{ref.customer_display_name}}</span></a>
-          <span ng-if="::!hasCap('erpp_edit_job_requests')">{{ref.customer_display_name}}</span>
+          <a href="#/edit-job-request/{{::ref.id}}" ng-if="::hasCap('erpp_edit_job_requests')"><span>{{::ref.customer_display_name}}</span></a>
+          <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.customer_display_name}}</span>
         </td>
-        <td><span>{{ref.date_requested}}</span></td>
-        <td><span>{{ref.address}}</span></td>
-        <td><span>{{ref.primary_phone}}</span></td>
-        <td><span>{{ref.date_service}}</span></td>
+        <td><span>{{::ref.date_requested}}</span></td>
+        <td><span>{{::ref.address}}</span></td>
+        <td><span>{{::ref.primary_phone}}</span></td>
+        <td><span>{{::ref.date_service}}</span></td>
         <td>
             <select ng-if="::hasCap('erpp_edit_job_requests')"
                 ng-init="ref.new_status = ref.status"
@@ -107,13 +107,5 @@
           </div>
       </div>
     </div>
-    <pagination ng-show="total"
-      rotate="true"
-      boundary-links="true"
-      max-size="10" class="pagination-md"
-      total-items="total"
-      items-per-page="30"
-      ng-model="currentPage"
-      ng-change="pageChanged()">
-    </pagination>
+    <erp-pagination></erp-pagination>
 </div>

@@ -44,7 +44,7 @@
           <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.title}}</span>
         </td>
 
-        <td><span>{{route.created_at}}</span></td>
+        <td><span>{{::route.created_at}}</span></td>
         <td>
           <select
             ng-if="::hasCap('erpp_edit_estimate_routes')"
@@ -61,17 +61,8 @@
       </tr>
     </tbody>
   </table>
-  <p ng-if="!$root.isBusy && routes.length == 0"
-    class="text-center">
-    No results were found!
-  </p>
-  <pagination ng-show="total"
-    rotate="true"
-    boundary-links="true"
-    max-size="10" class="pagination-md"
-    total-items="total"
-    items-per-page="30"
-    ng-model="currentPage"
-    ng-change="pageChanged()">
-  </pagination>
+    <p ng-if="!$root.isBusy && routes.length == 0" class="text-center">
+        No results were found!
+    </p>
+    <erp-pagination></erp-pagination>
 </div>

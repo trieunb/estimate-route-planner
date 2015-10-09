@@ -9,9 +9,7 @@ angular
             '$routeParams',
             '$filter',
             '$location',
-            'customerFactory',
             'estimateFactory',
-            'employeeFactory',
             'erpGeoLocation',
             '$ngBootbox',
             'sharedData',
@@ -27,9 +25,7 @@ function AddEstimateCtrl(
         $routeParams,
         $filter,
         $location,
-        customerFactory,
         estimateFactory,
-        employeeFactory,
         erpGeoLocation,
         $ngBootbox,
         sharedData,
@@ -61,30 +57,21 @@ function AddEstimateCtrl(
         maxItems: 1
     };
 
-    // Load customers list
+    // Load customers
     erpLocalStorage.getCustomers()
         .then(function(data) {
+            $scope.customers = [];
+            $scope.jobCustomers = [];
             angular.copy(data, $scope.customers);
             angular.copy(data, $scope.jobCustomers);
         });
+
     // Load employees
     erpLocalStorage.getEmployees()
         .then(function(data) {
+            $scope.employees = [];
             angular.copy(data, $scope.employees);
-            console.log('employees scope:', $scope.employees);
         });
-
-    console.log('employees scope:', $scope.employees);
-    // if (typeof($rootScope.employees) !== 'undefined') {
-    //     angular.copy($rootScope.employees, $scope.employees);
-    // } else {
-    //     employeeFactory.all()
-    //         .success(function(response) {
-    //             $scope.employees = response;
-    //             $rootScope.employees = [];
-    //             angular.copy($scope.employees, $rootScope.employees);
-    //         });
-    // }
 
     $scope.onAddCustomer = function(input) {
         $scope.estimate.customer_display_name = input;
@@ -111,7 +98,6 @@ function AddEstimateCtrl(
     };
 
     $scope.addLine = function() {
-        console.log('employees scope:', $scope.employees);
         $scope.estimate.lines.push({
             product_service_id: null,
             line_id: null,
@@ -160,7 +146,7 @@ function AddEstimateCtrl(
         if ($scope.estimateForm.$dirty && ('undefined' != typeof(newVal))) {
             angular.forEach($scope.customers, function(cus) {
                 if (cus.id == newVal) {
-                    if (newVal != 0) { // Keep entered info if new client
+                    if (newVal !== 0) { // Keep entered info if new client
                         $scope.estimate.bill_address = cus.bill_address;
                         $scope.estimate.bill_city = cus.bill_city;
                         $scope.estimate.bill_state = cus.bill_state;
@@ -180,7 +166,7 @@ function AddEstimateCtrl(
         if ($scope.estimateForm.$dirty && ('undefined' != typeof(newVal))) {
             angular.forEach($scope.jobCustomers, function(cus) {
                 if (cus.id == newVal) {
-                    if (newVal != 0) { // Keep entered info if new client
+                    if (newVal !== 0) { // Keep entered info if new client
                         $scope.estimate.job_address = cus.ship_address;
                         $scope.estimate.job_city = cus.ship_city;
                         $scope.estimate.job_state = cus.ship_state;
@@ -253,8 +239,8 @@ function AddEstimateCtrl(
                             .success(function(response) {
                                 if (response.success) {
                                     toastr.success(response.message);
-                                    if ($scope.estimate.customer_id == 0 ||
-                                        $scope.estimate.job_customer_id == 0) {
+                                    if ($scope.estimate.customer_id === 0 ||
+                                        $scope.estimate.job_customer_id === 0) {
                                         // To force reload customer list
                                         $rootScope.customers = undefined;
                                     }

@@ -1,6 +1,8 @@
 ## 1.2.3
   - Remove in-active customer from customer dropdowns.
-  - Some code refactoring
+  - Optimize load time for customers
+  - Code re-ogranize
+
 ## 1.2.2
   - Display customer dropdown in order by alphabetic and parent and child
 

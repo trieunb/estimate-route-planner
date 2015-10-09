@@ -3,6 +3,7 @@ angular
     .factory('customerFactory', ['$http', customerFactory]);
 
 function customerFactory($http) {
+
     return {
         all: function() {
             return $http.get(ERPApp.baseAPIPath, {

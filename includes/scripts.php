@@ -50,9 +50,7 @@ function erp_enqueue_scripts() {
         if (ERP_DEBUG) {
             $appJS = [
                 'erp-js-app'            => 'js/app/main.js',
-                'erp-js-app-routes'     => 'js/app/routes.js',
-                'erp-js-app-factories'  => 'js/app/factories.js',
-                'erp-js-app-directives' => 'js/app/directives.js'
+                'erp-js-app-routes'     => 'js/app/routes.js'
             ];
 
             foreach ($appJS as $name => $path) {
@@ -66,6 +64,7 @@ function erp_enqueue_scripts() {
 
             // Scan and load all components in js/app/
             $appComponentLocations = [
+                'js/app/directives',
                 'js/app/services',
                 'js/app/estimate',
                 'js/app/job_request',

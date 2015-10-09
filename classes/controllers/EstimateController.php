@@ -191,16 +191,25 @@ class EstimateController extends BaseController {
     public function show() {
         $id = $this->data['id'];
         $estimate = null;
+        $query = ORM::forTable('estimates')
+            ->tableAlias('e')
+            ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
+            ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
+            ->select('e.*')
+            ->select('c.display_name', 'customer_display_name')
+            ->select('c.active', 'customer_active')
+            ->select('jc.display_name', 'job_customer_display_name')
+            ->select('jc.active', 'job_customer_active');
+
         if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
             $currentUserName = $this->getCurrentUserName();
-            $estimate = ORM::forTable('estimates')
-                ->whereAnyIs([
+            $estimate = $query->whereAnyIs([
                     ['sold_by_1' => $currentUserName],
                     ['sold_by_2' => $currentUserName]
                 ])
                 ->findOne($id);
         } else {
-            $estimate = ORM::forTable('estimates')->findOne($id);
+            $estimate = $query->findOne($id);
         }
         if ($estimate) {
             $estimate = $estimate->asArray();

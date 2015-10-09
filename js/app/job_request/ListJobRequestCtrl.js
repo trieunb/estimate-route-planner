@@ -18,7 +18,7 @@ function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, estimateRou
     $scope.filter = {};
     $scope.total = 0;
     var currentPage = 1;
-    if ('undefined' != typeof($routeParams.pageNumber)) {
+    if ('undefined' !== typeof($routeParams.pageNumber)) {
         currentPage = $routeParams.pageNumber;
     }
     $scope.currentPage = currentPage;
