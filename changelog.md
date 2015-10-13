@@ -1,3 +1,10 @@
+## 1.3.0
+  - Bug fixes:
+    - Empty services dropdown
+    - Wrong estimate order in creating worker order
+  - Change "Due" to "Exp" on all estimate related pages, such as: add/edit/list, print, route sort options.
+  - Add estimators(Sold by) to worker order
+
 ## 1.2.3
   - Remove in-active customer from customer dropdowns.
   - Optimize load time for customers
