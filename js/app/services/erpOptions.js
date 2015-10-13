@@ -14,7 +14,7 @@ angular
                value: 'total'
             },
             {
-               label: 'Due date',
+               label: 'Exp date',
                value: 'expiration_date'
             }
         ],
