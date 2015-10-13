@@ -86,7 +86,7 @@
                         <?php echo $companyInfo->name ?>
                     </span>
                     <br>
-                    <span><?php echo $companyInfo->full_address ?></span>
+                    <span><?php echo $companyInfo->mailing_address ?></span>
                     <br>
                     Tel:
                     <span><?php echo $companyInfo->primary_phone_number ?></span>

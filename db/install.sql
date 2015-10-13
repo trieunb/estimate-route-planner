@@ -20,6 +20,7 @@ CREATE TABLE `company_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `full_address` text,
+  `mailing_address` VARCHAR(500) DEFAULT NULL,
   `primary_phone_number` varchar(50) DEFAULT NULL,
   `fax` varchar(50) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,

@@ -34,7 +34,7 @@ class ERPApp {
 
     public function letGo() {
         $this->log(
-            "[=== " .
+            "\n=== " .
             $_SERVER['REQUEST_METHOD'] . ' ' .
             trim($_SERVER['REQUEST_URI'])
         );
@@ -49,6 +49,9 @@ class ERPApp {
             $controlerClass  = $controllerMethod[0] . 'Controller';
             $controlerMethod = $controllerMethod[1];
             $controller = new $controlerClass($requestData, $this->logger);
+            $this->log(
+                "Handler: $controlerClass@$controlerMethod"
+            );
             call_user_func([$controller, $controlerMethod]);
         } else {
             http_response_code(404);
