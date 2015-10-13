@@ -6,11 +6,18 @@ angular
             'sharedData',
             'employeeFactory',
             'customerFactory',
+            'productServiceFactory',
             erpLocalStorage
         ]
     );
 
-function erpLocalStorage($q, sharedData, employeeFactory, customerFactory) {
+function erpLocalStorage(
+    $q,
+    sharedData,
+    employeeFactory,
+    customerFactory,
+    productServiceFactory) {
+
     // Cache timestamp
     var cacheTs = null;
 
@@ -88,7 +95,7 @@ function erpLocalStorage($q, sharedData, employeeFactory, customerFactory) {
     this.getProductServices = function() {
         return $q(function(resolve) {
             if (null === cacheData.productServices) {
-                customerFactory.all()
+                productServiceFactory.all()
                     .success(function(responseData) {
                         rememberData('productServices', responseData);
                         resolve(cacheData.productServices);

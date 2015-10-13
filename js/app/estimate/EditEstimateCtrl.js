@@ -46,13 +46,6 @@ function EditEstimateCtrl(
     $scope.productServices = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
-    // Filter active product services
-    angular.forEach(sharedData.productServices, function(pd) {
-        if (pd.active == 1) {
-            $scope.productServices.push(pd);
-        }
-    });
-
     $scope.soldBySelectConfig = {
         valueField: 'name',
         labelField: 'name',
@@ -79,7 +72,7 @@ function EditEstimateCtrl(
             }
 
             // Assign line_num for the empty line as length of estimate lines
-            var linePDIds = [];
+            var lineProductServiceIds = [];
             angular.forEach(estimate.lines, function(line) {
                 if (line.line_num === null) {
                     line.line_num = estimate.lines.length;
@@ -96,19 +89,23 @@ function EditEstimateCtrl(
                 }
                 var lineTotal = line.qty * line.rate;
                 line.total = parseFloat(lineTotal.toFixed(2));
-                // Check for add inactive products to the selections
-                // if a line has assigned with inactive product
+
                 if (line.product_service_id) {
-                    angular.forEach(sharedData.productServices, function(pd) {
-                        if ((pd.id == line.product_service_id) &&
-                            (pd.active == '0') &&
-                            (linePDIds.indexOf(pd.id) === -1)) {
+                    lineProductServiceIds.push(line.product_service_id);
+                }
+            });
+            // Product and services list
+            erpLocalStorage.getProductServices()
+                .then(function(data) {
+                    angular.forEach(data, function(pd) {
+                        // Check for add inactive products to the dropdown
+                        // if a line has assigned with them
+                        if ((pd.active == 1) ||
+                            (lineProductServiceIds.indexOf(pd.id) !== -1)) {
                             $scope.productServices.push(pd);
                         }
                     });
-                    linePDIds.push(line.product_service_id);
-                }
-            });
+                });
 
             // Order lines by line_num
             estimate.lines = $filter('orderBy')(estimate.lines, 'line_num', false);

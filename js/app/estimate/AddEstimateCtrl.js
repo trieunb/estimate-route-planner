@@ -43,12 +43,15 @@ function AddEstimateCtrl(
     // Auto fill estimate footer
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
     $scope.estimate.sold_by_1 = sharedData.currentUserName;
-    // Filter active product services
-    angular.forEach(sharedData.productServices, function(pd) {
-        if (pd.active == 1) {
-            $scope.productServices.push(pd);
-        }
-    });
+
+    erpLocalStorage.getProductServices()
+      .then(function(data) {
+        angular.forEach(data, function(service) {
+          if (service.active == 1) {
+            $scope.productServices.push(service);
+          }
+        });
+      });
 
     $scope.soldBySelectConfig = {
         valueField: 'name',
