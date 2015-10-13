@@ -89,7 +89,7 @@ class EstimateController extends BaseController {
                 'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
             )
             ->select('c.display_name', 'job_customer_display_name')
-            ->orderByDesc('e.id')
+            ->orderByAsc('e.route_order')
             ->where('e.route_id', $routeId)
             ->findArray();
         # Get lines
