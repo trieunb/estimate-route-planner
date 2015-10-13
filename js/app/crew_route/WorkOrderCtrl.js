@@ -26,10 +26,19 @@ function WorkOrderCtrl(
     crewRouteFactory.get(routeId).
         success(function(data) {
             $scope.route = data;
-
+            $scope.route.assignedEstimates = [];
             estimateFactory.listAssigedToRoute(routeId).
                 success(function(responseData) {
-                    $scope.route.assignedEstimates = responseData;
+                    angular.forEach(responseData, function(estimate) {
+                        estimate.estimators = [];
+                        if (estimate.sold_by_1) {
+                            estimate.estimators.push(estimate.sold_by_1);
+                        }
+                        if (estimate.sold_by_2) {
+                            estimate.estimators.push(estimate.sold_by_2);
+                        }
+                        $scope.route.assignedEstimates.push(estimate);
+                    });
                 });
         });
 

@@ -17,6 +17,8 @@
                         <input type="text" class="input-time" ng-model="est.time">
                         <br>
                         <span>Estimate #{{:: est.doc_number}}</span>
+                        <br>
+                        Estimator: {{est.estimators.join(', ')}}
                     </p>
                     <p>
                         <strong>Job Information:</strong>
