@@ -60,7 +60,7 @@ class EstimateController extends BaseController {
             ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
             ->selectMany(
                 'e.id', 'e.expiration_date', 'e.txn_date', 'e.doc_number',
-                'e.job_address', 'e.job_city',
+                'e.job_address', 'e.job_city', 'e.primary_phone_number',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
                 'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
             )

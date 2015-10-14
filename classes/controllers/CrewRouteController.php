@@ -43,7 +43,8 @@ class CrewRouteController extends BaseController {
                     'e.id', 'e.doc_number', 'e.status', 'e.txn_date',
                     'e.expiration_date', 'e.job_address', 'e.job_city',
                     'e.job_state', 'e.job_zip_code', 'e.total', 'e.job_lat',
-                    'e.route_order', 'e.job_lng', 'e.status'
+                    'e.route_order', 'e.job_lng', 'e.status',
+                    'e.primary_phone_number'
                 )
                 ->select('c.display_name', 'job_customer_display_name')
                 ->orderByAsc('e.route_order')
