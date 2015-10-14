@@ -19,7 +19,6 @@ function erp_enqueue_scripts() {
                 'angular-route'         => 'js/lib/angular-route.js',
                 'angular-sanitize'      => 'js/lib/angular-sanitize.js',
                 'angular-selectize'     => 'js/lib/angular-selectize.js',
-                'angular-signature-pad' => 'js/lib/ngSignaturePad.js',
                 'angular-sortable'      => 'js/lib/ng-sortable.js',
                 'angular-gmap'          => 'js/lib/angular-google-maps.js',
                 'angular-gmap-dev'      => 'js/lib/angular-google-maps_dev_mapped.js',

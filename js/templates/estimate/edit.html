@@ -448,13 +448,10 @@
                             <button type="button" style="margin-left: 5px;"
                                 ng-click="clearCustomerSignature()"
                                 class="btn btn-xs btn-default pull-right">Clear</button>
-                            <!-- <button type="button" ng-if="estimate.customer_signature"
-                                ng-click="deleteCustomerSignature()"
-                                class="btn btn-xs btn-danger pull-right">Delete</button> -->
                         </div>
                         <div class="col-sm-12">
                             <div class="div-customer-signature">
-                                <canvas ng-signature-pad="signature_pad" width="400px" height="150px"></canvas>
+                                <canvas></canvas>
                             </div>
                         </div>
                     </div>
@@ -481,9 +478,9 @@
                 </div>
                 <div class="col-sm-6 col-sm-offset-1">
                     <div class="form-group">
-                        <label class="col-sm-12" for="estimate_footer">
+                        <label class="col-sm-11 col-sm-offset-1 col-xs-10 col-xs-offset-2" for="estimate_footer">
                             Estimate Footer</label>
-                        <div class="col-sm-12">
+                        <div class="col-sm-11 col-sm-offset-1 col-xs-10 col-xs-offset-2">
                             <textarea class="form-control" rows="7"
                                 ng-maxlength="1000"
                                 ng-model="estimate.estimate_footer" name="estimate_footer">
@@ -497,7 +494,7 @@
                         </div>
                     </div>
                   <div class="form-group">
-                        <div class="col-sm-12">
+                        <div class="col-sm-11 col-sm-offset-1 col-xs-10 col-xs-offset-2">
                             <label>Estimate Pictures</label>
                             <div ng-dropzone dropzone="dropzone" dropzone-config="dropzoneConfig">
                                 <div class="upload dropzone" id="drop-container">
@@ -515,6 +512,7 @@
                                         <br>
                                         <span ng-show="isUploading" class="text-warning">
                                             <span ng-show="uploadProgress < 100">Upload progress: <span ng-bind="uploadProgress"></span>%</span>
+                                            <br>
                                             <span ng-show="uploadProgress >= 100">Processing ... </span>
                                         </span>
                                     </p>
@@ -528,7 +526,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12 col-xs-12 location-notes">
+            <div class="col-sm-12 col-xs-12">
                 <div class="form-group">
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary" ng-disabled="estimateForm.$invalid || $root.isBusy">Save</button>

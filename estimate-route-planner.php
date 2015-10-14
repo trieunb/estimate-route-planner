@@ -2,11 +2,11 @@
 /**
 * Plugin Name: Estimate and Route Planner Pro
 * Description: Estimate and route planning
-* Version: 1.3.2
+* Version: 1.3.4
 * Author: SFR Software
 * Author URI: http://sfr-creative.com/
 */
-define('ERP_VERSION', '1.3.2');
+define('ERP_VERSION', '1.3.4');
 define('ERP_PLUGIN_URL', plugin_dir_url(__FILE__));  // Http URL to plugin
 define('ERP_PLUGIN_DIR', plugin_dir_path(__FILE__)); // Physical root path of plugin
 define('ROOT_MENU_SLUG', 'erpp');
@@ -15,14 +15,6 @@ define('ERP_PLUGIN_NAME', 'ER Planner Pro');
 define('ERP_PLUGIN_SCRIPT', __FILE__);
 
 require_once(ERP_PLUGIN_DIR . '/config/plugin.php');
-
-// if (ERP_DEBUG) {
-    // function replace_siteurl($val) {
-    //     return 'http://' . $_SERVER['SERVER_NAME'];
-    // }
-    // add_filter('option_siteurl', 'replace_siteurl');
-    // add_filter('option_home', 'replace_siteurl');
-// }
 
 $includes = [
     'functions.php',
@@ -44,5 +36,4 @@ add_action('admin_init', 'erp_custom_menu_class');
 add_action('wp_ajax_erp', 'erp_ajax_handler');
 add_filter('query_vars', 'erp_query_vars');
 add_action('parse_request', 'erp_parse_request');
-
 ?>

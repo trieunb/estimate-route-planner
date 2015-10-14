@@ -109,20 +109,32 @@ function EditEstimateCtrl(
 
             // Order lines by line_num
             estimate.lines = $filter('orderBy')(estimate.lines, 'line_num', false);
-            // Load signature to canvas if exists
+
+            // Load signature canvas
             setTimeout(function() {
-                var signaturePad = $scope.signature_pad;
+                var padWrapper = angular.element('.div-customer-signature');
                 if (estimate.customer_signature) {
-                    convertImgToBase64URL(
-                        $rootScope.baseERPPluginUrl + estimate.customer_signature,
-                        function(encoded) {
-                            signaturePad.fromDataURL(encoded);
-                        }
-                    );
+                    // Fix size of canvas to fit with image
+                    var canvas = padWrapper.find('canvas').get(0);
+                    var ctx = canvas.getContext('2d');
+                    var img = new Image();
+                    var signatureH = 0;
+                    var signatureW = 0;
+                    img.onload = function() {
+                        var _this = this;
+                        var signatureH = this.height;
+                        var signatureW = this.width;
+                        padWrapper.css('max-width', signatureW);
+                        padWrapper.css('min-width', signatureW);
+                        padWrapper.css('max-height', signatureH);
+                        padWrapper.css('min-height', signatureH);
+                        initSignaturePad();
+                        ctx.drawImage(this, 0, 0);
+                    };
+                    img.src = $rootScope.baseERPPluginUrl + estimate.customer_signature;
+                } else {
+                    initSignaturePad();
                 }
-                signaturePad.onBegin = function() {
-                    $scope.isChangedSignature = true;
-                };
             }, 300);
             $scope.estimate = estimate;
             $scope.updateTotal();
@@ -218,9 +230,7 @@ function EditEstimateCtrl(
     };
 
     $scope.clearCustomerSignature = function() {
-        var signaturePad = $scope.signature_pad;
-        signaturePad.clear();
-        $scope.isChangedSignature = true;
+        $scope.signaturePad.clear();
     };
 
     $scope.lineItemsDragListeners = {
@@ -391,7 +401,7 @@ function EditEstimateCtrl(
 
                         if ($scope.isChangedSignature) {
                             // Get base64 of customer signature
-                            var signaturePad = $scope.signature_pad;
+                            var signaturePad = $scope.signaturePad;
                             if (signaturePad.isEmpty()) {
                                 estimate.customer_signature_encoded = '';
                             } else {
@@ -447,5 +457,17 @@ function EditEstimateCtrl(
             $scope.estimate.job_city + ' ' +
             $scope.estimate.job_state + ' ' +
             $scope.estimate.job_zip_code;
+    };
+
+    var initSignaturePad = function() {
+        var padWrapper = angular.element('.div-customer-signature');
+        var canvas = padWrapper.find('canvas').get(0);
+        var ctx = canvas.getContext("2d");
+        ctx.canvas.width  = padWrapper.width();
+        ctx.canvas.height = padWrapper.height();
+        $scope.signaturePad = new SignaturePad(canvas);
+        $scope.signaturePad.onBegin = function() {
+            $scope.isChangedSignature = true;
+        };
     };
 }

@@ -19,7 +19,6 @@ module.exports = function (grunt) {
                         'js/lib/angular-route.js',
                         'js/lib/angular-sanitize.js',
                         'js/lib/angular-selectize.js',
-                        'js/lib/ngSignaturePad.js',
                         'js/lib/ng-sortable.js',
                         'js/lib/angular-google-maps.js',
                         'js/lib/angular-google-maps_dev_mapped.js',

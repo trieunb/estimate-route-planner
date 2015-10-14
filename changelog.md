@@ -1,3 +1,6 @@
+## 1.3.3
+  - Fix customer signature: lagging, writing outside of box
+
 ## 1.3.2
   - Fix Drag and drop route not working on mobile browser.
 
