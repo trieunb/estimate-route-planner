@@ -2,22 +2,21 @@
     <div class="row">
         <div class="col-sm-3">
             <h4 class="h4-title">Assigned Routes</h4>
-            <div class="assigned-routes">
+            <div class="assigned-routes" ui-tree="assignedListDndOptions" data-max-depth="1" data-drag-delay="150">
                 Sort by:
                 <select class="sort-by-select"
-                    ng-model="assigned_queue_sort_by"
+                    ng-model="$parent.assigned_queue_sort_by"
                     ng-change="sortAssignedQueue()"
                     ng-options="sort.value as sort.label for sort in sortOptions">
                 </select>
-                <ul dnd-list="assignedEstimates" dnd-drop="onDropToAssignedQueue(event, index, item, external, type)">
-                    <li class="box-assign" ng-repeat="estimate in assignedEstimates"
-                        dnd-draggable="estimate"
-                        dnd-moved="onAssignedMoved(estimate, $index)">
+                <ul ui-tree-nodes ng-model="assignedEstimates">
+                    <li ui-tree-node class="box-assign" ng-repeat="estimate in assignedEstimates">
+                        <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
                         <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
                         <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                         <br>
-                        {{::estimate.job_address}}<br>
-                        {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                        {{:: estimate | estimateJobFullAddress }}
+                        <br>
                         Phone: {{::estimate.primary_phone_number}}<br>
                         Exp: {{::estimate.expiration_date}}<br>
                         Total: ${{::estimate.total}}<br>
@@ -28,22 +27,21 @@
 
             <h4 class="h4-title">Pending Routes</h4>
 
-            <div class="assigned-routes">
+            <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
                 Sort by:
                 <select class="sort-by-select"
-                    ng-model="pending_queue_sort_by"
+                    ng-model="$parent.pending_queue_sort_by"
                     ng-change="sortPendingQueue()"
                     ng-options="sort.value as sort.label for sort in sortOptions">
                 </select>
-                <ul dnd-list="pendingEstimates" dnd-drop="onDropToPendingQueue(event, index, item, external, type)">
-                    <li class="box-assign" ng-repeat="estimate in pendingEstimates"
-                        dnd-draggable="estimate"
-                        dnd-moved="onPendingMoved(estimate, $index)">
+                <ul ui-tree-nodes ng-model="pendingEstimates">
+                    <li ui-tree-node class="box-assign" ng-repeat="estimate in pendingEstimates">
+                        <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
                         <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
                         <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                         <br>
-                        {{::estimate.job_address}}<br>
-                        {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                        {{:: estimate | estimateJobFullAddress }}
+                        <br>
                         Phone: {{::estimate.primary_phone_number}}<br>
                         Exp: {{::estimate.expiration_date}}<br>
                         Total: ${{::estimate.total}}<br>
@@ -101,8 +99,8 @@
                                 <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
                                 <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
-                                {{::estimate.job_address}}<br>
-                                {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                                {{:: estimate | estimateJobFullAddress }}
+                                <br>
                                 Phone: {{::estimate.primary_phone_number}}<br>
                                 Exp: {{::estimate.expiration_date}}<br>
                                 Total: ${{::estimate.total}}<br>
@@ -119,8 +117,8 @@
                                 <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
                                 <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
-                                {{::estimate.job_address}}<br>
-                                {{::estimate.job_city}}, {{::estimate.job_state}} {{::estimate.job_zip_code}}<br>
+                                {{:: estimate | estimateJobFullAddress }}
+                                <br>
                                 Phone: {{::estimate.primary_phone_number}}<br>
                                 Exp: {{::estimate.expiration_date}}<br>
                                 Total: ${{::estimate.total}}<br>

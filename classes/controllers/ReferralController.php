@@ -113,7 +113,7 @@ class ReferralController extends BaseController {
             $ref->status = 'Assigned';
             $ref->route_order = $assignedReferralsCount;
 
-        } elseif($this->data['status'] == 'Pending') {
+        } elseif ($this->data['status'] == 'Pending') {
             $ref->status = 'Pending';
             $ref->route_order = 0;
             $ref->route_id = NULL;

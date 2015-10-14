@@ -93,7 +93,7 @@ function EditCrewRouteCtrl(
 
                        uiGmapIsReady.promise(1).then(function(instances) {
                             directionsDisplay.setMap($scope.map.control.getGMap());
-                            $scope.drawAssignedEstimatesDirection();
+                            $scope.drawRouteDirection();
                         });
                     },
                     function() {
@@ -118,47 +118,53 @@ function EditCrewRouteCtrl(
            });
        });
 
-   $scope.onDropToAssignedQueue = function(event, index, item, external, type) {
-       $scope.assigned_queue_sort_by = '';
-       return item;
+   $scope.assignedListDndOptions = {
+       dragStart: function() {
+           $scope.assigned_queue_sort_by = '';
+           return true;
+       },
+       dropped: function(evt) {
+           $scope.drawRouteDirection();
+           return true;
+       }
    };
 
-   $scope.onDropToPendingQueue = function(event, index, item, external, type) {
-       $scope.pending_queue_sort_by = '';
-       return item;
-   };
-
-   $scope.onPendingMoved = function(estimate, estimateIndex) {
-       $scope.pendingEstimates.splice(estimateIndex, 1);
-       $scope.drawAssignedEstimatesDirection();
-   };
-
-   $scope.onAssignedMoved = function(estimate, estimateIndex) {
-       $scope.assignedEstimates.splice(estimateIndex, 1);
-       $scope.drawAssignedEstimatesDirection();
+   $scope.pendingListDndOptions = {
+       dragStart: function(evt) {
+           $scope.pending_queue_sort_by = '';
+           return true;
+       },
+       dropped: function(evt) {
+           $scope.drawRouteDirection();
+           return true;
+       }
    };
 
    $scope.sortAssignedQueue = function() {
-       $scope.assignedEstimates = orderBy(
-           $scope.assignedEstimates,
-           $scope.assigned_queue_sort_by,
-           false
-       );
-       $scope.drawAssignedEstimatesDirection();
+       if ($scope.assignedEstimates.length > 1) {
+           $scope.assignedEstimates = orderBy(
+               $scope.assignedEstimates,
+               $scope.assigned_queue_sort_by,
+               false
+           );
+           $scope.drawRouteDirection();
+       }
    };
 
-    $scope.sortPendingQueue = function() {
-        $scope.pendingEstimates = orderBy(
-           $scope.pendingEstimates,
-           $scope.pending_queue_sort_by,
-           false
-        );
-    };
+   $scope.sortPendingQueue = function() {
+       if ($scope.pendingEstimates.length > 1) {
+           $scope.pendingEstimates = orderBy(
+               $scope.pendingEstimates,
+               $scope.pending_queue_sort_by,
+               false
+           );
+       }
+   };
 
     /**
      * Repaint direction
      */
-    $scope.drawAssignedEstimatesDirection = function() {
+    $scope.drawRouteDirection = function() {
         if ($scope.routeOrigin === null) {
             toastr.error('Could not find geo location of company address! The route could not draw!');
             return;

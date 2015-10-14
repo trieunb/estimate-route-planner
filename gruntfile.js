@@ -21,14 +21,14 @@ module.exports = function (grunt) {
                         'js/lib/angular-selectize.js',
                         'js/lib/ngSignaturePad.js',
                         'js/lib/ng-sortable.js',
-                        'js/lib/ng-draggable.js',
                         'js/lib/angular-google-maps.js',
                         'js/lib/angular-google-maps_dev_mapped.js',
                         'js/lib/ui-bootstrap-tpls-0.13.3.js',
                         'js/lib/angular-messages.js',
                         'js/lib/ngBootbox.js',
                         'js/lib/angular-dropzone.js',
-                        'js/lib/angular-timeago.js'
+                        'js/lib/angular-timeago.js',
+                        'js/lib/angular-ui-tree.js'
                     ]
                 }
             },
@@ -39,6 +39,7 @@ module.exports = function (grunt) {
                         'js/app/routes.js',
                         'js/app/directives/*.js',
                         'js/app/services/*.js',
+                        'js/app/filters/*.js',
                         'js/app/company_info/*.js',
                         'js/app/customer/*.js',
                         'js/app/employee/*.js',

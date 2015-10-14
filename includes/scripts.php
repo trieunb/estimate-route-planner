@@ -21,14 +21,14 @@ function erp_enqueue_scripts() {
                 'angular-selectize'     => 'js/lib/angular-selectize.js',
                 'angular-signature-pad' => 'js/lib/ngSignaturePad.js',
                 'angular-sortable'      => 'js/lib/ng-sortable.js',
-                'angular-draggable'     => 'js/lib/ng-draggable.js',
                 'angular-gmap'          => 'js/lib/angular-google-maps.js',
                 'angular-gmap-dev'      => 'js/lib/angular-google-maps_dev_mapped.js',
                 'angular-bootbox'       => 'js/lib/ngBootbox.js',
                 'angular-dropzone'      => 'js/lib/angular-dropzone.js',
                 'angular-messages'      => 'js/lib/angular-messages.js',
                 'angular-ui-bootstrap'  => 'js/lib/ui-bootstrap-tpls-0.13.3.js',
-                'angular-timeago'       => 'js/lib/angular-timeago.js'
+                'angular-timeago'       => 'js/lib/angular-timeago.js',
+                'angular-ui-tree'       => 'js/lib/angular-ui-tree.js',
             ];
             foreach ($libJS as $name => $path) {
                 wp_register_script(
@@ -66,6 +66,7 @@ function erp_enqueue_scripts() {
             $appComponentLocations = [
                 'js/app/directives',
                 'js/app/services',
+                'js/app/filters',
                 'js/app/estimate',
                 'js/app/job_request',
                 'js/app/settings',

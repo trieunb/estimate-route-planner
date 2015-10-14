@@ -42,11 +42,11 @@ angular
             'as.sortable',
             'ngDropzone',
             'uiGmapgoogle-maps',
-            'dndLists',
             'ngBootbox',
             'ui.bootstrap',
             'ngMessages',
-            'yaru22.angular-timeago'
+            'yaru22.angular-timeago',
+            'ui.tree'
         ]
     ).run(['$rootScope', 'dataFactory', 'sharedData', '$location', 'userPermission',
         function($rootScope, dataFactory, sharedData, $location, userPermission) {

@@ -1,3 +1,6 @@
+## 1.3.2
+  - Fix Drag and drop route not working on mobile browser.
+
 ## 1.3.1
   - Add mailing address to company setting. And use it for job request and estimate forms,
    instead of business address.

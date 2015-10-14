@@ -2,81 +2,79 @@
     <div class="row">
         <div class="col-sm-3">
             <h4 class="h4-title">Assigned Routes</h4>
-            <div class="assigned-routes">
+            <div class="assigned-routes" ui-tree="assignedListDndOptions" data-max-depth="1" data-drag-delay="150">
                 Sort by:
                 <select class="sort-by-select"
-                    ng-model="assigned_queue_sort_by"
+                    ng-model="$parent.assigned_queue_sort_by"
                     ng-change="sortAssignedQueue()"
                     ng-options="sort.value as sort.label for sort in sortOptions">
                 </select>
-                <ul dnd-list="assignedReferrals" dnd-drop="onDropToAssignedQueue(event, index, item, external, type)">
-                    <li class="box-assign" ng-repeat="referral in assignedReferrals"
-                        dnd-draggable="referral"
-                        dnd-type="'assigned'"
-                        dnd-moved="onAssignedMoved(referral, $index)">
-                            <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
-                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
-                            <br>
-                            <span>{{::referral.address}}</span><br>
-                            <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
-                            <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                            <span>Date Requested: {{::referral.date_requested}}</span><br>
-                            <span>Status: {{::referral.status}}</span>
+                <ul ui-tree-nodes ng-model="assignedReferrals">
+                    <li class="box-assign" ng-repeat="referral in assignedReferrals" ui-tree-node>
+                        <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                        <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                        <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
+                        <br>
+                        {{:: referral | referralFullAddress }}
+                        <br>
+                        <span>Phone: {{::referral.primary_phone_number}}</span><br>
+                        <span>Date: {{::referral.date_requested}}</span><br>
+                        <span>Status: {{::referral.status}}</span>
                     </li>
                 </ul>
             </div>
 
             <h4 class="h4-title">Pending Routes</h4>
 
-            <div class="assigned-routes">
+            <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
                 Sort by:
                 <select class="sort-by-select"
-                    ng-model="pending_queue_sort_by"
+                    ng-model="$parent.pending_queue_sort_by"
                     ng-change="sortPendingQueue()"
                     ng-options="sort.value as sort.label for sort in sortOptions">
                 </select>
-                <ul dnd-list="pendingReferrals" dnd-drop="onDropToPendingQueue(event, index, item, external, type)">
-                    <li class="box-assign" ng-repeat="referral in pendingReferrals"
-                            dnd-draggable="referral"
-                            dnd-type="'pending'"
-                            dnd-moved="onPendingMoved(referral, $index)">
-                            <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
-                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
-                            <br>
-                            <span>{{::referral.address}}</span><br>
-                            <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
-                            <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                            <span>Date Requested: {{::referral.date_requested}}</span><br>
-                            <span>Status: {{::referral.status}}</span>
+                <ul ui-tree-nodes="" ng-model="pendingReferrals">
+                    <li class="box-assign" ng-repeat="referral in pendingReferrals" ui-tree-node>
+                        <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                        <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                        <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
+                        <br>
+                        {{:: referral | referralFullAddress }}
+                        <br>
+                        <span>Phone: {{::referral.primary_phone_number}}</span><br>
+                        <span>Date: {{::referral.date_requested}}</span><br>
+                        <span>Status: {{::referral.status}}</span>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="col-sm-9">
             <div class="row">
-                <form name="routeForm" ng-submit="saveRoute()">
-                    <div class="col-md-8">
+                <form name="routeForm" ng-submit="saveRoute()" class="form-route">
+                    <div class="col-md-9">
                         <div class="row">
-                            <div class="col-md-6">
-                                <label for="title" class="required">Title</label>
-                                <input class="form-control inline" type="text" name="title"
-                                    ng-model="route.title" ng-required="true"/>
+                            <div class="col-md-8 col-xs-7">
+                                <label for="title" class="required col-sm-2 n-p">Title: </label>
+                                <div class="col-sm-10 n-p">
+                                    <input type="text" class="form-control" name="title" ng-model="route.title" ng-required="true"/>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="status">Status</label>
-                                <select class="form-control inline"
-                                    name="status"
-                                    ng-model="route.status"
-                                    ng-options="status.value as status.label for status in $root.routeStatuses">
-                                </select>
+                            <div class="col-md-4 col-xs-5">
+                                <label for="status" class="col-sm-4 n-p">Status: </label>
+                                <div class="col-sm-8">
+                                    <select
+                                        name="status"
+                                        ng-model="route.status"
+                                        ng-options="status.value as status.label for status in $root.routeStatuses">
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="btn-action text-right">
-                            <a href="#/new-estimate-route" class="btn btn-success" ng-if="::hasCap('erpp_create_estimate_routes')">Add new</a>
-                            <button ng-click="printRoute()" class="btn btn-default" type="button" ng-if="::hasCap('erpp_print_estimate_routes')">Print</button>
-                            <button class="btn btn-primary" type="submit" ng-disabled="routeForm.$invalid">Update</button>
+                            <button ng-click="printRoute()" class="btn btn-sm btn-default" type="button" ng-if="::hasCap('erpp_print_estimate_routes')">Print</button>
+                            <button class="btn btn-sm btn-primary" type="submit" ng-disabled="routeForm.$invalid">Update</button>
                         </div>
                     </div>
                 </form>
@@ -99,13 +97,13 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                                <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
                                 <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
-                                <span>{{::referral.address}}</span><br>
-                                <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
+                                {{:: referral | referralFullAddress }}
+                                <br>
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                <span>Date Requested: {{::referral.date_requested}}</span><br>
+                                <span>Date: {{::referral.date_requested}}</span><br>
                                 <span>Status: {{::referral.status}}</span>
                             </p>
                         </ui-gmap-window>
@@ -116,18 +114,17 @@
                         >
                         <ui-gmap-window>
                             <p>
-                                <a href="#/edit-job-request/{{referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                                <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
                                 <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
-                                <span>{{::referral.address}}</span><br>
-                                <span>{{::referral.city}}, {{::referral.state}} {{::referral.zip_code}}</span><br>
+                                {{:: referral | referralFullAddress }}
+                                <br>
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                <span>Date Requested: {{::referral.date_requested}}</span><br>
+                                <span>Date: {{::referral.date_requested}}</span><br>
                                 <span>Status: {{::referral.status}}</span>
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
-
                 </ui-gmap-google-map>
             </div>
 
@@ -147,7 +144,7 @@
                         <td><span>{{::route.created_at}}</span></td>
                         <td><span>{{::route.status}}</span></td>
                         <td>
-                            <a href="#/edit-estimate-route/{{route.id}}">View</a>
+                            <a href="#/edit-estimate-route/{{::route.id}}">View</a>
                         </td>
                     </tr>
                     <tr ng-if="!$root.isBusy && recentRoutes.length == 0">

@@ -21,6 +21,12 @@ body {
 #erp-content p, #erp-content li{
     font-size: 14px;
 }
+.wp-admin #erp-content select {
+    height: 34px;
+}
+#erp-content .full-width {
+    width: 100%;
+}
 #spinner {
     background: url('../images/spinner.gif') no-repeat;
     background-size: 30px 30px;
@@ -104,6 +110,92 @@ span.new-referal {
 .table-tools {
     margin-bottom: 10px;
 }
+
+/* For drag and drop with angular dnd list */
+[dnd-list] > [dnd-draggable] {
+    position: relative;
+}
+[dnd-list] li {
+    /*list-style: none;*/
+}
+.dndDragover {
+    /*border: 1px dashed #B6B6B6;*/
+}
+.assigned-routes > ul{
+    min-height: 100%;
+    margin-bottom: 0;
+}
+.dndPlaceholder {
+    background-color: #eee !important;
+    display: block;
+    min-height: 150px;
+}
+.dndDraggingSource{
+    display: none;
+}
+
+.angular-ui-tree-nodes {
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.angular-ui-tree-empty {
+    border: 1px dashed #bbb;
+    min-height:100px;
+    display: none;
+}
+.angular-ui-tree-nodes .angular-ui-tree-nodes {
+    padding-left: 20px;
+}
+.angular-ui-tree-node,.angular-ui-tree-placeholder {
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    min-height: 20px;
+    line-height: 20px}
+.angular-ui-tree-hidden {
+    display: none;
+}
+.angular-ui-tree-placeholder {
+    margin: 5px 0;
+    padding: 0;
+    min-height: 30px;
+    background: #f0f9ff;
+    border: 2px dashed #bed2db;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.angular-ui-tree-handle {
+    cursor: move;
+    text-decoration: none;
+    font-weight: 700;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    min-height: 20px;
+    line-height: 20px;
+}
+.angular-ui-tree-drag {
+    position: absolute;
+    pointer-events: none;
+    z-index: 999;
+    opacity: .8;
+}
+
+.box-assign span.glyphicon {
+    float: right;
+    right: 5px;
+    color: #B6B6B6;
+    font-size: 1.4em;
+}
+.box-assign span.glyphicon:hover {
+    color: #4E4E4E;
+}
+
 /*--------------- estimates style ----------------*/
 #erp-wrapper .service-argreement.pull-right {
     margin-right: 10px;
@@ -193,8 +285,8 @@ span.new-referal {
     border: 2px solid #B6B6B6;
     margin-top: 10px;
     padding: 5px;
-    min-height: 150px;
-    max-height: 150px;
+    /*min-height: 150px;*/
+    /*max-height: 150px;*/
 }
 .sort-by {
     margin-bottom: 40px;
@@ -264,33 +356,11 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight: 600;
     margin: 0;
 }
-/* For drag and drop with angular dnd list */
-[dnd-list] > [dnd-draggable] {
-    position: relative;
-}
-[dnd-list] li {
-    /*list-style: none;*/
-}
-.dndDragover {
-    /*border: 1px dashed #B6B6B6;*/
-}
-.assigned-routes > ul{
-    min-height: 100%;
-    margin-bottom: 0;
-}
-.dndPlaceholder {
-    background-color: #eee !important;
-    display: block;
-    min-height: 150px;
-}
-.dndDraggingSource{
-    display: none;
-}
+
 /* bootbox modal */
 .modal {
     top: 15px;
 }
-
 
 ul.dropdown-menu.ng-pristine.ng-untouched.ng-valid.ng-scope.ng-valid-date-disabled {
     left: -84px !important;
@@ -448,4 +518,10 @@ label.required span {
 .selectize-dropdown-content .sub small {
     font-style: italic;
     float: right;
+}
+.form-route label {
+    line-height: 30px;
+}
+#erp-content select.sort-by-select {
+    height: 30px;
 }
