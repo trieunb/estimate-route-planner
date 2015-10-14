@@ -76,6 +76,7 @@ class EstimateController extends BaseController {
 
     /**
      * Get all estimates (includes lines data) which assigned to given route
+     * This action use for getting data for create worker order
      */
     public function assigned() {
         $routeId = $this->data['id'];

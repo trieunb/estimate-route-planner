@@ -23,11 +23,11 @@ angular
                 var selectConfig = {
                     valueField: 'id',
                     labelField: 'display_name',
-                    searchField: ['display_name', 'parent_display_name'],
+                    searchField: 'display_name',
                     sortField: 'order',
                     selectOnTab: true,
                     maxItems: 1,
-                    maxOptions: 10000,
+                    maxOptions: 10000
                 };
 
                 // Create callback
