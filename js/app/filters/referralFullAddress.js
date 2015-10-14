@@ -9,7 +9,7 @@ angular.module('Erp')
             fullAddress = streetCity;
         }
         if (fullAddress.length > 0 && stateZip.length > 0) {
-            fullAddress = fullAddress + ' , ' + stateZip;
+            fullAddress += ', ' + stateZip;
         } else {
             fullAddress = streetCity;
         }
