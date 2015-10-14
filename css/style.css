@@ -191,6 +191,10 @@ span.new-referal {
     right: 5px;
     color: #B6B6B6;
     font-size: 1.4em;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .box-assign span.glyphicon:hover {
     color: #4E4E4E;
@@ -285,9 +289,18 @@ span.new-referal {
     border: 2px solid #B6B6B6;
     margin-top: 10px;
     padding: 5px;
-    /*min-height: 150px;*/
-    /*max-height: 150px;*/
 }
+
+/* Disable selection on mobile */
+@media (max-width: 1024px) {
+    .box-assign, .box-assign a {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+}
+
 .sort-by {
     margin-bottom: 40px;
 }
