@@ -272,11 +272,14 @@ function AddEstimateCtrl(
     var initSignaturePad = function() {
         var padWrapper = angular.element('.div-customer-signature');
         var canvas = padWrapper.find('canvas').get(0);
+        console.log(canvas);
         var ctx = canvas.getContext("2d");
         ctx.canvas.width  = padWrapper.width();
         ctx.canvas.height = padWrapper.height();
         $scope.signaturePad = new SignaturePad(canvas);
     };
 
-    initSignaturePad();
+    setTimeout(function() {
+        initSignaturePad();
+    }, 1000);
 }

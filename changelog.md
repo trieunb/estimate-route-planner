@@ -1,3 +1,6 @@
+## 1.3.4
+  - Fix signature canvas on new estimate page sometime not drawable.
+
 ## 1.3.3
   - Fix customer signature: lagging, writing outside of box
 
