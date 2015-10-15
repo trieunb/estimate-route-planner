@@ -15,12 +15,16 @@ function erp_define_if_not($name, $val) {
 /* Debugging flag */
 erp_define_if_not('ERP_DEBUG', false);
 
+/* Quickbooks sanbox mode flag */
+erp_define_if_not('QB_SANDBOX_MODE', false);
+
 /* Timezone */
 erp_define_if_not('ERP_TIMEZONE', 'UTC');
 
 if (date_default_timezone_get() != ERP_TIMEZONE) {
     date_default_timezone_set(ERP_TIMEZONE);
 }
+
 /* PHP session save path */
 erp_define_if_not('ERP_SESSION_SAVE_PATH', '/tmp');
 

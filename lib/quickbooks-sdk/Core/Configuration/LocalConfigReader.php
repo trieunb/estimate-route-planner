@@ -15,22 +15,22 @@ require_once(PATH_SDK_ROOT . 'Utility/Configuration/SerializationFormat.php');
 
 /**
  * Specifies the Default Configuration Reader implmentation used by the SDK.
- * 
+ *
  * TODO: Improve internal implementation of the config reader
  */
 class LocalConfigReader
 {
 	/**
-	 * Reads the configuration from the config file and converts it to custom 
+	 * Reads the configuration from the config file and converts it to custom
 	 * config objects which the end developer will use to get or set the properties.
-	 * 
+	 *
 	 * @return IppConfiguration The custom config object.
 	 */
 	public static function ReadConfiguration()
 	{
 		/*
 		// Example:
-		
+
 		<?xml version="1.0" encoding="utf-8" ?>
 		<configuration>
 		  <intuit>
@@ -45,9 +45,9 @@ class LocalConfigReader
 		      <service>
 		        <baseUrl qbd="https://quickbooks.api.intuit.com/" qbo="https://quickbooks.api.intuit.com/" ipp="https://appcenter.intuit.com" />
 		      </service>
-		      <logger>       
+		      <logger>
 		        <!-- To enable/disable Request and Response log-->
-		        <requestLog enableRequestResponseLogging="true" requestResponseLoggingDirectory="/IdsLogs" />    
+		        <requestLog enableRequestResponseLogging="true" requestResponseLoggingDirectory="/IdsLogs" />
 		      </logger>
 		    </ipp>
 		  </intuit>
@@ -55,17 +55,22 @@ class LocalConfigReader
 		  </appSettings>
 		</configuration>
 		*/
-		
+
 		$ippConfig = new IppConfiguration();
-		
-		$xmlObj = simplexml_load_file(PATH_SDK_ROOT . 'sdk.config');
+		// Patch to load sandbox for development env
+		if (defined('QB_SANDBOX_MODE') && QB_SANDBOX_MODE) {
+		    $xmlObj = simplexml_load_file(PATH_SDK_ROOT . 'sdk.sandbox.config');
+	    } else {
+			$xmlObj = simplexml_load_file(PATH_SDK_ROOT . 'sdk.config');
+	    }
+
 
 		// Initialize OAuthRequestValidator Configuration Object
 		if ($xmlObj &&
 		    $xmlObj->intuit &&
 		    $xmlObj->intuit->ipp &&
 		    $xmlObj->intuit->ipp->security &&
-		    $xmlObj->intuit->ipp->security->oauth && 
+		    $xmlObj->intuit->ipp->security->oauth &&
 		    $xmlObj->intuit->ipp->security->oauth->attributes())
 		{
 			$ippConfig->Security = new OAuthRequestValidator($xmlObj->intuit->ipp->security->oauth->attributes()->accessToken,
@@ -74,7 +79,7 @@ class LocalConfigReader
 			                                                 $xmlObj->intuit->ipp->security->oauth->attributes()->consumerKey
 			                                                 );
 		}
-		
+
 		// Initialize Request Configuration Object
 		$ippConfig->Message = new Message();
 		$ippConfig->Message->Request = new Request();
@@ -84,7 +89,7 @@ class LocalConfigReader
 		$requestCompressionFormat = NULL;
 		$responseSerializationFormat = NULL;
 		$responseCompressionFormat = NULL;
-		
+
 		if ($xmlObj &&
 		    $xmlObj->intuit &&
 		    $xmlObj->intuit->ipp &&
@@ -123,7 +128,7 @@ class LocalConfigReader
             default:
                 break;
         }
-        
+
         switch ($responseCompressionFormat)
         {
             case Intuit\Ipp\Utility\CompressionFormat::None:
@@ -171,7 +176,7 @@ class LocalConfigReader
 		    $xmlObj->intuit &&
 		    $xmlObj->intuit->ipp &&
 		    $xmlObj->intuit->ipp->service &&
-		    $xmlObj->intuit->ipp->service->baseUrl && 
+		    $xmlObj->intuit->ipp->service->baseUrl &&
 		    $xmlObj->intuit->ipp->service->baseUrl->attributes())
 		{
 			$responseAttr = $xmlObj->intuit->ipp->service->baseUrl->attributes();
@@ -186,14 +191,14 @@ class LocalConfigReader
 		    $xmlObj->intuit &&
 		    $xmlObj->intuit->ipp &&
 		    $xmlObj->intuit->ipp->logger &&
-		    $xmlObj->intuit->ipp->logger->requestLog && 
+		    $xmlObj->intuit->ipp->logger->requestLog &&
 		    $xmlObj->intuit->ipp->logger->requestLog->attributes())
 		{
 			$requestLogAttr = $xmlObj->intuit->ipp->logger->requestLog->attributes();
 			$ippConfig->Logger->RequestLog->ServiceRequestLoggingLocation = (string)$requestLogAttr->requestResponseLoggingDirectory;
 			$ippConfig->Logger->RequestLog->EnableRequestResponseLogging = (string)$requestLogAttr->enableRequestResponseLogging;
 		}
-                
+
                 // A developer is forced to write in the same style.
                 // This should be refactored
                 $ippConfig->ContentWriter = new ContentWriterSettings();
@@ -206,7 +211,7 @@ class LocalConfigReader
 			$contentWriterAttr = $xmlObj->intuit->ipp->contentWriter->attributes();
 			$ippConfig->ContentWriter->strategy = ContentWriterSettings::checkStrategy((string)$contentWriterAttr->strategy);
 			$ippConfig->ContentWriter->prefix = (string)$contentWriterAttr->prefix;
-                        $ippConfig->ContentWriter->exportDir = $contentWriterAttr->exportDirectory 
+                        $ippConfig->ContentWriter->exportDir = $contentWriterAttr->exportDirectory
                                                                     ? (string)$contentWriterAttr->exportDirectory
                                                                     : null;
                         $ippConfig->ContentWriter->returnOject = $contentWriterAttr->returnObject
@@ -214,18 +219,18 @@ class LocalConfigReader
                                                                     : false;
                         $ippConfig->ContentWriter->verifyConfiguration();
 		}
-                
-                self::initOperationControlList($ippConfig,self::getRules()); 
+
+                self::initOperationControlList($ippConfig,self::getRules());
 		$specialConfig = self::populateJsonOnlyEntities($xmlObj);
                 if(is_array($specialConfig) && ($ippConfig->OpControlList instanceof OperationControlList)) {
                     $ippConfig->OpControlList->appendRules($specialConfig);
                 }
-                
+
                 self::setupMinorVersion($ippConfig,$xmlObj);
-                
+
 		return $ippConfig;
 	}
-        
+
         /**
          * Initializes operation contrtol list
          * @param IppConfiguration $ippConfig
@@ -236,7 +241,7 @@ class LocalConfigReader
             $ippConfig->OpControlList = new OperationControlList( OperationControlList::getDefaultList(true) );
             $ippConfig->OpControlList->appendRules($array);
         }
-        
+
                 /**
          * Initializes operation contrtol list
          * @param IppConfiguration $ippConfig
@@ -248,30 +253,30 @@ class LocalConfigReader
                 $xmlObj->intuit &&
 		$xmlObj->intuit->ipp && $xmlObj->intuit->ipp->minorVersion){
                     $ippConfig->minorVersion = (int) $xmlObj->intuit->ipp->minorVersion;
-            }         
+            }
         }
-        
+
         /**
          * Returns current rules
          * @return array
          */
         public static function getRules()
         {
-            return 
+            return
                array(
                     OperationControlList::ALL => array(
                                                         "DownloadPDF" => FALSE,
                                                         "jsonOnly" => FALSE,
                                                         "SendEmail"=> FALSE
                                                       ),
-                    "IPPTaxService" => array(OperationControlList::ALL => FALSE, 
+                    "IPPTaxService" => array(OperationControlList::ALL => FALSE,
                                              'Add' => TRUE),
                     "IPPSalesReceipt" => array( "DownloadPDF" => TRUE, "SendEmail" => TRUE ),
                     "IPPInvoice"      => array( "DownloadPDF" => TRUE, "SendEmail" => TRUE  ),
                     "IPPEstimate"     => array( "DownloadPDF" => TRUE, "SendEmail" => TRUE  ),
                 );
         }
-        
+
         /**
          * Returns array in a OperationControlList rules format from XML
          * @param type $xmlObj
@@ -296,14 +301,14 @@ class LocalConfigReader
                         }
                         foreach ($entity->attributes() as $attr) {
                             $rules[$name][$attr->getName()] = filter_var((string)$entity->attributes(), FILTER_VALIDATE_BOOLEAN);
-                        }                                       
+                        }
                     }
                     return $rules;
-                    
+
                 }
-            return false;    
+            return false;
         }
-        
+
         /**
          * Creates PHP class entity from intuit name
          * @param type $name
@@ -315,4 +320,3 @@ class LocalConfigReader
         }
 
 }
-
