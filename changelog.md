@@ -1,3 +1,20 @@
+## 1.5.0
+  - Change email on job request to not be required
+  - Change customer signature text to `Customer Signature Authorizes Commencement of Work`
+  - Job request list auto hide requests that have status of Completed
+  - Crew route: change pending list to `Accepted Estimates` and show only estimates in list that are accepted
+  - Add `Estimator Assigned` to job requests, also show on drag boxes.
+  - Add `Estimator Assigned` to estimate routes
+  - Estimate route:
+    - Change Recent Saved Routes to Assigned Requests.
+    - Auto remove `Completed` request from assigned list.
+  - Permissions:
+    - `erpp_estimator_only_routes`: that only shows Estimate Routes that assigned to estimator
+    - `erpp_hide_estimate_pending_list`: hides the Estimate Route pending list so the person can't assign requests to themselves.
+
+## 1.4.1
+  - Decrease load time for customers list from server
+
 ## 1.4.0
   - Print country fields for estimate/ referral, worker order
 

@@ -70,6 +70,63 @@ function erpLocalStorage(
         return cacheTs >= parseInt(sharedData.lastSyncAt);
     };
 
+    /**
+     * Build a tree customers array by given flattern elements
+     */
+    var buildCustomersTree = function(customers, parentId) {
+        var result = [];
+        var length = customers.length;
+        for (var i = 0; i < length; i++) {
+            var item = customers[i];
+            if (item.parent_id === parentId) {
+                item.childs = buildCustomersTree(customers, item.id);
+                result.push(item);
+            }
+        }
+
+        if (result.length > 0) {
+            return result;
+        }
+        return null;
+    };
+
+    /**
+     * Flattern a given customer node
+     * Sort by A-Z and keep childs next the parent
+     */
+    var flatternCustomer = function(customer) {
+        var results = [];
+        results[0] = customer;
+        if (customer.childs !== null && customer.childs.length > 0) {
+            var childs = customer.childs;
+            childs.sort(function(a, b) {
+                return a.display_name.localeCompare(b.display_name);
+            });
+            for (var i = 0; i < customer.childs.length; i++) {
+                results = results.concat(flatternCustomer(customer.childs[i]));
+            }
+        }
+        return results;
+    };
+
+    /**
+     * Sort customers by A-Z and keep the childs next their parents
+     * Each levels need to be in A-Z order
+     */
+    var sortCustomers = function(customers) {
+        var tree = buildCustomersTree(customers, null);
+        var results = [];
+        var treeLen = tree.length;
+        for (var i = 0; i < treeLen; i++) {
+            results = results.concat(flatternCustomer(tree[i]));
+        }
+        var resultsLen = results.length;
+        for (var j = results.length - 1; j >= 0; j--) {
+            results[j].order = j;
+        }
+        return results;
+    };
+
     this.clearCustomers = function() {
         cacheData.customers = null;
     };
@@ -83,7 +140,11 @@ function erpLocalStorage(
             if (null === cacheData.customers) {
                 customerFactory.all()
                     .success(function(responseData) {
-                        rememberData('customers', responseData);
+                        var customers = [];
+                        if (responseData.length) {
+                            customers = sortCustomers(responseData);
+                        }
+                        rememberData('customers', customers);
                         resolve(cacheData.customers);
                     });
             } else {
