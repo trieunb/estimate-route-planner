@@ -105,7 +105,11 @@ function AddCrewRouteCtrl(
             return true;
         },
         dropped: function(evt) {
-            $scope.drawRouteDirection();
+            // Check for a real moving
+            if ( (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) ||
+                (evt.dest.index != evt.source.index) ) {
+                $scope.drawRouteDirection();
+            }
             return true;
         }
     };
@@ -116,7 +120,9 @@ function AddCrewRouteCtrl(
             return true;
         },
         dropped: function(evt) {
-            $scope.drawRouteDirection();
+            if (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) {
+                $scope.drawRouteDirection();
+            }
             return true;
         }
     };

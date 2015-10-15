@@ -109,25 +109,31 @@ function AddEstimateRouteCtrl(
         }
     };
 
+    $scope.assignedListDndOptions = {
+        dragStart: function() {
+            $scope.assigned_queue_sort_by = '';
+            return true;
+        },
+        dropped: function(evt) {
+            // Check for a real moving
+            if ( (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) ||
+                (evt.dest.index != evt.source.index) ) {
+                $scope.drawRouteDirection();
+            }
+            return true;
+        }
+    };
+
     $scope.pendingListDndOptions = {
         dragStart: function(evt) {
             $scope.pending_queue_sort_by = '';
             return true;
         },
         dropped: function(evt) {
-            $scope.drawRouteDirection();
+            if (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) {
+                $scope.drawRouteDirection();
+            }
             return true;
-        }
-    };
-
-    $scope.sortAssignedQueue = function() {
-        if ($scope.assignedReferrals.length > 1) {
-            $scope.assignedReferrals = orderBy(
-                $scope.assignedReferrals,
-                $scope.assigned_queue_sort_by,
-                false
-            );
-            $scope.drawRouteDirection();
         }
     };
 
