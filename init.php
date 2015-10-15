@@ -1,9 +1,9 @@
 <?php
 define('ERP_ROOT_DIR', __DIR__);
-define('ERP_LOG_STORAGE_PATH', ERP_ROOT_DIR . '/log');
+define('ERP_LOG_STORAGE_DIR', ERP_ROOT_DIR . '/log');
 define('ERP_UPLOADS_DIR', ERP_ROOT_DIR . '/uploads/');
 define('ERP_IMAGES_DIR', ERP_ROOT_DIR . '/images/');
-define('TEMPLATES_DIR', ERP_ROOT_DIR . '/templates/');
+define('ERP_TEMPLATES_DIR', ERP_ROOT_DIR . '/templates/');
 define('ERP_TMP_DIR', ERP_ROOT_DIR . '/tmp/');
 
 require_once(ERP_ROOT_DIR . '/config/plugin.php');

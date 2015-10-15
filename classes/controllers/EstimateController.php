@@ -422,7 +422,7 @@ class EstimateController extends BaseController {
                     ->select('el.*')
                     ->select('ps.name', 'product_service_name')
                     ->findArray();
-            require TEMPLATES_DIR . '/print/estimate.php';
+            require ERP_TEMPLATES_DIR . '/print/estimate.php';
         } else {
             $this->render404();
         }
@@ -445,7 +445,7 @@ class EstimateController extends BaseController {
                     ->select('ps.name', 'product_service_name')
                     ->findArray();
             ob_start();
-            require TEMPLATES_DIR . '/print/estimate.dompdf.php';
+            require ERP_TEMPLATES_DIR . '/print/estimate.dompdf.php';
             $html = ob_get_clean();
             $dompdf = new DOMPDF();
             $dompdf->load_html($html);

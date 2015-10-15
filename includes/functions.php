@@ -41,7 +41,7 @@ function erp_load() {
             $templatePath = 'plugin/missing-config.php';
         }
     }
-    require_once TEMPLATES_DIR . $templatePath;
+    require_once ERP_TEMPLATES_DIR . $templatePath;
 }
 
 ?>

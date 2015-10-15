@@ -53,7 +53,7 @@ function erp_parse_request($wp) {
                     }
                     $prefs->set($data);
                     if ($prefs->save()) {
-                        require_once TEMPLATES_DIR . 'plugin/quickbooks-authenticate-success.php';
+                        require_once ERP_TEMPLATES_DIR . 'plugin/quickbooks-authenticate-success.php';
                     } else {
                         wp_die("Error while saving user OAuth tokens to database!");
                     }
