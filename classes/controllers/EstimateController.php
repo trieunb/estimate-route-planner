@@ -1,6 +1,9 @@
 <?php
 class EstimateController extends BaseController {
 
+    /**
+     * Listing all estimates
+     */
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
@@ -51,10 +54,9 @@ class EstimateController extends BaseController {
     }
 
     /**
-     * Get all estimates which non-assigned to any routes
-     * For listing on pending routes when creating crew routes
+     * Get all estimates which non-assigned to any routes and have Accepted status
      */
-    public function unassigned() {
+    public function assignable() {
         $estimates = ORM::forTable('estimates')
             ->tableAlias('e')
             ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
@@ -69,7 +71,7 @@ class EstimateController extends BaseController {
             ->whereNull('e.route_id')
             ->whereNotNull('e.job_lat')
             ->whereNotNull('e.job_lng')
-            ->whereIn('e.status', ['Pending', 'Accepted'])
+            ->where('e.status', 'Accepted')
             ->findArray();
         $this->renderJson($estimates);
     }
@@ -122,6 +124,9 @@ class EstimateController extends BaseController {
         $this->renderJson($estimates);
     }
 
+    /**
+     * Create new estimate
+     */
     public function add() {
         $estimateModel = new EstimateModel();
         $sync = Asynchronzier::getInstance();

@@ -33,10 +33,10 @@ function estimateFactory($http) {
                 data: estimate
             });
         },
-        listUnassigned: function(){
+        listAssignable: function(){
             return $http.get(ERPApp.baseAPIPath, {
                 params: {
-                    _do: 'getUnassignedEstimates'
+                    _do: 'getAssignableEstimates'
                 }
             });
         },

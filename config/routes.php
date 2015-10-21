@@ -11,7 +11,7 @@ return [
     'updateEstimate'        => 'Estimate@update',
     'uploadAttachment'      => 'Estimate@uploadAttachment',
     'deleteAttachment'      => 'Estimate@deleteAttachment',
-    'getUnassignedEstimates'=> 'Estimate@unassigned',
+    'getAssignableEstimates'=> 'Estimate@assignable',
     'getAssignedEstimates'  => 'Estimate@assigned',
     'printEstimate'         => 'Estimate@printPDF',
     'sendEstimate'          => 'Estimate@sendEstimate',

@@ -102,8 +102,8 @@ function EditCrewRouteCtrl(
                 );
         });
 
-   // Loading non-assigned estimates
-    estimateFactory.listUnassigned()
+    // Load assignable estimates
+    estimateFactory.listAssignable()
        .success(function(response) {
            // Collect pending estimates for dragging
            angular.forEach(response, function(estimate) {
