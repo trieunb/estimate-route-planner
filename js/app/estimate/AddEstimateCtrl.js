@@ -43,6 +43,7 @@ function AddEstimateCtrl(
     // Auto fill estimate footer
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
     $scope.estimate.sold_by_1 = sharedData.currentUserName;
+    $scope.isShowModalSignature = false;
 
     erpLocalStorage.getProductServices()
       .then(function(data) {
@@ -82,10 +83,6 @@ function AddEstimateCtrl(
 
     $scope.onAddJobCustomer = function(input) {
         $scope.estimate.job_customer_display_name = input;
-    };
-
-    $scope.clearCustomerSignature = function() {
-        $scope.signaturePad.clear();
     };
 
     $scope.lineItemsDragListeners = {
@@ -233,15 +230,14 @@ function AddEstimateCtrl(
                             estimate.date_of_signature = ($filter('date')(estimate.date_of_signature, "yyyy-MM-dd"));
                         }
                         // Get base64 of customer signature
-                        if (!$scope.signaturePad.isEmpty()) {
-                            estimate.customer_signature_encoded = $scope.signaturePad.toDataURL();
+                        if ($scope.signatureEncoded) {
+                            estimate.customer_signature_encoded = $scope.signatureEncoded;
                         }
                         estimateFactory.save(estimate)
                             .success(function(response) {
                                 if (response.success) {
                                     toastr.success(response.message);
-                                    if ($scope.estimate.customer_id == 0 ||
-                                        $scope.estimate.job_customer_id == 0) {
+                                    if (isHasNewCustomer()) {
                                         // To force reload customer list
                                         erpLocalStorage.clearCustomers();
                                     }
@@ -262,23 +258,23 @@ function AddEstimateCtrl(
         }
     };
 
+    $scope.showSignatureBox = function() {
+        $scope.isShowModalSignature = true;
+    };
+
+    $scope.onSaveSignature = function(signature) {
+        $scope.signatureEncoded = signature;
+    };
+
+    var isHasNewCustomer = function() {
+        return ($scope.estimate.customer_id == '0') ||
+            ($scope.estimate.job_customer_id == '0');
+    };
+
     var getJobFullAddress = function() {
         return $scope.estimate.job_address + ' ' +
             $scope.estimate.job_city + ' ' +
             $scope.estimate.job_state + ' ' +
             $scope.estimate.job_zip_code;
     };
-
-    var initSignaturePad = function() {
-        var padWrapper = angular.element('.div-customer-signature');
-        var canvas = padWrapper.find('canvas').get(0);
-        var ctx = canvas.getContext("2d");
-        ctx.canvas.width  = padWrapper.width();
-        ctx.canvas.height = padWrapper.height();
-        $scope.signaturePad = new SignaturePad(canvas);
-    };
-
-    setTimeout(function() {
-        initSignaturePad();
-    }, 1000);
 }

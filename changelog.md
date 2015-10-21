@@ -11,6 +11,7 @@
   - Permissions:
     - `erpp_estimator_only_routes`: that only shows Estimate Routes that assigned to estimator
     - `erpp_hide_estimate_pending_list`: hides the Estimate Route pending list so the person can't assign requests to themselves.
+  - Writing customer signature in a modal
 
 ## 1.4.1
   - Decrease load time for customers list from server

@@ -444,14 +444,15 @@
                 <div class="col-sm-5">
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <label for="customer_signature">Customer Signature</label>
+                            <label for="customer_signature">Customer Signature Authorizes Commencement of Work</label>
                             <button type="button"
-                                ng-click="clearCustomerSignature()"
-                                class="btn btn-xs btn-default pull-right">Clear</button>
+                                ng-click="showSignatureBox()"
+                                class="btn btn-sm btn-default pull-right">
+                                <span class="glyphicon glyphicon-pencil"></span> Sign</button>
                             </div>
                         <div class="col-sm-12">
-                            <div class="div-customer-signature">
-                                <canvas></canvas>
+                            <div class="div-customer-signature-preview text-center">
+                                <img ng-src="{{signatureEncoded}}" ng-if="signatureEncoded"/>
                             </div>
                         </div>
                     </div>
@@ -506,4 +507,6 @@
             </div>
         </div>
     </form>
+    <customer-signature-modal on-save="onSaveSignature(signatureEncoded)" show="isShowModalSignature">
+    </customer-signature-modal>
 </div>

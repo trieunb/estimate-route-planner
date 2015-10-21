@@ -16,7 +16,7 @@ function erp_define_if_not($name, $val) {
 erp_define_if_not('ERP_DEBUG', false);
 
 /* Quickbooks sanbox mode flag */
-erp_define_if_not('QB_SANDBOX_MODE', false);
+erp_define_if_not('QB_SANDBOX_MODE', ERP_DEBUG);
 
 /* Timezone */
 erp_define_if_not('ERP_TIMEZONE', 'UTC');

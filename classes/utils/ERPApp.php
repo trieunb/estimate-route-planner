@@ -12,6 +12,8 @@ class ERPApp {
     /* @var boolean */
     private $logging;
 
+    private $hiddenParams = ['password', 'customer_signature_encoded'];
+
     public function __construct() {
         $this->routes = include_once ERP_ROOT_DIR . '/config/routes.php';
         $this->errorHandler = new ERPErrorHandler();
@@ -32,13 +34,25 @@ class ERPApp {
         }
     }
 
+    private function logRequestParams() {
+        if ($this->logging) { // Check here fore skip delay request due to looping recursive
+            $request = $_REQUEST;
+            $hiddenParams = $this->hiddenParams;
+            array_walk_recursive($request, function(&$value, $key) use($hiddenParams) {
+                if (array_search($key, $hiddenParams) !== false) {
+                    $value = 'FILTERED';
+                }
+            });
+            $this->log('Params: ' . json_encode($request));
+        }
+    }
+
     public function letGo() {
         $this->log(
             "\n=== " .
             $_SERVER['REQUEST_METHOD'] . ' ' .
             trim($_SERVER['REQUEST_URI'])
         );
-        $this->log('Params: ' . json_encode($_REQUEST));
         $requestDo = $_REQUEST['_do'];
         $requestData = [];
         if (isset($_REQUEST['data'])) {
@@ -52,6 +66,7 @@ class ERPApp {
             $this->log(
                 "Handler: $controlerClass@$controlerMethod"
             );
+            $this->logRequestParams();
             call_user_func([$controller, $controlerMethod]);
         } else {
             http_response_code(404);
@@ -59,7 +74,7 @@ class ERPApp {
         }
         $queries = ORM::getQueryLog();
         $this->log(
-            'SQLs(' . count($queries) . ')' . "\n" . implode($queries, "\n"));
+            'SQLs(' . count($queries) . '):' . "\n" . implode($queries, "\n"));
         exit;
     }
 }

@@ -1,0 +1,20 @@
+<div class="modal fade modal-customer-signature" ng-class="{'in': isShowModal}" ng-style="{'display': isShowModal ? 'block' : 'none'}">
+    <div class="modal-dialog">
+    <div class="modal-content undraggable">
+        <div class="modal-header">
+            <h4 class="modal-title">Customer Signature</h4>
+        </div>
+        <div class="modal-body">
+            <div class="div-customer-signature">
+                <canvas width="450" height="150"></canvas>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" ng-click="clear()">
+                <span class="glyphicon glyphicon-flash"></span> Clear</button>
+            <button type="button" class="btn btn-default" ng-click="hideModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" ng-click="save()">Save</button>
+        </div>
+    </div>
+    </div>
+</div>

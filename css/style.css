@@ -1,7 +1,20 @@
 body {
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
-
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.undraggable {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+}
 #erp-wrapper {
     margin: 10px 20px 0 2px;
     position: relative;
@@ -269,12 +282,30 @@ span.new-referal {
 
 .div-customer-signature {
     border: 1px solid #ccc;
-    min-width: 100%;
-    max-width: 100%;
+    width: 450px;
     height: 150px;
 }
 .div-customer-signature canvas {
     cursor: default;
+}
+.div-customer-signature-preview {
+    border: 1px solid #ccc;
+    min-height: 50px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 5px;
+}
+.div-customer-signature-preview img {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+    max-width: 100%;
+}
+.modal-customer-signature .modal-dialog {
+    width: 480px !important;
 }
 .space-30 {
     clear: both;
@@ -374,6 +405,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 /* bootbox modal */
+.bootbox.modal .btn{
+    border-radius: 0;
+}
 .modal {
     top: 15px;
 }
