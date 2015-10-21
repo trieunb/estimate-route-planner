@@ -1,32 +1,38 @@
 <?php
 class ReferralController extends BaseController {
 
+    /**
+     * Return "Incomplete" job requests (status is Pending or Assigned)
+     */
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
-        $refs = ORM::forTable('referrals')->tableAlias('r')
+        $searchQuery = ORM::forTable('referrals')
+            ->tableAlias('r')
             ->join('customers', ['r.customer_id', '=', 'c.id'], 'c')
+            ->whereLike('c.display_name', "%$keyword%")
+            ->whereIn('r.status', ["Pending", "Assigned"]);
+        $countQuery = clone($searchQuery);
+        $refs = $searchQuery
             ->selectMany(
                 'r.id', 'r.address', 'r.primary_phone_number',
                 'r.date_service', 'r.status', 'r.date_requested'
             )
             ->select('c.display_name', 'customer_display_name')
-            ->whereLike('c.display_name', "%$keyword%")
             ->orderByDesc('r.date_requested')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
-        $counter = ORM::forTable('referrals')->tableAlias('r')
-            ->join('customers', ['r.customer_id', '=', 'c.id'], 'c')
-            ->whereLike('c.display_name', "%$keyword%")
-            ->selectExpr('COUNT(*)', 'count')
-            ->findMany();
+        $counter = $countQuery->selectExpr('COUNT(*)', 'count')->findMany();
         $this->renderJson([
             'total' => $counter[0]->count,
             'data' => $refs
         ]);
     }
 
+    /**
+     * Get pending job requests for assigning to route
+     */
     public function pending() {
         $model = new ReferralModel;
         $refs = $model
@@ -45,6 +51,9 @@ class ReferralController extends BaseController {
         $this->renderJson($refs);
     }
 
+    /**
+     * Create new job request
+     */
     public function add() {
         $customerData = $this->_checkForCreateNewCustomer();
         $insertData = array_merge($this->data, $customerData);
@@ -59,6 +68,9 @@ class ReferralController extends BaseController {
         ]);
     }
 
+    /**
+     * Get a job request details
+     */
     public function show() {
         $ref = ORM::forTable('referrals')
             ->tableAlias('r')
@@ -74,6 +86,9 @@ class ReferralController extends BaseController {
         }
     }
 
+    /**
+     * Update a job request
+     */
     public function update() {
         $customerData = $this->_checkForCreateNewCustomer();
         $updateData = array_merge($this->data, $customerData);
@@ -99,6 +114,9 @@ class ReferralController extends BaseController {
         }
     }
 
+    /**
+     * Update status for a job request
+     */
     public function updateStatus() {
         $ref = ORM::forTable('referrals')
             ->findOne($this->data['id']);

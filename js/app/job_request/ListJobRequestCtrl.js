@@ -77,6 +77,7 @@ function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, estimateRou
 
     $scope.cancelAssignReferral = function() {
         $scope.showAssignModal = false;
+        // Reset new status value
         angular.forEach($scope.referrals, function(referral) {
             if (referral.id == $scope.currentReferral.id) {
                 referral.new_status = referral.status;
@@ -90,9 +91,18 @@ function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, estimateRou
     $scope.updateReferralStatus = function() {
         if ($scope.currentReferral) {
             $scope.showAssignModal = false;
+            var newStatus = $scope.currentReferral.status;
+            var updateReferralId = $scope.currentReferral.id;
             jobRequestFactory.updateStatus($scope.currentReferral)
                 .success(function(response) {
-
+                    if (newStatus === 'Completed') {
+                        angular.forEach($scope.referrals, function(referral, index) {
+                            if (referral.id == updateReferralId) {
+                                $scope.referrals.splice(index, 1);
+                                return;
+                            }
+                        });
+                    }
                 })
                 .then(function() {
                     $scope.currentReferral = {};
