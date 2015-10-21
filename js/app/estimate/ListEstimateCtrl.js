@@ -20,7 +20,7 @@ function ListEstimateCtrl(
         $location,
         estimateFactory,
         sharedData) {
-    $scope.setPageTitle('List Estimates');
+    $scope.setPageTitle('Estimates List');
     $scope.estimates = {};
     $scope.selectedStatus = '';
     $scope.sendMailData = {};

@@ -10,7 +10,7 @@ angular
     ]);
 
 function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, estimateRouteFactory, $ngBootbox) {
-    $scope.setPageTitle('List Job Requests');
+    $scope.setPageTitle('Job Requests List');
     $scope.referrals = {};
     $scope.date = new Date();
     $scope.routes = [];
