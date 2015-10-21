@@ -28,7 +28,6 @@ angular
                             return '';
                         }
                     } else {
-                        console.log('empty');
                         ctrl.$setValidity('multipleEmails', true);
                         return '';
                     }

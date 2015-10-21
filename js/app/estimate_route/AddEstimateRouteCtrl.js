@@ -199,26 +199,22 @@ function AddEstimateRouteCtrl(
     };
 
     $scope.saveRoute = function() {
-        if ($scope.assignedReferrals.length === 0) {
-            toastr.error("A route could not be saved without any assigned referrals!");
-        } else {
-            var data = {};
-            data.title = $scope.route.title;
-            data.assigned_referral_ids = [];
-            angular.forEach($scope.assignedReferrals, function(referral) {
-                data.assigned_referral_ids.push(referral.id);
+        var data = {};
+        data.title = $scope.route.title;
+        data.assigned_referral_ids = [];
+        angular.forEach($scope.assignedReferrals, function(referral) {
+            data.assigned_referral_ids.push(referral.id);
+        });
+        estimateRouteFactory.save(data)
+            .success(function(response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    $location.path('/edit-estimate-route/' + response.data.id);
+                } else {
+                    var msg = response.message || 'An error occurred while saving route';
+                    toastr.error(msg);
+                }
             });
-            estimateRouteFactory.save(data)
-                .success(function(response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        $location.path('/edit-estimate-route/' + response.data.id);
-                    } else {
-                        var msg = response.message || 'An error occurred while saving route';
-                        toastr.error(msg);
-                    }
-                });
-        }
     };
 
     $scope.printRoute = function() {

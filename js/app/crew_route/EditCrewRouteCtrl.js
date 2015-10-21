@@ -219,30 +219,26 @@ function EditCrewRouteCtrl(
     };
 
     $scope.saveRoute = function() {
-        if ($scope.assignedEstimates.length === 0) {
-            toastr.error("A route could not be saved without any assigned estimates!");
-        } else {
-            var data = {};
-            data.id = $scope.route.id;
-            data.title = $scope.route.title;
-            data.status = $scope.route.status;
-            data.assigned_estimate_ids = [];
+        var data = {};
+        data.id = $scope.route.id;
+        data.title = $scope.route.title;
+        data.status = $scope.route.status;
+        data.assigned_estimate_ids = [];
 
-            angular.forEach($scope.assignedEstimates, function(estimate) {
-                data.assigned_estimate_ids.push(estimate.id);
+        angular.forEach($scope.assignedEstimates, function(estimate) {
+            data.assigned_estimate_ids.push(estimate.id);
+        });
+        crewRouteFactory.update(data)
+            .success(function(response) {
+                if (response.success) {
+                   toastr.success(response.message);
+                   $scope.currentAssignedEstimates = [];
+                   angular.copy($scope.assignedEstimates, $scope.currentAssignedEstimates);
+                } else {
+                   var msg = response.message || 'An error occurred while saving estimate';
+                   toastr.error(msg);
+                }
             });
-            crewRouteFactory.update(data)
-                .success(function(response) {
-                    if (response.success) {
-                       toastr.success(response.message);
-                       $scope.currentAssignedEstimates = [];
-                       angular.copy($scope.assignedEstimates, $scope.currentAssignedEstimates);
-                    } else {
-                       var msg = response.message || 'An error occurred while saving estimate';
-                       toastr.error(msg);
-                    }
-                });
-       }
     };
 
     $scope.printRoute = function() {

@@ -42,11 +42,11 @@ function EditEstimateRouteCtrl(
     $scope.route = {}; // Form data
     $scope.pendingReferrals = [];
     $scope.assignedReferrals = [];
-    $scope.recentRoutes = [];
     $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png' };
     $scope.startMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/start-marker.png' };
     $scope.map = {control: {}}; // Hold map instance
     $scope.map.options = {};
+    $scope.currentAssignedReferrals = [];
     $scope.assigned_queue_sort_by = '';
     $scope.pending_queue_sort_by = '';
     $scope.routeOrigin = null;
@@ -67,6 +67,7 @@ function EditEstimateRouteCtrl(
                     longitude: referral.lng
                 };
                 $scope.assignedReferrals.push(referral);
+                $scope.currentAssignedReferrals.push(referral);
             });
 
             // Find start location for route(use company address)
@@ -114,12 +115,6 @@ function EditEstimateRouteCtrl(
                     $scope.pendingReferrals.push(referral);
                 }
             });
-
-            // Load recent saved routes
-            estimateRouteFactory.recent()
-                .success(function(response) {
-                    $scope.recentRoutes = response;
-                });
         });
 
     $scope.assignedListDndOptions = {
@@ -221,27 +216,36 @@ function EditEstimateRouteCtrl(
         };
 
     $scope.saveRoute = function() {
-        if ($scope.assignedReferrals.length === 0) {
-            toastr.error("A route could not be saved without any assigned referrals!");
-        } else {
-            var data = {};
-            data.id = $scope.route.id;
-            data.title = $scope.route.title;
-            data.status = $scope.route.status;
-            data.assigned_referral_ids = [];
-            angular.forEach($scope.assignedReferrals, function(referral) {
-                data.assigned_referral_ids.push(referral.id);
+        var data = {};
+        data.id = $scope.route.id;
+        data.title = $scope.route.title;
+        data.status = $scope.route.status;
+        data.assigned_referral_ids = [];
+        angular.forEach($scope.assignedReferrals, function(referral) {
+            data.assigned_referral_ids.push(referral.id);
+        });
+        estimateRouteFactory.update(data)
+            .success(function(response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    // Change status of list referrals after save
+                    angular.forEach($scope.assignedReferrals, function(referral) {
+                        if (referral.status == 'Pending') {
+                            referral.status = 'Assigned';
+                        }
+                    });
+                    angular.forEach($scope.pendingReferrals, function(referral) {
+                        if (referral.status == 'Assigned') {
+                            referral.status = 'Pending';
+                        }
+                    });
+                    $scope.currentAssignedReferrals = [];
+                    angular.copy($scope.assignedReferrals, $scope.currentAssignedReferrals);
+                } else {
+                    var msg = response.message || 'An error occurred while saving referral';
+                    toastr.error(msg);
+                }
             });
-            estimateRouteFactory.update(data)
-                .success(function(response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                    } else {
-                        var msg = response.message || 'An error occurred while saving referral';
-                        toastr.error(msg);
-                    }
-                });
-        }
     };
 
     $scope.printRoute = function() {

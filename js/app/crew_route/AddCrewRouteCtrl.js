@@ -200,26 +200,22 @@ function AddCrewRouteCtrl(
     };
 
     $scope.saveRoute = function() {
-        if ($scope.assignedEstimates.length === 0) {
-            toastr.error("A route could not be saved without any assigned estimates!");
-        } else {
-            var data = {};
-            data.title = $scope.route.title;
-            data.assigned_estimate_ids = [];
-            angular.forEach($scope.assignedEstimates, function(estimate) {
-                data.assigned_estimate_ids.push(estimate.id);
+        var data = {};
+        data.title = $scope.route.title;
+        data.assigned_estimate_ids = [];
+        angular.forEach($scope.assignedEstimates, function(estimate) {
+            data.assigned_estimate_ids.push(estimate.id);
+        });
+        crewRouteFactory.save(data)
+            .success(function(response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    $location.path('/edit-crew-route/' + response.data.id);
+                } else {
+                    var msg = response.message || 'An error occurred while saving route';
+                    toastr.error(msg);
+                }
             });
-            crewRouteFactory.save(data)
-                .success(function(response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        $location.path('/edit-crew-route/' + response.data.id);
-                    } else {
-                        var msg = response.message || 'An error occurred while saving route';
-                        toastr.error(msg);
-                    }
-                });
-        }
     };
 
     $scope.printRoute = function() {
