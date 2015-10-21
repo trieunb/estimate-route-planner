@@ -36,6 +36,10 @@ class EstimateRouteController extends BaseController {
         ]);
     }
 
+    /**
+     * Get data of a estimate route
+     * Inclues assigned job requests are not incompleted yet.
+     */
     public function show() {
         $routeId = $this->data['id'];
         $route = ORM::forTable('estimate_routes')
@@ -53,7 +57,8 @@ class EstimateRouteController extends BaseController {
                     'r.status', 'r.date_requested', 'r.lat', 'r.lng'
                 )
                 ->select('c.display_name', 'customer_display_name')
-                ->where('route_id', $routeId)
+                ->where('r.route_id', $routeId)
+                ->whereIn('r.status', ['Pending', 'Assigned'])
                 ->orderByAsc('route_order')
                 ->findArray();
         }
