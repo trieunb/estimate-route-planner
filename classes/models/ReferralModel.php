@@ -5,6 +5,7 @@ class ReferralModel extends AbstractModel {
         'customer_id',
         'route_id',
         'route_order',
+        'estimator_id',
         'date_requested',
         'address',
         'city',

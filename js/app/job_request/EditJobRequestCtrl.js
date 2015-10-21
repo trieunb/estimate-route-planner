@@ -29,7 +29,15 @@ function EditJobRequestCtrl(
     $scope.setPageTitle('Edit Job Request');
     $scope.companyInfo = {};
     $scope.customers = [];
+    $scope.employees = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
+
+    $scope.employeesSelectConfig = {
+        valueField: 'id',
+        labelField: 'name',
+        searchField: 'name',
+        maxItems: 1
+    };
 
     var init = function() {
         jobRequestFactory.show($routeParams.id)
@@ -47,6 +55,13 @@ function EditJobRequestCtrl(
                             });
                         }
                         angular.copy(customers, $scope.customers);
+                    });
+
+                // Load employees
+                erpLocalStorage.getEmployees()
+                    .then(function(data) {
+                        $scope.employees = [];
+                        angular.copy(data, $scope.employees);
                     });
             });
     };

@@ -218,8 +218,6 @@ CREATE TABLE `crew_routes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `status` varchar(50) NOT NULL,
-  `employee_id` bigint(20) DEFAULT NULL,
-  `assigned_at` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -236,8 +234,7 @@ CREATE TABLE `estimate_routes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `status` varchar(50) NOT NULL,
-  `employee_id` bigint(20) DEFAULT NULL,
-  `assigned_at` datetime DEFAULT NULL,
+  `estimator_id` bigint(20) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;

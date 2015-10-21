@@ -5,11 +5,19 @@ angular
         '$routeParams',
         'jobRequestFactory',
         'estimateRouteFactory',
+        'erpLocalStorage',
         '$ngBootbox',
         ListJobRequestCtrl
     ]);
 
-function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, estimateRouteFactory, $ngBootbox) {
+function ListJobRequestCtrl(
+    $scope,
+    $routeParams,
+    jobRequestFactory,
+    estimateRouteFactory,
+    erpLocalStorage,
+    $ngBootbox) {
+
     $scope.setPageTitle('Job Requests List');
     $scope.referrals = {};
     $scope.date = new Date();
@@ -23,9 +31,17 @@ function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, estimateRou
     }
     $scope.currentPage = currentPage;
 
+    // Load estimate route for quick assigned
     estimateRouteFactory.all()
         .success(function(responseData){
             $scope.routes = responseData;
+        });
+
+    // Load employees
+    erpLocalStorage.getEmployees()
+        .then(function(data) {
+            $scope.employees = [];
+            angular.copy(data, $scope.employees);
         });
 
     var paginate = function() {
@@ -35,7 +51,7 @@ function ListJobRequestCtrl($scope, $routeParams, jobRequestFactory, estimateRou
             keyword: $scope.filter.keyword
         };
         jobRequestFactory.list(query)
-            .success(function(response){
+            .success(function(response) {
                 $scope.referrals = response.data;
                 $scope.total = parseInt(response.total);
             });

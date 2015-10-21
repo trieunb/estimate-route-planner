@@ -29,6 +29,7 @@
         <th>Date requested</th>
         <th>Address</th>
         <th>Phone Number</th>
+        <th>Estimator Assigned</th>
         <th>Date service</th>
         <th>Status</th>
         <th>Action</th>
@@ -43,6 +44,7 @@
         <td><span>{{::ref.date_requested}}</span></td>
         <td><span>{{::ref.address}}</span></td>
         <td><span>{{::ref.primary_phone}}</span></td>
+        <td><span>{{::ref.estimator_full_name }}</span></td>
         <td><span>{{::ref.date_service}}</span></td>
         <td>
             <select ng-if="::hasCap('erpp_edit_job_requests')"

@@ -27,17 +27,32 @@ function AddJobRequestCtrl(
     $scope.setPageTitle('New Job Request');
     $scope.companyInfo = {};
     $scope.customers = [];
+    $scope.employees = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     // Initial with default status
     $scope.referral = {
         status: 'Pending'
     };
 
+    $scope.employeesSelectConfig = {
+        valueField: 'id',
+        labelField: 'name',
+        searchField: 'name',
+        maxItems: 1
+    };
+    
     // Load customers list
     erpLocalStorage.getCustomers()
         .then(function(data) {
             $scope.customers = [];
             angular.copy(data, $scope.customers);
+        });
+
+    // Load employees
+    erpLocalStorage.getEmployees()
+        .then(function(data) {
+            $scope.employees = [];
+            angular.copy(data, $scope.employees);
         });
 
     $scope.onAddCustomer = function(input) {

@@ -51,11 +51,24 @@ class EstimateRouteController extends BaseController {
             // Get assigned referrals
             $response['assigned_referrals'] = $referralM->tableAlias('r')
                 ->join('customers', ['r.customer_id', '=', 'c.id'], 'c')
+                // Join to get employee full name
+                ->leftOuterJoin('wp_users', ['r.estimator_id', '=', 'wpu.id'], 'wpu')
+                ->leftOuterJoin(
+                    'wp_usermeta',
+                    "wpu.id = wpum1.user_id AND wpum1.meta_key='first_name'",
+                    'wpum1'
+                )
+                ->leftOuterJoin(
+                    'wp_usermeta',
+                    "wpu.id = wpum2.user_id AND wpum2.meta_key='last_name'",
+                    'wpum2'
+                )
                 ->selectMany(
                     'r.id', 'r.address', 'r.city',
                     'r.state', 'r.zip_code', 'r.primary_phone_number',
                     'r.status', 'r.date_requested', 'r.lat', 'r.lng'
                 )
+                ->selectExpr("CONCAT_WS(' ',wpum1.meta_value, wpum2.meta_value)", 'estimator_full_name')
                 ->select('c.display_name', 'customer_display_name')
                 ->where('r.route_id', $routeId)
                 ->whereIn('r.status', ['Pending', 'Assigned'])

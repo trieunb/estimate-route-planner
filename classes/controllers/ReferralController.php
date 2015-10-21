@@ -16,9 +16,24 @@ class ReferralController extends BaseController {
         $refs = $searchQuery
             ->selectMany(
                 'r.id', 'r.address', 'r.primary_phone_number',
-                'r.date_service', 'r.status', 'r.date_requested'
+                'r.date_service', 'r.status', 'r.date_requested',
+                'r.estimator_id'
             )
             ->select('c.display_name', 'customer_display_name')
+            // Join to get employee name
+            ->leftOuterJoin('wp_users', ['r.estimator_id', '=', 'wpu.id'], 'wpu')
+            ->leftOuterJoin(
+                'wp_usermeta',
+                "wpu.id = wpum1.user_id AND wpum1.meta_key='first_name'",
+                'wpum1'
+            )
+            ->leftOuterJoin(
+                'wp_usermeta',
+                "wpu.id = wpum2.user_id AND wpum2.meta_key='last_name'",
+                'wpum2'
+            )
+            ->selectExpr("CONCAT_WS(' ',wpum1.meta_value,wpum2.meta_value)", 'estimator_full_name')
+            ->groupBy('r.id')
             ->orderByDesc('r.date_requested')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
@@ -38,11 +53,29 @@ class ReferralController extends BaseController {
         $refs = $model
             ->tableAlias('r')
             ->join('customers', ['r.customer_id', '=', 'c.id'], 'c')
+            // Join to get employee full name
+            ->leftOuterJoin('wp_users', ['r.estimator_id', '=', 'wpu.id'], 'wpu')
+            ->leftOuterJoin(
+                'wp_usermeta',
+                "wpu.id = wpum1.user_id AND wpum1.meta_key='first_name'",
+                'wpum1'
+            )
+            ->leftOuterJoin(
+                'wp_usermeta',
+                "wpu.id = wpum2.user_id AND wpum2.meta_key='last_name'",
+                'wpum2'
+            )
+            ->selectMany(
+                'r.id', 'r.address', 'r.city',
+                'r.state', 'r.zip_code', 'r.primary_phone_number',
+                'r.status', 'r.date_requested', 'r.lat', 'r.lng'
+            )
             ->selectMany(
                 'r.id', 'r.customer_id', 'r.address', 'r.city',
                 'r.state', 'r.zip_code', 'r.primary_phone_number',
                 'r.status', 'r.date_requested', 'r.lat', 'r.lng'
             )
+            ->selectExpr("CONCAT_WS(' ',wpum1.meta_value, wpum2.meta_value)", 'estimator_full_name')
             ->select('c.display_name', 'customer_display_name')
             ->where('r.status', 'Pending')
             ->whereNull('r.route_id')
@@ -57,6 +90,9 @@ class ReferralController extends BaseController {
     public function add() {
         $customerData = $this->_checkForCreateNewCustomer();
         $insertData = array_merge($this->data, $customerData);
+        if (!$insertData['estimator_id']) {
+            $insertData['estimator_id'] = null;
+        }
         $model = new ReferralModel;
         $ref = $model->create();
         $ref->set($insertData);
@@ -98,6 +134,9 @@ class ReferralController extends BaseController {
             $ref->set($updateData);
             if (!$updateData['route_id']) {
                 $ref->route_id = NULL;
+            }
+            if (!$updateData['estimator_id']) {
+                $ref->estimator_id = NULL;
             }
             $ref->save();
             $this->renderJson([

@@ -19,6 +19,7 @@
                         <br>
                         <span>Phone: {{::referral.primary_phone_number}}</span><br>
                         <span>Date: {{::referral.date_requested}}</span><br>
+                        <span>Estimator: {{::referral.estimator_full_name}}</span><br>
                         <span>Status: {{referral.status}}</span>
                     </li>
                 </ul>
@@ -43,6 +44,7 @@
                         <br>
                         <span>Phone: {{::referral.primary_phone_number}}</span><br>
                         <span>Date: {{::referral.date_requested}}</span><br>
+                        <span>Estimator: {{::referral.estimator_full_name}}</span><br>
                         <span>Status: {{referral.status}}</span>
                     </li>
                 </ul>
@@ -104,6 +106,7 @@
                                 <br>
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                 <span>Date: {{::referral.date_requested}}</span><br>
+                                <span>Estimator: {{::referral.estimator_full_name}}</span><br>
                                 <span>Status: {{referral.status}}</span>
                             </p>
                         </ui-gmap-window>
@@ -121,6 +124,7 @@
                                 <br>
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                 <span>Date: {{::referral.date_requested}}</span><br>
+                                <span>Estimator: {{::referral.estimator_full_name}}</span><br>
                                 <span>Status: {{referral.status}}</span>
                             </p>
                         </ui-gmap-window>
@@ -134,6 +138,7 @@
                     <tr>
                         <th>Customer</th>
                         <th>Date Requested</th>
+                        <th>Estimator</th>
                         <th>Status</th>
                         <th ng-if="::hasCap('erpp_edit_job_requests')">Action</th>
                     </tr>
@@ -142,6 +147,7 @@
                     <tr ng-repeat="referral in currentAssignedReferrals">
                         <td><span>{{:: referral.customer_display_name}}</span></td>
                         <td><span>{{:: referral.date_requested}}</span></td>
+                        <td><span>{{:: referral.estimator_full_name}}</span></td>
                         <td><span>{{:: referral.status}}</span></td>
                         <td ng-if="::hasCap('erpp_edit_job_requests')">
                             <a href="#/edit-job-request/{{:: referral.id}}">Edit</a>

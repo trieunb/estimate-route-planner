@@ -1,7 +1,7 @@
 <div ng-controller="EditJobRequestCtrl">
     <form class="form-horizontal" name="referralForm" ng-submit="submitForm()">
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-sm-7 col-xs-12">
                 <span class="top-leaf" ng-bind="::companyInfo.name"></span>
                 <br>
                 <span ng-bind="::companyInfo.mailing_address"></span>
@@ -11,7 +11,7 @@
                 Fax:
                 <span ng-bind="::companyInfo.fax"></span>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-5 col-xs-12">
                 <div class="form-group">
                     <label class="control-label col-sm-4 required" for="date_requested">
                         Date<span>(*)</span></label>
@@ -43,6 +43,17 @@
                             <option value="Completed">Completed</option>
                             <option value="Assigned">Assigned</option>
                         </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="status">Estimator Assigned
+                    </label>
+                    <div class="col-sm-8">
+                        <selectize
+                            config="employeesSelectConfig"
+                            ng-model="referral.estimator_id"
+                            options="employees">
+                        </selectize>
                     </div>
                 </div>
             </div>
