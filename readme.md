@@ -10,11 +10,13 @@
 
 ### Development setup
   - Source code: go to `wp-content/plugins` folder and then clone project:
+
   ```
   $ git clone path/to/git estimate-route-planner
   ```
-  Make sure the root folder is `estimate-route-planner` as it's follow WP convention to make the plugin works.
-  - Install node packages:
+  Make sure the root folder is `estimate-route-planner` as follow the WP convention to make the plugin works.
+  - Install NodeJS packages:
+
   ```
   $ npm install
   ```
@@ -34,6 +36,7 @@
   1. Update `changelog.md` with the changes. New version is always on top.
   2. Update new plugin version in `estimate-route-planner.php`. It's important to automatically expires cached js, css in browers of our users.
   3. Compile JS and templates, run Grunt:
+
   ```
   $ grunt
   ```
