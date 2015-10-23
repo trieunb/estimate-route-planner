@@ -1,17 +1,30 @@
 ## 1.5.0
-  - Change email on job request to not be required
-  - Change customer signature text to `Customer Signature Authorizes Commencement of Work`
-  - Job request list auto hide requests that have status of Completed
-  - Crew route: change pending list to `Accepted Estimates` and show only estimates in list that are accepted
-  - Add `Estimator Assigned` to job requests, also show on drag boxes.
-  - Add `Estimator Assigned` to estimate routes
+  - Writing customer signature in a modal
+  - Job request:
+    - Change email to not be required
+    - Add `Estimator Assigned` field.
+    - Auto hide `Completed` requests form listing table
+    - Add column `Estimator Assigned` to listing table.
+
   - Estimate route:
-    - Change Recent Saved Routes to Assigned Requests.
-    - Auto remove `Completed` request from assigned list.
+    - Change Recent Saved Routes to `Current Assigned Requests`.
+    - Auto hide `Completed` requests from assigned list.
+    - Add `Estimator Assigned` field to form.
+    - Add column `Estimator Assigned` to listing table.
+
+  - Estimate:
+    - Change customer signature text to `Customer Signature Authorizes Commencement of Work`
+    - Writing customer signature in a modal
+
+  - Crew route: Change "Pending Routes" to `Accepted Estimates` and show only accepted estimates
+
   - Permissions:
     - `erpp_estimator_only_routes`: that only shows Estimate Routes that assigned to estimator
     - `erpp_hide_estimate_pending_list`: hides the Estimate Route pending list so the person can't assign requests to themselves.
-  - Writing customer signature in a modal
+  - Worker order: Hide product code from lines, only show Qty and Description.
+
+## Questions:
+  - Crew route does not have "Estimator Assigned" like Estimate route?
 
 ## 1.4.1
   - Decrease load time for customers list from server
