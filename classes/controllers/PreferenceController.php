@@ -49,8 +49,8 @@ class PreferenceController extends BaseController {
             );
             $mailer = new ERPMailer($STMPSetting);
             $to = $this->data['to'];
-            $subject = 'Test email';
-            $body = 'This is the test email';
+            $subject = $companyInfo['name'] . ' - Test email';
+            $body = 'This is a test email to check email sending feature of the plugin';
             if ($mailer->sendmail($subject, $body, $to, ['fromName' => $companyInfo['name']])) {
                 $this->renderJson([
                     'success' => true,
