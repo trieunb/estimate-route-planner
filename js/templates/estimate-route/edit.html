@@ -1,13 +1,19 @@
 <div ng-controller="EditEstimateRouteCtrl">
+    <div class="row form-route">
+        <div class="col-lg-12">
+            <form-route></form-route>
+            <hr>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-3">
-            <h4 class="h4-title">Assigned Routes</h4>
+            <h5 class="route-box-title">Assigned Routes</h5>
             <div class="assigned-routes" ui-tree="assignedListDndOptions" data-max-depth="1" data-drag-delay="150">
                 Sort by:
                 <select class="sort-by-select"
                     ng-model="$parent.assigned_queue_sort_by"
                     ng-change="sortAssignedQueue()"
-                    ng-options="sort.value as sort.label for sort in sortOptions">
+                    ng-options="sort.value as sort.label for sort in ::sortOptions">
                 </select>
                 <ul ui-tree-nodes ng-model="assignedReferrals">
                     <li class="box-assign" ng-repeat="referral in assignedReferrals" ui-tree-node>
@@ -25,14 +31,14 @@
                 </ul>
             </div>
 
-            <h4 class="h4-title">Pending Routes</h4>
+            <h5 class="route-box-title">Pending Routes</h5>
 
             <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
                 Sort by:
                 <select class="sort-by-select"
                     ng-model="$parent.pending_queue_sort_by"
                     ng-change="sortPendingQueue()"
-                    ng-options="sort.value as sort.label for sort in sortOptions">
+                    ng-options="sort.value as sort.label for sort in ::sortOptions">
                 </select>
                 <ul ui-tree-nodes="" ng-model="pendingReferrals">
                     <li class="box-assign" ng-repeat="referral in pendingReferrals" ui-tree-node>
@@ -51,36 +57,7 @@
             </div>
         </div>
         <div class="col-sm-9">
-            <div class="row">
-                <form name="routeForm" ng-submit="saveRoute()" class="form-route">
-                    <div class="col-md-9">
-                        <div class="row">
-                            <div class="col-md-8 col-xs-7">
-                                <label for="title" class="required col-sm-2 n-p">Title: </label>
-                                <div class="col-sm-10 n-p">
-                                    <input type="text" class="form-control" name="title" ng-model="route.title" ng-required="true"/>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-xs-5">
-                                <label for="status" class="col-sm-4 n-p">Status: </label>
-                                <div class="col-sm-8">
-                                    <select
-                                        name="status"
-                                        ng-model="route.status"
-                                        ng-options="status.value as status.label for status in $root.routeStatuses">
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="btn-action text-right">
-                            <button ng-click="printRoute()" class="btn btn-sm btn-default" type="button" ng-if="::hasCap('erpp_print_estimate_routes')">Print</button>
-                            <button class="btn btn-sm btn-primary" type="submit" ng-disabled="routeForm.$invalid">Update</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
                     <ui-gmap-marker
@@ -131,35 +108,7 @@
                     </ui-gmap-marker>
                 </ui-gmap-google-map>
             </div>
-
-            <h4 class="h4-title">Current Assigned Requests</h4>
-            <table class="table table-bordered table-fixed header-fixed">
-                <thead>
-                    <tr>
-                        <th>Customer</th>
-                        <th>Date Requested</th>
-                        <th>Estimator</th>
-                        <th>Status</th>
-                        <th ng-if="::hasCap('erpp_edit_job_requests')">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="referral in currentAssignedReferrals">
-                        <td><span>{{:: referral.customer_display_name}}</span></td>
-                        <td><span>{{:: referral.date_requested}}</span></td>
-                        <td><span>{{:: referral.estimator_full_name}}</span></td>
-                        <td><span>{{:: referral.status}}</span></td>
-                        <td ng-if="::hasCap('erpp_edit_job_requests')">
-                            <a href="#/edit-job-request/{{:: referral.id}}">Edit</a>
-                        </td>
-                    </tr>
-                    <tr ng-if="!$root.isBusy && currentAssignedReferrals.length == 0">
-                        <td colspan="4" class="text-center">
-                            No requests assigned yet
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <assigned-requests-table></assigned-requests-table>
         </div>
     </div>
 </div>

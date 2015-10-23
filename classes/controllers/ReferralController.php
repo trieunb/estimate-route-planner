@@ -177,7 +177,17 @@ class ReferralController extends BaseController {
         } else {
             $ref->status = $this->data['status'];
         }
-        $ref->save();
+        if ($ref->save()) {
+            $this->renderJson([
+                'success' => true,
+                'message' => 'Job request status updated successfully'
+            ]);
+        } else {
+            $this->renderJson([
+                'success' => false,
+                'message' => 'An error has occurred while saving job request'
+            ]);
+        }
     }
 
     public function printPDF() {

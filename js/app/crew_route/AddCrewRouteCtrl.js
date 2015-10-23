@@ -34,7 +34,9 @@ function AddCrewRouteCtrl(
     });
 
     $scope.setPageTitle('New Crew Route');
-    $scope.route = {}; // Form data
+    $scope.route = {
+        status: 'Pending'
+    }; // Form data
     $scope.pendingEstimates = [];
     $scope.assignedEstimates = [];
     $scope.recentRoutes = [];

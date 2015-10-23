@@ -447,11 +447,11 @@
                             <label for="customer_signature">Customer Signature Authorizes Commencement of Work</label>
                             <button type="button"
                                 ng-click="showSignatureBox()"
-                                class="btn btn-sm btn-default pull-right">
+                                class="btn btn-sm btn-default pull-left">
                                 <span class="glyphicon glyphicon-pencil"></span> Sign</button>
                             </div>
                         <div class="col-sm-12">
-                            <div class="div-customer-signature-preview text-center">
+                            <div class="div-customer-signature-preview text-center" ng-show="signatureEncoded">
                                 <img ng-src="{{signatureEncoded}}" ng-if="signatureEncoded"/>
                             </div>
                         </div>

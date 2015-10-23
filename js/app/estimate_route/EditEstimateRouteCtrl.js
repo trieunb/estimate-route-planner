@@ -7,7 +7,6 @@ angular.module('Erp')
             'jobRequestFactory',
             'estimateRouteFactory',
             'sharedData',
-            '$location',
             '$routeParams',
             'uiGmapGoogleMapApi',
             'uiGmapIsReady',
@@ -24,7 +23,6 @@ function EditEstimateRouteCtrl(
     jobRequestFactory,
     estimateRouteFactory,
     sharedData,
-    $location,
     $routeParams,
     uiGmapGoogleMapApi,
     uiGmapIsReady,
@@ -59,6 +57,7 @@ function EditEstimateRouteCtrl(
             $scope.route.id = response.id;
             $scope.route.title = response.title;
             $scope.route.status = response.status;
+            $scope.route.estimator_id = response.estimator_id;
 
             // Collect assigned referrals for dragging
             angular.forEach(response.assigned_referrals, function(referral) {
@@ -220,6 +219,7 @@ function EditEstimateRouteCtrl(
         data.id = $scope.route.id;
         data.title = $scope.route.title;
         data.status = $scope.route.status;
+        data.estimator_id = $scope.route.estimator_id;
         data.assigned_referral_ids = [];
         angular.forEach($scope.assignedReferrals, function(referral) {
             data.assigned_referral_ids.push(referral.id);

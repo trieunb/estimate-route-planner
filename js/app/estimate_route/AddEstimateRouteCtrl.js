@@ -36,7 +36,9 @@ function AddEstimateRouteCtrl(
         suppressMarkers: true // Hide direction marker
     });
     $scope.setPageTitle('New Estimate Route');
-    $scope.route = {}; // Form data
+    $scope.route = { // Form data
+        status: 'Pending'
+    };
     $scope.pendingReferrals = [];
     $scope.assignedReferrals = [];
     $scope.recentRoutes = [];
@@ -202,6 +204,7 @@ function AddEstimateRouteCtrl(
         var data = {};
         data.title = $scope.route.title;
         data.assigned_referral_ids = [];
+        data.estimator_id = $scope.route.estimator_id;
         angular.forEach($scope.assignedReferrals, function(referral) {
             data.assigned_referral_ids.push(referral.id);
         });

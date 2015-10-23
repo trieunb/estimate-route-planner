@@ -50,8 +50,7 @@ function ListEstimateRouteCtrl(
                     var data = {};
                     data.id = route.id;
                     data.status = route.new_status;
-                    data.title = route.title;
-                    estimateRouteFactory.update(data)
+                    estimateRouteFactory.updateStatus(data)
                         .success(function(response) {
                             route.status = route.new_status;
                             if (response.success) {

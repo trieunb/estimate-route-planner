@@ -45,6 +45,7 @@ return [
     'getEstimateRoute'          => 'EstimateRoute@show',
     'saveEstimateRoute'         => 'EstimateRoute@save',
     'updateEstimateRoute'       => 'EstimateRoute@update',
+    'updateEstimateRouteStatus' => 'EstimateRoute@updateStatus',
 
     // Crew routes
     'getRecentCrewRoutes' => 'CrewRoute@recent',

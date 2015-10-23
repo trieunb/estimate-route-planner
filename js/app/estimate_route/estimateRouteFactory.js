@@ -32,6 +32,12 @@ function estimateRouteFactory($http) {
                 data: data
             });
         },
+        updateStatus: function(data) {
+            return $http.post(ERPApp.baseAPIPath, {
+                _do: 'updateEstimateRouteStatus',
+                data: data
+            });
+        },
         recent: function() {
             return $http.get(ERPApp.baseAPIPath, {
                 params: {

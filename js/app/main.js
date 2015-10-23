@@ -26,7 +26,7 @@ angular
         ]
     ).run(['$rootScope', 'dataFactory', 'sharedData', '$location', 'userPermission',
         function($rootScope, dataFactory, sharedData, $location, userPermission) {
-        $rootScope.pageTitle = 'ER Planner Pro';
+        $rootScope.pageTitle = ERPApp.pluginName;
         $rootScope.isBusy = true;
         $rootScope.baseAPIPath = ERPApp.baseAPIPath;
         $rootScope.baseERPPluginUrl = ERPApp.baseERPPluginUrl;
@@ -109,14 +109,6 @@ angular
             $location.path('/not-found');
         });
 
-        // Get some data at start
-        $rootScope.loadSharedData = function() {
-            dataFactory.getSharedData()
-                .success(function(response) {
-                    sharedData.companyInfo = response.companyInfo;
-                });
-        };
-
         /* Listen to route change to update current menu item */
         $rootScope.$on("$routeChangeSuccess", function(event, current, prev) {
             var currentHash = $location.path().replace(/^\//, "#");
@@ -172,6 +164,12 @@ $http.get(ERPApp.baseAPIPath, {
         angular.module('Erp')
             .constant('USER_CAPABILITIES', response.data.userData.capabilities)
             .constant('USER_ROLES', response.data.userData.roles)
+            .constant('APP_CONFIG', {
+                baseAPIPath: ERPApp.baseAPIPath,
+                basePluginPath: ERPApp.baseERPPluginUrl,
+                pluginName: ERPApp.pluginName,
+                templatesPath: ERPApp.templatesPath
+            })
             .value('sharedData',
                 {
                     companyInfo: response.data.companyInfo,

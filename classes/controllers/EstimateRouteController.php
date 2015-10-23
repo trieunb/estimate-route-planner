@@ -3,7 +3,22 @@ class EstimateRouteController extends BaseController {
 
     public function recent() {
         $routes = ORM::forTable('estimate_routes')
-            ->orderByDesc('created_at')
+            ->tableAlias('er')
+            // Join to get employee full name
+            ->leftOuterJoin('wp_users', ['er.estimator_id', '=', 'wpu.id'], 'wpu')
+            ->leftOuterJoin(
+                'wp_usermeta',
+                "wpu.id = wpum1.user_id AND wpum1.meta_key='first_name'",
+                'wpum1'
+            )
+            ->leftOuterJoin(
+                'wp_usermeta',
+                "wpu.id = wpum2.user_id AND wpum2.meta_key='last_name'",
+                'wpum2'
+            )
+            ->select('er.*')
+            ->selectExpr("CONCAT_WS(' ',wpum1.meta_value, wpum2.meta_value)", 'estimator_full_name')
+            ->orderByDesc('er.created_at')
             ->limit(5)
             ->findArray();
         $this->renderJson($routes);
@@ -21,7 +36,21 @@ class EstimateRouteController extends BaseController {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
         $routes = ORM::forTable('estimate_routes')
-            ->whereLike('title', "%$keyword%")
+            ->tableAlias('er')
+            ->leftOuterJoin('wp_users', ['er.estimator_id', '=', 'wpu.id'], 'wpu')
+            ->leftOuterJoin(
+                'wp_usermeta',
+                "wpu.id = wpum1.user_id AND wpum1.meta_key='first_name'",
+                'wpum1'
+            )
+            ->leftOuterJoin(
+                'wp_usermeta',
+                "wpu.id = wpum2.user_id AND wpum2.meta_key='last_name'",
+                'wpum2'
+            )
+            ->select('er.*')
+            ->selectExpr("CONCAT_WS(' ',wpum1.meta_value,wpum2.meta_value)", 'estimator_full_name')
+            ->whereLike('er.title', "%$keyword%")
             ->orderByDesc('created_at')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
@@ -81,6 +110,13 @@ class EstimateRouteController extends BaseController {
     public function save() {
         $route = ORM::forTable('estimate_routes')->create();
         $route->title = $this->data['title'];
+        if (isset($this->data['estimator_id'])) {
+            if ($this->data['estimator_id']) {
+                $route->estimator_id = $this->data['estimator_id'];
+            } else {
+                $route->estimator_id = NULL;
+            }
+        }
         $route->created_at = date('Y-m-d H:i:s');
         $route->status = 'Pending';
         if ($route->save()) {
@@ -105,12 +141,35 @@ class EstimateRouteController extends BaseController {
         }
     }
 
+    public function updateStatus() {
+        $routeId = $this->data['id'];
+        $route = ORM::forTable('estimate_routes')->findOne($routeId);
+        $route->status = $this->data['status'];
+        if ($route->save()) {
+            $this->renderJson([
+                'success' => true,
+                'message' => 'Route status updated successfully'
+            ]);
+        } else {
+            $this->renderJson([
+                'success' => false,
+                'message' => 'An error has occurred while saving route'
+            ]);
+        }
+    }
+
     public function update() {
         $routeId = $this->data['id'];
         $route = ORM::forTable('estimate_routes')->findOne($routeId);
         $route->title = $this->data['title'];
         $route->status = $this->data['status'];
-
+        if (isset($this->data['estimator_id'])) {
+            if ($this->data['estimator_id']) {
+                $route->estimator_id = $this->data['estimator_id'];
+            } else {
+                $route->estimator_id = NULL;
+            }
+        }
         if ($route->save()) {
             if (isset($this->data['assigned_referral_ids'])) {
                 $oldAssignedReferrals = ORM::forTable('referrals')

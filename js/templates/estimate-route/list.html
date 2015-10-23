@@ -27,9 +27,10 @@
       <tr>
         <th style="width: 50px">ID</th>
         <th>Title</th>
-        <th style="width: 155px">Date</th>
+        <th style="width: 180px">Estimator Assigned</th>
+        <th style="width: 155px">Date Created</th>
         <th style="width: 130px">Status</th>
-        <th style="width: 120px">Action</th>
+        <th style="width: 70px">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -43,19 +44,21 @@
           <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')"><span>{{route.title}}</span></a>
           <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{::route.title}}</span>
         </td>
-
+        <td>
+            {{:: route.estimator_full_name }}
+        </td>
         <td><span>{{::route.created_at}}</span></td>
         <td>
           <select
             ng-if="::hasCap('erpp_edit_estimate_routes')"
             ng-init="route.new_status = route.status"
             ng-model="route.new_status"
-            ng-options="status.value as status.label for status in $root.routeStatuses"
+            ng-options="status.value as status.label for status in ::$root.routeStatuses"
             ng-change="saveRouteStatus(route)">
           </select>
           <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{route.status}}</span>
         </td>
-        <td>
+        <td class="text-center">
           <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')">Edit</a>
         </td>
       </tr>

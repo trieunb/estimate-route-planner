@@ -111,13 +111,21 @@ function ListJobRequestCtrl(
             var updateReferralId = $scope.currentReferral.id;
             jobRequestFactory.updateStatus($scope.currentReferral)
                 .success(function(response) {
-                    if (newStatus === 'Completed') {
-                        angular.forEach($scope.referrals, function(referral, index) {
-                            if (referral.id == updateReferralId) {
-                                $scope.referrals.splice(index, 1);
-                                return;
-                            }
-                        });
+                    if (response.success) {
+                        toastr.success(response.message);
+                        // Remove completed referral from list
+                        if (newStatus === 'Completed') {
+                            angular.forEach($scope.referrals, function(referral, index) {
+                                if (referral.id == updateReferralId) {
+                                    $scope.referrals.splice(index, 1);
+                                    return;
+                                }
+                            });
+                        }
+                    } else {
+                        var errorMsg = response.message ||
+                            'An error has occurred while saving route';
+                        toastr.error(errorMsg);
                     }
                 })
                 .then(function() {

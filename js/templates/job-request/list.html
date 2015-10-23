@@ -26,13 +26,13 @@
     <thead>
       <tr>
         <th>Customer</th>
-        <th>Date requested</th>
         <th>Address</th>
-        <th>Phone Number</th>
-        <th>Estimator Assigned</th>
-        <th>Date service</th>
-        <th>Status</th>
-        <th>Action</th>
+        <th style="width: 125px;">Date requested</th>
+        <th style="width: 140px;">Phone Number</th>
+        <th style="width: 150px;">Estimator Assigned</th>
+        <th style="width: 100px;">Date service</th>
+        <th style="width: 130px;">Status</th>
+        <th style="width: 70px;">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -41,21 +41,21 @@
           <a href="#/edit-job-request/{{::ref.id}}" ng-if="::hasCap('erpp_edit_job_requests')"><span>{{::ref.customer_display_name}}</span></a>
           <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.customer_display_name}}</span>
         </td>
-        <td><span>{{::ref.date_requested}}</span></td>
         <td><span>{{::ref.address}}</span></td>
-        <td><span>{{::ref.primary_phone}}</span></td>
+        <td><span>{{::ref.date_requested}}</span></td>
+        <td><span>{{::ref.primary_phone_number}}</span></td>
         <td><span>{{::ref.estimator_full_name }}</span></td>
         <td><span>{{::ref.date_service}}</span></td>
         <td>
             <select ng-if="::hasCap('erpp_edit_job_requests')"
                 ng-init="ref.new_status = ref.status"
                 ng-model="ref.new_status"
-                ng-options="status.value as status.label for status in $root.referralStatuses"
+                ng-options="status.value as status.label for status in ::$root.referralStatuses"
                 ng-change="showModalUpdateStatus(ref)">
             </select>
             <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.status}}</span>
         </td>
-        <td>
+        <td class="text-center">
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown">View
               <span class="caret"></span></button>

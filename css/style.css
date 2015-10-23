@@ -40,6 +40,10 @@ body {
 .wp-admin #erp-content select {
     height: 34px;
 }
+.wp-admin #erp-content table select {
+    height: 30px;
+    padding: 3px 5px;
+}
 #erp-content .full-width {
     width: 100%;
 }
@@ -314,13 +318,14 @@ span.new-referal {
 
 /*--------------- referral route style ---------------*/
 .assigned-routes {
-    border: 2px solid #B6B6B6;
+    border: 1px solid #B6B6B6;
     padding: 10px;
     height: 400px;
     overflow-y: scroll;
+    margin-bottom: 10px;
 }
 .box-assign {
-    border: 2px solid #B6B6B6;
+    border: 1px solid #B6B6B6;
     margin-top: 10px;
     padding: 5px;
 }
@@ -334,13 +339,18 @@ span.new-referal {
         user-select: none;
     }
 }
+@media (min-width: 1024px) {
+    .gmap-container {
+        margin-top: 25px;
+    }
+}
 
 .sort-by {
     margin-bottom: 40px;
 }
 .gmap-container {
     width: 100%;
-    border: 2px solid #B6B6B6;
+    border: 1px solid #B6B6B6;
 }
 .gmap-container .angular-google-map {
     height: 500px;
@@ -574,4 +584,15 @@ label.required span {
 }
 #erp-content select.sort-by-select {
     height: 30px;
+}
+.form-route hr {
+    margin: 0 0 10px 0;
+}
+.route-box-title {
+    margin-top: 0;
+    font-weight: 600;
+    font-size: 15px;
+}
+form.form-route {
+    margin-top: 5px;
 }

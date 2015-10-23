@@ -1,13 +1,47 @@
 <div ng-controller="AddCrewRouteCtrl">
+    <div class="row form-route">
+        <div class="col-lg-12">
+            <form name="routeForm" ng-submit="saveRoute()" class="form-route">
+                <div class="row">
+                    <div class="col-md-5 col-sm-6">
+                        <label for="title" class="required col-sm-2 n-p">Title: </label>
+                        <div class="col-sm-10 n-p">
+                            <input type="text" class="form-control" name="title" ng-model="route.title" ng-required="true"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <label for="status" class="col-sm-2 n-p">Status: </label>
+                        <div class="col-sm-10">
+                            <select
+                                name="status"
+                                class="form-control"
+                                ng-model="route.status"
+                                ng-required="true"
+                                ng-options="status.value as status.label for status in ::$root.routeStatuses">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <div class="btn-action text-right">
+                            <button class="btn btn-default" type="button" ng-click="printRoute()" ng-if="::hasCap('erpp_print_crew_routes')">Print</button>
+                            <button class="btn btn-primary" type="submit"
+                                ng-disabled="routeForm.$invalid">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <hr>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-3">
-            <h4 class="h4-title">Assigned Routes</h4>
+            <h5 class="route-box-title">Assigned Routes</h5>
             <div class="assigned-routes" ui-tree="assignedListDndOptions" data-max-depth="1" data-drag-delay="150">
                 Sort by:
                 <select class="sort-by-select"
                     ng-model="$parent.assigned_queue_sort_by"
                     ng-change="sortAssignedQueue()"
-                    ng-options="sort.value as sort.label for sort in sortOptions">
+                    ng-options="sort.value as sort.label for sort in ::sortOptions">
                 </select>
                 <ul ui-tree-nodes ng-model="assignedEstimates">
                     <li ui-tree-node class="box-assign" ng-repeat="estimate in assignedEstimates">
@@ -25,14 +59,14 @@
                 </ul>
             </div>
 
-            <h4 class="h4-title">Accepted Estimates</h4>
+            <h5 class="route-box-title">Accepted Estimates</h5>
 
             <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
                 Sort by:
                 <select class="sort-by-select"
                     ng-model="$parent.pending_queue_sort_by"
                     ng-change="sortPendingQueue()"
-                    ng-options="sort.value as sort.label for sort in sortOptions">
+                    ng-options="sort.value as sort.label for sort in ::sortOptions">
                 </select>
                 <ul ui-tree-nodes ng-model="pendingEstimates">
                     <li ui-tree-node class="box-assign" ng-repeat="estimate in pendingEstimates">
@@ -51,23 +85,6 @@
             </div>
         </div>
         <div class="col-sm-9">
-            <div class="row">
-                <form name="routeForm" ng-submit="saveRoute()" class="form-route">
-                    <div class="col-md-8">
-                        <label for="title" class="required col-sm-2 n-p">Title: </label>
-                        <div class="col-sm-10 n-p">
-                            <input type="text" class="form-control" name="title" ng-model="route.title" ng-required="true"/>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="btn-action text-right">
-                            <button class="btn btn-sm btn-default" type="button" ng-click="printRoute()" ng-if="::hasCap('erpp_print_estimate_routes')">Print</button>
-                            <button class="btn btn-sm btn-primary" type="submit"
-                                ng-disabled="routeForm.$invalid">Save</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
                     <ui-gmap-marker
@@ -121,7 +138,7 @@
             </div>
 
             <h4 class="h4-title">Recent Saved Routes</h4>
-            <table class="table table-bordered table-striped table-fixed header-fixed">
+            <table class="table table-bordered table-fixed header-fixed">
                 <thead>
                   <tr>
                     <th>Title</th>
