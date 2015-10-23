@@ -133,6 +133,7 @@ class EstimateRouteController extends BaseController {
         $route->created_at = date('Y-m-d H:i:s');
         $route->status = 'Pending';
         if ($route->save()) {
+            // Set status of current assigned referrals to `Assigned`
             foreach ($this->data['assigned_referral_ids'] as $index => $referralId) {
                 $referral = ORM::forTable('referrals')
                     ->findOne($referralId);
@@ -185,9 +186,13 @@ class EstimateRouteController extends BaseController {
         }
         if ($route->save()) {
             if (isset($this->data['assigned_referral_ids'])) {
+                // Remove old assigned referrals from route
+                // Except `Completed` referrals
                 $oldAssignedReferrals = ORM::forTable('referrals')
                     ->where('route_id', $routeId)
+                    ->whereIn('status', ['Pending', 'Assigned'])
                     ->findMany();
+
                 foreach ($oldAssignedReferrals as $referral) {
                     if (!in_array($referral->id, $this->data['assigned_referral_ids'])) {
                         $referral->status = 'Pending';
@@ -197,9 +202,9 @@ class EstimateRouteController extends BaseController {
                     }
                 }
 
+                // Update current assigned referrals: change status to Assigned
                 foreach ($this->data['assigned_referral_ids'] as $index => $id) {
-                    $referral = ORM::forTable('referrals')
-                        ->findOne($id);
+                    $referral = ORM::forTable('referrals')->findOne($id);
                     $referral->status = 'Assigned';
                     $referral->route_id = $routeId;
                     $referral->route_order = $index;

@@ -30,30 +30,31 @@
                     </li>
                 </ul>
             </div>
+            <div ng-if=":: !hasCap('erpp_hide_estimate_pending_list')">
+                <h5 class="route-box-title">Pending Routes</h5>
 
-            <h5 class="route-box-title">Pending Routes</h5>
-
-            <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
-                Sort by:
-                <select class="sort-by-select"
-                    ng-model="$parent.pending_queue_sort_by"
-                    ng-change="sortPendingQueue()"
-                    ng-options="sort.value as sort.label for sort in ::sortOptions">
-                </select>
-                <ul ui-tree-nodes="" ng-model="pendingReferrals">
-                    <li class="box-assign" ng-repeat="referral in pendingReferrals" ui-tree-node>
-                        <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
-                        <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
-                        <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
-                        <br>
-                        {{:: referral | referralFullAddress }}
-                        <br>
-                        <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                        <span>Date: {{::referral.date_requested}}</span><br>
-                        <span>Estimator: {{::referral.estimator_full_name}}</span><br>
-                        <span>Status: {{referral.status}}</span>
-                    </li>
-                </ul>
+                <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
+                    Sort by:
+                    <select class="sort-by-select"
+                        ng-model="$parent.pending_queue_sort_by"
+                        ng-change="sortPendingQueue()"
+                        ng-options="sort.value as sort.label for sort in ::sortOptions">
+                    </select>
+                    <ul ui-tree-nodes="" ng-model="pendingReferrals">
+                        <li class="box-assign" ng-repeat="referral in pendingReferrals" ui-tree-node>
+                            <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                            <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
+                            <br>
+                            {{:: referral | referralFullAddress }}
+                            <br>
+                            <span>Phone: {{::referral.primary_phone_number}}</span><br>
+                            <span>Date: {{::referral.date_requested}}</span><br>
+                            <span>Estimator: {{::referral.estimator_full_name}}</span><br>
+                            <span>Status: {{referral.status}}</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="col-sm-9">
