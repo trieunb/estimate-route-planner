@@ -10,8 +10,10 @@ class ReferralController extends BaseController {
         $searchQuery = ORM::forTable('referrals')
             ->tableAlias('r')
             ->join('customers', ['r.customer_id', '=', 'c.id'], 'c')
-            ->whereLike('c.display_name', "%$keyword%")
             ->whereIn('r.status', ["Pending", "Assigned"]);
+        if ($keyword) {
+            $searchQuery->whereLike('c.display_name', "%$keyword%");
+        }
         $countQuery = clone($searchQuery);
         $refs = $searchQuery
             ->selectMany(
