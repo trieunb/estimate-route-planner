@@ -96,7 +96,7 @@
                         class="form-control"
                         ng-model="currentReferral.route_id"
                         ng-required="true"
-                        ng-options="route.id as route.title for route in routes">
+                        ng-options="route.id as route.label for route in ::routes">
                       </select>
                     </div>
                   </div>

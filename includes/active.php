@@ -19,7 +19,7 @@ function active_plugin() {
     foreach ($wp_roles->get_names() as $roleName => $label) {
         $role = get_role($roleName);
         if ($role) {
-            foreach ($pluginCaps as $cap) {
+            foreach ($pluginCaps as $cap => $options) {
                 // Skip set erpp_view_sales_estimates for admin role
                 if ($roleName === 'administrator' &&
                     $cap === 'erpp_view_sales_estimates') {
@@ -43,7 +43,7 @@ function deactive_plugin() {
     foreach ($wp_roles->get_names() as $roleName => $label) {
         $role = get_role($roleName);
         if ($role) {
-            foreach ($pluginCaps as $cap) {
+            foreach ($pluginCaps as $cap => $options) {
                 $role->remove_cap($cap);
             }
         }

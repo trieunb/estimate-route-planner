@@ -24,9 +24,15 @@ class EstimateRouteController extends BaseController {
         $this->renderJson($routes);
     }
 
+    /**
+     * Return routes for quick assignement in job request routes
+     */
     public function all() {
-        $routes = ORM::forTable('estimate_routes')
-            ->orderByDesc('created_at')
+        $query = ORM::forTable('estimate_routes')->tableAlias('er');
+        if ($this->currentUserHasCap('erpp_estimator_only_routes')) {
+            $query->where('er.estimator_id', $this->currentUser->id);
+        }
+        $routes = $query->orderByDesc('er.created_at')
             ->limit(self::PAGE_SIZE)
             ->findArray();
         $this->renderJson($routes);
@@ -35,8 +41,18 @@ class EstimateRouteController extends BaseController {
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
-        $routes = ORM::forTable('estimate_routes')
-            ->tableAlias('er')
+
+        $filterQuery = ORM::forTable('estimate_routes')->tableAlias('er');
+        if ($keyword) {
+            $filterQuery->whereLike('er.title', "%$keyword%");
+        }
+
+        if ($this->currentUserHasCap('erpp_estimator_only_routes')) {
+            $filterQuery->where('er.estimator_id', $this->currentUser->id);
+        }
+
+        $countQuery = clone($filterQuery);
+        $routes = $filterQuery
             ->leftOuterJoin('wp_users', ['er.estimator_id', '=', 'wpu.id'], 'wpu')
             ->leftOuterJoin(
                 'wp_usermeta',
@@ -50,15 +66,12 @@ class EstimateRouteController extends BaseController {
             )
             ->select('er.*')
             ->selectExpr("CONCAT_WS(' ',wpum1.meta_value,wpum2.meta_value)", 'estimator_full_name')
-            ->whereLike('er.title', "%$keyword%")
             ->orderByDesc('created_at')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
-        $counter = ORM::forTable('estimate_routes')
-            ->whereLike('title', "%$keyword%")
-            ->selectExpr('COUNT(*)', 'count')
-            ->findMany();
+
+        $counter = $countQuery->selectExpr('COUNT(*)', 'count')->findMany();
         $this->renderJson([
             'routes' => $routes,
             'total' => $counter[0]->count

@@ -33,8 +33,11 @@ function ListJobRequestCtrl(
 
     // Load estimate route for quick assigned
     estimateRouteFactory.all()
-        .success(function(responseData){
-            $scope.routes = responseData;
+        .success(function(responseData) {
+            angular.forEach(responseData, function(route) {
+                route.label = route.title + ' ' + '( ' + route.status + ' )';
+                $scope.routes.push(route);
+            });
         });
 
     // Load employees
