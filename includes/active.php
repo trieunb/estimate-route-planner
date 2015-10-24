@@ -16,13 +16,17 @@ function active_plugin() {
     /* Add all plugin capabilities to all roles */
     global $wp_roles;
     $pluginCaps = erp_get_capabilities();
+    // Skip these caps for admin role
+    $exceptAdminCaps = [
+        'erpp_view_sales_estimates',
+        'erpp_estimator_only_routes',
+        'erpp_hide_estimate_pending_list'
+    ];
     foreach ($wp_roles->get_names() as $roleName => $label) {
         $role = get_role($roleName);
         if ($role) {
             foreach ($pluginCaps as $cap => $options) {
-                // Skip set erpp_view_sales_estimates for admin role
-                if ($roleName === 'administrator' &&
-                    $cap === 'erpp_view_sales_estimates') {
+                if ($roleName === 'administrator' && in_array($cap, $exceptAdminCaps)) {
                     continue;
                 }
                 $role->add_cap($cap);
