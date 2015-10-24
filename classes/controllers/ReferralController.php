@@ -214,6 +214,7 @@ class ReferralController extends BaseController {
         $customerInfo['ship_city']      = @$this->data['city'];
         $customerInfo['ship_state']     = @$this->data['state'];
         $customerInfo['ship_zip_code']  = @$this->data['zip_code'];
+        $customerInfo['ship_country']   = @$this->data['country'];
         $customerInfo['primary_phone_number'] = @$this->data['primary_phone_number'];
         return $customerInfo;
     }

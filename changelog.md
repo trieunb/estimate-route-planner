@@ -1,3 +1,6 @@
+## 1.5.1
+  - Sync customer country
+
 ## 1.5.0
   - Writing customer signature in a modal
   - Job request:
