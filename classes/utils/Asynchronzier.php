@@ -252,7 +252,6 @@ class Asynchronzier
                                 unset($localLines[$index]);
                             }
                         }
-                        // dd($estimateObj->Line);
                         foreach ($estimateObj->Line as $lineObj) {
                             $parsedLine = ERPDataParser::parseEstimateLine($lineObj, $estimateObj->Id);
                             if ($parsedLine) {
@@ -534,7 +533,6 @@ class Asynchronzier
     public function Update($entity)
     {
         $object = new $entity['name']();
-        $object->sparse = true;
         foreach ($entity['attributes'] as $key => $value) {
             if (!is_array($entity['attributes'][$key])) {
                 $object->$key = $value;
@@ -716,11 +714,11 @@ class Asynchronzier
                     [
                         'name' => 'IPPPhysicalAddress',
                         'attributes' => [
-                            'Id' => 12,
-                            // 'Line1' => $localData['bill_address'],
-                            // 'City' => $localData['bill_city'],
-                            // 'CountrySubDivisionCode' => $localData['bill_state'],
-                            // 'PostalCode' => $localData['bill_zip_code']
+                            'Id' => $localData['bill_address_id'],
+                            'Line1' => $localData['bill_address'],
+                            'City' => $localData['bill_city'],
+                            'CountrySubDivisionCode' => $localData['bill_state'],
+                            'PostalCode' => $localData['bill_zip_code']
                         ],
                     ],
                 ],
