@@ -32,13 +32,6 @@ function EditJobRequestCtrl(
     $scope.employees = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
-    $scope.employeesSelectConfig = {
-        valueField: 'id',
-        labelField: 'name',
-        searchField: 'name',
-        maxItems: 1
-    };
-
     var init = function() {
         jobRequestFactory.show($routeParams.id)
             .success(function(response) {

@@ -54,6 +54,13 @@ function EditEstimateCtrl(
         maxItems: 1
     };
 
+    $scope.productServicesSelectConfig = {
+        valueField: 'id',
+        labelField: 'name',
+        searchField: 'name',
+        maxItems: 1
+    };
+
     // Load employees
     erpLocalStorage.getEmployees()
         .then(function(data) {

@@ -34,13 +34,6 @@ function AddJobRequestCtrl(
         status: 'Pending'
     };
 
-    $scope.employeesSelectConfig = {
-        valueField: 'id',
-        labelField: 'name',
-        searchField: 'name',
-        maxItems: 1
-    };
-    
     // Load customers list
     erpLocalStorage.getCustomers()
         .then(function(data) {
