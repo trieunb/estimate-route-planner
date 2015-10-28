@@ -219,6 +219,7 @@ class Asynchronzier
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $estimateObj) {
+                    if ($estimateObj->Id == '29791') { continue; }
                     $estRecord = ORM::forTable('estimates')->create();
                     $localEstimateData = null;
                     ++$createCount;

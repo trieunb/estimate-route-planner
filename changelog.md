@@ -1,5 +1,9 @@
+## 1.5.2
+  - Add auto suggestion to employees and services select boxes
+  - Estimate not required product/service, qty, amount or total
+  - Allow a blank service line to be between services.
 ## 1.5.1
-  - Sync customer country
+  - Fix sync customer country
 
 ## 1.5.0
   - Writing customer signature in a modal
@@ -25,7 +29,6 @@
     - `erpp_estimator_only_routes`: that only shows Estimate Routes that assigned to estimator
     - `erpp_hide_estimate_pending_list`: hides the Estimate Route pending list so the person can't assign requests to themselves.
   - Worker order: Hide product code from lines, only show Qty and Description.
-
 ## Questions:
   - Crew route does not have "Estimator Assigned" like Estimate route?
 
