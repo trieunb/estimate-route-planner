@@ -385,7 +385,7 @@
                             <select
                                 ng-model="line.product_service_id"
                                 ng-change="changeLineProductService(line)"
-                                ng-options="ps.id as ps.name for ps in productServices">
+                                ng-options="ps.id as ps.name for ps in ::productServices">
                             </select>
                         </td>
                         <td><input type="text" ng-model="line.description"/></td>
