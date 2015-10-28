@@ -34,19 +34,20 @@ if (ERPConfig::isOAuthTokenValid()) {
 
             $syncHistory->end_at = date('Y-m-d H:i:s');
             $syncHistory->status = 'Success';
-            $syncHistory->save();
-
             $prefs->last_sync_at = $now;
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             $loger->log("Sync job error: " . $e->getMessage());
             $loger->log($e->getTraceAsString());
             $syncHistory->end_at = date('Y-m-d H:i:s');
             $syncHistory->status = 'Error';
             $syncHistory->note = $e->getMessage();
-            $syncHistory->save();
         } finally {
+            if (ORM::getDB()->inTransaction()) {
+                ORM::getDB()->rollBack();
+            }
             $prefs->is_synchronizing = false;
             $prefs->save();
+            $syncHistory->save();
         }
     } else {
         $loger->log("Cancelled! Another instance is running");

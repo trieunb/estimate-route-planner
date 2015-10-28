@@ -12,11 +12,11 @@
 $sdkDir = __DIR__ . DIRECTORY_SEPARATOR;
 
 if (!defined('PATH_SDK_ROOT'))
-	define('PATH_SDK_ROOT', $sdkDir);
+    define('PATH_SDK_ROOT', $sdkDir);
 
 // Specify POPO class path; typically a direct child of the SDK path
 if (!defined('POPO_CLASS_PATH'))
-	define('POPO_CLASS_PATH', $sdkDir . 'Data' . DIRECTORY_SEPARATOR);
+    define('POPO_CLASS_PATH', $sdkDir . 'Data' . DIRECTORY_SEPARATOR);
 
 // Include XSD2PHP dependencies for marshalling and unmarshalling
 use com\mikebevz\xsd2php;
@@ -35,11 +35,12 @@ if (!defined('POPO_CLASS_PATH_REST')) {
 
 // Specify the prefix pre-pended to POPO class names.  If you modify this value, you
 // also need to rebuild the POPO classes, with the same prefix
-if (!defined('PHP_CLASS_PREFIX'))
-	define('PHP_CLASS_PREFIX',    'IPP');
+if (!defined('PHP_CLASS_PREFIX')) {
+    define('PHP_CLASS_PREFIX', 'IPP');
+}
 
 //TODO: It will be fixed in scope of SDK-229
-//It is specified and included manually to avoid double inclusion and ambiguous state 
+//It is specified and included manually to avoid double inclusion and ambiguous state
 require_once POPO_CLASS_PATH_REST  . PHP_CLASS_PREFIX .'TaxRateDetails.php';
 require_once POPO_CLASS_PATH_REST  . PHP_CLASS_PREFIX .'TaxService.php';
 require_once POPO_CLASS_PATH_REST  . PHP_CLASS_PREFIX .'Fault.php';
@@ -47,9 +48,11 @@ require_once POPO_CLASS_PATH_REST  . PHP_CLASS_PREFIX .'Fault.php';
 class QuickbooksAPIException extends Exception {
 
     protected $statusCode;
+    protected $responseBody;
 
-    public function __construct($statusCode) {
+    public function __construct($statusCode, $responseBody = null) {
         $this->statusCode = $statusCode;
+        $this->responseBody = $responseBody;
         $message = 'Quickbooks Online API Error: ';
         switch ($statusCode) {
             case '401':
@@ -79,5 +82,9 @@ class QuickbooksAPIException extends Exception {
 
     public function getStatusCode() {
         return $this->statusCode;
+    }
+
+    public function getResponseBody() {
+        return $this->responseBody;
     }
 }

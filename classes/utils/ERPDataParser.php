@@ -91,6 +91,10 @@ final class ERPDataParser {
         $billAddress = $entity->BillAddr;
         $bill_address_id
             = $bill_address
+            = $bill_line_2
+            = $bill_line_3
+            = $bill_line_4
+            = $bill_line_5
             = $bill_city
             = $bill_state
             = $bill_zip_code
@@ -99,6 +103,10 @@ final class ERPDataParser {
         if (null != $billAddress) {
             $bill_address_id = $billAddress->Id;
             $bill_address = $billAddress->Line1;
+            $bill_line_2 = $billAddress->Line2;
+            $bill_line_3 = $billAddress->Line3;
+            $bill_line_4 = $billAddress->Line4;
+            $bill_line_5 = $billAddress->Line5;
             $bill_city = $billAddress->City;
             $bill_state = $billAddress->CountrySubDivisionCode;
             $bill_zip_code = $billAddress->PostalCode;
@@ -108,6 +116,10 @@ final class ERPDataParser {
         $shipAddr = $entity->ShipAddr;
         $shipAddressId
             = $shipAddress
+            = $ship_line_2
+            = $ship_line_3
+            = $ship_line_4
+            = $ship_line_5
             = $shipCity
             = $shipState
             = $shipZipCode
@@ -116,6 +128,10 @@ final class ERPDataParser {
         if (null != $shipAddr) {
             $shipAddressId = $shipAddr->Id;
             $shipAddress = $shipAddr->Line1;
+            $ship_line_2 = $shipAddr->Line2;
+            $ship_line_3 = $shipAddr->Line3;
+            $ship_line_4 = $shipAddr->Line4;
+            $ship_line_5 = $shipAddr->Line5;
             $shipCity = $shipAddr->City;
             $shipState = $shipAddr->CountrySubDivisionCode;
             $shipZipCode = $shipAddr->PostalCode;
@@ -172,6 +188,10 @@ final class ERPDataParser {
 
             'bill_address_id'   => $bill_address_id,
             'bill_address'      => $bill_address,
+            'bill_line_2'       => $bill_line_2,
+            'bill_line_3'       => $bill_line_3,
+            'bill_line_4'       => $bill_line_4,
+            'bill_line_5'       => $bill_line_5,
             'bill_city'         => $bill_city,
             'bill_state'        => $bill_state,
             'bill_zip_code'     => $bill_zip_code,
@@ -179,6 +199,10 @@ final class ERPDataParser {
 
             'ship_address_id'   => $shipAddressId,
             'ship_address'      => $shipAddress,
+            'ship_line_2'       => $ship_line_2,
+            'ship_line_3'       => $ship_line_3,
+            'ship_line_4'       => $ship_line_4,
+            'ship_line_5'       => $ship_line_5,
             'ship_city'         => $shipCity,
             'ship_state'        => $shipState,
             'ship_zip_code'     => $shipZipCode,
@@ -254,31 +278,51 @@ final class ERPDataParser {
         $billAddress = $data->BillAddr;
         $bill_address_id
             = $bill_address
+            = $bill_line_2
+            = $bill_line_3
+            = $bill_line_4
+            = $bill_line_5
             = $bill_city
             = $bill_state
             = $bill_zip_code
+            = $bill_country
             = null;
         if (null != $billAddress) {
             $bill_address_id = $billAddress->Id;
             $bill_address = $billAddress->Line1;
+            $bill_line_2 = $billAddress->Line2;
+            $bill_line_3 = $billAddress->Line3;
+            $bill_line_4 = $billAddress->Line4;
+            $bill_line_5 = $billAddress->Line5;
             $bill_city = $billAddress->City;
             $bill_state = $billAddress->CountrySubDivisionCode;
             $bill_zip_code = $billAddress->PostalCode;
+            $bill_country = $billAddress->Country;
         }
 
         $shipAddress = $data->ShipAddr;
         $job_address_id
             = $job_address
+            = $job_line_2
+            = $job_line_3
+            = $job_line_4
+            = $job_line_5
             = $job_city
             = $job_state
             = $job_zip_code
+            = $job_country
             = null;
         if (null != $shipAddress) {
             $job_address_id = $shipAddress->Id;
             $job_address = $shipAddress->Line1;
+            $job_line_2  = $shipAddress->Line2;
+            $job_line_3  = $shipAddress->Line3;
+            $job_line_4  = $shipAddress->Line4;
+            $job_line_5  = $shipAddress->Line5;
             $job_city = $shipAddress->City;
             $job_state = $shipAddress->CountrySubDivisionCode;
             $job_zip_code = $shipAddress->PostalCode;
+            $job_country = $shipAddress->Country;
         }
 
         $email = null;
@@ -310,7 +354,7 @@ final class ERPDataParser {
                     }
                 }
             }
-        } catch(Exception $e) {}
+        } catch(\Exception $e) {}
         return [
             'id' => $data->Id,
             'customer_id' => $data->CustomerRef,
@@ -324,10 +368,14 @@ final class ERPDataParser {
 
             'bill_address_id' => $bill_address_id,
             'bill_address' => $bill_address,
+            'bill_line_2' => $bill_line_2,
+            'bill_line_3' => $bill_line_3,
+            'bill_line_4' => $bill_line_4,
+            'bill_line_5' => $bill_line_5,
             'bill_city' => $bill_city,
             'bill_state' => $bill_state,
             'bill_zip_code' => $bill_zip_code,
-            'bill_country' => $data_local['bill_country'],
+            'bill_country' => $bill_country,
 
             'status' => $status,
             'created_at' => $created_at,
@@ -346,10 +394,14 @@ final class ERPDataParser {
             'job_customer_id'   => $job_customer_id,
             'job_address_id'    => $job_address_id,
             'job_address'       => $job_address,
+            'job_line_2'        => $job_line_2,
+            'job_line_3'        => $job_line_3,
+            'job_line_4'        => $job_line_4,
+            'job_line_5'        => $job_line_5,
             'job_city'          => $job_city,
             'job_state'         => $job_state,
             'job_zip_code'      => $job_zip_code,
-            'job_country'       => $data_local['job_country'],
+            'job_country'       => $job_country,
 
             'job_lat' => $data_local['job_lat'],
             'job_lng' => $data_local['job_lng'],
