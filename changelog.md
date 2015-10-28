@@ -1,7 +1,9 @@
 ## 1.5.2
-  - Add auto suggestion to employees and services select boxes
   - Estimate not required product/service, qty, amount or total
   - Allow a blank service line to be between services.
+  - Add sync line2, line3, .. line5 for addresses.
+  - Some change to protect plugin settings from non-admin users
+
 ## 1.5.1
   - Fix sync customer country
 

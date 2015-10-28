@@ -33,7 +33,6 @@ LOCK TABLES `company_info` WRITE;
 INSERT INTO `company_info` VALUES (1,'Your Company Name','Company business address','Company mailing address','(123) 456-7890','123-456-789','company-name@example.com','http://example.com','Thank you for your business and have a great day!',NULL);
 /*!40000 ALTER TABLE `company_info` ENABLE KEYS */;
 UNLOCK TABLES;
-
 --
 -- Table structure for table `customers`
 --
@@ -59,12 +58,19 @@ CREATE TABLE `customers` (
   `company_name` varchar(100) DEFAULT NULL,
   `bill_address_id` int(11) DEFAULT NULL,
   `bill_address` text,
+  `bill_line_3` varchar(255) DEFAULT NULL,
+  `bill_line_4` varchar(255) DEFAULT NULL,
+  `bill_line_5` varchar(255) DEFAULT NULL,
   `bill_city` varchar(255) DEFAULT NULL COMMENT 'Print on check name',
   `bill_state` varchar(255) DEFAULT NULL,
   `bill_zip_code` varchar(255) DEFAULT NULL,
   `bill_country` varchar(255) DEFAULT NULL,
   `ship_address_id` int(11) DEFAULT NULL,
   `ship_address` text,
+  `ship_line_2` varchar(255) DEFAULT NULL,
+  `ship_line_3` varchar(255) DEFAULT NULL,
+  `ship_line_4` varchar(255) DEFAULT NULL,
+  `ship_line_5` varchar(255) DEFAULT NULL,
   `ship_city` varchar(255) DEFAULT NULL,
   `ship_state` varchar(255) DEFAULT NULL,
   `ship_zip_code` varchar(255) DEFAULT NULL,
@@ -72,10 +78,9 @@ CREATE TABLE `customers` (
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` datetime NOT NULL,
   `last_updated_at` datetime NOT NULL COMMENT 'useful for synchronize',
+  `bill_line_2` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `estimates`
 --
@@ -100,6 +105,10 @@ CREATE TABLE `estimates` (
   `job_customer_id` bigint(20) DEFAULT NULL,
   `job_address_id` int(11) DEFAULT NULL,
   `job_address` text COMMENT 'worker',
+  `job_line_2` varchar(255) DEFAULT NULL,
+  `job_line_3` varchar(255) DEFAULT NULL,
+  `job_line_4` varchar(255) DEFAULT NULL,
+  `job_line_5` varchar(255) DEFAULT NULL,
   `job_city` varchar(255) DEFAULT NULL,
   `job_state` varchar(255) DEFAULT NULL,
   `job_zip_code` varchar(255) DEFAULT NULL,
@@ -111,6 +120,10 @@ CREATE TABLE `estimates` (
   `email` varchar(255) DEFAULT NULL,
   `bill_address_id` int(11) DEFAULT NULL,
   `bill_address` text,
+  `bill_line_2` varchar(255) DEFAULT NULL,
+  `bill_line_3` varchar(255) DEFAULT NULL,
+  `bill_line_4` varchar(255) DEFAULT NULL,
+  `bill_line_5` varchar(255) DEFAULT NULL,
   `bill_city` varchar(255) DEFAULT NULL,
   `bill_state` varchar(255) DEFAULT NULL,
   `bill_zip_code` varchar(255) DEFAULT NULL,
@@ -122,8 +135,6 @@ CREATE TABLE `estimates` (
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `estimate_attachments`
 --
@@ -143,8 +154,6 @@ CREATE TABLE `estimate_attachments` (
   `is_customer_signature` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `referrals`
 --
@@ -173,8 +182,6 @@ CREATE TABLE `referrals` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `products_and_services`
 --
@@ -192,8 +199,6 @@ CREATE TABLE `products_and_services` (
   `last_updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `crew_routes`
 --
@@ -206,8 +211,6 @@ CREATE TABLE `crew_routes` (
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `estimate_routes`
 --
@@ -221,8 +224,6 @@ CREATE TABLE `estimate_routes` (
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `preferences`
 --
@@ -244,9 +245,7 @@ CREATE TABLE `preferences` (
   `gmail_server` varchar(255) DEFAULT NULL,
   `gmail_port` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-
-
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 --
 -- Table structure for table `employees`
 --
@@ -274,8 +273,6 @@ CREATE TABLE `employees` (
   `last_updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 --
 -- Table structure for table `estimate_lines`
 --
@@ -283,17 +280,15 @@ CREATE TABLE `employees` (
 DROP TABLE IF EXISTS `estimate_lines`;
 CREATE TABLE `estimate_lines` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `line_id` bigint(20) DEFAULT '0',
-  `line_num` bigint(20) DEFAULT '0',
+  `line_id` bigint(20) NOT NULL DEFAULT '0',
+  `line_num` bigint(20) NOT NULL DEFAULT '0',
   `estimate_id` bigint(20) NOT NULL,
   `product_service_id` bigint(20) DEFAULT NULL,
-  `qty` int(11) NOT NULL DEFAULT '0',
-  `rate` float NOT NULL DEFAULT '0' COMMENT 'UnitPrice on QB',
+  `qty` int(11) DEFAULT '0',
+  `rate` float DEFAULT '0' COMMENT 'UnitPrice on QB',
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2787 DEFAULT CHARSET=utf8;
-
-
+) ENGINE=InnoDB AUTO_INCREMENT=5596 DEFAULT CHARSET=utf8;
 --
 -- Table structure for table `sync_histories`
 --
@@ -307,8 +302,7 @@ CREATE TABLE `sync_histories` (
   `note` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
-
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
