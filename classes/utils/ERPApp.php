@@ -12,7 +12,7 @@ class ERPApp {
     /* @var boolean */
     private $logging;
 
-    private $hiddenParams = ['password', 'customer_signature_encoded'];
+    private $hiddenParams = ['password', 'customer_signature_encoded', 'gmail_password'];
 
     public function __construct() {
         $this->routes = include_once ERP_ROOT_DIR . '/config/routes.php';

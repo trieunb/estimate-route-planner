@@ -14,6 +14,15 @@ class BaseController {
     /* @var array */
     protected $headers;
 
+    /**
+     * @var array
+     * Mapping between required role for the action
+     * Example:
+     *   'setting' =>  'administrator'
+     * TODO: not implemented yet :)
+     */
+    protected $roleRestrict = [];
+
     public function __construct($data, ERPLogger $logger) {
         $this->data = $data;
         $this->logger = $logger;

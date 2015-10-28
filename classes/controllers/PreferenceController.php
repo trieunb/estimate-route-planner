@@ -2,38 +2,46 @@
 class PreferenceController extends BaseController {
 
     public function updateSetting() {
-        $preferenceModel = new PreferenceModel;
-        $prefs = $preferenceModel->first();
-        if ($prefs) {
-            $success = $preferenceModel->update($this->data, []);
+        if ($this->currentUserHasCap('erpp_settings')) {
+            $preferenceModel = new PreferenceModel;
+            $prefs = $preferenceModel->first();
+            if ($prefs) {
+                $success = $preferenceModel->update($this->data, []);
+            } else {
+                $success = $preferenceModel->insert($this->data);
+            }
+            if ($success) {
+                $this->renderJson([
+                    'success' => true,
+                    'message' => 'Settings updated successfully'
+                ]);
+            } else {
+                $this->renderJson([
+                    'success' => false,
+                    'message' => 'Failed to update settings'
+                ]);
+            }
         } else {
-            $success = $preferenceModel->insert($this->data);
-        }
-        if ($success) {
-            $this->renderJson([
-                'success' => true,
-                'message' => 'Settings updated successfully'
-            ]);
-        } else {
-            $this->renderJson([
-                'success' => false,
-                'message' => 'Failed to update settings'
-            ]);
+            $this->render404();
         }
     }
 
     public function getSetting() {
-        $prefs = ORM::forTable('preferences')->findOne();
-        if ($prefs) {
-            $settings = [];
-            $settings['gmap_api_key'] = $prefs->gmap_api_key;
-            $settings['gmail_username'] = $prefs->gmail_username;
-            $settings['gmail_password'] = $prefs->gmail_password;
-            $settings['gmail_server'] = $prefs->gmail_server;
-            $settings['gmail_port'] = $prefs->gmail_port;
-            $this->renderJson($settings);
+        if ($this->currentUserHasCap('erpp_settings')) {
+            $prefs = ORM::forTable('preferences')->findOne();
+            if ($prefs) {
+                $settings = [];
+                $settings['gmap_api_key'] = $prefs->gmap_api_key;
+                $settings['gmail_username'] = $prefs->gmail_username;
+                $settings['gmail_password'] = $prefs->gmail_password;
+                $settings['gmail_server'] = $prefs->gmail_server;
+                $settings['gmail_port'] = $prefs->gmail_port;
+                $this->renderJson($settings);
+            } else {
+                $this->renderJson(json_decode("{}"));
+            }
         } else {
-            $this->renderJson(json_decode("{}"));
+            $this->render404();
         }
     }
 
