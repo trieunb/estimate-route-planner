@@ -100,9 +100,9 @@ function AddEstimateCtrl(
         $scope.estimate.lines.push({
             product_service_id: null,
             line_id: null,
-            qty: 0,
-            rate: 0,
-            total: 0
+            qty: null,
+            rate: null,
+            total: null
         });
         $scope.updateTotal();
     };
@@ -192,9 +192,11 @@ function AddEstimateCtrl(
                 if (line.rate) {
                     rate = parseFloat(line.rate);
                 }
-                var lineTotal = rate * qty;
-                total += lineTotal;
-                line.total = lineTotal;
+                if (line.product_service_id) {
+                    var lineTotal = rate * qty;
+                    line.total = lineTotal;
+                    total += lineTotal;
+                }
             });
         }
         $scope.estimate.total = parseFloat(total.toFixed(2));
@@ -202,13 +204,7 @@ function AddEstimateCtrl(
 
     // Check empty lines
     var isEmptyLines = function() {
-        var isEmpty = true;
-        angular.forEach($scope.estimate.lines, function(line) {
-            if (line.product_service_id && line.rate && line.qty) {
-                isEmpty = false;
-            }
-        });
-        return isEmpty;
+        return $scope.estimate.lines.length === 0;
     };
 
     $scope.submitForm = function() {

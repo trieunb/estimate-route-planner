@@ -747,26 +747,31 @@ class Asynchronzier
         ];
 
         $value['attributes']['Line'] = [];
-        foreach ($localData['lines'] as $line) {
+        foreach ($localData['lines'] as $index => $line) {
             $value_line = [
                 'name' => 'IPPLine',
                 'attributes' => [
                     'Id' => $line['line_id'],
-                    'Description' => $line['description'],
-                    'DetailType' => 'SalesItemLineDetail',
-                    'Amount' => (float) $line['qty'] * (float) $line['rate'],
-                    'SalesItemLineDetail' => [
-                        [
-                            'name' => 'IPPSalesItemLineDetail',
-                            'attributes' => [
-                                'ItemRef' => $line['product_service_id'],
-                                'Qty' => $line['qty'],
-                                'UnitPrice' => $line['rate'],
-                            ],
-                        ],
-                    ],
+                    'LineNum' => $index,
+                    'Description' => $line['description']
                 ],
             ];
+            if ($line['product_service_id']) {
+                $value_line['attributes']['DetailType'] = 'SalesItemLineDetail';
+                $value_line['attributes']['Amount'] = (float) $line['qty'] * (float) $line['rate'];
+                $value_line['attributes']['SalesItemLineDetail'] = [
+                    [
+                        'name' => 'IPPSalesItemLineDetail',
+                        'attributes' => [
+                            'ItemRef' => $line['product_service_id'],
+                            'Qty' => $line['qty'],
+                            'UnitPrice' => $line['rate'],
+                        ],
+                    ]
+                ];
+            } else { // Consider lines without product service are DescriptionOnly
+                $value_line['attributes']['DetailType'] = 'DescriptionOnly';
+            }
             array_push($value['attributes']['Line'], $value_line);
         }
         if (isset($localData['id'])) {

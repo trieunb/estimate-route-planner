@@ -53,15 +53,27 @@ final class ERPDataParser {
     }
 
     public function parseEstimateLine($entity, $estimateId) {
-        if (null != $entity->SalesItemLineDetail) {
-            $qty = $rate = 0;
-            if ($entity->SalesItemLineDetail->Qty) {
-                $qty = $entity->SalesItemLineDetail->Qty;
+        if ($entity->Id) {
+            $qty = $rate = $product_service_id = null;
+            switch ($entity->DetailType) {
+                case 'SalesItemLineDetail':
+                    $saleItem = $entity->SalesItemLineDetail;
+                    if ($saleItem->Qty) {
+                        $qty = $saleItem->Qty;
+                    }
+                    if ($saleItem->UnitPrice) {
+                        $rate = $saleItem->UnitPrice;
+                    }
+                    $product_service_id = $saleItem->ItemRef;
+                    break;
+                case 'DescriptionOnly':
+                    break;
+                case 'DiscountLineDetail':
+                    break;
+                case 'SubTotalLineDetail':
+                    break;
             }
-            if ($entity->SalesItemLineDetail->UnitPrice) {
-                $rate = $entity->SalesItemLineDetail->UnitPrice;
-            }
-            $product_service_id = $entity->SalesItemLineDetail->ItemRef;
+
             return [
                 'line_id'       => $entity->Id,
                 'line_num'      => $entity->LineNum,
@@ -71,8 +83,6 @@ final class ERPDataParser {
                 'rate'          => $rate,
                 'description'   => $entity->Description,
             ];
-        } else {
-            return;
         }
     }
 

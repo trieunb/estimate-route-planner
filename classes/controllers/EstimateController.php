@@ -163,17 +163,11 @@ class EstimateController extends BaseController {
         foreach ($result->Line as $line) {
             $result_line = ERPDataParser::parseEstimateLine($line, $parsedEstimateData['id']);
             if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
-                $estimate_line = $estimateLineModel->findBy([
-                    'line_id' => $result_line['line_id'],
-                    'estimate_id' => $result_line['estimate_id']
-                ]);
-                if ($estimate_line == null) {
-                    $estimateLineModel->insert($result_line);
-                }
+                $localLine = ORM::forTable('estimate_lines')->create($result_line);
+                $localLine->save();
             }
         }
         // Save estimate to local DB
-        unset($parsedEstimateData['line']);
         $estimate = ORM::forTable('estimates')->create();
         $estimate->set($parsedEstimateData);
         if ($estimate->save()) {
@@ -310,34 +304,29 @@ class EstimateController extends BaseController {
         }
         $parsedEstimateData = ERPDataParser::parseEstimate($result, $updateData);
         // Start sync lines
-        $estimateLineModel = new EstimateLineModel();
-        $newEstimateLines = [];
+        $currentLineIds = [];
         foreach ($result->Line as $line) {
-            $result_line = ERPDataParser::parseEstimateLine($line, $id);
-            if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
-                $lineInfo = [
-                    'line_id' => $result_line['line_id'],
-                    'estimate_id' => $result_line['estimate_id']
-                ];
-                array_push($newEstimateLines, $lineInfo);
-                $estimate_line = $estimateLineModel->findBy($lineInfo);
-                if ($estimate_line == null) {
-                    $estimateLineModel->insert($result_line);
+            $parsedLine = ERPDataParser::parseEstimateLine($line, $id);
+            if (($parsedLine['line_id'] != null) &&
+                ($parsedLine['estimate_id'] != null)) {
+
+                $currentLineIds[] = $parsedLine['line_id'];
+                $localLine = ORM::forTable('estimate_lines')
+                    ->where('estimate_id', $id)
+                    ->where('line_id', $parsedLine['line_id'])
+                    ->findOne();
+                if ($localLine) {
+                    $localLine->set($parsedLine);
                 } else {
-                    $estimateLineModel->update($result_line, $lineInfo);
+                    $localLine = ORM::forTable('estimate_lines')->create($parsedLine);
                 }
+                $localLine->save();
             }
         }
-        $oldEstimateLine = $estimateLineModel->getAllWithColumns(
-            ['line_id', 'estimate_id'], ['estimate_id' => $id]
-        );
-        $data_delete = $sync->mergeData($newEstimateLines, $oldEstimateLine);
-        foreach ($data_delete as $item_line_delete) {
-            $estimateLineModel->delete([
-              'line_id' => $item_line_delete['line_id'],
-              'estimate_id' => $item_line_delete['estimate_id']
-            ]);
-        }
+        ORM::forTable('estimate_lines')
+            ->where('estimate_id', $id)
+            ->whereNotIn('line_id', $currentLineIds)
+            ->deleteMany();
         // End sync lines
 
         unset($parsedEstimateData['line']);
