@@ -41,7 +41,7 @@
                     <div class="col-sm-7">
                         <input class="form-control" type="text" close-text="Close"
                             ng-required="true" ng-init="openDatetxnPicker = false"
-                            is-open="openDatetxnPicker" datepicker-popup
+                            is-open="openDatetxnPicker" uib-datepicker-popup
                             ng-click="openDatetxnPicker = !openDatetxnPicker"
                             placeholder="yyyy-mm-dd" name="txn_date"
                             ng-model="estimate.txn_date" >
@@ -59,7 +59,7 @@
                         Exp Date<span>(*)</span></label>
                     <div class="col-sm-7">
                         <input class="form-control" type="text" name="expiration_date"
-                            datepicker-popup ng-init="openExpDatePicker = false"
+                            uib-datepicker-popup ng-init="openExpDatePicker = false"
                             is-open="openExpDatePicker"
                             ng-click="openExpDatePicker = !openExpDatePicker"
                             placeholder="yyyy-mm-dd" ng-required="true"
@@ -431,7 +431,7 @@
                     Date of Signature</label>
                 <div class="col-md-3">
                     <input class="form-control" type="text" name="date_of_signature"
-                        datepicker-popup ng-init="openDateSignaturePicker = false"
+                        uib-datepicker-popup ng-init="openDateSignaturePicker = false"
                         is-open="openDateSignaturePicker"
                         ng-model="estimate.date_of_signature"
                         ng-click="openDateSignaturePicker = !openDateSignaturePicker"

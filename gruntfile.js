@@ -22,7 +22,7 @@ module.exports = function (grunt) {
                         'js/lib/ng-sortable.js',
                         'js/lib/angular-google-maps.js',
                         'js/lib/angular-google-maps_dev_mapped.js',
-                        'js/lib/ui-bootstrap-tpls-0.13.3.js',
+                        'js/lib/ui-bootstrap-tpls-0.14.3.js',
                         'js/lib/angular-messages.js',
                         'js/lib/ngBootbox.js',
                         'js/lib/angular-dropzone.js',

@@ -3,7 +3,7 @@ angular
     .directive('erpPagination',function() {
         return {
             template:
-                '<pagination ng-show="total"' +
+                '<uib-pagination ng-show="total"' +
                 'rotate="true"' +
                 'boundary-links="true"' +
                 'max-size="10" class="pagination-md"' +
@@ -11,6 +11,6 @@ angular
                 'items-per-page="30"' +
                 'ng-model="currentPage"' +
                 'ng-change="pageChanged()">' +
-                '</pagination>'
+                '</uib-pagination>'
             };
         });

@@ -25,7 +25,7 @@ function erp_enqueue_scripts() {
                 'angular-bootbox'       => 'js/lib/ngBootbox.js',
                 'angular-dropzone'      => 'js/lib/angular-dropzone.js',
                 'angular-messages'      => 'js/lib/angular-messages.js',
-                'angular-ui-bootstrap'  => 'js/lib/ui-bootstrap-tpls-0.13.3.js',
+                'angular-ui-bootstrap'  => 'js/lib/ui-bootstrap-tpls-0.14.3.js',
                 'angular-timeago'       => 'js/lib/angular-timeago.js',
                 'angular-ui-tree'       => 'js/lib/angular-ui-tree.js',
             ];
