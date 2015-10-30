@@ -46,16 +46,23 @@ function AddEstimateCtrl(
     $scope.isShowModalSignature = false;
 
     erpLocalStorage.getProductServices()
-      .then(function(data) {
-        angular.forEach(data, function(service) {
-          if (service.active == 1) {
-            $scope.productServices.push(service);
-          }
+        .then(function(data) {
+            angular.forEach(data, function(service) {
+                if (service.active == 1) {
+                    $scope.productServices.push(service);
+                }
+            });
         });
-      });
 
     $scope.soldBySelectConfig = {
         valueField: 'name',
+        labelField: 'name',
+        searchField: 'name',
+        maxItems: 1
+    };
+
+    $scope.productServicesSelectConfig = {
+        valueField: 'id',
         labelField: 'name',
         searchField: 'name',
         maxItems: 1

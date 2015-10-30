@@ -383,11 +383,12 @@
                         <td ng-if="::hasCap('erpp_view_estimate_total')"><span class="glyphicon glyphicon-th" data-as-sortable-item-handle></span></td>
                         <td><span ng-bind="$index + 1"></span></td>
                         <td>
-                            <select ng-disabled="::!hasCap('erpp_view_estimate_total')"
+                            <selectize
                                 ng-model="line.product_service_id"
                                 ng-change="changeLineProductService(line)"
-                                ng-options="ps.id as ps.name for ps in ::productServices">
-                            </select>
+                                config="productServicesSelectConfig"
+                                options="productServices">
+                            </selectize>
                         </td>
                         <td><input type="text" ng-model="line.description" ng-readonly="::!hasCap('erpp_view_estimate_total')"/></td>
                         <td>

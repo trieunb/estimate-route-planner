@@ -61,6 +61,15 @@ function EditEstimateCtrl(
         maxItems: 1
     };
 
+    erpLocalStorage.getProductServices()
+        .then(function(data) {
+            angular.forEach(data, function(service) {
+                if (service.active == 1) {
+                    $scope.productServices.push(service);
+                }
+            });
+        });
+
     // Load employees
     erpLocalStorage.getEmployees()
         .then(function(data) {
@@ -102,7 +111,9 @@ function EditEstimateCtrl(
                     lineProductServiceIds.push(line.product_service_id);
                 }
             });
+
             // Product and services list
+
             erpLocalStorage.getProductServices()
                 .then(function(data) {
                     angular.forEach(data, function(pd) {
