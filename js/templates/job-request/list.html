@@ -9,8 +9,7 @@
         <div class="col-md-8 col-xs-12">
             <form name="searchReferralForm" ng-submit="searchReferral()">
                 <div class="col-md-9 n-p">
-                    <input class="form-control" name="search"
-                        ng-model="filter.keyword" placeholder="Search by customer name">
+                    <customer-typeahead on-select="onSelectCustomer(item)" ng-model="filter.keyword" placeholder="Search by customer name"></customer-typeahead>
                 </div>
                 <div class="col-md-3 text-right n-p">
                     <button class="btn btn-info" name="search" type="submit">Search</button>

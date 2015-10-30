@@ -8,8 +8,7 @@
             ng-submit="searchEstimate()">
                 <div class="col-md-5 col-sm-4 n-p">
                     <div class="col-sm-12">
-                        <input class="form-control" name="search" ng-model="filter.keyword"
-                            placeholder="Search by customer name, number ... ">
+                        <customer-typeahead on-select="onSelectCustomer(item)" ng-model="filter.keyword" placeholder="Search by customer name, number ... "></customer-typeahead>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 n-p">

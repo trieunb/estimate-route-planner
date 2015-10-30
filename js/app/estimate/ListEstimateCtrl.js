@@ -9,6 +9,7 @@ angular
             '$location',
             'estimateFactory',
             'sharedData',
+            'erpLocalStorage',
             ListEstimateCtrl
         ]
     );
@@ -19,7 +20,9 @@ function ListEstimateCtrl(
         $routeParams,
         $location,
         estimateFactory,
-        sharedData) {
+        sharedData,
+        erpLocalStorage) {
+
     $scope.setPageTitle('Estimates List');
     $scope.estimates = {};
     $scope.selectedStatus = '';
@@ -35,6 +38,8 @@ function ListEstimateCtrl(
         currentPage = $routeParams.pageNumber;
     }
     $scope.currentPage = currentPage;
+    $scope.customers = [];
+
     var paginate = function() {
         var query = {
             _do: 'getEstimates',
@@ -56,6 +61,11 @@ function ListEstimateCtrl(
         // Reset page to 1
         $scope.currentPage = 1;
         paginate();
+    };
+
+    $scope.onSelectCustomer = function(customer) {
+        $scope.filter.keyword = customer.display_name;
+        $scope.searchEstimate();
     };
 
     $scope.searchEstimate = function() {

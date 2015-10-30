@@ -64,6 +64,11 @@ function ListJobRequestCtrl(
         paginate();
     };
 
+    $scope.onSelectCustomer = function(customer) {
+        $scope.filter.keyword = customer.display_name;
+        $scope.searchReferral();
+    };
+
     $scope.searchReferral = function() {
         $scope.currentPage = 1;
         paginate();

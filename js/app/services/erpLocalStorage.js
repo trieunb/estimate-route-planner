@@ -18,6 +18,7 @@ function erpLocalStorage(
     customerFactory,
     productServiceFactory) {
 
+    var _this = this;
     // Cache timestamp
     var cacheTs = null;
 
