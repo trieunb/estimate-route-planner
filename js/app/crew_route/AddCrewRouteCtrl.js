@@ -49,6 +49,7 @@ function AddCrewRouteCtrl(
     $scope.routeOrigin = null;
     $scope.routeOriginAddress = sharedData.companyInfo.full_address;
     $scope.sortOptions = erpOptions.sortCrewRoute;
+    $scope.routeStatuses = erpOptions.routeStatuses;
 
     // Find start location for route(use company address)
     erpGeoLocation.resolve($scope.routeOriginAddress)

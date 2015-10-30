@@ -50,57 +50,6 @@ angular
             return userPermission.hasCap(cap);
         };
 
-        $rootScope.referralStatuses = [
-            {
-                value: 'Pending',
-                label: 'Pending'
-            },
-            {
-                value: 'Assigned',
-                label: 'Assigned'
-            },
-            {
-                value: 'Completed',
-                label: 'Completed'
-            }
-        ];
-        $rootScope.routeStatuses = [
-            {
-                value: 'Pending',
-                label: 'Pending'
-            },
-            {
-                value: 'Assigned',
-                label: 'Assigned'
-            },
-            {
-                value: 'Completed',
-                label: 'Completed'
-            }
-        ];
-        $rootScope.estimateStatuses = [
-            {
-                value: 'Pending',
-                label: 'Pending'
-            },
-            {
-                value: 'Accepted',
-                label: 'Accepted'
-            },
-            {
-                value: 'Completed',
-                label: 'Completed/WFI' // NOTE: Quickbooks still shows Accepted
-            },
-            {
-                value: 'Closed',
-                label: 'Closed'
-            },
-            {
-                value: 'Rejected',
-                label: 'Rejected'
-            }
-        ];
-
         $rootScope.$on('notAuthorized', function() {
             $location.path('/not-authorized');
         });
@@ -143,8 +92,7 @@ angular
     .config(['$httpProvider', 'uiGmapGoogleMapApiProvider',
         function($httpProvider, uiGmapGoogleMapApiProvider) {
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-        $httpProvider.defaults.headers.post['Content-Type'] =
-            'application/x-www-form-urlencoded; charset=UTF-8';
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
         $httpProvider.interceptors.push('erpHttpInterceptor');
         uiGmapGoogleMapApiProvider.configure({
             key: '',

@@ -6,15 +6,24 @@
             '$rootScope',
             '$routeParams',
             'crewRouteFactory',
+            'erpOptions',
             '$ngBootbox',
             ListCrewRouteCtrl
         ]
     );
 
-function ListCrewRouteCtrl($scope, $rootScope, $routeParams, crewRouteFactory, $ngBootbox) {
+function ListCrewRouteCtrl(
+    $scope,
+    $rootScope,
+    $routeParams,
+    crewRouteFactory,
+    erpOptions,
+    $ngBootbox) {
+
     $scope.setPageTitle('Crew Routes List');
     $scope.routes = [];
     $scope.filter = {};
+    $scope.routeStatuses = erpOptions.routeStatuses;
 
     $scope.total = 0;
     var currentPage = 1;

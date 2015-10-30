@@ -45,7 +45,7 @@
           <td>
             <select
               ng-if="::hasCap('erpp_edit_crew_routes')"
-              ng-init="route.new_status = route.status" ng-model="route.new_status" ng-options="status.value as status.label for status in $root.routeStatuses"
+              ng-init="route.new_status = route.status" ng-model="route.new_status" ng-options="status.value as status.label for status in ::routeStatuses"
               ng-change="saveRouteStatus(route)">
             </select>
             <span ng-if="::!hasCap('erpp_edit_crew_routes')">{{::route.status}}</span>

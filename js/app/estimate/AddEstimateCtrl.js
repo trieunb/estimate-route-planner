@@ -14,6 +14,7 @@ angular
             '$ngBootbox',
             'sharedData',
             'erpLocalStorage',
+            'erpOptions',
             AddEstimateCtrl
         ]
     );
@@ -29,7 +30,9 @@ function AddEstimateCtrl(
         erpGeoLocation,
         $ngBootbox,
         sharedData,
-        erpLocalStorage) {
+        erpLocalStorage,
+        erpOptions) {
+
     $scope.setPageTitle('New estimate');
     $scope.customers = [];
     $scope.jobCustomers = [];
@@ -44,6 +47,7 @@ function AddEstimateCtrl(
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
     $scope.estimate.sold_by_1 = sharedData.currentUserName;
     $scope.isShowModalSignature = false;
+    $scope.estimateStatuses = erpOptions.estimateStatuses;
 
     erpLocalStorage.getProductServices()
         .then(function(data) {

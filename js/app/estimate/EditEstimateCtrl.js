@@ -14,6 +14,7 @@ angular
             'erpGeoLocation',
             'attachmentUploader',
             'sharedData',
+            'erpOptions',
             '$ngBootbox',
             '$window',
             EditEstimateCtrl
@@ -32,6 +33,7 @@ function EditEstimateCtrl(
         erpGeoLocation,
         attachmentUploader,
         sharedData,
+        erpOptions,
         $ngBootbox,
         $window) {
 
@@ -46,6 +48,7 @@ function EditEstimateCtrl(
     $scope.productServices = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     $scope.isShowModalSignature = false;
+    $scope.estimateStatuses = erpOptions.estimateStatuses;
 
     $scope.soldBySelectConfig = {
         valueField: 'name',

@@ -52,6 +52,7 @@ function EditCrewRouteCtrl(
     $scope.routeOrigin = null;
     $scope.routeOriginAddress = sharedData.companyInfo.full_address;
     $scope.sortOptions = erpOptions.sortCrewRoute;
+    $scope.routeStatuses = erpOptions.routeStatuses;
 
     // Get route data
     crewRouteFactory.get($routeParams.id)

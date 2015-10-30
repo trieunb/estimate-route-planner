@@ -220,7 +220,7 @@ class ReferralController extends BaseController {
     }
 
     private function _checkForCreateNewCustomer() {
-        $results = [];
+        $return = [];
         if (($this->data['customer_id'] == 0) && // Has new customer
             isset($this->data['customer_display_name']) &&
             trim($this->data['customer_display_name'])) {
@@ -229,9 +229,9 @@ class ReferralController extends BaseController {
             $customerRecord = ORM::forTable('customers')->create();
             $customerRecord->set(ERPDataParser::parseCustomer($qbcustomerObj));
             $customerRecord->save();
-            $results['customer_id'] = $customerRecord->id;
+            $return['customer_id'] = $customerRecord->id;
         }
-        return $results;
+        return $return;
     }
 }
 

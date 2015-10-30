@@ -49,7 +49,7 @@
             <select ng-if="::hasCap('erpp_edit_job_requests')"
                 ng-init="ref.new_status = ref.status"
                 ng-model="ref.new_status"
-                ng-options="status.value as status.label for status in ::$root.referralStatuses"
+                ng-options="status.value as status.label for status in ::referralStatuses"
                 ng-change="showModalUpdateStatus(ref)">
             </select>
             <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.status}}</span>

@@ -6,6 +6,7 @@
             '$rootScope',
             '$routeParams',
             'estimateRouteFactory',
+            'erpOptions',
             '$ngBootbox',
             ListEstimateRouteCtrl
         ]
@@ -16,11 +17,13 @@ function ListEstimateRouteCtrl(
     $rootScope,
     $routeParams,
     estimateRouteFactory,
+    erpOptions,
     $ngBootbox) {
 
     $scope.setPageTitle('Estimate Routes List');
     $scope.routes = [];
     $scope.filter = {};
+    $scope.routeStatuses = erpOptions.routeStatuses;
 
     // Pagination
     $scope.total = 0;

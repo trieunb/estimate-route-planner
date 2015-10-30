@@ -78,7 +78,7 @@
                         Status<span>(*)</span></label>
                     <div class="col-sm-7">
                         <select class="form-control" name="status" ng-model="estimate.status"
-                            ng-options="status.value as status.label for status in $root.estimateStatuses"
+                            ng-options="status.value as status.label for status in ::estimateStatuses"
                             ng-required="true">
                         </select>
                     </div>

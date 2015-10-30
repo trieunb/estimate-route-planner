@@ -53,7 +53,7 @@
             ng-if="::hasCap('erpp_edit_estimate_routes')"
             ng-init="route.new_status = route.status"
             ng-model="route.new_status"
-            ng-options="status.value as status.label for status in ::$root.routeStatuses"
+            ng-options="status.value as status.label for status in ::routeStatuses"
             ng-change="saveRouteStatus(route)">
           </select>
           <span ng-if="::!hasCap('erpp_edit_estimate_routes')">{{route.status}}</span>

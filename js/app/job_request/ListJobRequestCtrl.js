@@ -6,6 +6,7 @@ angular
         'jobRequestFactory',
         'estimateRouteFactory',
         'erpLocalStorage',
+        'erpOptions',
         '$ngBootbox',
         ListJobRequestCtrl
     ]);
@@ -16,6 +17,7 @@ function ListJobRequestCtrl(
     jobRequestFactory,
     estimateRouteFactory,
     erpLocalStorage,
+    erpOptions,
     $ngBootbox) {
 
     $scope.setPageTitle('Job Requests List');
@@ -25,6 +27,8 @@ function ListJobRequestCtrl(
     $scope.showAssignModal = false;
     $scope.filter = {};
     $scope.total = 0;
+    $scope.referralStatuses = erpOptions.referralStatuses;
+
     var currentPage = 1;
     if ('undefined' !== typeof($routeParams.pageNumber)) {
         currentPage = $routeParams.pageNumber;
