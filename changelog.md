@@ -1,6 +1,10 @@
+## 1.5.4
+  - Fix responsive issue for customer signature modal on mobile
+
 ## 1.5.3
   - Add auto suggestion to services dropdown(estimate form)
   - Add auto suggest customer name to search field in requests and estimates list.
+
 ## 1.5.2
   - Estimate not required product/service, qty, amount or total
   - Allow a blank service line to be between services.

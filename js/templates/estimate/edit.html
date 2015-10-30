@@ -446,11 +446,12 @@
                     <div class="form-group">
                         <div class="col-sm-12">
                             <label for="customer_signature">Customer Signature Authorizes Commencement of Work</label>
+                            <br>
                             <button type="button"
                                 ng-click="showSignatureBox()"
-                                class="btn btn-sm btn-default pull-left">
+                                class="btn btn-sm btn-default">
                                 <span class="glyphicon glyphicon-pencil"></span> Sign</button>
-                            </div>
+                        </div>
                         <div class="col-sm-12">
                             <div class="div-customer-signature-preview text-center" ng-show="signatureEncoded">
                                 <img ng-src="{{signatureEncoded}}" ng-if="signatureEncoded"/>

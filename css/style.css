@@ -283,11 +283,11 @@ span.new-referal {
 .estimate-logo {
     max-width: 120px;
 }
-
+.modal.modal-customer-signature {
+    top: 20%;
+}
 .div-customer-signature {
     border: 1px solid #ccc;
-    width: 450px;
-    height: 150px;
 }
 .div-customer-signature canvas {
     cursor: default;
@@ -309,7 +309,10 @@ span.new-referal {
     max-width: 100%;
 }
 .modal-customer-signature .modal-dialog {
-    width: 480px !important;
+    width: 410px !important;
+}
+.modal-customer-signature .modal-body {
+    padding: 5px !important;
 }
 .space-30 {
     clear: both;

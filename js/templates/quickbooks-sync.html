@@ -19,7 +19,7 @@
                             <li>Consumer Key: <span class="text-info" ng-bind="info.qbo_consumer_key"></span></li>
                             <li>Consumer Secret: <span class="text-info" ng-bind="info.qbo_consumer_secret"></span></li>
                             <li>Company ID: <span class="text-info" ng-bind="info.qbo_company_id"></span></li>
-                            <li>Auth tokens expiration: <span class="text-info" ng-bind="info.qbo_token_expires_at"></span></li>
+                            <li>OAuth tokens expiration: <span class="text-info" ng-bind="info.qbo_token_expires_at"></span></li>
                         </ul>
                         <button class="btn btn-danger" ng-click="reconnect()">Reset & Reconnect</button>
                     </div>
@@ -28,15 +28,16 @@
                 <div class="col-md-6">
                     <div class="space_nomal">
                         <legend>Synchronize</legend>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                Last synced: <time-ago ng-if="info.last_sync_at" from-time='{{ info.last_sync_at }}'></time-ago>
-                                <br>
-                                <br>
-                                <button type="button" class="btn btn-success" ng-click="startSync()" ng-disabled="isBusy">Sync Now</button>
-                            </div>
-                            <div class="col-md-12">
-                                <br>
+                        <div class="col-md-12">
+                            Last synced: <time-ago ng-if="info.last_sync_at" from-time='{{ info.last_sync_at }}'></time-ago>
+                            <br>
+                            <br>
+                            <button type="button" class="btn btn-success" ng-click="startSync()" ng-disabled="isBusy">Sync Now</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="space_nomal">
                                 <legend>Sync history</legend>
                                 <br>
                                 <table class="table table-bordered">
