@@ -16,8 +16,10 @@ class EstimateController extends BaseController {
             ->tableAlias('e')
             ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
             ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
-            ->whereLike('e.status', "%$filteredStatus%")
             ->orderByDesc('e.id');
+        if ($filteredStatus) {
+            $searchQuery->where('e.status', $filteredStatus);
+        }
         if ($keyword) {
             $searchQuery->whereAnyIs([
                 ['c.display_name' => "%$keyword%"],
@@ -25,7 +27,6 @@ class EstimateController extends BaseController {
                 ['e.doc_number' => "%$keyword%"],
             ], 'LIKE');
         }
-
         if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
             $currentUserName = $this->getCurrentUserName();
             $searchQuery
