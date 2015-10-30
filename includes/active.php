@@ -22,11 +22,13 @@ function active_plugin() {
         'erpp_estimator_only_routes',
         'erpp_hide_estimate_pending_list'
     ];
+    $adminRoles = ['administrator', 'erppadmin', 'erpp_admin'];
+
     foreach ($wp_roles->get_names() as $roleName => $label) {
         $role = get_role($roleName);
         if ($role) {
             foreach ($pluginCaps as $cap => $options) {
-                if ($roleName === 'administrator' && in_array($cap, $exceptAdminCaps)) {
+                if (in_array($roleName, $adminRoles) && in_array($cap, $exceptAdminCaps)) {
                     continue;
                 }
                 $role->add_cap($cap);
