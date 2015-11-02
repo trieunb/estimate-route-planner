@@ -214,16 +214,22 @@
                         <?php
                             foreach ($lines as $line) {
                                 $amount = $line['qty'] * $line['rate'];
+                                $blankLine = !$line['product_service_name'] && !$line['description'] && ($amount == 0);
                         ?>
-                            <tr style="border: 1px solid #ddd;">
-                                <td>
-                                    <span><b><?php echo $line['product_service_name'] ?></b></span>
-                                </td>
-                                <td><span><?php echo $line['description'] ?></span></td>
-                                <td><span><?php echo $line['qty'] ?></span></td>
-                                <td><span><?php echo $line['rate'] ?></span></td>
-                                <td><span><?php echo $amount ?></span></td>
-                            </tr>
+                            <?php if ($blankLine) :?>
+                                <tr>
+                                    <td colspan="5">
+                                    </td>
+                                </tr>
+                            <?php else : ?>
+                                <tr>
+                                    <td><span><?php echo $line['product_service_name'] ?></span></td>
+                                    <td><span><?php echo $line['description'] ?></span></td>
+                                    <td><span><?php echo $line['qty'] ?></span></td>
+                                    <td><span><?php echo $line['rate'] ?></span></td>
+                                    <td><span><?php echo $amount ?></span></td>
+                                </tr>
+                            <?php endif; ?>
                         <?php } ?>
                         <tr style="border: 1px solid #ddd;">
                             <td colspan="4">

@@ -1,3 +1,6 @@
+## 1.5.5
+  - Fix synchronize issue on estimate' billing/shipping addresses.
+  - Fix missing description lines on work order
 ## 1.5.4
   - Fix responsive issue for customer signature modal on mobile
 

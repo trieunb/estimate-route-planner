@@ -678,6 +678,138 @@ class Asynchronzier
         return $value;
     }
 
+    public function buildEstimateBillAddress($localData) {
+        $billAddr = new IPPPhysicalAddress;
+        $customer = ORM::forTable('customers')->findOne($localData['customer_id']);
+        $isSame = true;
+        $addressAttrs = ['bill_address', 'bill_city', 'bill_state', 'bill_zip_code', 'bill_country'];
+        foreach ($addressAttrs as $attr) {
+            $isSame &= $customer[$attr] == $localData[$attr];
+        }
+        if ($isSame) {
+            $billAddr->Id = $customer->bill_address_id;
+        } else {
+            if ($localData['bill_address_id']) {
+                $billAddr->Id = $localData['bill_address_id'];
+            }
+            $billAddr->Line1 = $customer->display_name;
+            $billAddr->Line2 = $localData['bill_address'];
+            $billAddr->City = $localData['bill_city'];
+            $billAddr->CountrySubDivisionCode = $localData['bill_state'];
+            $billAddr->PostalCode = $localData['bill_zip_code'];
+            $billAddr->Country = $localData['bill_country'];
+        }
+        return $billAddr;
+    }
+
+
+    public function buildEstimateShipAddress($localData) {
+        $shipAddr = new IPPPhysicalAddress;
+        $jobCustomer = ORM::forTable('customers')->findOne($localData['job_customer_id']);
+
+        $isSame = true;
+        $isSame &= $localData['job_customer_id'] == $localData['customer_id'];
+        $addressAttrsMap = [ // from estimate to customer
+            'job_address' => 'ship_address',
+            'job_city'  => 'ship_city',
+            'job_state' => 'ship_state',
+            'job_zip_code' => 'ship_zip_code',
+            'job_country' => 'ship_country'
+        ];
+        foreach ($addressAttrsMap as $eAttr => $cAttr) {
+            $isSame &= $jobCustomer[$cAttr] == $localData[$eAttr];
+        }
+        if ($isSame) { // use customer ship address is
+            $shipAddr->Id = $jobCustomer->ship_address_id;
+        } else {
+            if ($localData['job_address_id']) {
+                $shipAddr->Id = $localData['job_address_id'];
+            }
+            $shipAddr->Line1 = $jobCustomer->display_name;
+            $shipAddr->Line2 = $localData['job_address'];
+            $shipAddr->City = $localData['job_city'];
+            $shipAddr->CountrySubDivisionCode = $localData['job_state'];
+            $shipAddr->PostalCode = $localData['job_zip_code'];
+            $shipAddr->Country = $localData['job_country'];
+        }
+        return $shipAddr;
+    }
+
+    public function buildEstimateLines(array $lines) {
+        $lineEntities = [];
+        foreach ($lines as $index => $line) {
+            $lineObj = new IPPLine;
+            $lineObj->Id = $line['line_id'];
+            $lineObj->LineNum = $index;
+            $lineObj->Description = $line['description'];
+            if ($line['product_service_id']) {
+                $lineObj->DetailType = 'SalesItemLineDetail';
+                $lineObj->Amount = (float) $line['qty'] * (float) $line['rate'];
+                $lineObj->SalesItemLineDetail = new IPPSalesItemLineDetail;
+                $lineObj->SalesItemLineDetail->ItemRef = $line['product_service_id'];
+                $lineObj->SalesItemLineDetail->Qty = $line['qty'];
+                $lineObj->SalesItemLineDetail->UnitPrice = $line['rate'];
+            } else {
+                // Consider lines without product service are DescriptionOnly
+                $lineObj->DetailType = 'DescriptionOnly';
+            }
+            $lineEntities[] = $lineObj;
+        }
+        return $lineEntities;
+    }
+
+    public function saveEstimate(IPPEstimate $estimateEntity) {
+        return $this->dataService->Add($estimateEntity);
+    }
+
+    public function buildEstimateEntity($localData) {
+        $estimateObj = new IPPEstimate;
+        $estimateObj->CustomerRef = $localData['customer_id'];
+        $estimateObj->TxnDate = $localData['txn_date'];
+        $estimateObj->ExpirationDate = $localData['expiration_date'];
+        $estimateObj->CustomerMemo = $localData['estimate_footer'];
+        $estimateObj->CustomField = [];
+
+        $salesRep1 = new IPPCustomField;
+        $salesRep1->DefinitionId = '2';
+        $salesRep1->Type = 'StringType';
+        $salesRep1->Name = 'Sales Rep';
+        $salesRep1->StringValue = @$localData['sold_by_1'] . '';
+
+        $salesRep2 = new IPPCustomField;
+        $salesRep2->DefinitionId = '3';
+        $salesRep2->Type = 'StringType';
+        $salesRep2->Name = 'Sales Rep';
+        $salesRep2->StringValue = @$localData['sold_by_2'] . '';
+
+        $estimateObj->CustomField[] = $salesRep1;
+        $estimateObj->CustomField[] = $salesRep2;
+
+        $estimateObj->BillAddr = $this->buildEstimateBillAddress($localData);
+        $estimateObj->ShipAddr = $this->buildEstimateShipAddress($localData);
+
+        $billEmail = new IPPEmailAddress;
+        $billEmail->Address = $localData['email'];
+        $estimateObj->BillEmail = $billEmail;
+
+        $estimateObj->Line = $this->buildEstimateLines($localData['lines']);
+
+        if (isset($localData['id'])) {
+            $estimateObj->Id = $localData['id'];
+        }
+        if ($localData['status'] === 'Completed') {
+            $estimateObj->TxnStatus = 'Accepted';
+        } else {
+            $estimateObj->TxnStatus = $localData['status'];
+        }
+        if ($localData['sync_token']) {
+            $estimateObj->SyncToken = $localData['sync_token'];
+        }
+        return $estimateObj;
+    }
+    /**
+     * Create Entity object by given raw array of attributes
+     */
     public function decodeEstimate($localData)
     {
         $value = [

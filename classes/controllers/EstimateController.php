@@ -105,7 +105,7 @@ class EstimateController extends BaseController {
         }
         $lines = ORM::forTable('estimate_lines')
             ->tableAlias('el')
-            ->join(
+            ->leftOuterJoin(
                 'products_and_services',
                 ['el.product_service_id', '=', 'ps.id'],
                 'ps'
@@ -155,8 +155,8 @@ class EstimateController extends BaseController {
             }
         }
         // Save estimate to QB
-        $params = $sync->decodeEstimate($insertData);
-        $result = $sync->Create($params);
+        $estimateEntity = $sync->buildEstimateEntity($insertData);
+        $result = $sync->saveEstimate($estimateEntity);
         $parsedEstimateData = ERPDataParser::parseEstimate($result, $insertData);
 
         // Parse lines data
@@ -284,18 +284,18 @@ class EstimateController extends BaseController {
             $updateData['customer_signature'] = $estimate->customer_signature;
         }
         $updateData['sync_token'] = $estimate->sync_token;
-        $params = $sync->decodeEstimate($updateData);
+        $estimateEntity = $sync->buildEstimateEntity($updateData);
         try {
-            $result = $sync->Update($params);
+            $result = $sync->saveEstimate($estimateEntity);
         } catch (QuickbooksAPIException $e) {
             if ($e->getStatusCode() == '400') { // Maybe the sync token wrong
                 // Try to get update token
                 $objEstimate = new IPPEstimate();
                 $objEstimate->Id = $id;
                 $responseEstimate = $sync->Retrieve($objEstimate);
-                if ($params['attributes']['SyncToken'] != $responseEstimate->SyncToken) {
-                    $params['attributes']['SyncToken'] = $responseEstimate->SyncToken;
-                    $result = $sync->Update($params);
+                if ($estimateEntity->SyncToken != $responseEstimate->SyncToken) {
+                    $estimateEntity->SyncToken = $responseEstimate->SyncToken;
+                    $result = $sync->saveEstimate($estimateEntity);
                 } else {
                     throw $e;
                 }
@@ -409,7 +409,7 @@ class EstimateController extends BaseController {
         if ($estimate) {
             $lines = ORM::forTable('estimate_lines')
                     ->tableAlias('el')
-                    ->join(
+                    ->leftOuterJoin(
                         'products_and_services',
                         ['el.product_service_id', '=', 'ps.id'],
                         'ps'
@@ -431,7 +431,7 @@ class EstimateController extends BaseController {
         if ($estimate) {
             $lines = ORM::forTable('estimate_lines')
                     ->tableAlias('el')
-                    ->join(
+                    ->leftOuterJoin(
                         'products_and_services',
                         ['el.product_service_id', '=', 'ps.id'],
                         'ps'
@@ -580,7 +580,7 @@ class EstimateController extends BaseController {
         }
 
         try {
-            // Check if the new job customer is same with new billing customer
+            // Check if the job customer is same with billing customer
             if ($newCustomerAttrs && $newJobCustomerAttrs &&
                     ($newCustomerAttrs['display_name'] ===
                         $newJobCustomerAttrs['display_name'])) {
@@ -589,14 +589,18 @@ class EstimateController extends BaseController {
                 );
                 $return['customer_id'] =
                     $return['job_customer_id'] = $newCustomer->id;
+                $return['bill_address_id'] =
+                    $return['job_address_id'] = $newCustomer->bill_address_id;
             } else {
                 if ($newCustomerAttrs) {
                     $newCustomer = $this->_createCustomer($newCustomerAttrs);
                     $return['customer_id'] = $newCustomer->id;
+                    $return['bill_address_id'] = $newCustomer->bill_address_id;
                 }
                 if ($newJobCustomerAttrs) {
                     $newCustomer = $this->_createCustomer($newJobCustomerAttrs);
                     $return['job_customer_id'] = $newCustomer->id;
+                    $return['job_address_id'] = $newCustomer->ship_address_id;
                 }
             }
         } catch (IdsException $e) {

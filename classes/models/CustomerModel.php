@@ -22,6 +22,10 @@ class CustomerModel extends BaseModel {
 
         'bill_address_id',
         'bill_address',
+        'bill_line_2',
+        'bill_line_3',
+        'bill_line_4',
+        'bill_line_5',
         'bill_city',
         'bill_state',
         'bill_zip_code',
@@ -29,6 +33,10 @@ class CustomerModel extends BaseModel {
 
         'ship_address_id',
         'ship_address',
+        'ship_line_2',
+        'ship_line_3',
+        'ship_line_4',
+        'ship_line_5',
         'ship_city',
         'ship_state',
         'ship_zip_code',

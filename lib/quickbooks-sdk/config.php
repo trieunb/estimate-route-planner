@@ -76,7 +76,7 @@ class QuickbooksAPIException extends Exception {
                 $message .= "Unknown";
                 break;
         }
-        $message .= ". Status code: $statusCode";
+        $message .= ". Status code: $statusCode; Response body: " . $responseBody;
         parent::__construct($message);
     }
 

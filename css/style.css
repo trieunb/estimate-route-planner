@@ -603,3 +603,6 @@ form.form-route {
     min-height: 28px !important;
     padding: 4px 10px;
 }
+div.toast {
+    width: 350px;
+}

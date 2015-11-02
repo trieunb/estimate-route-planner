@@ -278,6 +278,7 @@ final class ERPDataParser {
         $billAddress = $data->BillAddr;
         $bill_address_id
             = $bill_address
+            = $bill_line_1
             = $bill_line_2
             = $bill_line_3
             = $bill_line_4
@@ -289,20 +290,35 @@ final class ERPDataParser {
             = null;
         if (null != $billAddress) {
             $bill_address_id = $billAddress->Id;
-            $bill_address = $billAddress->Line1;
-            $bill_line_2 = $billAddress->Line2;
-            $bill_line_3 = $billAddress->Line3;
-            $bill_line_4 = $billAddress->Line4;
-            $bill_line_5 = $billAddress->Line5;
             $bill_city = $billAddress->City;
             $bill_state = $billAddress->CountrySubDivisionCode;
             $bill_zip_code = $billAddress->PostalCode;
             $bill_country = $billAddress->Country;
+            if (!$bill_city && !$bill_state && $billAddress->Line1 && $billAddress->Line2 && $billAddress->Line3) {
+                list($bill_address, $bill_city, $bill_state, $bill_zip_code, $bill_country) =
+                    self::parseAddressFields(
+                        $billAddress->Line1,
+                        $billAddress->Line2,
+                        $billAddress->Line3,
+                        $billAddress->Line4,
+                        $billAddress->Line5);
+            } else {
+                if (preg_match('/[0-9]/', $billAddress->Line1) == 1) {
+                    $bill_address = $billAddress->Line1;
+                } else {
+                    $bill_address = $billAddress->Line2;
+                }
+                $bill_line_1 = $billAddress->Line1;
+                $bill_line_2 = $billAddress->Line2;
+                $bill_line_3 = $billAddress->Line3;
+                $bill_line_4 = $billAddress->Line4;
+                $bill_line_5 = $billAddress->Line5;
+            }
         }
-
         $shipAddress = $data->ShipAddr;
         $job_address_id
             = $job_address
+            = $job_line_1
             = $job_line_2
             = $job_line_3
             = $job_line_4
@@ -314,15 +330,30 @@ final class ERPDataParser {
             = null;
         if (null != $shipAddress) {
             $job_address_id = $shipAddress->Id;
-            $job_address = $shipAddress->Line1;
-            $job_line_2  = $shipAddress->Line2;
-            $job_line_3  = $shipAddress->Line3;
-            $job_line_4  = $shipAddress->Line4;
-            $job_line_5  = $shipAddress->Line5;
             $job_city = $shipAddress->City;
             $job_state = $shipAddress->CountrySubDivisionCode;
             $job_zip_code = $shipAddress->PostalCode;
             $job_country = $shipAddress->Country;
+            if (!$job_city && !$job_state && $shipAddress->Line1 && $shipAddress->Line2 && $shipAddress->Line3) {
+                list($job_address, $job_city, $job_state, $job_zip_code, $job_country) =
+                    self::parseAddressFields(
+                        $shipAddress->Line1,
+                        $shipAddress->Line2,
+                        $shipAddress->Line3,
+                        $shipAddress->Line4,
+                        $shipAddress->Line5);
+            } else {
+                if (preg_match('/[0-9]/', $shipAddress->Line1) == 1) {
+                    $job_address = $shipAddress->Line1;
+                } else {
+                    $job_address = $shipAddress->Line2;
+                }
+                $job_line_1  = $shipAddress->Line1;
+                $job_line_2  = $shipAddress->Line2;
+                $job_line_3  = $shipAddress->Line3;
+                $job_line_4  = $shipAddress->Line4;
+                $job_line_5  = $shipAddress->Line5;
+            }
         }
 
         $email = null;
@@ -368,6 +399,7 @@ final class ERPDataParser {
 
             'bill_address_id' => $bill_address_id,
             'bill_address' => $bill_address,
+            'bill_line_1' => $bill_line_1,
             'bill_line_2' => $bill_line_2,
             'bill_line_3' => $bill_line_3,
             'bill_line_4' => $bill_line_4,
@@ -394,6 +426,7 @@ final class ERPDataParser {
             'job_customer_id'   => $job_customer_id,
             'job_address_id'    => $job_address_id,
             'job_address'       => $job_address,
+            'job_line_1'        => $job_line_1,
             'job_line_2'        => $job_line_2,
             'job_line_3'        => $job_line_3,
             'job_line_4'        => $job_line_4,
@@ -406,6 +439,37 @@ final class ERPDataParser {
             'job_lat' => $data_local['job_lat'],
             'job_lng' => $data_local['job_lng'],
         ];
+    }
+
+    /**
+     * Parse given address lines to street address, city, state, zip code, country
+     */
+    public static function parseAddressFields($line1, $line2, $line3, $line4, $line5) {
+        $streetAddress = $city = $state = $zipCode = $country = '';
+        $streetAddress = $line1 . ' ' . $line2;
+        if ($line2 && preg_match('/[0-9]/', $line2) == 1) {
+            $streetAddress = $line2;
+            if (strpos($line3, ',') !== false) {
+                $line3Parts = explode(',', $line3);
+                $city = $line3Parts[0];
+                if (strpos(trim($line3Parts[1]), ' ') !== false) {
+                    $stateCityCountrySplit = array_values(array_filter(explode(' ', trim($line3Parts[1])), 'strlen'));
+                    $state = $stateCityCountrySplit[0];
+                    if (is_numeric($stateCityCountrySplit[1])) {
+                        $zipCode = $stateCityCountrySplit[1];
+                    }
+                    if (count($stateCityCountrySplit) === 3) {
+                        $country = $stateCityCountrySplit[2];
+                    }
+                } else {
+                    $state = $line3Parts[1];
+                }
+            }
+        }
+        if (!$zipCode && is_numeric($line4)) {
+            $zipCode = $line4;
+        }
+        return [$streetAddress, $city, $state, $zipCode, $country];
     }
 }
 ?>
