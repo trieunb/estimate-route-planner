@@ -48,6 +48,7 @@ class ERPApp {
     }
 
     public function letGo() {
+        $_REQUEST   = array_map('stripslashes_deep', $_REQUEST);
         $this->log(
             "\n=== " .
             $_SERVER['REQUEST_METHOD'] . ' ' .
