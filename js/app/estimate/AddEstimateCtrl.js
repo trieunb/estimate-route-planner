@@ -163,7 +163,7 @@ function AddEstimateCtrl(
                         $scope.estimate.bill_zip_code = cus.bill_zip_code;
                         $scope.estimate.bill_country = cus.bill_country;
                         $scope.estimate.primary_phone_number = cus.primary_phone_number;
-                        $scope.estimate.alternate_phone_number = cus.alternate_phone_number;
+                        $scope.estimate.mobile_phone_number = cus.mobile_phone_number;
                         $scope.estimate.email = cus.email;
                     }
                     $scope.estimate.customer_display_name = cus.display_name;

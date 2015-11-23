@@ -536,6 +536,7 @@ class EstimateController extends BaseController {
         $customerInfo['bill_country']   = @$this->data['bill_country'];
         $customerInfo['primary_phone_number']    = @$this->data['primary_phone_number'];
         $customerInfo['alternate_phone_number']  = @$this->data['alternate_phone_number'];
+        $customerInfo['mobile_phone_number']  = @$this->data['mobile_phone_number'];
         $customerInfo['email']  = @$this->data['email'];
         return $customerInfo;
     }

@@ -630,6 +630,11 @@ class Asynchronzier
             $primaryPhone->FreeFormNumber = $data['primary_phone_number'];
             $customerObj->PrimaryPhone = $primaryPhone;
         }
+        if (isset($data['mobile_phone_number'])) {
+            $mobilePhone = new IPPTelephoneNumber();
+            $mobilePhone->FreeFormNumber = $data['mobile_phone_number'];
+            $customerObj->Mobile = $mobilePhone;
+        }
         if (isset($data['alternate_phone_number'])) {
             $alternatePhone = new IPPTelephoneNumber();
             $alternatePhone->FreeFormNumber = $data['alternate_phone_number'];
@@ -642,40 +647,6 @@ class Asynchronzier
         }
 
         return $this->dataService->Add($customerObj);
-    }
-
-    public function decodeCustomer($data)
-    {
-        $value = [
-            'name' => 'IPPCustomer',
-            'attributes' => [
-                'DisplayName' => $data['display_name'],
-                'BillAddr' => [
-                    'name' => 'IPPPhysicalAddress',
-                    'attributes' => [
-                        'Line1' => $data['bill_address'],
-                        'City' => $data['bill_city'],
-                        'Country' => $data['bill_country'],
-                        'CountrySubDivisionCode' => $data['bill_state'],
-                        'PostalCode' => $data['bill_zip_code'],
-                    ],
-                ],
-                'PrimaryPhone' => [
-                    'name' => 'IPPTelephoneNumber',
-                    'attributes' => [
-                        'FreeFormNumber' => $data['primary_phone_number'],
-                    ],
-                ],
-                'PrimaryEmailAddr' => [
-                    'name' => 'IPPEmailAddress',
-                    'attributes' => [
-                        'Address' => $data['email'],
-                    ],
-                ],
-            ],
-        ];
-
-        return $value;
     }
 
     public function buildEstimateBillAddress($localData) {

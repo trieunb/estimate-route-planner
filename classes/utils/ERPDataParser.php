@@ -415,6 +415,7 @@ final class ERPDataParser {
             'total' => $data->TotalAmt,
             'primary_phone_number' => $data_local['primary_phone_number'],
             'alternate_phone_number' => $data_local['alternate_phone_number'],
+            'mobile_phone_number' => $data_local['mobile_phone_number'],
             'route_id' => $data_local['route_id'],
             'source' => $data_local['source'],
             'customer_signature' => $data_local['customer_signature'],

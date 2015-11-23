@@ -34,6 +34,7 @@ class EstimateModel extends BaseModel {
         'job_lng',
         'primary_phone_number',
         'alternate_phone_number',
+        'mobile_phone_number',
         'email',
 
         'bill_address_id',
