@@ -1,3 +1,10 @@
+## 1.5.6
+  - Fix order of service lines when printing
+  - Fix email not sync when create job request
+  - Change `Secondary phone number` to sync as mobile phone number in QB
+  - Fix escaping quote/slash characters bug
+  - Use textarea tag for line description
+
 ## 1.5.5
   - Fix synchronize issue on estimate' billing/shipping addresses.
   - Fix missing description-only lines on creating work order and printing

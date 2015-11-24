@@ -2,17 +2,17 @@
     <form class="form-horizontal" name="estimateForm" ng-submit="submitForm()" novalidate>
         <div class="row">
             <div class="col-md-5">
-                <span class="top-leaf" ng-bind="companyInfo.name"></span>
+                <span class="top-leaf" ng-bind="::companyInfo.name"></span>
                 <br>
-                <span ng-bind="companyInfo.mailing_address"></span>
+                <span ng-bind="::companyInfo.mailing_address"></span>
                 <br>
                 Tel:
-                <span ng-bind="companyInfo.primary_phone_number"></span>
+                <span ng-bind="::companyInfo.primary_phone_number"></span>
                 Fax:
-                <span ng-bind="companyInfo.fax"></span>
+                <span ng-bind="::companyInfo.fax"></span>
             </div>
             <div class="col-md-3 text-center">
-                <img ng-src="{{$root.baseERPPluginUrl}}{{companyInfo.logo_url}}" class="estimate-logo">
+                <img ng-src="{{::$root.baseERPPluginUrl}}{{::companyInfo.logo_url}}" class="estimate-logo">
             </div>
             <div class="col-md-4">
                 <div class="form-group">
@@ -369,8 +369,8 @@
                       <tr>
                         <th style="width: 30px;"></th>
                         <th style="width: 30px;">#</th>
-                        <th style="width: 280px;">Product/Service</th>
-                        <th style="width: 370px;">Description</th>
+                        <th style="width: 190px;">Product/Service</th>
+                        <th style="width: 450px;">Description</th>
                         <th style="width: 50px;">QTY</th>
                         <th style="width: 70px;">Rate</th>
                         <th style="width: 100px;">Amount</th>
@@ -389,7 +389,7 @@
                                 options="productServices">
                             </selectize>
                         </td>
-                        <td><input type="text" ng-model="line.description"/></td>
+                        <td><textarea class="form-control" ng-model="line.description"/></textarea>
                         <td>
                             <input type="number"
                                 ng-pattern="/^\d+$/"

@@ -23,21 +23,23 @@
                     <p>
                         <strong>Job Information:</strong>
                         <br>
-                        {{:: est.job_customer_display_name }}
+                        {{ ::est.job_customer_display_name }}
                         <br>
-                        {{:: est | estimateJobFullAddress }} {{est.job_country}}
+                        {{ ::est | estimateJobFullAddress }} {{ ::est.job_country}}
                     </p>
                     <p>
                         <strong>Location Notes:</strong>
                         <br>
-                        {{:: est.location_notes}}
+                        {{ ::est.location_notes}}
                     </p>
                     <p>
                         <strong>Product and Services:</strong>
                     </p>
                     <ul class="list-unstyled lines">
-                        <li ng-repeat="line in est.lines">
-                            {{:: line.qty}} - {{:: line.description}}
+                        <li ng-repeat="line in est.lines" ng-class="{'line-empty': !line.product_service_id}">
+                            <span ng-if="line.product_service_id">
+                            {{ ::line.qty}} - {{ ::line.description}}
+                            </span>
                         </li>
                     </ul>
                 </li>
