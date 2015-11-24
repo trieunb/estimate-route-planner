@@ -417,6 +417,7 @@ class EstimateController extends BaseController {
                     ->where('el.estimate_id', $estimateId)
                     ->select('el.*')
                     ->select('ps.name', 'product_service_name')
+                    ->orderByAsc('el.line_num')
                     ->findArray();
             require ERP_TEMPLATES_DIR . '/print/estimate.php';
         } else {
@@ -439,6 +440,7 @@ class EstimateController extends BaseController {
                     ->where('el.estimate_id', $estimateId)
                     ->select('el.*')
                     ->select('ps.name', 'product_service_name')
+                    ->orderByAsc('el.line_num')
                     ->findArray();
             ob_start();
             require ERP_TEMPLATES_DIR . '/print/estimate.dompdf.php';
