@@ -178,6 +178,7 @@ function EditEstimateRouteCtrl(
             directionsDisplay.set('directions', null);
             return;
         }
+        $scope.loadingOn();
         var originLatLng = new google.maps.LatLng(
             $scope.routeOrigin.latitude, $scope.routeOrigin.longitude);
             var destination = {}; // end
@@ -206,6 +207,8 @@ function EditEstimateRouteCtrl(
             };
 
             directionsService.route(request, function(response, status) {
+                $scope.loadingOff();
+                $scope.$apply();
                 if (status == google.maps.DirectionsStatus.OK) {
                     directionsDisplay.setDirections(response);
                 } else {
