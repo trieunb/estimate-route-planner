@@ -18,10 +18,12 @@
                     <div class="col-sm-8">
                         <input type="text" class="form-control" uib-datepicker-popup
                             ng-init="openDateRequestPicker = false"
+                            ng-focus="openDateRequestPicker = true"
                             ng-model="referral.date_requested"
-                            is-open="openDateRequestPicker" ng-required="true"
-                            close-text="Close"  placeholder="yyyy-mm-dd"
-                            ng-click="openDateRequestPicker = !openDateRequestPicker"/>
+                            is-open="openDateRequestPicker"
+                            ng-required="true"
+                            close-text="Close"
+                            placeholder="yyyy-mm-dd"/>
                         <div class="help-block"
                             ng-messages="referralForm.date_requested.$error"
                             ng-if="referralForm.date_requested.$touched && referralForm.date_requested.$invalid">
@@ -219,10 +221,14 @@
                     <div class="col-sm-4">
                        <input type="text" class="form-control"
                             name="date_service"
-                            uib-datepicker-popup ng-init="openDateServicePicker = false"
-                            ng-model="referral.date_service" is-open="openDateServicePicker"
-                            ng-required="true" close-text="Close" placeholder="yyyy-mm-dd"
-                            ng-click="openDateServicePicker = !openDateServicePicker" />
+                            uib-datepicker-popup
+                            ng-init="openDateServicePicker = false"
+                            ng-focus="openDateServicePicker = true"
+                            ng-model="referral.date_service"
+                            is-open="openDateServicePicker"
+                            ng-required="true"
+                            close-text="Close"
+                            placeholder="yyyy-mm-dd"/>
                         <div class="help-block"
                             ng-messages="referralForm.date_service.$error"
                             ng-if="referralForm.date_service.$touched && referralForm.date_service.$invalid">
