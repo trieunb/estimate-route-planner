@@ -198,9 +198,26 @@
                             </p>
                         </div>
                     </div>
-                    <label class="control-label col-sm-2 required" for="date_service">
-                        Date service is needed<span>(*)</span></label>
+                    <label class="control-label col-sm-2" for="mobile_phone_number">Secondary Phone
+                    </label>
                     <div class="col-sm-3">
+                        <input class="form-control" type="text" name="mobile_phone_number"
+                            ng-model="referral.mobile_phone_number"
+                            ng-required="true"
+                            ng-maxlength="100">
+                        <div class="help-block"
+                            ng-messages="referralForm.mobile_phone_number.$error"
+                            ng-if="referralForm.mobile_phone_number.$touched && referralForm.mobile_phone_number.$invalid">
+                            <p ng-message="maxlength" class="text-danger">
+                                Maximum by 100 characters!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3 required" for="date_service">
+                        Date service is needed<span>(*)</span></label>
+                    <div class="col-sm-4">
                        <input type="text" class="form-control"
                             name="date_service"
                             uib-datepicker-popup ng-init="openDateServicePicker = false"
@@ -215,7 +232,7 @@
                             </p>
                         </div>
                     </div>
-                </div>
+                </div>                
                 <div class="form-group">
                     <label class="control-label col-sm-3 required" for="how_find_us">
                         How did you find out about us<span>(*)</span></label>

@@ -14,6 +14,7 @@ class ReferralModel extends AbstractModel {
         'country',
         'email',
         'primary_phone_number',
+        'mobile_phone_number',
         'date_service',
         'how_find_us',
         'type_of_service_description',
