@@ -1,20 +1,24 @@
 <div ng-controller="EditEstimateRouteCtrl">
     <div class="row form-route">
         <div class="col-lg-12">
-            <form-route></form-route>
+            <form-estimate-route></form-estimate-route>
             <hr>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
-            <h5 class="route-box-title">Assigned Routes</h5>
+        <div class="col-sm-4">
+            <div class="queue-header">
+                <h5 class="route-box-title">Assigned Routes (<span ng-bind="assignedReferrals.length"></span>)</h5>
+                <div class="queue-toolbar">
+                    Sort:
+                    <select class="sort-by-select"
+                        ng-model="assigned_queue_sort_by"
+                        ng-change="sortAssignedQueue()"
+                        ng-options="sort.value as sort.label for sort in ::sortOptions">
+                    </select>
+                </div>
+            </div>
             <div class="assigned-routes" ui-tree="assignedListDndOptions" data-max-depth="1" data-drag-delay="150">
-                Sort by:
-                <select class="sort-by-select"
-                    ng-model="$parent.assigned_queue_sort_by"
-                    ng-change="sortAssignedQueue()"
-                    ng-options="sort.value as sort.label for sort in ::sortOptions">
-                </select>
                 <ul ui-tree-nodes ng-model="assignedReferrals">
                     <li class="box-assign" ng-repeat="referral in assignedReferrals" ui-tree-node>
                         <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
@@ -30,16 +34,19 @@
                     </li>
                 </ul>
             </div>
-            <div ng-if=":: !hasCap('erpp_hide_estimate_pending_list')">
-                <h5 class="route-box-title">Pending Routes</h5>
-
+            <div ng-if="::!hasCap('erpp_hide_estimate_pending_list')">
+                <div class="queue-header">
+                    <h5 class="route-box-title">Pending Routes (<span ng-bind="pendingReferrals.length"></span>)</h5>
+                    <div class="queue-toolbar">
+                        Sort:
+                        <select class="sort-by-select"
+                            ng-model="$parent.pending_queue_sort_by"
+                            ng-change="sortPendingQueue()"
+                            ng-options="sort.value as sort.label for sort in ::sortOptions">
+                        </select>
+                    </div>
+                </div>
                 <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
-                    Sort by:
-                    <select class="sort-by-select"
-                        ng-model="$parent.pending_queue_sort_by"
-                        ng-change="sortPendingQueue()"
-                        ng-options="sort.value as sort.label for sort in ::sortOptions">
-                    </select>
                     <ul ui-tree-nodes="" ng-model="pendingReferrals">
                         <li class="box-assign" ng-repeat="referral in pendingReferrals" ui-tree-node>
                             <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
@@ -57,8 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-9">
-
+        <div class="col-sm-8">
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
                     <ui-gmap-marker
@@ -72,7 +78,7 @@
                         </ui-gmap-window>
                     </ui-gmap-marker>
                     <ui-gmap-marker ng-repeat="referral in pendingReferrals"
-                        icon="pendingMarkerIcon"
+                        icon="::pendingMarkerIcon"
                         idkey="$index" coords="referral.coords"
                         >
                         <ui-gmap-window>
@@ -85,7 +91,7 @@
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                 <span>Date: {{::referral.date_requested}}</span><br>
                                 <span>Estimator: {{::referral.estimator_full_name}}</span><br>
-                                <span>Status: {{referral.status}}</span>
+                                <span>Status: {{::referral.status}}</span>
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
@@ -103,7 +109,7 @@
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                 <span>Date: {{::referral.date_requested}}</span><br>
                                 <span>Estimator: {{::referral.estimator_full_name}}</span><br>
-                                <span>Status: {{referral.status}}</span>
+                                <span>Status: {{::referral.status}}</span>
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>

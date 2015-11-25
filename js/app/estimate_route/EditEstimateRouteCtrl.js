@@ -32,9 +32,6 @@ function EditEstimateRouteCtrl(
 
     var orderBy = $filter('orderBy');
     var directionsService = new google.maps.DirectionsService();
-    var directionsDisplay = new google.maps.DirectionsRenderer({
-        suppressMarkers: true // Hide direction marker
-    });
 
     $scope.setPageTitle('Estimate Route Planner');
     $scope.route = {}; // Form data
@@ -50,6 +47,7 @@ function EditEstimateRouteCtrl(
     $scope.routeOrigin = null;
     $scope.routeOriginAddress = sharedData.companyInfo.full_address;
     $scope.sortOptions = erpOptions.sortEstimateRoute;
+    $scope.directionRenderers = [];
 
     // Get route data
     estimateRouteFactory.get($routeParams.id)
@@ -91,7 +89,6 @@ function EditEstimateRouteCtrl(
                         });
 
                        uiGmapIsReady.promise(1).then(function(instances) {
-                            directionsDisplay.setMap($scope.map.control.getGMap());
                             $scope.drawRouteDirection(); // Render direction after loaded
                         });
                     },
@@ -165,6 +162,13 @@ function EditEstimateRouteCtrl(
         }
     };
 
+    var clearDirections = function() {
+        for(var i = 0; i < $scope.directionRenderers.length; i++) {
+            $scope.directionRenderers[i].set('directions', null);
+            delete $scope.directionRenderers[i];
+        }
+        $scope.directionRenderers = [];
+    };
     /**
      * Repaint direction
      */
@@ -174,48 +178,59 @@ function EditEstimateRouteCtrl(
             return;
         }
         if ($scope.assignedReferrals.length < 1) {
-            // Clear drawed direction
-            directionsDisplay.set('directions', null);
+            clearDirections();
             return;
         }
+        clearDirections();
         $scope.loadingOn();
+
         var originLatLng = new google.maps.LatLng(
             $scope.routeOrigin.latitude, $scope.routeOrigin.longitude);
-            var destination = {}; // end
-            var waypts = [
-                {
-                    location: originLatLng
-                }
-            ];
-            angular.forEach($scope.assignedReferrals, function(referral, index) {
-                var point = {};
-                var latLng = new google.maps.LatLng(referral.coords.latitude, referral.coords.longitude);
-                point.location = latLng;
-                    if( (index + 1) === $scope.assignedReferrals.length ) {
-                        point.stopover = true;
-                        destination = latLng;
-                    }
-                waypts.push(point);
-            });
+        var waypts = [{
+            location: originLatLng
+        }];
 
+        angular.forEach($scope.assignedReferrals, function(referral, index) {
+            var point = {};
+            var latLng = new google.maps.LatLng(referral.coords.latitude, referral.coords.longitude);
+            point.location = latLng;
+            waypts.push(point);
+        });
+        var waypointsCount = waypts.length;
+
+        // Split waypoints by 8 to bypass limitation maximum number of waypoints
+        // from gmap direction service
+        // Ex: [a,b,c,d,e,f,g,h] to [[a,b,c,d],[d,e,f,g],[g,h]]
+        //
+        var MAX_WAYPOINTS_EXCEEDED = 8;
+        for (var i = 0, j = waypointsCount; i < j; i += MAX_WAYPOINTS_EXCEEDED - 1) {
+            if (i + 1 == waypointsCount) {
+                break;
+            }
+            var part = waypts.slice(i, i + MAX_WAYPOINTS_EXCEEDED);
             var request = {
-                origin: originLatLng,
-                waypoints: waypts,
-                destination: destination,
+                origin: part[0],
+                waypoints: part,
+                destination: part[part.length - 1],
                 optimizeWaypoints: true,
                 travelMode: google.maps.TravelMode.DRIVING
             };
-
-            directionsService.route(request, function(response, status) {
+            var directionRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true // Hide direction marker
+            });
+            $scope.directionRenderers.push(directionRenderer);
+            directionRenderer.setMap($scope.map.control.getGMap());
+            directionsService.route(request, function (response, status) {
                 $scope.loadingOff();
                 $scope.$apply();
                 if (status == google.maps.DirectionsStatus.OK) {
-                    directionsDisplay.setDirections(response);
+                    directionRenderer.setDirections(response);
                 } else {
                     toastr.error("Could not find route on the map!");
                 }
             });
-        };
+        }
+    };
 
     $scope.saveRoute = function() {
         var data = {};

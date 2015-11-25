@@ -36,10 +36,10 @@
                         <strong>Product and Services:</strong>
                     </p>
                     <ul class="list-unstyled lines">
-                        <li ng-repeat="line in est.lines" ng-class="{'line-empty': !line.product_service_id}">
-                            <span ng-if="line.product_service_id">
-                            {{ ::line.qty}} - {{ ::line.description}}
-                            </span>
+                        <li ng-repeat="line in est.lines"
+                            ng-class="{'line-empty': line.product_service_id == null && line.description == null }">
+                            <span ng-if="line.product_service_id || line.description">
+                                {{ ::line.qty }} - {{ ::line.description }}</span>
                         </li>
                     </ul>
                 </li>

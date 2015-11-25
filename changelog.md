@@ -1,3 +1,8 @@
+## 1.5.7
+  - Fix could not find direction in large of routes(8)
+  - Some UI changes on route planning page
+  - Fix description-only line does not show in worker order
+
 ## 1.5.6
   - Fix order of service lines when printing
   - Fix email not sync when create job request

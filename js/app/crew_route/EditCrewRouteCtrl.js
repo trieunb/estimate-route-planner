@@ -34,9 +34,6 @@ function EditCrewRouteCtrl(
 
     var orderBy = $filter('orderBy');
     var directionsService = new google.maps.DirectionsService();
-    var directionsDisplay = new google.maps.DirectionsRenderer({
-       suppressMarkers: true // Hide direction marker
-    });
 
     $scope.setPageTitle('Crew Route planner');
     $scope.route = {}; // Form data
@@ -52,7 +49,7 @@ function EditCrewRouteCtrl(
     $scope.routeOrigin = null;
     $scope.routeOriginAddress = sharedData.companyInfo.full_address;
     $scope.sortOptions = erpOptions.sortCrewRoute;
-    $scope.routeStatuses = erpOptions.routeStatuses;
+    $scope.directionRenderers = [];
 
     // Get route data
     crewRouteFactory.get($routeParams.id)
@@ -93,7 +90,6 @@ function EditCrewRouteCtrl(
                         });
 
                        uiGmapIsReady.promise(1).then(function(instances) {
-                            directionsDisplay.setMap($scope.map.control.getGMap());
                             $scope.drawRouteDirection();
                         });
                     },
@@ -119,54 +115,62 @@ function EditCrewRouteCtrl(
            });
        });
 
-   $scope.assignedListDndOptions = {
-       dragStart: function() {
-           $scope.assigned_queue_sort_by = '';
-           return true;
-       },
-       dropped: function(evt) {
-           // Check for a real moving
-           if ( (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) ||
-               (evt.dest.index != evt.source.index) ) {
-               $scope.drawRouteDirection();
-           }
-           return true;
-       }
-   };
+    $scope.assignedListDndOptions = {
+        dragStart: function() {
+            $scope.assigned_queue_sort_by = '';
+            return true;
+        },
+        dropped: function(evt) {
+            // Check for a real moving
+            if ( (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) ||
+                (evt.dest.index != evt.source.index) ) {
+                $scope.drawRouteDirection();
+            }
+            return true;
+        }
+    };
 
-   $scope.pendingListDndOptions = {
-       dragStart: function(evt) {
-           $scope.pending_queue_sort_by = '';
-           return true;
-       },
-       dropped: function(evt) {
-           if (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) {
-               $scope.drawRouteDirection();
-           }
-           return true;
-       }
-   };
+    $scope.pendingListDndOptions = {
+        dragStart: function(evt) {
+            $scope.pending_queue_sort_by = '';
+            return true;
+        },
+        dropped: function(evt) {
+            if (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) {
+                $scope.drawRouteDirection();
+            }
+            return true;
+        }
+    };
 
-   $scope.sortAssignedQueue = function() {
-       if ($scope.assignedEstimates.length > 1) {
-           $scope.assignedEstimates = orderBy(
-               $scope.assignedEstimates,
-               $scope.assigned_queue_sort_by,
-               false
-           );
-           $scope.drawRouteDirection();
-       }
-   };
+    $scope.sortAssignedQueue = function() {
+        if ($scope.assignedEstimates.length > 1) {
+            $scope.assignedEstimates = orderBy(
+                $scope.assignedEstimates,
+                $scope.assigned_queue_sort_by,
+                false
+            );
+            $scope.drawRouteDirection();
+        }
+    };
 
-   $scope.sortPendingQueue = function() {
-       if ($scope.pendingEstimates.length > 1) {
-           $scope.pendingEstimates = orderBy(
-               $scope.pendingEstimates,
-               $scope.pending_queue_sort_by,
-               false
-           );
-       }
-   };
+    $scope.sortPendingQueue = function() {
+        if ($scope.pendingEstimates.length > 1) {
+            $scope.pendingEstimates = orderBy(
+                $scope.pendingEstimates,
+                $scope.pending_queue_sort_by,
+                false
+            );
+        }
+    };
+
+    var clearDirections = function() {
+        for(var i = 0; i < $scope.directionRenderers.length; i++) {
+            $scope.directionRenderers[i].set('directions', null);
+            delete $scope.directionRenderers[i];
+        }
+        $scope.directionRenderers = [];
+    };
 
     /**
      * Repaint direction
@@ -177,49 +181,59 @@ function EditCrewRouteCtrl(
             return;
         }
         if ($scope.assignedEstimates.length < 1) {
-            // Clear drawed direction
-            directionsDisplay.set('directions', null);
+            clearDirections();
             return;
         }
+        clearDirections();
         $scope.loadingOn();
+
         var originLatLng = new google.maps.LatLng(
             $scope.routeOrigin.latitude, $scope.routeOrigin.longitude);
-        var destination = {};
-        var waypts = [
-            {
-                location: originLatLng
-            }
-        ];
+        var waypts = [{
+            location: originLatLng
+        }];
 
         angular.forEach($scope.assignedEstimates, function(estimate, index) {
             var point = {};
-            var latLng = new google.maps.LatLng(estimate.coords.latitude, estimate.coords.longitude);
+            var latLng = new google.maps.LatLng(
+                estimate.coords.latitude, estimate.coords.longitude);
             point.location = latLng;
-
-            if( (index + 1) === $scope.assignedEstimates.length ) {
-                point.stopover = true;
-                destination = latLng;
-            }
             waypts.push(point);
         });
+        var waypointsCount = waypts.length;
 
-        var request = {
-            origin: originLatLng,
-            waypoints: waypts,
-            destination: destination,
-            optimizeWaypoints: true,
-            travelMode: google.maps.TravelMode.DRIVING
-        };
-
-        directionsService.route(request, function(response, status) {
-            $scope.loadingOff();
-            $scope.$apply();
-            if (status == google.maps.DirectionsStatus.OK) {
-                directionsDisplay.setDirections(response);
-            } else {
-                toastr.error("Could not find route on the map!");
+        // Split waypoints by 8 to bypass limitation maximum number of waypoints
+        // from gmap direction service
+        // Ex: [a,b,c,d,e,f,g,h] to [[a,b,c,d],[d,e,f,g],[g,h]]
+        //
+        var MAX_WAYPOINTS_EXCEEDED = 8;
+        for (var i = 0, j = waypointsCount; i < j; i += MAX_WAYPOINTS_EXCEEDED - 1) {
+            if (i + 1 == waypointsCount) {
+                break;
             }
-        });
+            var part = waypts.slice(i, i + MAX_WAYPOINTS_EXCEEDED);
+            var request = {
+                origin: part[0],
+                waypoints: part,
+                destination: part[part.length - 1],
+                optimizeWaypoints: true,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            var directionRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true // Hide direction marker
+            });
+            $scope.directionRenderers.push(directionRenderer);
+            directionRenderer.setMap($scope.map.control.getGMap());
+            directionsService.route(request, function (response, status) {
+                $scope.loadingOff();
+                $scope.$apply();
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionRenderer.setDirections(response);
+                } else {
+                    toastr.error("Could not find route on the map!");
+                }
+            });
+        }
     };
 
     $scope.saveRoute = function() {

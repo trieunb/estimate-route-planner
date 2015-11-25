@@ -1,7 +1,7 @@
 angular.module('Erp')
-    .directive('formRoute', ['APP_CONFIG', 'erpLocalStorage', 'erpOptions', formRoute]);
+    .directive('formEstimateRoute', ['APP_CONFIG', 'erpLocalStorage', 'erpOptions', formEstimateRoute]);
 
-function formRoute(APP_CONFIG, erpLocalStorage, erpOptions) {
+function formEstimateRoute(APP_CONFIG, erpLocalStorage, erpOptions) {
     return {
         restrict: 'E',
         templateUrl: APP_CONFIG.templatesPath + 'estimate-route/form.html',

@@ -326,6 +326,7 @@ span.new-referal {
     height: 400px;
     overflow-y: scroll;
     margin-bottom: 10px;
+    clear: both;
 }
 .box-assign {
     border: 1px solid #B6B6B6;
@@ -592,7 +593,7 @@ label.required span {
     line-height: 30px;
 }
 #erp-content select.sort-by-select {
-    height: 30px;
+    height: 27px;
 }
 .form-route hr {
     margin: 0 0 10px 0;
@@ -601,6 +602,7 @@ label.required span {
     margin-top: 0;
     font-weight: 600;
     font-size: 15px;
+    display: inline-block;
 }
 form.form-route {
     margin-top: 5px;
@@ -614,4 +616,13 @@ div.toast {
 }
 li.line-empty {
     height: 10px;
+}
+div.queue-toolbar {
+    margin-bottom: 10px;
+    display: inline-block;
+}
+@media(min-width:1025px) {
+    div.queue-toolbar {
+        float: right;
+    }
 }
