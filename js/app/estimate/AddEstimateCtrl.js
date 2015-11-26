@@ -49,6 +49,10 @@ function AddEstimateCtrl(
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;
 
+    $scope.estimate.txn_date = $filter('date')(new Date(), "yyyy-MM-dd");
+    $scope.estimate.expiration_date =
+        $filter('date')((new Date()).getTime() + (30 * 86400000), "yyyy-MM-dd");
+
     erpLocalStorage.getProductServices()
         .then(function(data) {
             angular.forEach(data, function(service) {
