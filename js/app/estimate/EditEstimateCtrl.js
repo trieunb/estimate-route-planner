@@ -259,8 +259,13 @@ function EditEstimateCtrl(
     };
 
     $scope.removeAllLines = function() {
-        $scope.estimate.lines = [];
-        $scope.updateTotal();
+        $ngBootbox.confirm('Are you sure want to remove all the lines?')
+            .then(
+                function() {
+                    $scope.estimate.lines = [];
+                    $scope.updateTotal();
+                }
+            );
     };
 
     // Use product service description as line description
