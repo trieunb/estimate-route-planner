@@ -86,7 +86,7 @@
                             </tr>
                             <tr>
                                 <td class="wpt10">
-                                    <label>Primary Phone</label>
+                                    <label>Primary phone</label>
                                 </td>
                                 <td colspan="3">
                                     <span><?php echo $referral['primary_phone_number'] ?></span>
@@ -94,7 +94,15 @@
                             </tr>
                             <tr>
                                 <td class="wpt10">
-                                    <label>Date Service is needed</label>
+                                    <label>Secondary phone</label>
+                                </td>
+                                <td colspan="3">
+                                    <span><?php echo $referral['mobile_phone_number'] ?></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="wpt10">
+                                    <label>Date service is needed</label>
                                 </td>
                                 <td colspan="3">
                                     <span><?php echo $referral['date_service'] ?></span>
