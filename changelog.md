@@ -1,3 +1,14 @@
+## 1.6.0
+  - Add `Secondary phone` to job request form
+  - Change service lines description in worker order to editable
+  - Change `Source` field in estimate form to be required
+  - Remove Location notes from the PDF the gets printed or emailed to the customer
+  - Add equipment list field to work order
+  - Auto fill estimate date with current date
+  - Auto fill expiration date with 30 days after current date
+  - Add create estimate from job request
+  - Fix lagging when typing on clients select box
+
 ## 1.5.7
   - Fix could not find direction in large of routes(8)
   - Some UI changes on route planning page
