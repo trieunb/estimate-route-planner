@@ -320,7 +320,7 @@ function AddEstimateCtrl(
                                 }
                             }
                         }
-                    }, 600);
+                    }, 300);
                 });
         }
     }, 200);
