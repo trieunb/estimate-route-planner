@@ -16,13 +16,14 @@
                     <label class="control-label col-sm-4 required" for="date_requested">
                         Date<span>(*)</span></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" uib-datepicker-popup
+                        <input type="text"
+                            class="form-control"
+                            uib-datepicker-popup
                             ng-init="openDateRequestPicker = false"
                             ng-focus="openDateRequestPicker = true"
                             ng-model="referral.date_requested"
                             is-open="openDateRequestPicker"
                             ng-required="true"
-                            close-text="Close"
                             placeholder="yyyy-mm-dd"/>
                         <div class="help-block"
                             ng-messages="referralForm.date_requested.$error"
@@ -227,7 +228,6 @@
                             ng-model="referral.date_service"
                             is-open="openDateServicePicker"
                             ng-required="true"
-                            close-text="Close"
                             placeholder="yyyy-mm-dd"/>
                         <div class="help-block"
                             ng-messages="referralForm.date_service.$error"

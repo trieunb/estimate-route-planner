@@ -39,12 +39,16 @@
                     <label class="control-label col-sm-5 required" for="txn_date">
                         Estimate Date<span>(*)</span></label>
                     <div class="col-sm-7">
-                        <input class="form-control" type="text" close-text="Close"
-                            ng-required="true" ng-init="openDatetxnPicker = false"
-                            is-open="openDatetxnPicker" uib-datepicker-popup
-                            ng-click="openDatetxnPicker = !openDatetxnPicker"
-                            placeholder="yyyy-mm-dd" name="txn_date"
-                            ng-model="estimate.txn_date" >
+                        <input class="form-control"
+                            type="text"
+                            uib-datepicker-popup
+                            ng-required="true"
+                            ng-init="openDatetxnPicker = false"
+                            ng-focus="openDatetxnPicker = true"
+                            is-open="openDatetxnPicker"
+                            placeholder="yyyy-mm-dd"
+                            name="txn_date"
+                            ng-model="estimate.txn_date">
                         <div class="help-block"
                             ng-messages="estimateForm.txn_date.$error"
                             ng-if="estimateForm.txn_date.$touched && estimateForm.txn_date.$invalid">
@@ -58,12 +62,16 @@
                     <label class="control-label col-sm-5 required" for="expiration_date">
                         Exp Date<span>(*)</span></label>
                     <div class="col-sm-7">
-                        <input class="form-control" type="text" name="expiration_date"
-                            uib-datepicker-popup ng-init="openExpDatePicker = false"
+                        <input class="form-control"
+                            type="text"
+                            name="expiration_date"
+                            uib-datepicker-popup
+                            ng-init="openExpDatePicker = false"
                             is-open="openExpDatePicker"
-                            ng-click="openExpDatePicker = !openExpDatePicker"
-                            placeholder="yyyy-mm-dd" ng-required="true"
-                            ng-model="estimate.expiration_date" close-text="Close">
+                            ng-focus="openExpDatePicker = true"
+                            placeholder="yyyy-mm-dd"
+                            ng-required="true"
+                            ng-model="estimate.expiration_date">
                         <div class="help-block"
                             ng-messages="estimateForm.expiration_date.$error"
                             ng-if="estimateForm.expiration_date.$touched && estimateForm.expiration_date.$invalid">
@@ -432,12 +440,15 @@
                 <label class="col-md-2" for="date_of_signature">
                     Date of Signature</label>
                 <div class="col-md-3">
-                    <input class="form-control" type="text" name="date_of_signature"
-                        uib-datepicker-popup ng-init="openDateSignaturePicker = false"
+                    <input class="form-control"
+                        type="text"
+                        name="date_of_signature"
+                        uib-datepicker-popup
+                        ng-init="openDateSignaturePicker = false"
                         is-open="openDateSignaturePicker"
                         ng-model="estimate.date_of_signature"
-                        ng-click="openDateSignaturePicker = !openDateSignaturePicker"
-                        placeholder="yyyy-mm-dd" >
+                        ng-focus="openDateSignaturePicker = true"
+                        placeholder="yyyy-mm-dd">
                 </div>
             </div>
         </div>
