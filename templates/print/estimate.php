@@ -167,7 +167,7 @@
                         </tr>
                         <tr>
                             <th>Secondary Phone</th>
-                            <td><?php echo $estimate->alternate_phone_number ?></td>
+                            <td><?php echo $estimate->mobile_phone_number ?></td>
                             <td colspan="2"></td>
                         </tr>
                         <tr>
@@ -178,12 +178,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="row localtion-note">
-                <div class="note">
-                    <label>Location Notes:</label>
-                    <span><?php echo $estimate->location_notes ?></span>
-                </div>
-            </div>
+
             <div class="row estimate-line">
                 <table class="table table-bordered table-line">
                     <thead>
