@@ -38,6 +38,18 @@ function WorkOrderCtrl(
                             estimate.estimators.push(estimate.sold_by_2);
                         }
                         $scope.route.assignedEstimates.push(estimate);
+                        angular.forEach(estimate.lines, function(line) {
+                            line.is_empty = !line.product_service_id &&
+                                !line.description;
+                            if (!line.is_empty) {
+                                var worker_order_line = '';
+                                if (line.qty) {
+                                    worker_order_line += line.qty + ' - ';
+                                }
+                                line.worker_order_line =
+                                    worker_order_line + line.description;
+                            }
+                        });
                     });
                 });
         });

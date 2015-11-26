@@ -16,7 +16,7 @@
                         <strong>ETA:</strong> <span ng-bind="est.time" class="entered-time"></span>
                         <input type="text" class="input-time" ng-model="est.time">
                         <br>
-                        <span>Estimate #{{:: est.doc_number}}</span>
+                        <span>Estimate #{{ ::est.doc_number}}</span>
                         <br>
                         Estimator: {{est.estimators.join(', ')}}
                     </p>
@@ -36,10 +36,20 @@
                         <strong>Product and Services:</strong>
                     </p>
                     <ul class="list-unstyled lines">
-                        <li ng-repeat="line in est.lines"
-                            ng-class="{'line-empty': line.product_service_id == null && line.description == null }">
-                            <span ng-if="line.product_service_id || line.description">
-                                {{ ::line.qty }} - {{ ::line.description }}</span>
+                        <li ng-repeat="line in est.lines" ng-init="line.visible = true"
+                            class="worker-order-line"
+                            ng-class="{'line-invisible': !line.visible, 'hide-print': !line.visible}">
+                            <div ng-if="!line.is_empty">
+                                <input
+                                    type="checkbox"
+                                        ng-model="line.visible"
+                                        class="hide-print" title="Hide/Show on print">
+                                <input class="hide-print input-worker-order-line" type="text"
+                                    ng-if="!line.is_empty"
+                                    ng-readonly="!line.visible"
+                                    ng-model="line.worker_order_line">
+                                <span class="print-only" ng-bind="line.worker_order_line"></span>
+                            </div>
                         </li>
                     </ul>
                 </li>

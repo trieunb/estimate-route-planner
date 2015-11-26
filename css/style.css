@@ -521,9 +521,14 @@ label.required span {
     margin-top: -10px;
 }
 
+@media screen {
+    .print-only {
+        display: none;
+    }
+}
 @media print {
     .hide-print {
-        display: none;
+        display: none !important;
     }
     #form-work-order {
         font-size: 14px;
@@ -625,4 +630,24 @@ div.queue-toolbar {
     div.queue-toolbar {
         float: right;
     }
+    .input-worker-order-line {
+        width: 700px;
+    }
+    .worker-order-line input[type=checkbox]{
+        margin-top: 0px;
+    }
+}
+@media(max-width:1024px) {
+    .input-worker-order-line {
+        width: 85%;
+    }
+    .worker-order-line input[type=checkbox] {
+        float: left;
+        margin-top: 5px;
+        margin-right: 10px;
+    }
+}
+
+.worker-order-line.line-invisible input[type=text]{
+    color: #BFBFBF;
 }
