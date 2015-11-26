@@ -3,18 +3,22 @@
     <div id="form-work-order">
         <h3 class="text-center legend"><b>Work Order</b></h3>
         <div class="route-title">
-            <strong>Route Name:</strong> {{:: route.title}} <small><a class="hide-print" href="#/edit-crew-route/{{:: route.id}}">(Edit)</a></small>
+            <strong>Route Name:</strong> {{ ::route.title}} <small><a class="hide-print" href="#/edit-crew-route/{{:: route.id}}">(Edit)</a></small>
+        </div>
+        <div class="equipment-list">
+            <strong>Equipments:</strong><span class="print-only" ng-bind="route.equipment_list"></span>
+            <input type="text" class="hide-print input-equipment-list" ng-model="route.equipment_list">
         </div>
         <div class="start-time">
-            <strong>Start time:</strong> <span ng-bind="route.startTime" class="entered-time"></span>
+            <strong>Start time:</strong> <span ng-bind="route.startTime" class="print-only"></span>
             <input type="text" class="input-time hide-print" ng-model="route.startTime">
         </div>
         <div class="estimates">
             <ul class="list-unstyled">
                 <li ng-repeat="est in route.assignedEstimates">
                     <p>
-                        <strong>ETA:</strong> <span ng-bind="est.time" class="entered-time"></span>
-                        <input type="text" class="input-time" ng-model="est.time">
+                        <strong>ETA:</strong> <span ng-bind="est.time" class="print-only"></span>
+                        <input type="text" class="input-time hide-print" ng-model="est.time">
                         <br>
                         <span>Estimate #{{ ::est.doc_number}}</span>
                         <br>

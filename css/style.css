@@ -501,17 +501,15 @@ label.required span {
     line-height: 22px;
 }
 /* Work order form */
-#form-work-order .entered-time {
-    display: none;
-}
 #form-work-order .input-time {
     width: 90px;
 }
 #form-work-order .route-title {
     font-size: 20px;
+    margin-bottom: 10px;
 }
 #form-work-order .start-time, #form-work-order .estimates {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 #form-work-order .estimates > ul > li {
     margin-top: 20px;
@@ -536,12 +534,7 @@ label.required span {
     #form-work-order .legend {
         margin: 0 0 20px 0;
     }
-    #form-work-order .entered-time {
-        display: inline-block !important;
-    }
-    #form-work-order .input-time {
-        display: none !important;
-    }
+
     #adminmenuwrap,
     #erp-header,
     #wpfooter,
@@ -630,7 +623,7 @@ div.queue-toolbar {
     div.queue-toolbar {
         float: right;
     }
-    .input-worker-order-line {
+    .input-worker-order-line, .input-equipment-list {
         width: 700px;
     }
     .worker-order-line input[type=checkbox]{
@@ -638,7 +631,7 @@ div.queue-toolbar {
     }
 }
 @media(max-width:1024px) {
-    .input-worker-order-line {
+    .input-worker-order-line, .input-equipment-list {
         width: 85%;
     }
     .worker-order-line input[type=checkbox] {
@@ -650,4 +643,7 @@ div.queue-toolbar {
 
 .worker-order-line.line-invisible input[type=text]{
     color: #BFBFBF;
+}
+.equipment-list {
+
 }
