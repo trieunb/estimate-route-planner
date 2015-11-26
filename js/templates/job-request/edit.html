@@ -12,6 +12,11 @@
                 <span ng-bind="::companyInfo.fax"></span>
             </div>
             <div class="col-sm-5 col-xs-12">
+                <div class="form-group text-right" ng-if="::hasCap('erpp_create_estimates')">
+                    <div class="col-sm-12">
+                        <a href="#new-estimate?ref={{::referral.id}}" class="btn btn-sm btn-success">Create Estimate</a>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="control-label col-sm-4 required" for="date_requested">
                         Date<span>(*)</span></label>
@@ -221,7 +226,7 @@
                 <div class="form-group">
                     <label class="control-label col-sm-3 required" for="date_service">
                         Date service is needed<span>(*)</span></label>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <input type="text" class="form-control"
                              name="date_service"
                              uib-datepicker-popup

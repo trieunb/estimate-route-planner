@@ -6,10 +6,12 @@ angular
             '$scope',
             '$rootScope',
             '$http',
+            '$timeout',
             '$routeParams',
             '$filter',
             '$location',
             'estimateFactory',
+            'jobRequestFactory',
             'erpGeoLocation',
             '$ngBootbox',
             'sharedData',
@@ -23,10 +25,12 @@ function AddEstimateCtrl(
         $scope,
         $rootScope,
         $http,
+        $timeout,
         $routeParams,
         $filter,
         $location,
         estimateFactory,
+        jobRequestFactory,
         erpGeoLocation,
         $ngBootbox,
         sharedData,
@@ -290,4 +294,34 @@ function AddEstimateCtrl(
             $scope.estimate.job_state + ' ' +
             $scope.estimate.job_zip_code;
     };
+    $timeout(function() {
+        var jobRequestId = $routeParams.ref;
+        if ('undefined' !== typeof(jobRequestId)) {
+            jobRequestFactory.show(jobRequestId)
+                .success(function(jobRequestData) {
+                    $scope.estimateForm.$setDirty();
+                    $scope.estimate.customer_id = jobRequestData.customer_id;
+                    $scope.estimate.job_customer_id = jobRequestData.customer_id;
+                    $timeout(function() {
+                        $scope.estimate.job_address = jobRequestData.address;
+                        $scope.estimate.job_city = jobRequestData.city;
+                        $scope.estimate.job_state = jobRequestData.state;
+                        $scope.estimate.job_zip_code = jobRequestData.zip_code;
+                        $scope.estimate.job_country = jobRequestData.country;
+                        $scope.estimate.email = jobRequestData.email;
+                        $scope.estimate.source = jobRequestData.how_find_us;
+                        $scope.estimate.mobile_phone_number = jobRequestData.mobile_phone_number;
+                        $scope.estimate.primary_phone_number = jobRequestData.primary_phone_number;
+                        if (jobRequestData.estimator_id) {
+                            for(var i = 0; i < $scope.employees.length; i++) {
+                                if ($scope.employees[i].id == jobRequestData.estimator_id) {
+                                    $scope.estimate.sold_by_1 = $scope.employees[i].name;
+                                    break;
+                                }
+                            }
+                        }
+                    }, 600);
+                });
+        }
+    }, 200);
 }

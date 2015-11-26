@@ -58,8 +58,9 @@
             <div class="dropdown">
               <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown">View
               <span class="caret"></span></button>
-              <ul class="dropdown-menu">
-                <li ng-if="::hasCap('erpp_edit_job_requests')"><a href="#/edit-job-request/{{ref.id}}">Edit</a></li>
+              <ul class="dropdown-menu right-align">
+                <li ng-if="::hasCap('erpp_edit_job_requests')"><a href="#/edit-job-request/{{::ref.id}}">Edit</a></li>
+                <li ng-if="::hasCap('erpp_create_estimates')"><a href="#/new-estimate?ref={{::ref.id}}">Create estimate</a></li>
                 <li ng-if="::hasCap('erpp_print_job_requests')"><a target="_blank" href="{{::$root.baseAPIPath}}&_do=printReferral&id={{ref.id}}">Print</a></li>
               </ul>
             </div>

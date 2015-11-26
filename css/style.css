@@ -92,6 +92,10 @@ span.new-referal {
     border-radius: 0 !important;
     outline: none !important;
 }
+#erp-wrapper .dropdown-menu.right-align {
+    left: auto;
+    right: 0;
+}
 #erp-wrapper .dropdown-menu > li, #erp-wrapper .dropdown-menu > li:focus  {
     outline: none !important;
 }
