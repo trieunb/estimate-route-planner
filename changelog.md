@@ -1,3 +1,7 @@
+## 1.6.1
+  - Update estimate 'Source' field to sync with Class in QB
+  - Change text 'Equipments' to 'Equipment list' in work order
+
 ## 1.6.0
   - Add `Secondary phone` to job request form
   - Change service lines description in worker order to editable

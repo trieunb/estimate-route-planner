@@ -27,6 +27,7 @@ if (ERPConfig::isOAuthTokenValid()) {
         try {
             $syncService = Asynchronzier::getInstance();
             $syncService->syncProductService($syncFromTime);
+            $syncService->syncClass($syncFromTime);
             $syncService->syncEmployee($syncFromTime);
             $syncService->syncCustomer($syncFromTime);
             $syncService->syncAttachment($syncFromTime);

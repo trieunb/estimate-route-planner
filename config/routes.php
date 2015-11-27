@@ -3,6 +3,7 @@ return [
     'getSharedData'         => 'App@sharedData',
     'getCustomers'          => 'Customer@index',
     'getProductServices'    => 'App@productServices',
+    'getClasses'            => 'App@classes',
     'showCustomer'          => 'Customer@show',
 
     'getEstimates'          => 'Estimate@index',
