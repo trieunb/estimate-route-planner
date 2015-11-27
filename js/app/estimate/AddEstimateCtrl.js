@@ -299,6 +299,8 @@ function AddEstimateCtrl(
             $scope.estimate.job_state + ' ' +
             $scope.estimate.job_zip_code;
     };
+
+    // Populate the form by job request info
     $timeout(function() {
         var jobRequestId = $routeParams.ref;
         if ('undefined' !== typeof(jobRequestId)) {
@@ -314,7 +316,6 @@ function AddEstimateCtrl(
                         $scope.estimate.job_zip_code = jobRequestData.zip_code;
                         $scope.estimate.job_country = jobRequestData.country;
                         $scope.estimate.email = jobRequestData.email;
-                        $scope.estimate.source = jobRequestData.how_find_us;
                         $scope.estimate.mobile_phone_number = jobRequestData.mobile_phone_number;
                         $scope.estimate.primary_phone_number = jobRequestData.primary_phone_number;
                         if (jobRequestData.estimator_id) {
