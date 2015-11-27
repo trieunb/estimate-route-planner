@@ -16,6 +16,7 @@ class EstimateController extends BaseController {
             ->tableAlias('e')
             ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
             ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
+            ->leftOuterJoin('erpp_classes', ['e.class_id', '=', 'classes.id'], 'classes')
             ->orderByDesc('e.id');
         if ($filteredStatus) {
             $searchQuery->where('e.status', $filteredStatus);
@@ -45,6 +46,7 @@ class EstimateController extends BaseController {
             )
             ->select('c.display_name', 'customer_display_name')
             ->select('jc.display_name', 'job_customer_display_name')
+            ->select('classes.name', 'source_name')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();

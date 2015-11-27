@@ -58,7 +58,7 @@
                   <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.doc_number}}</span></a>
                   <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.doc_number}}</span>
                 </td>
-                <td><span>{{::est.source}}</span></td>
+                <td><span>{{::est.source_name}}</span></td>
 
                 <td><span>{{::est.expiration_date}}</span></td>
 
