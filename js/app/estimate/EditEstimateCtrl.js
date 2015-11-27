@@ -46,6 +46,8 @@ function EditEstimateCtrl(
     $scope.isChangedSignature = false;
     $scope.companyInfo = {};
     $scope.productServices = [];
+    $scope.classes = [];
+
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;
@@ -80,6 +82,12 @@ function EditEstimateCtrl(
             angular.copy(data, $scope.employees);
         });
 
+    // Load classes
+    erpLocalStorage.getClasses()
+        .then(function(data) {
+            $scope.classes = [];
+            angular.copy(data, $scope.classes);
+        });
 
     // Get estimate data
     estimateFactory.show($routeParams.id)

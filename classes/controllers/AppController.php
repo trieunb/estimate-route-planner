@@ -37,5 +37,13 @@ class AppController extends BaseController {
             ->findArray();
         $this->renderJson($productServices);
     }
+
+    public function classes() {
+        $classes = ORM::forTable('erpp_classes')
+            ->selectMany('id', 'name', 'parent_id', 'active')
+            ->orderByAsc('name')
+            ->findArray();
+        $this->renderJson($classes);
+    }
 }
 ?>

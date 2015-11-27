@@ -11,7 +11,7 @@ class EstimateModel extends BaseModel {
         'due_date',
         'txn_date',
         'expiration_date',
-        'source',
+        'class_id',
         'customer_signature',
         'location_notes',
         'date_of_signature',

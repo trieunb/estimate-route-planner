@@ -7,6 +7,7 @@ angular
             'employeeFactory',
             'customerFactory',
             'productServiceFactory',
+            'classFactory',
             erpLocalStorage
         ]
     );
@@ -16,7 +17,8 @@ function erpLocalStorage(
     sharedData,
     employeeFactory,
     customerFactory,
-    productServiceFactory) {
+    productServiceFactory,
+    classFactory) {
 
     var _this = this;
     // Cache timestamp
@@ -26,7 +28,8 @@ function erpLocalStorage(
     var cacheData = { // Null values meaning it's not initaled yet
         productServices: null,
         employees: null,
-        customers: null
+        customers: null,
+        classes: null
     };
 
     var init = function() {
@@ -164,6 +167,20 @@ function erpLocalStorage(
                     });
             } else {
                 resolve(cacheData.productServices);
+            }
+        });
+    };
+
+    this.getClasses = function() {
+        return $q(function(resolve) {
+            if (null === cacheData.classes) {
+                classFactory.all()
+                    .success(function(responseData) {
+                        rememberData('classes', responseData);
+                        resolve(cacheData.classes);
+                    });
+            } else {
+                resolve(cacheData.classes);
             }
         });
     };

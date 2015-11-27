@@ -46,6 +46,7 @@ function AddEstimateCtrl(
     $scope.estimate.total = 0.0;
     $scope.companyInfo = {};
     $scope.productServices = [];
+    $scope.classes = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     // Auto fill estimate footer
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
@@ -94,6 +95,13 @@ function AddEstimateCtrl(
         .then(function(data) {
             $scope.employees = [];
             angular.copy(data, $scope.employees);
+        });
+
+    // Load classes
+    erpLocalStorage.getClasses()
+        .then(function(data) {
+            $scope.classes = [];
+            angular.copy(data, $scope.classes);
         });
 
     $scope.onAddCustomer = function(input) {

@@ -21,19 +21,16 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-5 required" for="source">
+                    <label class="control-label col-sm-5 required" for="class_id">
                         Source<span>(*)</span></label>
                     <div class="col-sm-7">
-                        <input class="form-control" type="text" name="source"
-                            ng-maxlength="100"
-                            ng-required="true"
-                            ng-model="estimate.source">
+                        <classes-select
+                            options="classes"
+                            ng-model="estimate.class_id"
+                            ng-required="true"></classes-select>
                         <div class="help-block"
-                            ng-messages="estimateForm.source.$error"
-                            ng-if="estimateForm.source.$touched && estimateForm.source.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 100 characters!
-                            </p>
+                            ng-messages="estimateForm.class_id.$error"
+                            ng-if="estimateForm.class_id.$touched && estimateForm.class_id.$invalid">
                             <p ng-message="required" class="text-danger">
                                 This field is required!
                             </p>

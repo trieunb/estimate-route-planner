@@ -40,7 +40,7 @@ class EstimateController extends BaseController {
         $estimates = $searchQuery
             ->selectMany(
                 'e.id', 'e.txn_date', 'e.doc_number',
-                'e.source', 'e.expiration_date', 'e.total',
+                'e.expiration_date', 'e.total',
                 'e.status', 'e.email'
             )
             ->select('c.display_name', 'customer_display_name')
@@ -147,7 +147,8 @@ class EstimateController extends BaseController {
             }
         }
         $keepNullColumns = [
-            'route_id', 'date_of_signature', 'accepted_date', 'expiration_date'
+            'route_id', 'date_of_signature', 'accepted_date',
+            'expiration_date', 'class_id'
         ];
         foreach ($keepNullColumns as $column) {
             if (!@$insertData[$column]) {
@@ -238,7 +239,8 @@ class EstimateController extends BaseController {
         $newCustomerData = $this->_checkForCreateNewCustomers();
         $updateData = array_merge($this->data, $newCustomerData);
         $keepNullColumns = [
-            'route_id', 'date_of_signature', 'accepted_date', 'expiration_date'
+            'route_id', 'date_of_signature', 'accepted_date',
+            'expiration_date', 'class_id'
         ];
         foreach ($keepNullColumns as $column) {
             if (!@$updateData[$column]) {

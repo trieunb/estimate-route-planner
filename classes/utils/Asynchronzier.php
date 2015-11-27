@@ -428,6 +428,52 @@ class Asynchronzier
         $loger->log('= Sync attachments done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
+    public function syncClass($lastSyncedTime = null)
+    {
+        $loger = new ERPLogger('sync.log');
+        $startedAt = time();
+        $loger->log("\n= Sync classes started");
+        $startPos = 1;
+        $localItems = ORM::forTable('erpp_classes')->select('id')->findArray();
+        $localItemIds = [];
+        foreach ($localItems as $item) {
+            $localItemIds[] = $item['id'];
+        }
+        while (true) {
+            if ($lastSyncedTime) {
+                $query
+                    = 'SELECT * FROM Class WHERE Active IN (true, false)'
+                    ." AND MetaData.LastUpdatedTime >= '$lastSyncedTime'";
+            } else {
+                $query = 'SELECT * FROM Class WHERE Active IN (true, false)';
+            }
+            $query .= " startPosition $startPos maxResults " . self::QB_QUERY_SIZE;
+            $res = $this->Query($query);
+            $resCount = count($res);
+            if ($resCount !== 0) {
+                $loger->log("Got $resCount records");
+                ORM::getDB()->beginTransaction();
+                foreach ($res as $classEntity) {
+                    $parsedClassData = ERPDataParser::parseClass($classEntity);
+                    if (array_search($parsedClassData['id'], $localItemIds) !== false) {
+                        // The entry is already exists in local DB
+                        $classRecord = ORM::forTable('erpp_classes')->hydrate();
+                    } else {
+                        $classRecord = ORM::forTable('erpp_classes')->create();
+                    }
+                    $classRecord->set($parsedClassData)->save();
+                }
+                ORM::getDB()->commit();
+            } else {
+                $loger->log('End of data.');
+                break;
+            }
+            $startPos += self::QB_QUERY_SIZE;
+        }
+        $endAt = time();
+        $loger->log('= Sync classes done, taken: '.($endAt - $startedAt)." secs\n");
+    }
+
     public function mergeData($dataGet, $dataLocal)
     {
         $diff = [];
@@ -736,6 +782,7 @@ class Asynchronzier
     public function buildEstimateEntity($localData) {
         $estimateObj = new IPPEstimate;
         $estimateObj->CustomerRef = $localData['customer_id'];
+        $estimateObj->ClassRef = $localData['class_id'];
         $estimateObj->TxnDate = $localData['txn_date'];
         $estimateObj->ExpirationDate = $localData['expiration_date'];
         $estimateObj->CustomerMemo = $localData['estimate_footer'];
@@ -787,6 +834,7 @@ class Asynchronzier
             'name' => 'IPPEstimate',
             'attributes' => [
                 'CustomerRef'   => $localData['customer_id'],
+                'ClassRef'      => $localData['class_id'],
                 'SyncToken'     => $localData['sync_token'],
                 'DocNumber'     => $localData['doc_number'],
                 'TxnDate'       => $localData['txn_date'],

@@ -35,6 +35,21 @@ final class ERPDataParser {
         ];
     }
 
+    public function parseClass($class) {
+        $active = $class->Active == 'true';
+        $taxable = $class->Taxable == 'true';
+        list($created_at, $last_updated_at) = self::parseMetaTime($class->MetaData);
+        return [
+            'id'                => $class->Id,
+            'sync_token'        => $class->SyncToken,
+            'name'              => $class->Name,
+            'parent_id'         => $class->ParentRef,
+            'active'            => $active,
+            'created_at'        => $created_at,
+            'last_updated_at'   => $last_updated_at,
+        ];
+    }
+
     public function parseProductService($entity) {
         $active = $entity->Active == 'true';
         $taxable = $entity->Taxable == 'true';
@@ -394,6 +409,7 @@ final class ERPDataParser {
             'estimate_footer' => $estimate_footer,
             'txn_date' => $txn_date,
             'expiration_date' => $expiration_date,
+            'class_id' => $data->ClassRef,
             'due_date' => $due_date,
             'email' => $email,
 
@@ -417,7 +433,6 @@ final class ERPDataParser {
             'alternate_phone_number' => $data_local['alternate_phone_number'],
             'mobile_phone_number' => $data_local['mobile_phone_number'],
             'route_id' => $data_local['route_id'],
-            'source' => $data_local['source'],
             'customer_signature' => $data_local['customer_signature'],
             'location_notes' => $data_local['location_notes'],
             'date_of_signature' => $data_local['date_of_signature'],
