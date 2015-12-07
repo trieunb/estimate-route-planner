@@ -86,11 +86,11 @@ class CrewRouteController extends BaseController {
         $route->status = $this->data['status'];
 
         if ($route->save()) {
-            if (isset($this->data['assigned_estimate_ids'])) {
-                $oldAssignedEstimates = ORM::forTable('estimates')
-                    ->where('route_id', $routeId)
-                    ->findMany();
-
+            $oldAssignedEstimates = ORM::forTable('estimates')
+                ->where('route_id', $routeId)
+                ->findMany();
+            if (isset($this->data['assigned_estimate_ids']) &&
+                is_array($this->data['assigned_estimate_ids'])) {
                 foreach ($oldAssignedEstimates as $estimate) {
                     if (!in_array($estimate->id, $this->data['assigned_estimate_ids'])) {
                         // Un-assign to the route
@@ -105,6 +105,13 @@ class CrewRouteController extends BaseController {
                         ->findOne($id);
                     $estimate->route_id = $routeId;
                     $estimate->route_order = $index;
+                    $estimate->save();
+                }
+            } else {
+                foreach ($oldAssignedEstimates as $estimate) {
+                    // Un-assign to the route
+                    $estimate->route_id = NULL;
+                    $estimate->route_order = 0;
                     $estimate->save();
                 }
             }
