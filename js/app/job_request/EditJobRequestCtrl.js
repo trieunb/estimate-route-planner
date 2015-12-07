@@ -86,7 +86,7 @@ function EditJobRequestCtrl(
 
     $scope.submitForm = function() {
         // Check address files changed to re-geolocation
-        if ($scope.referral.address.length && (
+        if ($scope.referral.address && $scope.referral.address.length && (
                 $scope.referralForm.address.$dirty ||
                 $scope.referralForm.city.$dirty ||
                 $scope.referralForm.state.$dirty ||

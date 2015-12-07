@@ -74,7 +74,7 @@ function AddJobRequestCtrl(
     });
 
     $scope.submitForm = function() {
-        if ($scope.referral.address.length) {
+        if ($scope.referral.address && $scope.referral.address.length) {
             erpGeoLocation.resolve(getFullAddress())
                 .then(
                     function(result) {
