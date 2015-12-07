@@ -13,8 +13,7 @@
             </div>
             <div class="col-sm-5 col-xs-12">
                 <div class="form-group">
-                    <label class="control-label col-sm-4 required" for="date_requested">
-                        Date<span>(*)</span></label>
+                    <label class="control-label col-sm-4" for="date_requested">Date</label>
                     <div class="col-sm-8">
                         <input type="text"
                             class="form-control"
@@ -22,25 +21,22 @@
                             ng-init="openDateRequestPicker = false"
                             ng-focus="openDateRequestPicker = true"
                             ng-model="referral.date_requested"
+                            name="date_requested"
                             is-open="openDateRequestPicker"
-                            ng-required="true"
                             placeholder="yyyy-mm-dd"/>
                         <div class="help-block"
                             ng-messages="referralForm.date_requested.$error"
                             ng-if="referralForm.date_requested.$touched && referralForm.date_requested.$invalid">
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
+                            <p ng-message="date" class="text-danger">
+                                The date is not valid!
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-4 required" for="status">Status
-                        <span>(*)</span>
-                    </label>
+                    <label class="control-label col-sm-4" for="status">Status</label>
                     <div class="col-sm-8">
                         <select class="form-control" name="status"
-                            ng-required="true"
                             ng-model="referral.status">
                             <option value="Pending">Pending</option>
                             <option value="Assigned">Assigned</option>
@@ -48,8 +44,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-4" for="status">Estimator
-                    </label>
+                    <label class="control-label col-sm-4" for="status">Estimator</label>
                     <div class="col-sm-8">
                         <employees-select options="employees" ng-model="referral.estimator_id"></employees-select>
                     </div>
@@ -57,227 +52,198 @@
             </div>
         </div>
         <div class="row">
-        <div class="col-sm-12">
-            <div class="job-info">
-                <h3 class="text-center">Job Information</h3>
-                <div class="form-group">
-                    <label class="control-label col-sm-3 required" for="name">Name<span>(*)</span></label>
-                    <div class="col-sm-8">
-                        <customers-select
-                            options="customers"
-                            ng-model="referral.customer_id"
-                            ng-required="true"
-                            on-add="onAddCustomer(input)">
-                        </customers-select>
-                        <div class="help-block" ng-messages="referralForm.customer_id.$error"
-                            ng-if="referralForm.customer_id.$touched && referralForm.customer_id.$invalid">
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
+            <div class="col-sm-12">
+                <div class="job-info">
+                    <h3 class="text-center">Job Information</h3>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3 required" for="name">Name<span>(*)</span></label>
+                        <div class="col-sm-8">
+                            <customers-select
+                                options="customers"
+                                ng-model="referral.customer_id"
+                                ng-required="true"
+                                on-add="onAddCustomer(input)">
+                            </customers-select>
+                            <div class="help-block" ng-messages="referralForm.customer_id.$error"
+                                ng-if="referralForm.customer_id.$touched && referralForm.customer_id.$invalid">
+                                <p ng-message="required" class="text-danger">
+                                    This field is required!
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-3 required" for="address">
-                        Street address<span>(*)</span></label>
-                    <div class="col-sm-8">
-                        <input class="form-control" type="text" name="address"
-                            ng-model="referral.address" ng-required="true"
-                            ng-maxlength="255" >
-                        <div class="help-block"
-                            ng-messages="referralForm.address.$error"
-                            ng-if="referralForm.address.$touched && referralForm.address.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Maximum by 255 characters!
-                            </p>
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="address">Street address</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="address"
+                                ng-model="referral.address"
+                                ng-maxlength="255" >
+                            <div class="help-block"
+                                ng-messages="referralForm.address.$error"
+                                ng-if="referralForm.address.$touched && referralForm.address.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 255 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-3 required" for="City">City<span>(*)</span></label>
-                    <div class="col-sm-3">
-                        <input class="form-control" type="text" name="city"
-                            ng-model="referral.city"
-                            ng-required="true"
-                            ng-maxlength="100">
-                        <div class="help-block"
-                            ng-messages="referralForm.city.$error"
-                            ng-if="referralForm.city.$touched && referralForm.city.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 100 characters!
-                            </p>
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="City">City</label>
+                        <div class="col-sm-3">
+                            <input class="form-control" type="text" name="city"
+                                ng-model="referral.city"
+                                ng-maxlength="100">
+                            <div class="help-block"
+                                ng-messages="referralForm.city.$error"
+                                ng-if="referralForm.city.$touched && referralForm.city.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Please enter less than 100 characters!
+                                </p>
+                            </div>
+                        </div>
+                        <label class="control-label col-sm-2" for="State">State</label>
+                        <div class="col-sm-3">
+                            <input class="form-control" type="text" name="state"
+                                ng-model="referral.state"
+                                ng-maxlength="100">
+                            <div class="help-block" ng-messages="referralForm.state.$error"
+                                ng-if="referralForm.state.$touched && referralForm.state.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Please enter less than 100 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <label class="control-label col-sm-2 required" for="State">State<span>(*)</span></label>
-                    <div class="col-sm-3">
-                        <input class="form-control" type="text" name="state"
-                            ng-model="referral.state"
-                            ng-required="true"
-                            ng-maxlength="100">
-                        <div class="help-block" ng-messages="referralForm.state.$error"
-                            ng-if="referralForm.state.$touched && referralForm.state.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Please enter less than 100 characters!
-                            </p>
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="zip_code">Zip code
+                            </label>
+                        <div class="col-sm-3">
+                            <input class="form-control" type="text" name="zip_code"
+                                ng-model="referral.zip_code"
+                                ng-maxlength="31">
+                            <div class="help-block" ng-messages="referralForm.zip_code.$error"
+                                ng-if="referralForm.zip_code.$touched && referralForm.zip_code.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 31 characters!
+                                </p>
+                            </div>
+                        </div>
+                        <label class="control-label col-sm-2" for="country">Country</label>
+                        <div class="col-sm-3">
+                            <input class="form-control" type="text" name="country"
+                                ng-model="referral.country"
+                                ng-maxlength="100">
+                            <div class="help-block" ng-messages="referralForm.country.$error"
+                                ng-if="referralForm.country.$touched && referralForm.country.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 100 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-3 required" for="zip_code">Zip code
-                        <span>(*)</span></label>
-                    <div class="col-sm-3">
-                        <input class="form-control" type="text" name="zip_code"
-                            ng-model="referral.zip_code"
-                            ng-required="true"
-                            ng-maxlength="31">
-                        <div class="help-block" ng-messages="referralForm.zip_code.$error"
-                            ng-if="referralForm.zip_code.$touched && referralForm.zip_code.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Maximum by 31 characters!
-                            </p>
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="email">Email</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="email"
+                                ng-model="referral.email"
+                                multiple-emails
+                                ng-maxlength="255">
+                            <div class="help-block" ng-messages="referralForm.email.$error"
+                                ng-if="referralForm.email.$touched && referralForm.email.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 255 characters!
+                                </p>
+                                <p ng-message="multipleEmails" class="text-danger">
+                                    Separate multiple emails with commas
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <label class="control-label col-sm-2" for="country">Country</label>
-                    <div class="col-sm-3">
-                        <input class="form-control" type="text" name="country"
-                            ng-model="referral.country"
-                            ng-maxlength="100">
-                        <div class="help-block" ng-messages="referralForm.country.$error"
-                            ng-if="referralForm.country.$touched && referralForm.country.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Maximum by 100 characters!
-                            </p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="primary_phone_number">Primary Phone
+
+                        </label>
+                        <div class="col-sm-3">
+                            <input class="form-control" type="text" name="primary_phone_number"
+                                ng-model="referral.primary_phone_number"
+                                ng-maxlength="100">
+                            <div class="help-block"
+                                ng-messages="referralForm.primary_phone_number.$error"
+                                ng-if="referralForm.primary_phone_number.$touched && referralForm.primary_phone_number.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 100 characters!
+                                </p>
+                            </div>
+                        </div>
+                        <label class="control-label col-sm-2" for="mobile_phone_number">Secondary Phone
+                        </label>
+                        <div class="col-sm-3">
+                            <input class="form-control" type="text" name="mobile_phone_number"
+                                ng-model="referral.mobile_phone_number"
+                                ng-maxlength="100">
+                            <div class="help-block"
+                                ng-messages="referralForm.mobile_phone_number.$error"
+                                ng-if="referralForm.mobile_phone_number.$touched && referralForm.mobile_phone_number.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 100 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-3" for="email">Email</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" name="email"
-                            ng-model="referral.email"
-                            multiple-emails
-                            ng-maxlength="255">
-                        <div class="help-block" ng-messages="referralForm.email.$error"
-                            ng-if="referralForm.email.$touched && referralForm.email.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Maximum by 255 characters!
-                            </p>
-                            <p ng-message="multipleEmails" class="text-danger">
-                                Separate multiple emails with commas
-                            </p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="date_service">
+                            Date service is needed</label>
+                        <div class="col-sm-3">
+                           <input type="text" class="form-control"
+                                name="date_service"
+                                uib-datepicker-popup
+                                ng-init="openDateServicePicker = false"
+                                ng-focus="openDateServicePicker = true"
+                                ng-model="referral.date_service"
+                                is-open="openDateServicePicker"
+                                placeholder="yyyy-mm-dd"/>
+                            <div class="help-block"
+                                ng-messages="referralForm.date_service.$error"
+                                ng-if="referralForm.date_service.$touched && referralForm.date_service.$invalid">
+                                <p ng-message="date" class="text-danger">
+                                    The date is not valid!
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-3 required" for="primary_phone_number">Primary Phone
-                        <span>(*)</span>
-                    </label>
-                    <div class="col-sm-3">
-                        <input class="form-control" type="text" name="primary_phone_number"
-                            ng-model="referral.primary_phone_number"
-                            ng-required="true"
-                            ng-maxlength="100">
-                        <div class="help-block"
-                            ng-messages="referralForm.primary_phone_number.$error"
-                            ng-if="referralForm.primary_phone_number.$touched && referralForm.primary_phone_number.$invalid">
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
-                            <p ng-message="maxlength" class="text-danger">
-                                Maximum by 100 characters!
-                            </p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="how_find_us">
+                            How did you find out about us</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="how_find_us"
+                                ng-model="referral.how_find_us"
+                                ng-maxlength="255">
+                            <div class="help-block" ng-messages="referralForm.how_find_us.$error"
+                                ng-if="referralForm.how_find_us.$touched && referralForm.how_find_us.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 255 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <label class="control-label col-sm-2" for="mobile_phone_number">Secondary Phone
-                    </label>
-                    <div class="col-sm-3">
-                        <input class="form-control" type="text" name="mobile_phone_number"
-                            ng-model="referral.mobile_phone_number"
-                            ng-required="true"
-                            ng-maxlength="100">
-                        <div class="help-block"
-                            ng-messages="referralForm.mobile_phone_number.$error"
-                            ng-if="referralForm.mobile_phone_number.$touched && referralForm.mobile_phone_number.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Maximum by 100 characters!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-3 required" for="date_service">
-                        Date service is needed<span>(*)</span></label>
-                    <div class="col-sm-3">
-                       <input type="text" class="form-control"
-                            name="date_service"
-                            uib-datepicker-popup
-                            ng-init="openDateServicePicker = false"
-                            ng-focus="openDateServicePicker = true"
-                            ng-model="referral.date_service"
-                            is-open="openDateServicePicker"
-                            ng-required="true"
-                            placeholder="yyyy-mm-dd"/>
-                        <div class="help-block"
-                            ng-messages="referralForm.date_service.$error"
-                            ng-if="referralForm.date_service.$touched && referralForm.date_service.$invalid">
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-3 required" for="how_find_us">
-                        How did you find out about us<span>(*)</span></label>
-                    <div class="col-sm-8">
-                        <input class="form-control" type="text" name="how_find_us"
-                            ng-required="true"
-                            ng-model="referral.how_find_us"
-                            ng-maxlength="255">
-                        <div class="help-block" ng-messages="referralForm.how_find_us.$error"
-                            ng-if="referralForm.how_find_us.$touched && referralForm.how_find_us.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Maximum by 255 characters!
-                            </p>
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-3 required" for="type_of_service_description">Describe the type of<br>tree service you require<span>(*)</span></label>
-                    <div class="col-sm-8">
-                        <textarea class="form-control" rows="5" name="type_of_service_description"
-                            ng-model="referral.type_of_service_description" ng-required="true"
-                            ng-maxlength="10000">
-                        </textarea>
-                        <div class="help-block"
-                            ng-messages="referralForm.type_of_service_description.$error"
-                            ng-if="referralForm.type_of_service_description.$touched && referralForm.type_of_service_description.$invalid">
-                            <p ng-message="maxlength" class="text-danger">
-                                Maximum by 10000 characters!
-                            </p>
-                            <p ng-message="required" class="text-danger">
-                                This field is required!
-                            </p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="type_of_service_description">Describe the type of<br>tree service you require</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" rows="5" name="type_of_service_description"
+                                ng-model="referral.type_of_service_description"
+                                ng-maxlength="10000">
+                            </textarea>
+                            <div class="help-block"
+                                ng-messages="referralForm.type_of_service_description.$error"
+                                ng-if="referralForm.type_of_service_description.$touched && referralForm.type_of_service_description.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 10000 characters!
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
         <div class="form-group">
             <div class="text-center">

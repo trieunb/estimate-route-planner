@@ -85,29 +85,30 @@ function EditJobRequestCtrl(
     });
 
     $scope.submitForm = function() {
-        // Check address files changed to regeolocation
-        if ($scope.referralForm.address.$dirty ||
+        // Check address files changed to re-geolocation
+        if ($scope.referral.address.length && (
+                $scope.referralForm.address.$dirty ||
                 $scope.referralForm.city.$dirty ||
                 $scope.referralForm.state.$dirty ||
-                $scope.referralForm.zip_code.$dirty
+                $scope.referralForm.zip_code.$dirty)
             ) {
             erpGeoLocation.resolve(getFullAddress())
                 .then(
                     function(result) {
                         $scope.referral.lat = result.lat();
                         $scope.referral.lng = result.lng();
-                        doSubmit();
+                        saveReferral();
                     },
                     function() {
                         toastr.error('Could not find geo location. Please check the address!');
                     }
                 );
         } else {
-            doSubmit();
+            saveReferral();
         }
     };
 
-    function doSubmit() {
+    function saveReferral() {
         var referral = {};
         angular.copy($scope.referral, referral);
         referral.date_service = ($filter('date')(referral.date_service, "yyyy-MM-dd"));

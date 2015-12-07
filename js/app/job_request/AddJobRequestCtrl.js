@@ -74,35 +74,43 @@ function AddJobRequestCtrl(
     });
 
     $scope.submitForm = function() {
-        erpGeoLocation.resolve(getFullAddress())
-            .then(
-                function(result) {
-                    var referral = {};
-                    angular.copy($scope.referral, referral);
-                    referral.lat = result.lat();
-                    referral.lng = result.lng();
-                    referral.date_service = ($filter('date')(referral.date_service, "yyyy-MM-dd"));
-                    referral.date_requested = ($filter('date')(referral.date_requested, "yyyy-MM-dd"));
-                    jobRequestFactory.save(referral)
-                        .success(function(response) {
-                            if (response.success) {
-                                toastr.success(response.message);
-                                if ($scope.referral.customer_id == 0) {
-                                    // To force reload customer list
-                                    erpLocalStorage.clearCustomers();
-                                }
-                                $location.path('/edit-job-request/' + response.data.id);
-                            } else {
-                                var msg = response.message || 'An error occurred while saving job request';
-                                toastr.error(msg);
-                            }
-                        });
-                },
-                function() {
-                    toastr.error('Could not find geo location. Please check the address!');
-                }
-            );
+        if ($scope.referral.address.length) {
+            erpGeoLocation.resolve(getFullAddress())
+                .then(
+                    function(result) {
+                        $scope.referral.lat = result.lat();
+                        $scope.referral.lng = result.lng();
+                        saveReferral();
+                    },
+                    function() {
+                        toastr.error('Could not find geo location. Please check the address!');
+                    }
+                );
+        } else {
+            saveReferral();
+        }
     };
+
+    function saveReferral() {
+        var referralData = {};
+        angular.copy($scope.referral, referralData);
+        referralData.date_service = $filter('date')(referralData.date_service, "yyyy-MM-dd");
+        referralData.date_requested = $filter('date')(referralData.date_requested, "yyyy-MM-dd");
+        jobRequestFactory.save(referralData)
+            .success(function(response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    if ($scope.referral.customer_id == 0) {
+                        // To force reload customer list
+                        erpLocalStorage.clearCustomers();
+                    }
+                    $location.path('/edit-job-request/' + response.data.id);
+                } else {
+                    var msg = response.message || 'An error occurred while saving job request';
+                    toastr.error(msg);
+                }
+            });
+    }
 
     function getFullAddress() {
         return $scope.referral.address + ' ' +

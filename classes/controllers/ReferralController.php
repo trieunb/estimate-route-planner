@@ -92,8 +92,11 @@ class ReferralController extends BaseController {
     public function add() {
         $customerData = $this->_checkForCreateNewCustomer();
         $insertData = array_merge($this->data, $customerData);
-        if (!$insertData['estimator_id']) {
-            $insertData['estimator_id'] = null;
+        $keepNullFields = ['estimator_id', 'date_requested', 'date_service'];
+        foreach ($keepNullFields as $field) {
+            if (!$insertData[$field]) {
+                $insertData[$field] = null;
+            }
         }
         $model = new ReferralModel;
         $ref = $model->create();
@@ -134,11 +137,13 @@ class ReferralController extends BaseController {
         $ref = $model->findOne($updateData['id']);
         if ($ref) {
             $ref->set($updateData);
-            if (!$updateData['route_id']) {
-                $ref->route_id = NULL;
-            }
-            if (!$updateData['estimator_id']) {
-                $ref->estimator_id = NULL;
+            $keepNullFields = [
+                'route_id', 'estimator_id', 'date_requested', 'date_service'
+            ];
+            foreach ($keepNullFields as $field) {
+                if (!$updateData[$field]) {
+                    $ref->set($field, null);
+                }
             }
             $ref->save();
             $this->renderJson([
