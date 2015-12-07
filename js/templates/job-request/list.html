@@ -35,7 +35,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="ref in referrals | orderBy:'date_requested'">
+      <tr ng-repeat="ref in referrals">
         <td>
           <a href="#/edit-job-request/{{::ref.id}}" ng-if="::hasCap('erpp_edit_job_requests')"><span>{{::ref.customer_display_name}}</span></a>
           <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.customer_display_name}}</span>

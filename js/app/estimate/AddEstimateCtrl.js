@@ -326,6 +326,7 @@ function AddEstimateCtrl(
                         $scope.estimate.email = jobRequestData.email;
                         $scope.estimate.mobile_phone_number = jobRequestData.mobile_phone_number;
                         $scope.estimate.primary_phone_number = jobRequestData.primary_phone_number;
+                        $scope.estimate.class_id = jobRequestData.class_id;
                         if (jobRequestData.estimator_id) {
                             for(var i = 0; i < $scope.employees.length; i++) {
                                 if ($scope.employees[i].id == jobRequestData.estimator_id) {

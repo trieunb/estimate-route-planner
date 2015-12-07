@@ -36,7 +36,7 @@ class ReferralController extends BaseController {
             )
             ->selectExpr("CONCAT_WS(' ',wpum1.meta_value,wpum2.meta_value)", 'estimator_full_name')
             ->groupBy('r.id')
-            ->orderByDesc('r.date_requested')
+            ->orderByDesc('r.id')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
             ->findArray();
@@ -92,7 +92,9 @@ class ReferralController extends BaseController {
     public function add() {
         $customerData = $this->_checkForCreateNewCustomer();
         $insertData = array_merge($this->data, $customerData);
-        $keepNullFields = ['estimator_id', 'date_requested', 'date_service'];
+        $keepNullFields = [
+            'estimator_id', 'date_requested', 'date_service', 'class_id'
+        ];
         foreach ($keepNullFields as $field) {
             if (!$insertData[$field]) {
                 $insertData[$field] = null;
@@ -138,7 +140,8 @@ class ReferralController extends BaseController {
         if ($ref) {
             $ref->set($updateData);
             $keepNullFields = [
-                'route_id', 'estimator_id', 'date_requested', 'date_service'
+                'route_id', 'estimator_id', 'date_requested',
+                'date_service', 'class_id'
             ];
             foreach ($keepNullFields as $field) {
                 if (!$updateData[$field]) {

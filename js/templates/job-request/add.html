@@ -13,6 +13,14 @@
             </div>
             <div class="col-sm-5 col-xs-12">
                 <div class="form-group">
+                    <label class="control-label col-sm-4" for="class_id">
+                        Source</label>
+                    <div class="col-sm-8">
+                        <classes-select options="classes" ng-model="referral.class_id">
+                        </classes-select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="control-label col-sm-4" for="date_requested">Date</label>
                     <div class="col-sm-8">
                         <input type="text"
@@ -207,21 +215,6 @@
                                 ng-if="referralForm.date_service.$touched && referralForm.date_service.$invalid">
                                 <p ng-message="date" class="text-danger">
                                     The date is not valid!
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-3" for="how_find_us">
-                            How did you find out about us</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" name="how_find_us"
-                                ng-model="referral.how_find_us"
-                                ng-maxlength="255">
-                            <div class="help-block" ng-messages="referralForm.how_find_us.$error"
-                                ng-if="referralForm.how_find_us.$touched && referralForm.how_find_us.$invalid">
-                                <p ng-message="maxlength" class="text-danger">
-                                    Maximum by 255 characters!
                                 </p>
                             </div>
                         </div>

@@ -30,6 +30,7 @@ function EditJobRequestCtrl(
     $scope.companyInfo = {};
     $scope.customers = [];
     $scope.employees = [];
+    $scope.classes = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
     var init = function() {
@@ -55,6 +56,13 @@ function EditJobRequestCtrl(
                     .then(function(data) {
                         $scope.employees = [];
                         angular.copy(data, $scope.employees);
+                    });
+
+                // Load classes
+                erpLocalStorage.getClasses()
+                    .then(function(data) {
+                        $scope.classes = [];
+                        angular.copy(data, $scope.classes);
                     });
             });
     };

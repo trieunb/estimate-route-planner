@@ -4,6 +4,7 @@ class ReferralModel extends AbstractModel {
     protected $fillable = [
         'customer_id',
         'route_id',
+        'class_id',
         'route_order',
         'estimator_id',
         'date_requested',
@@ -16,7 +17,6 @@ class ReferralModel extends AbstractModel {
         'primary_phone_number',
         'mobile_phone_number',
         'date_service',
-        'how_find_us',
         'type_of_service_description',
         'status',
         'lat',
