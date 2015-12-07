@@ -185,14 +185,14 @@ class EstimateRouteController extends BaseController {
             }
         }
         if ($route->save()) {
-            if (isset($this->data['assigned_referral_ids'])) {
-                // Remove old assigned referrals from route
-                // Except `Completed` referrals
-                $oldAssignedReferrals = ORM::forTable('referrals')
-                    ->where('route_id', $routeId)
-                    ->whereIn('status', ['Pending', 'Assigned'])
-                    ->findMany();
-
+            // Remove old assigned referrals from route
+            // Except `Completed` referrals
+            $oldAssignedReferrals = ORM::forTable('referrals')
+                ->where('route_id', $routeId)
+                ->whereIn('status', ['Pending', 'Assigned'])
+                ->findMany();
+            if (isset($this->data['assigned_referral_ids']) &&
+                is_array($this->data['assigned_referral_ids'])) {
                 foreach ($oldAssignedReferrals as $referral) {
                     if (!in_array($referral->id, $this->data['assigned_referral_ids'])) {
                         $referral->status = 'Pending';
@@ -201,13 +201,19 @@ class EstimateRouteController extends BaseController {
                         $referral->save();
                     }
                 }
-
                 // Update current assigned referrals: change status to Assigned
                 foreach ($this->data['assigned_referral_ids'] as $index => $id) {
                     $referral = ORM::forTable('referrals')->findOne($id);
                     $referral->status = 'Assigned';
                     $referral->route_id = $routeId;
                     $referral->route_order = $index;
+                    $referral->save();
+                }
+            } else {
+                foreach ($oldAssignedReferrals as $referral) {
+                    $referral->status = 'Pending';
+                    $referral->route_id = NULL;
+                    $referral->route_order = 0;
                     $referral->save();
                 }
             }
