@@ -1,3 +1,11 @@
+## 1.6.2
+  - Fixed bug: The description field for Product/Service is limiting the amount of characters allowed.
+  - Remove all required fields from Job request form except customer
+  - Replace `How find us` on job request form by `Source` like estimate
+  - Fixed bug unable to remove all assigned items from route
+  - Change `Estimate footer` to `Accepted Agreement`
+  - Add `Disclaimer` field to `Company Info`, auto pre-fill to estimate forms like estimate footer
+
 ## 1.6.1
   - Update estimate 'Source' field to sync with Class in QB
   - Change text 'Equipments' to 'Equipment list' in work order
