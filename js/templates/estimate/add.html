@@ -437,26 +437,25 @@
         </div>
         <div class="space-30"></div>
         <div class="row">
-            <div class="col-md-12">
-                <label class="col-md-2" for="date_of_signature">
-                    Date of Signature</label>
-                <div class="col-md-3">
-                    <input class="form-control"
-                        type="text"
-                        name="date_of_signature"
-                        uib-datepicker-popup
-                        ng-init="openDateSignaturePicker = false"
-                        is-open="openDateSignaturePicker"
-                        ng-model="estimate.date_of_signature"
-                        ng-focus="openDateSignaturePicker = true"
-                        placeholder="yyyy-mm-dd">
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="col-md-4" for="date_of_signature">
+                            Date of Signature</label>
+                        <div class="col-md-8">
+                            <input class="form-control"
+                                type="text"
+                                name="date_of_signature"
+                                uib-datepicker-popup
+                                ng-init="openDateSignaturePicker = false"
+                                is-open="openDateSignaturePicker"
+                                ng-model="estimate.date_of_signature"
+                                ng-focus="openDateSignaturePicker = true"
+                                placeholder="yyyy-mm-dd">
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="space-30"></div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-sm-5">
+                <div class="col-md-12">
                     <div class="form-group">
                         <div class="col-sm-12">
                             <label for="customer_signature">Customer Signature Authorizes Commencement of Work</label>
@@ -493,33 +492,45 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-sm-offset-1">
-                    <div class="form-group">
-                        <label class="col-sm-12" for="estimate_footer">
-                            Estimate Footer</label>
-                        <div class="col-sm-12">
-                            <textarea class="form-control" rows="7"
-                                ng-maxlength="1000"
-                                ng-model="estimate.estimate_footer" name="estimate_footer">
-                            </textarea>
-                            <div class="help-block" ng-messages="estimateForm.estimate_footer.$error"
-                                ng-if="estimateForm.estimate_footer.$touched && estimateForm.estimate_footer.$invalid">
-                                <p ng-message="maxlength" class="text-danger">
-                                    Maximum by 1000 characters!
-                                </p>
-                            </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-12" for="estimate_disclaimer">
+                        Disclaimer</label>
+                    <div class="col-sm-12">
+                        <textarea class="form-control" rows="5"
+                            ng-maxlength="1000"
+                            ng-model="estimate.disclaimer" name="estimate_disclaimer">
+                        </textarea>
+                        <div class="help-block" ng-messages="estimateForm.estimate_disclaimer.$error"
+                            ng-if="estimateForm.estimate_disclaimer.$touched && estimateForm.estimate_disclaimer.$invalid">
+                            <p ng-message="maxlength" class="text-danger">
+                                Maximum by 1000 characters!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-12" for="estimate_footer">
+                        Accepted Agreement</label>
+                    <div class="col-sm-12">
+                        <textarea class="form-control" rows="7"
+                            ng-maxlength="1000"
+                            ng-model="estimate.estimate_footer" name="estimate_footer">
+                        </textarea>
+                        <div class="help-block" ng-messages="estimateForm.estimate_footer.$error"
+                            ng-if="estimateForm.estimate_footer.$touched && estimateForm.estimate_footer.$invalid">
+                            <p ng-message="maxlength" class="text-danger">
+                                Maximum by 1000 characters!
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12 col-xs-12 location-notes">
-                <div class="form-group">
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-primary" ng-disabled="$root.isBusy || estimateForm.$invalid">Save</button>
-                    </div>
-                </div>
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-primary" ng-disabled="$root.isBusy || estimateForm.$invalid">Save</button>
             </div>
         </div>
     </form>

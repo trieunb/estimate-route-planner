@@ -8,6 +8,7 @@ class EstimateModel extends BaseModel {
         'sync_token',
         'doc_number',
         'estimate_footer',
+        'disclaimer',
         'due_date',
         'txn_date',
         'expiration_date',

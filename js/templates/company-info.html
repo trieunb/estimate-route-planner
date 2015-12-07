@@ -29,7 +29,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3">Full Business Address</label>
                                 <div class="col-sm-9">
-                                    <textarea rows="3" class="form-control" type="text" name="full_address" ng-model="info.full_address" required></textarea>
+                                    <textarea rows="2" class="form-control" type="text" name="full_address" ng-model="info.full_address" required></textarea>
                                     <span style="color:red" ng-show="companyForm.full_address.$dirty && companyForm.full_address.$invalid">
                                         <span ng-show="companyForm.full_address.$error.required">Business Address is required.</span>
                                     </span>
@@ -40,7 +40,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3">Mailing Address</label>
                                 <div class="col-sm-9">
-                                    <textarea rows="3" class="form-control" type="text" name="mailing_address" ng-model="info.mailing_address" required></textarea>
+                                    <textarea rows="2" class="form-control" type="text" name="mailing_address" ng-model="info.mailing_address" required></textarea>
                                     <span style="color:red" ng-show="companyForm.mailing_address.$dirty && companyForm.full_address.$invalid">
                                         <span ng-show="companyForm.mailing_address.$error.required">Mailing Address is required.</span>
                                     </span>
@@ -98,7 +98,18 @@
                         </div>
                         <div class="row space_nomal">
                             <div class="form-group">
-                                <label class="control-label col-sm-3">Estimate Footer</label>
+                                <label class="control-label col-sm-3">Disclaimer</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control textarea_size" type="text"
+                                        name="setting.disclaimer"
+                                        rows="5"
+                                    ng-model="info.disclaimer" ng-required="true"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row space_nomal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3">Accepted Agreement</label>
                                 <div class="col-sm-9">
                                     <textarea class="form-control textarea_size" type="text"
                                         name="setting.estimate_footer"

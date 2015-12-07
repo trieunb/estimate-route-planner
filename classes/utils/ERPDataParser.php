@@ -436,6 +436,7 @@ final class ERPDataParser {
             'customer_signature' => $data_local['customer_signature'],
             'location_notes' => $data_local['location_notes'],
             'date_of_signature' => $data_local['date_of_signature'],
+            'disclaimer' => $data_local['disclaimer'],
             'sold_by_1' => $sold_by_1,
             'sold_by_2' => $sold_by_2,
 

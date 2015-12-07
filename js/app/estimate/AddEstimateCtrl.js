@@ -50,6 +50,7 @@ function AddEstimateCtrl(
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     // Auto fill estimate footer
     $scope.estimate.estimate_footer = $scope.companyInfo.estimate_footer;
+    $scope.estimate.disclaimer = $scope.companyInfo.disclaimer;
     $scope.estimate.sold_by_1 = sharedData.currentUserName;
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;

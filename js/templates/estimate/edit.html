@@ -499,9 +499,25 @@
                 </div>
                 <div class="col-sm-6 col-sm-offset-1">
                     <div class="form-group">
-                        <label class="col-sm-11 col-sm-offset-1 col-xs-10 col-xs-offset-2" for="estimate_footer">
-                            Estimate Footer</label>
-                        <div class="col-sm-11 col-sm-offset-1 col-xs-10 col-xs-offset-2">
+                        <label class="col-sm-12" for="estimate_disclaimer">
+                            Disclaimer</label>
+                        <div class="col-sm-12">
+                            <textarea class="form-control" rows="5"
+                                ng-maxlength="1000"
+                                ng-model="estimate.disclaimer" name="estimate_disclaimer">
+                            </textarea>
+                            <div class="help-block" ng-messages="estimateForm.estimate_disclaimer.$error"
+                                ng-if="estimateForm.estimate_disclaimer.$touched && estimateForm.estimate_disclaimer.$invalid">
+                                <p ng-message="maxlength" class="text-danger">
+                                    Maximum by 1000 characters!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-12" for="estimate_footer">
+                            Accepted Agreement</label>
+                        <div class="col-sm-12">
                             <textarea class="form-control" rows="7"
                                 ng-maxlength="1000"
                                 ng-model="estimate.estimate_footer" name="estimate_footer">
@@ -515,7 +531,7 @@
                         </div>
                     </div>
                   <div class="form-group">
-                        <div class="col-sm-11 col-sm-offset-1 col-xs-10 col-xs-offset-2">
+                        <div class="col-sm-12">
                             <label>Estimate Pictures</label>
                             <div ng-dropzone dropzone="dropzone" dropzone-config="dropzoneConfig">
                                 <div class="upload dropzone" id="drop-container">
