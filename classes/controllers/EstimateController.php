@@ -585,7 +585,11 @@ class EstimateController extends BaseController {
             trim($this->data['job_customer_display_name'])) {
             $newJobCustomerAttrs = $this->collectJobCustomerInfo();
         }
-
+        // Clear cache
+        if (($this->data['customer_id'] == 0) ||
+            ($this->data['job_customer_id'] == 0)) {
+            ERPCacheManager::clear('customers');
+        }
         try {
             // Check if the job customer is same with billing customer
             if ($newCustomerAttrs && $newJobCustomerAttrs &&
