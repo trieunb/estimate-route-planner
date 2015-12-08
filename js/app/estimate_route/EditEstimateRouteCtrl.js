@@ -6,6 +6,7 @@ angular.module('Erp')
             '$rootScope',
             'jobRequestFactory',
             'estimateRouteFactory',
+            'erpLocalStorage',
             'sharedData',
             '$routeParams',
             'uiGmapGoogleMapApi',
@@ -22,6 +23,7 @@ function EditEstimateRouteCtrl(
     $rootScope,
     jobRequestFactory,
     estimateRouteFactory,
+    erpLocalStorage,
     sharedData,
     $routeParams,
     uiGmapGoogleMapApi,
@@ -232,6 +234,25 @@ function EditEstimateRouteCtrl(
         }
     };
 
+    /**
+     * Since all the requests will be auto change the estimator assigned to
+     * same with the route, so we need to update estimator names to the view
+     */
+    var updateEstimatorAssigned = function() {
+        erpLocalStorage.getEmployees()
+            .then(function(emps) {
+                for (var i = 0; i < emps.length; i++) {
+                    if (emps[i].id == $scope.route.estimator_id) {
+                        var estimatorAssignedFullname = emps[i].name;
+                        angular.forEach($scope.assignedReferrals, function(referral) {
+                            referral.estimator_full_name = estimatorAssignedFullname;
+                        });
+                        break;
+                    }
+                }
+            });
+    };
+
     $scope.saveRoute = function() {
         var data = {};
         data.id = $scope.route.id;
@@ -257,6 +278,9 @@ function EditEstimateRouteCtrl(
                             referral.status = 'Pending';
                         }
                     });
+                    if ($scope.route.estimator_id) {
+                        updateEstimatorAssigned();
+                    }
                     $scope.currentAssignedReferrals = [];
                     angular.copy($scope.assignedReferrals, $scope.currentAssignedReferrals);
                 } else {

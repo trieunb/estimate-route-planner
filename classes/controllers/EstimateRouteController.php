@@ -140,6 +140,9 @@ class EstimateRouteController extends BaseController {
                 $referral->route_id = $route->id;
                 $referral->status = 'Assigned';
                 $referral->route_order = $index;
+                if (null !== $route->estimator_id) {
+                    $referral->estimator_id = $route->estimator_id;
+                }
                 $referral->save();
             }
             $this->renderJson([
@@ -207,6 +210,9 @@ class EstimateRouteController extends BaseController {
                     $referral->status = 'Assigned';
                     $referral->route_id = $routeId;
                     $referral->route_order = $index;
+                    if (null !== $route->estimator_id) {
+                        $referral->estimator_id = $route->estimator_id;
+                    }
                     $referral->save();
                 }
             } else {

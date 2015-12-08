@@ -29,8 +29,8 @@
                         <br>
                         <span>Phone: {{::referral.primary_phone_number}}</span><br>
                         <span>Date: {{::referral.date_requested}}</span><br>
-                        <span>Estimator: {{::referral.estimator_full_name}}</span><br>
-                        <span>Status: {{::referral.status}}</span>
+                        <span>Estimator: {{referral.estimator_full_name}}</span><br>
+                        <span>Status: {{referral.status}}</span>
                     </li>
                 </ul>
             </div>
@@ -57,8 +57,8 @@
                             <br>
                             <span>Phone: {{::referral.primary_phone_number}}</span><br>
                             <span>Date: {{::referral.date_requested}}</span><br>
-                            <span>Estimator: {{::referral.estimator_full_name}}</span><br>
-                            <span>Status: {{::referral.status}}</span>
+                            <span>Estimator: {{referral.estimator_full_name}}</span><br>
+                            <span>Status: {{referral.status}}</span>
                         </li>
                     </ul>
                 </div>
@@ -90,8 +90,8 @@
                                 <br>
                                 Phone: {{::referral.primary_phone_number}}<br/>
                                 Date: {{::referral.date_requested}}<br/>
-                                Estimator: {{::referral.estimator_full_name}}<br>
-                                Status: {{::referral.status}}
+                                Estimator: {{referral.estimator_full_name}}<br>
+                                Status: {{referral.status}}
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
@@ -108,8 +108,8 @@
                                 <br>
                                 Phone: {{::referral.primary_phone_number}}<br/>
                                 Date: {{::referral.date_requested}}<br/>
-                                Estimator: {{::referral.estimator_full_name}}<br>
-                                Status: {{::referral.status}}
+                                Estimator: {{referral.estimator_full_name}}<br>
+                                Status: {{referral.status}}
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
@@ -129,7 +129,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="route in recentRoutes">
+                  <tr ng-repeat="route in ::recentRoutes">
                     <td><span>{{::route.title}}</span></td>
                     <td><span>{{::route.estimator_full_name}}</span></td>
                     <td><span>{{::route.created_at}}</span></td>

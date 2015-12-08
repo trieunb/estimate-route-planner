@@ -4,19 +4,17 @@
         <tr>
             <th>Customer</th>
             <th>Date Requested</th>
-            <th>Estimator Assigned</th>
             <th>Status</th>
             <th ng-if="::hasCap('erpp_edit_job_requests')">Action</th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="referral in currentAssignedReferrals">
-            <td><span>{{:: referral.customer_display_name}}</span></td>
-            <td><span>{{:: referral.date_requested}}</span></td>
-            <td><span>{{:: referral.estimator_full_name}}</span></td>
-            <td><span>{{:: referral.status}}</span></td>
+            <td><span>{{ ::referral.customer_display_name}}</span></td>
+            <td><span>{{ ::referral.date_requested}}</span></td>
+            <td><span>{{ ::referral.status}}</span></td>
             <td ng-if="::hasCap('erpp_edit_job_requests')">
-                <a href="#/edit-job-request/{{:: referral.id}}">Edit</a>
+                <a href="#/edit-job-request/{{ ::referral.id}}">Edit</a>
             </td>
         </tr>
         <tr ng-if="!$root.isBusy && currentAssignedReferrals.length == 0">
