@@ -20,7 +20,7 @@ function erp_get_current_user_caps() {
 
 function erp_start_session() {
     if (session_status() == PHP_SESSION_NONE) {
-        session_save_path(ERP_SESSION_SAVE_PATH);
+        session_save_path(ERP_PLUGIN_DIR . '/tmp');
         @session_start();
         if (session_status() == PHP_SESSION_NONE) {
             wp_die("Error: PHP session could not start. Please check your config.");

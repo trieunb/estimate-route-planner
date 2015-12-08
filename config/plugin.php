@@ -25,9 +25,6 @@ if (date_default_timezone_get() != ERP_TIMEZONE) {
     date_default_timezone_set(ERP_TIMEZONE);
 }
 
-/* PHP session save path */
-erp_define_if_not('ERP_SESSION_SAVE_PATH', '/tmp');
-
 erp_define_if_not('ERP_MEMCACHED_HOST', '127.0.0.1');
 
 erp_define_if_not('ERP_MEMCACHED_PORT', 11211);
