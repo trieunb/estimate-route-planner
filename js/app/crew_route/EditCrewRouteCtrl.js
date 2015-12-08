@@ -56,7 +56,6 @@ function EditCrewRouteCtrl(
         .success(function(response) {
             $scope.route.id = response.id;
             $scope.route.title = response.title;
-            $scope.route.status = response.status;
             // Collect assigned estimates for dragging
             angular.forEach(response.assigned_estimates, function(estimate) {
                 estimate.coords = {
@@ -240,7 +239,6 @@ function EditCrewRouteCtrl(
         var data = {};
         data.id = $scope.route.id;
         data.title = $scope.route.title;
-        data.status = $scope.route.status;
         data.assigned_estimate_ids = [];
 
         angular.forEach($scope.assignedEstimates, function(estimate) {

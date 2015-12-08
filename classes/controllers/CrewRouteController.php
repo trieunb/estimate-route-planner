@@ -57,7 +57,6 @@ class CrewRouteController extends BaseController {
         $route = ORM::forTable('crew_routes')->create();
         $route->title = $this->data['title'];
         $route->created_at = date('Y-m-d H:i:s');
-        $route->status = 'Pending';
         if ($route->save()) {
             foreach ($this->data['assigned_estimate_ids'] as $index => $estimateId) {
                 $estimate = ORM::forTable('estimates')
@@ -83,7 +82,6 @@ class CrewRouteController extends BaseController {
         $routeId = $this->data['id'];
         $route = ORM::forTable('crew_routes')->findOne($routeId);
         $route->title = $this->data['title'];
-        $route->status = $this->data['status'];
 
         if ($route->save()) {
             $oldAssignedEstimates = ORM::forTable('estimates')

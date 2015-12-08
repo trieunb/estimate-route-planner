@@ -31,9 +31,7 @@ function AddCrewRouteCtrl(
     var directionsService = new google.maps.DirectionsService();
 
     $scope.setPageTitle('New Crew Route');
-    $scope.route = {
-        status: 'Pending'
-    }; // Form data
+    $scope.route = {}; // Form data
     $scope.pendingEstimates = [];
     $scope.assignedEstimates = [];
     $scope.recentRoutes = [];

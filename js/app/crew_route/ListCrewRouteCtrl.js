@@ -23,7 +23,6 @@ function ListCrewRouteCtrl(
     $scope.setPageTitle('Crew Routes List');
     $scope.routes = [];
     $scope.filter = {};
-    $scope.routeStatuses = erpOptions.routeStatuses;
 
     $scope.total = 0;
     var currentPage = 1;
@@ -59,29 +58,5 @@ function ListCrewRouteCtrl(
         paginate();
     };
 
-    $scope.saveRouteStatus = function(route) {
-        $ngBootbox.confirm("Do want to save this route?")
-            .then(
-                function() {
-                    var data = {};
-                    data.id = route.id;
-                    data.status = route.new_status;
-                    data.title = route.title;
-                    crewRouteFactory.update(data)
-                        .success(function(response) {
-                            route.status = route.new_status;
-                            if (response.success) {
-                                toastr.success(response.message);
-                            } else {
-                                var errorMsg = response.message || 'An error has occurred while saving route';
-                                toastr.error(errorMsg);
-                            }
-                        });
-                },
-                function() {
-                    route.new_status = route.status;
-                }
-            );
-    };
     paginate();
 }
