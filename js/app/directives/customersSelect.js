@@ -18,7 +18,7 @@ angular
                 onAdd: '&'
             },
             template: '<selectize ng-model="ngModel" config="selectConfig" options="selectOptions"></selectize>',
-            controller: ['$scope', function($scope) {
+            controller: ['$scope', '$attrs', function($scope, $attrs) {
                 // Default config
                 var selectConfig = {
                     valueField: 'id',
@@ -30,24 +30,28 @@ angular
                     maxOptions: 10000
                 };
 
-                // Create callback
-                selectConfig.create = function(input, callback) {
-                    var newCustomer = {
-                        id: 0,
-                        display_name: input,
-                        order: $scope.selectOptions.length
+                // Create callback if specified
+                if ('undefined' !== typeof($attrs.onAdd)) {
+                    selectConfig.create = function(input, callback) {
+                        var newCustomer = {
+                            id: 0,
+                            display_name: input,
+                            order: $scope.selectOptions.length
+                        };
+                        // Remove the last new customer
+                        angular.forEach($scope.selectOptions, function(cus, index) {
+                            if (cus.id === 0) {
+                                $scope.selectOptions.splice(index, 1);
+                                return;
+                            }
+                        });
+                        $scope.selectOptions.push(newCustomer);
+                        $scope.onAdd({input: input});
+                        callback(newCustomer);
                     };
-                    // Remove the last new customer
-                    angular.forEach($scope.selectOptions, function(cus, index) {
-                        if (cus.id === 0) {
-                            $scope.selectOptions.splice(index, 1);
-                            return;
-                        }
-                    });
-                    $scope.selectOptions.push(newCustomer);
-                    $scope.onAdd({input: input});
-                    callback(newCustomer);
-                };
+                } else {
+                    selectConfig.create = false;
+                }
 
                 // Custom rendering for displaying sub-customers
                 selectConfig.render = {
