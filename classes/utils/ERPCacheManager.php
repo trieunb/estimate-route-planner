@@ -18,7 +18,7 @@ class ERPCacheManager {
      */
     public static function getInstance() {
         if (null === static::$instance) {
-            static::$instance = new static();
+            static::$instance = new static;
         }
         return static::$instance;
     }
@@ -30,21 +30,59 @@ class ERPCacheManager {
      * @return mixed
      */
     public static function fetch($key, Closure $callback) {
-        $value = static::getInstance()->getClient()->get($key);
+        $value = static::getInstance()
+            ->getClient()
+            ->get(ERP_CACHE_PREFIX . $key);
         if ($value === false) {
             $value = $callback();
-            static::getInstance()->getClient()->set($key, $value);
+            static::getInstance()
+                ->getClient()
+                ->set(ERP_CACHE_PREFIX . $key, $value);
         }
         return $value;
     }
 
     /**
-     * Remove the cached value by given key
+     * Clear the cached value by given key
      * @param $key string
      * @return mixed
      */
-    public static function remove($key) {
-        self::getIntance()->getClient()->delete($key);
+    public static function clear($key) {
+        return self::getInstance()
+            ->getClient()
+            ->delete(ERP_CACHE_PREFIX . $key);
+    }
+
+    /**
+     * Set the cache value by given key
+     * @param $key string
+     * @return bool
+     */
+    public static function set($key) {
+        return self::getInstance()
+            ->getClient()
+            ->set(ERP_CACHE_PREFIX . $key);
+    }
+
+    /**
+     * Set the cache value by given key
+     * @param $key string
+     * @return mixed
+     */
+    public static function get($key) {
+        return self::getInstance()
+            ->getClient()
+            ->set(ERP_CACHE_PREFIX . $key);
+    }
+
+    /**
+     * Flush all caches
+     * @return void
+     */
+    public static function flush() {
+        return self::getInstance()
+            ->getClient()
+            ->flush();
     }
 
     private function getClient() {

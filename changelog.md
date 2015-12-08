@@ -1,3 +1,8 @@
+## 1.6.3
+  - Remove create new customer from job request form
+  - Remove statuses from crew routes
+  - Use Memcache for caching data
+
 ## 1.6.2
   - Fixed bug: The description field for Product/Service is limiting the amount of characters allowed.
   - Remove all required fields from Job request form except customer

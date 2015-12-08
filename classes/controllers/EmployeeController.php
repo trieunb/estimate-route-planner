@@ -5,7 +5,6 @@ class EmployeeController extends BaseController {
      * Return list of WP users
      */
     public function index() {
-        $emps = [];
         $WPUsers = ORM::forTable('wp_users')
             ->tableAlias('wp_u')
             ->leftOuterJoin(

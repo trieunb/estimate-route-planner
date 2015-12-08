@@ -31,19 +31,23 @@ class AppController extends BaseController {
     }
 
     public function productServices() {
-        $productServices = ORM::forTable('products_and_services')
-            ->selectMany('id', 'name', 'description', 'active', 'rate')
-            ->orderByAsc('name')
-            ->findArray();
+        $productServices = ERPCacheManager::fetch('products_services', function() {
+            return ORM::forTable('products_and_services')
+                ->selectMany('id', 'name', 'description', 'active', 'rate')
+                ->orderByAsc('name')
+                ->findArray();
+        });
         $this->renderJson($productServices);
     }
 
     public function classes() {
-        $classes = ORM::forTable('erpp_classes')
+        $classes = ERPCacheManager::fetch('classes', function() {
+            return ORM::forTable('erpp_classes')
             ->selectMany('id', 'name', 'parent_id', 'active')
             ->where('active', true)
             ->orderByAsc('name')
             ->findArray();
+        });
         $this->renderJson($classes);
     }
 }

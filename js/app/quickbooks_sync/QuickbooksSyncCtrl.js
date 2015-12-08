@@ -31,6 +31,7 @@ function QuickbooksSyncCtrl(
                     // Expire cached data
                     erpLocalStorage.clearCustomers();
                     erpLocalStorage.clearProductServices();
+                    erpLocalStorage.clearClasses();
                 } else {
                     var msg = response.message || 'An error has occurred while synchrinize data';
                     toastr.error(msg);

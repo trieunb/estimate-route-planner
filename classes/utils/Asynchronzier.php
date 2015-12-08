@@ -124,7 +124,10 @@ class Asynchronzier
         }
         $loger->log("Update: $updateCount");
         $loger->log("Create: $createCount");
-        $loger->log('== Sync customer done, taken: '.(time() - $startedAt)." secs\n");
+        if ($updateCount > 0 || $createCount > 0) {
+            ERPCacheManager::clear('customers');
+        }
+        $loger->log('== Sync customer done, taken: ' . (time() - $startedAt)." secs\n");
     }
 
     /**
@@ -319,7 +322,8 @@ class Asynchronzier
         $loger->log("\n= Sync product/services started");
         $startPos = 1;
         $localPDs = ORM::forTable('products_and_services')
-            ->select('id')->findArray();
+            ->select('id')
+            ->findArray();
         $localPDIds = [];
         foreach ($localPDs as $item) {
             $localPDIds[] = $item['id'];
@@ -336,6 +340,9 @@ class Asynchronzier
             $res = $this->Query($query);
             $resCount = count($res);
             if ($resCount !== 0) {
+                if ($startPos === 1) {
+                    ERPCacheManager::clear('products_services');
+                }
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $PDObj) {
@@ -451,6 +458,9 @@ class Asynchronzier
             $res = $this->Query($query);
             $resCount = count($res);
             if ($resCount !== 0) {
+                if ($startPos === 1) {
+                    ERPCacheManager::clear('classes');
+                }
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $classEntity) {

@@ -139,6 +139,14 @@ function erpLocalStorage(
         cacheData.productServices = null;
     };
 
+    this.clearClasses = function() {
+        cacheData.classes = null;
+    };
+
+    this.clearEmployees = function() {
+        cacheData.employees = null;
+    };
+
     this.getCustomers = function() {
         return $q(function(resolve) {
             if (null === cacheData.customers) {

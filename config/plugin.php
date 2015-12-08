@@ -32,6 +32,8 @@ erp_define_if_not('ERP_MEMCACHED_HOST', '127.0.0.1');
 
 erp_define_if_not('ERP_MEMCACHED_PORT', 11211);
 
+erp_define_if_not('ERP_CACHE_PREFIX', 'erpp');
+
 /* Max excution time */
 set_time_limit(600); // 10 mins
 
