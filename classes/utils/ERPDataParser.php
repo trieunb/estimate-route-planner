@@ -378,8 +378,9 @@ final class ERPDataParser {
         $estimate_footer = $data->CustomerMemo;
         list($created_at, $last_updated_at) = self::parseMetaTime($data->MetaData);
         if (($data_local != null) && ($data->TxnStatus == 'Accepted') &&
-            ($data_local['status'] == 'Completed')) {
-            $status = 'Completed';
+            ( ($data_local['status'] == 'Completed') ||
+                ($data_local['status'] == 'Routed') )) {
+            $status = $data_local['status'];
         } else {
             $status = $data->TxnStatus;
         }

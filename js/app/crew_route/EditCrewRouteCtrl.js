@@ -247,12 +247,20 @@ function EditCrewRouteCtrl(
         crewRouteFactory.update(data)
             .success(function(response) {
                 if (response.success) {
-                   toastr.success(response.message);
-                   $scope.currentAssignedEstimates = [];
-                   angular.copy($scope.assignedEstimates, $scope.currentAssignedEstimates);
+                    angular.forEach($scope.assignedEstimates, function(estimate) {
+                        if (estimate.status === 'Accepted') {
+                            estimate.status = 'Routed';
+                        }
+                    });
+                    angular.forEach($scope.pendingEstimates, function(estimate) {
+                        estimate.status = 'Accepted';
+                    });
+                    toastr.success(response.message);
+                    $scope.currentAssignedEstimates = [];
+                    angular.copy($scope.assignedEstimates, $scope.currentAssignedEstimates);
                 } else {
-                   var msg = response.message || 'An error occurred while saving estimate';
-                   toastr.error(msg);
+                    var msg = response.message || 'An error occurred while saving estimate';
+                    toastr.error(msg);
                 }
             });
     };

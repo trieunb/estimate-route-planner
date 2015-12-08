@@ -30,7 +30,7 @@
                         Phone: {{::estimate.primary_phone_number}}<br>
                         Exp: {{::estimate.expiration_date}}<br>
                         Total: ${{::estimate.total}}<br>
-                        Status: {{::estimate.status}}
+                        Status: {{estimate.status}}
                     </li>
                 </ul>
             </div>
@@ -58,7 +58,7 @@
                         Phone: {{::estimate.primary_phone_number}}<br>
                         Exp: {{::estimate.expiration_date}}<br>
                         Total: ${{::estimate.total}}<br>
-                        Status: {{::estimate.status}}
+                        Status: {{estimate.status}}
                     </li>
                 </ul>
             </div>
@@ -90,7 +90,7 @@
                                 Phone: {{::estimate.primary_phone_number}}<br>
                                 Exp: {{::estimate.expiration_date}}<br>
                                 Total: ${{::estimate.total}}<br>
-                                Status: {{::estimate.status}}
+                                Status: {{estimate.status}}
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
@@ -108,7 +108,7 @@
                                 Phone: {{::estimate.primary_phone_number}}<br>
                                 Exp: {{::estimate.expiration_date}}<br>
                                 Total: ${{::estimate.total}}<br>
-                                Status: {{::estimate.status}}
+                                Status: {{estimate.status}}
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
@@ -148,7 +148,7 @@
                     </td>
                   </tr>
                   <tr ng-if="!$root.isBusy && currentAssignedEstimates.length == 0">
-                      <td colspan="4" class="text-center">
+                      <td colspan="6" class="text-center">
                           There is no assigned estimates
                       </td>
                   </tr>

@@ -94,9 +94,14 @@ function ListEstimateCtrl(
             label: 'Accepted'
         },
         {
+            value: 'Routed',
+            label: 'Routed' // NOTE: Quickbooks still shows Accepted
+        },
+        {
             value: 'Completed',
             label: 'Completed/WFI' // NOTE: Quickbooks still shows Accepted
         },
+
         {
             value: 'Closed',
             label: 'Closed'

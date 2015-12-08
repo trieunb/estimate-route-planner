@@ -63,6 +63,9 @@ class CrewRouteController extends BaseController {
                     ->findOne($estimateId);
                 $estimate->route_id = $route->id;
                 $estimate->route_order = $index;
+                if ($estimate->status == 'Accepted') {
+                    $estimate->status = 'Routed';
+                }
                 $estimate->save();
             }
             $this->renderJson([
@@ -94,6 +97,9 @@ class CrewRouteController extends BaseController {
                         // Un-assign to the route
                         $estimate->route_id = NULL;
                         $estimate->route_order = 0;
+                        if ($estimate->status == 'Routed') {
+                            $estimate->status = 'Accepted';
+                        }
                         $estimate->save();
                     }
                 }
@@ -103,6 +109,9 @@ class CrewRouteController extends BaseController {
                         ->findOne($id);
                     $estimate->route_id = $routeId;
                     $estimate->route_order = $index;
+                    if ($estimate->status == 'Accepted') {
+                        $estimate->status = 'Routed';
+                    }
                     $estimate->save();
                 }
             } else {
@@ -110,6 +119,9 @@ class CrewRouteController extends BaseController {
                     // Un-assign to the route
                     $estimate->route_id = NULL;
                     $estimate->route_order = 0;
+                    if ($estimate->status == 'Routed') {
+                        $estimate->status = 'Accepted';
+                    }
                     $estimate->save();
                 }
             }

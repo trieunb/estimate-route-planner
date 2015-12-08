@@ -825,7 +825,7 @@ class Asynchronzier
         if (isset($localData['id'])) {
             $estimateObj->Id = $localData['id'];
         }
-        if ($localData['status'] === 'Completed') {
+        if ($localData['status'] === 'Completed' || $localData['status'] === 'Routed') {
             $estimateObj->TxnStatus = 'Accepted';
         } else {
             $estimateObj->TxnStatus = $localData['status'];
@@ -938,7 +938,7 @@ class Asynchronzier
         if (isset($localData['id'])) {
             $value['attributes']['Id'] = $localData['id'];
         }
-        if ($localData['status'] == 'Completed') {
+        if ($localData['status'] == 'Completed' || $localData['status'] == 'Routed') {
             $value['attributes']['TxnStatus'] = 'Accepted';
         } else {
             $value['attributes']['TxnStatus'] = $localData['status'];
