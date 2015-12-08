@@ -14,7 +14,6 @@
 --
 
 DROP TABLE IF EXISTS `company_info`;
-
 CREATE TABLE `company_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -24,6 +23,7 @@ CREATE TABLE `company_info` (
   `fax` varchar(50) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `website` varchar(255) DEFAULT NULL,
+  `disclaimer` text,
   `estimate_footer` text,
   `logo_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -31,7 +31,7 @@ CREATE TABLE `company_info` (
 
 LOCK TABLES `company_info` WRITE;
 /*!40000 ALTER TABLE `company_info` DISABLE KEYS */;
-INSERT INTO `company_info` VALUES (1,'Your Company Name','Company business address','Company mailing address','(123) 456-7890','123-456-789','company-name@example.com','http://example.com','Thank you for your business and have a great day!',NULL);
+INSERT INTO `company_info` VALUES (1,'Your Company Name','Company business address','Company mailing address','(123) 456-7890','123-456-789','company-name@example.com','http://example.com',NULL, 'Thank you for your business and have a great day!',NULL);
 /*!40000 ALTER TABLE `company_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -40,7 +40,6 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `sync_histories`;
-
 CREATE TABLE `sync_histories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` varchar(50) NOT NULL,
@@ -56,7 +55,6 @@ CREATE TABLE `sync_histories` (
 --
 
 DROP TABLE IF EXISTS `erpp_classes`;
-
 CREATE TABLE `erpp_classes` (
   `id` bigint(20) NOT NULL,
   `parent_id` bigint(20) DEFAULT NULL,
@@ -67,20 +65,20 @@ CREATE TABLE `erpp_classes` (
   `last_updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `estimates`
 --
 
 DROP TABLE IF EXISTS `estimates`;
-
 CREATE TABLE `estimates` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) NOT NULL DEFAULT '0',
   `customer_id` bigint(20) NOT NULL,
   `route_id` bigint(20) DEFAULT NULL,
   `route_order` int(11) NOT NULL DEFAULT '0',
+  `disclaimer` text,
   `estimate_footer` text COMMENT 'the customer memo',
   `due_date` date DEFAULT NULL,
   `txn_date` date DEFAULT NULL COMMENT 'this is estimate date',
@@ -137,7 +135,6 @@ CREATE TABLE `estimates` (
 --
 
 DROP TABLE IF EXISTS `customers`;
-
 CREATE TABLE `customers` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) DEFAULT NULL,
@@ -187,7 +184,6 @@ CREATE TABLE `customers` (
 --
 
 DROP TABLE IF EXISTS `estimate_attachments`;
-
 CREATE TABLE `estimate_attachments` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) DEFAULT NULL,
@@ -209,12 +205,12 @@ CREATE TABLE `estimate_attachments` (
 --
 
 DROP TABLE IF EXISTS `referrals`;
-
 CREATE TABLE `referrals` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` bigint(20) DEFAULT NULL,
   `estimator_id` bigint(20) DEFAULT NULL,
   `route_id` bigint(20) DEFAULT NULL,
+  `class_id` bigint(20) DEFAULT NULL,
   `route_order` int(11) NOT NULL DEFAULT '0',
   `address` text,
   `city` varchar(100) DEFAULT NULL,
@@ -225,7 +221,6 @@ CREATE TABLE `referrals` (
   `primary_phone_number` varchar(100) DEFAULT NULL,
   `mobile_phone_number` varchar(100) DEFAULT NULL,
   `date_service` date DEFAULT NULL,
-  `how_find_us` varchar(255) DEFAULT NULL,
   `type_of_service_description` text,
   `status` varchar(50) DEFAULT NULL,
   `date_requested` date DEFAULT NULL,
@@ -244,7 +239,6 @@ CREATE TABLE `referrals` (
 --
 
 DROP TABLE IF EXISTS `estimate_routes`;
-
 CREATE TABLE `estimate_routes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -259,11 +253,9 @@ CREATE TABLE `estimate_routes` (
 --
 
 DROP TABLE IF EXISTS `crew_routes`;
-
 CREATE TABLE `crew_routes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
-  `status` varchar(50) NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
@@ -273,7 +265,6 @@ CREATE TABLE `crew_routes` (
 --
 
 DROP TABLE IF EXISTS `preferences`;
-
 CREATE TABLE `preferences` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `gmap_api_key` varchar(255) DEFAULT NULL,
@@ -297,7 +288,6 @@ CREATE TABLE `preferences` (
 --
 
 DROP TABLE IF EXISTS `employees`;
-
 CREATE TABLE `employees` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) NOT NULL,
@@ -326,7 +316,6 @@ CREATE TABLE `employees` (
 --
 
 DROP TABLE IF EXISTS `estimate_lines`;
-
 CREATE TABLE `estimate_lines` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `line_id` bigint(20) NOT NULL DEFAULT '0',
@@ -335,7 +324,7 @@ CREATE TABLE `estimate_lines` (
   `product_service_id` bigint(20) DEFAULT NULL,
   `qty` int(11) DEFAULT '0',
   `rate` float DEFAULT '0' COMMENT 'UnitPrice on QB',
-  `description` varchar(255) DEFAULT NULL,
+  `description` text,
   PRIMARY KEY (`id`),
   KEY `line_estimate_id` (`estimate_id`),
   KEY `line_product_service_id` (`product_service_id`)
@@ -346,7 +335,6 @@ CREATE TABLE `estimate_lines` (
 --
 
 DROP TABLE IF EXISTS `products_and_services`;
-
 CREATE TABLE `products_and_services` (
   `id` bigint(20) NOT NULL,
   `sync_token` bigint(20) DEFAULT NULL,
