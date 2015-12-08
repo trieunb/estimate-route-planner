@@ -7,6 +7,7 @@
   - PHP OAuth extension
   - WordPress 4
   - NodeJS(run Grunt tasks when build a release)
+  - Memcached
 
 ### Development setup
   - Source code: go to `wp-content/plugins` folder and then clone project:
