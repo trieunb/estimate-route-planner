@@ -278,15 +278,20 @@ class EstimateController extends BaseController {
                     $atmModel->delete($signatureAttachment->id);
                     $needUpdateSyncToken = true;
                 }
+            } else {
+                // Change status to Accepted when the signature is added(once)
+                $updateData['status'] = 'Accepted';
             }
             if ($needUpdateSyncToken) {
                 $newToken = $estimateM->updateSyncToken($id);
                 $estimate->sync_token = $newToken;
             }
+
         } else {
             // Keep the old url
             $updateData['customer_signature'] = $estimate->customer_signature;
         }
+
         $updateData['sync_token'] = $estimate->sync_token;
         $estimateEntity = $sync->buildEstimateEntity($updateData);
         try {

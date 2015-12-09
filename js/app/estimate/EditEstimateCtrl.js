@@ -413,6 +413,10 @@ function EditEstimateCtrl(
                         estimateFactory.update(estimate)
                             .success(function(response) {
                                 if (response.success) {
+                                    // Auto cange status to Accepted when the signature is added(once)
+                                    if ($scope.isChangedSignature && !$scope.estimate.customer_signature) {
+                                        $scope.estimate.status = 'Accepted';
+                                    }
                                     $scope.isChangedSignature = false;
                                     toastr.success(response.message);
                                     if (sendMail) {
