@@ -8,6 +8,10 @@
   - WordPress 4
   - NodeJS(run Grunt tasks when build a release)
   - Memcached
+    - Ubuntu:
+      ```
+      sudo apt-get install php5-memcache memcached
+      ```
 
 ### Development setup
   - Source code: go to `wp-content/plugins` folder and then clone project:
