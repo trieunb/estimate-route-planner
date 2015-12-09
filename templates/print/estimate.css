@@ -1,0 +1,102 @@
+body {
+    font-size: 13px;
+    line-height: 17px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.section {
+    margin: 20px 0;
+    clear: both;
+    overflow: auto;
+    width: auto;
+}
+table {
+    border-collapse: collapse;
+}
+table tr.head td {
+    font-weight: 600;
+    background-color: #eee;
+}
+table td {
+    padding: 5px;
+}
+td.invisible {
+    border-left: none !important;
+    border-bottom: none !important;
+    background: none !important;
+    border-top: none !important;
+}
+
+/* Header section */
+.header > div {
+    display: inline-block;
+    float: left;
+}
+.header .logo {
+    width: 25%;
+}
+.header .logo img{
+    max-width: 70%;
+}
+.header .company-info {
+    width: 45%;
+}
+.header .company-info .name{
+    font-size: 18px;
+    font-weight: 600;
+}
+.header .estimate-info {
+    float: right;
+    text-align: right;
+    width: 30%;
+}
+.header .estimate-info .title {
+    font-size: 18px;
+    font-weight: 600;
+    float: right;
+}
+.header .estimate-info table {
+    text-align: center;
+    float: right;
+    width: 100%;
+}
+table.bordered td {
+    border: 1px solid #ddd;
+}
+
+/* Billing/shipping address section */
+.address {
+    padding: 0 50px;
+    margin-top: 30px;
+}
+.address > div {
+    display: inline-block;
+    float: left;
+    width: 50%;
+}
+.address table td {
+    border: 1px solid #ddd;
+}
+.address table {
+    width: 250px;
+}
+
+/* Product/service section */
+.lines table {
+    width: 100%;
+}
+.lines .product-name {
+    font-weight: 600;
+}
+
+/* Footer section */
+.footer > div {
+    display: inline-block;
+}
+.footer .left {
+    float: left;
+    width: 65%;
+}
+.footer .right {
+    float: right;
+    width: 30%;
+}

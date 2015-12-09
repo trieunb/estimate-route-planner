@@ -452,7 +452,7 @@ class EstimateController extends BaseController {
                     ->orderByAsc('el.line_num')
                     ->findArray();
             ob_start();
-            require ERP_TEMPLATES_DIR . '/print/estimate.dompdf.php';
+            require ERP_TEMPLATES_DIR . '/print/estimate.php';
             $html = ob_get_clean();
             $dompdf = new DOMPDF();
             $dompdf->load_html($html);

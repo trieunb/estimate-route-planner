@@ -1,7 +1,12 @@
 ## 1.6.3
+  - Use Memcache for caching data
   - Remove create new customer from job request form
   - Remove statuses from crew routes
-  - Use Memcache for caching data
+  - Add new `Routed` status for estimate
+  - Job Request - auto change Estimator Assigned to the same with the route when
+  transition from pending queue to assigned
+  - Auto transition estimate status to Accepted when a signature is added
+  - Change print/pdf layout for estimate
 
 ## 1.6.2
   - Fixed bug: The description field for Product/Service is limiting the amount of characters allowed.

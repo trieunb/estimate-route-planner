@@ -75,6 +75,10 @@ angular
                 label: 'Completed/WFI' // NOTE: Quickbooks still shows Accepted
             },
             {
+                value: 'Routed',
+                label: 'Routed' // NOTE: Quickbooks still shows Accepted
+            },
+            {
                 value: 'Closed',
                 label: 'Closed'
             },
