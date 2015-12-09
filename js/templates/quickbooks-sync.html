@@ -61,7 +61,9 @@
                                                 {{::sync.start_at}} UTC
                                             </td>
                                             <td>
-                                                {{::sync.note}}
+                                                <p style="word-break: break-word;">
+                                                    <text-truncate text="sync.note" limit="200"></text-truncate>
+                                                </p>
                                             </td>
                                         </tr>
                                     </tbody>

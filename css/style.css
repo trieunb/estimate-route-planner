@@ -432,6 +432,9 @@ input[type=number]::-webkit-outer-spin-button {
 .bootbox.modal .btn{
     border-radius: 0;
 }
+.bootbox .bootbox-body {
+    word-break: break-word;
+}
 .modal {
     top: 15px;
 }
@@ -648,6 +651,7 @@ div.queue-toolbar {
 .worker-order-line.line-invisible input[type=text]{
     color: #BFBFBF;
 }
-.equipment-list {
-
+.btn-show-truncated-details {
+    cursor: pointer;
+    color: #31708f;
 }
