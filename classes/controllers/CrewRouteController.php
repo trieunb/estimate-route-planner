@@ -137,5 +137,24 @@ class CrewRouteController extends BaseController {
         }
     }
 
+    /**
+     * Get the work order info
+     */
+    public function showWorkOrder() {
+
+    }
+
+    public function saveWorkOrder() {
+        $workOrder = ORM::forTable('erpp_work_orders')
+            ->where('route_id', $this->data['route_id'])
+            ->findOne();
+        if (null == $workOrder) {
+            $workOrder = ORM::forTable('erpp_work_orders')->create();
+        }
+        $workOrder->route_id = $this->data['route_id'];
+        $workOrder->equipment_list = $this->data['equipment_list'];
+        $workOrder->start_time = $this->data['start_time'];
+        $workOrder->save();
+    }
 }
 ?>

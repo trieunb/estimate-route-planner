@@ -1,5 +1,11 @@
 <div ng-controller="WorkOrderCtrl">
-    <button type="button" ng-click="print()" class="btn btn-primary hide-print pull-right">Print</button>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" ng-click="print()" class="btn btn-default hide-print">Print</button>
+            <button type="button" ng-click="save()" class="btn btn-primary hide-print">Save</button>
+        </div>
+    </div>
+
     <div id="form-work-order">
         <h3 class="text-center legend"><b>Work Order</b></h3>
         <div class="route-title">
@@ -10,8 +16,8 @@
             <input type="text" class="hide-print input-equipment-list" ng-model="route.equipment_list">
         </div>
         <div class="start-time">
-            <strong>Start time:</strong> <span ng-bind="route.startTime" class="print-only"></span>
-            <input type="text" class="input-time hide-print" ng-model="route.startTime">
+            <strong>Start time:</strong> <span ng-bind="route.start_time" class="print-only"></span>
+            <input type="text" class="input-time hide-print" ng-model="route.start_time">
         </div>
         <div class="estimates">
             <ul class="list-unstyled">
@@ -48,10 +54,11 @@
                                     type="checkbox"
                                         ng-model="line.visible"
                                         class="hide-print" title="Hide/Show on print">
-                                <input class="hide-print input-worker-order-line" type="text"
+                                <textarea class="hide-print input-worker-order-line" type="text"
                                     ng-if="!line.is_empty"
                                     ng-readonly="!line.visible"
                                     ng-model="line.worker_order_line">
+                                </textarea>
                                 <span class="print-only" ng-bind="line.worker_order_line"></span>
                             </div>
                         </li>
@@ -61,8 +68,9 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <button type="button" ng-click="print()" class="hide-print btn btn-primary pull-right">Print</button>
+        <div class="col-md-12 text-right">
+            <button type="button" ng-click="print()" class="hide-print btn btn-default">Print</button>
+            <button type="button" ng-click="save()" class="hide-print btn btn-primary">Save</button>
         </div>
     </div>
 </div>

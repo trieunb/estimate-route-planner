@@ -522,10 +522,6 @@ label.required span {
     margin-top: 20px;
     font-size: 13px;
 }
-#form-work-order .estimates ul.lines {
-    margin-top: -10px;
-}
-
 @media screen {
     .print-only {
         display: none;
@@ -626,6 +622,11 @@ div.queue-toolbar {
     margin-bottom: 10px;
     display: inline-block;
 }
+.worker-order-line input[type=checkbox] {
+    float: left;
+    margin-top: 5px;
+    margin-right: 10px;
+}
 @media(min-width:1025px) {
     div.queue-toolbar {
         float: right;
@@ -640,11 +641,6 @@ div.queue-toolbar {
 @media(max-width:1024px) {
     .input-worker-order-line, .input-equipment-list {
         width: 85%;
-    }
-    .worker-order-line input[type=checkbox] {
-        float: left;
-        margin-top: 5px;
-        margin-right: 10px;
     }
 }
 

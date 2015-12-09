@@ -27,6 +27,12 @@ function crewRouteFactory($http) {
                 data: data
             });
         },
+        saveWorkOrder: function(data) {
+            return $http.post(ERPApp.baseAPIPath, {
+                _do: 'saveWorkOrder',
+                data: data
+            });
+        },
         recent: function() {
             return $http.get(ERPApp.baseAPIPath, {
                 params: {

@@ -54,6 +54,7 @@ return [
     'getCrewRoute'        => 'CrewRoute@show',
     'saveCrewRoute'       => 'CrewRoute@save',
     'updateCrewRoute'     => 'CrewRoute@update',
+    'saveWorkOrder'       => 'CrewRoute@saveWorkOrder',
 
     // Settings
     'getSyncInfo'             => 'QuickbooksSync@getInfo',

@@ -18,16 +18,16 @@ function WorkOrderCtrl(
         $routeParams,
         crewRouteFactory,
         estimateFactory) {
-    $scope.setPageTitle('Create Work Order');
+    $scope.setPageTitle('Work Order');
     $scope.route = {
         assignedEstimates: []
     };
-    var routeId = $routeParams.id;
-    crewRouteFactory.get(routeId).
+    $scope.route_id = $routeParams.id;
+    crewRouteFactory.get($scope.route_id).
         success(function(data) {
             $scope.route = data;
             $scope.route.assignedEstimates = [];
-            estimateFactory.listAssigedToRoute(routeId).
+            estimateFactory.listAssigedToRoute($scope.route_id).
                 success(function(responseData) {
                     angular.forEach(responseData, function(estimate) {
                         estimate.estimators = [];
@@ -42,12 +42,13 @@ function WorkOrderCtrl(
                             line.is_empty = !line.product_service_id &&
                                 !line.description;
                             if (!line.is_empty) {
-                                var worker_order_line = '';
+                                line.worker_order_line = '';
                                 if (line.qty) {
-                                    worker_order_line += line.qty + ' - ';
+                                    line.worker_order_line += line.qty + ' - ';
                                 }
-                                line.worker_order_line =
-                                    worker_order_line + line.description;
+                                if (line.description !== null) {
+                                    line.worker_order_line += line.description;
+                                }
                             }
                         });
                     });
@@ -56,5 +57,16 @@ function WorkOrderCtrl(
 
     $scope.print = function() {
         window.print();
+    };
+
+    $scope.save = function() {
+        var data = {};
+        data.route_id = $scope.route_id;
+        data.equipment_list = $scope.route.equipment_list;
+        data.start_time = $scope.route.start_time;
+        crewRouteFactory.saveWorkOrder(data)
+            .success(function(response) {
+                console.log(response);
+            });
     };
 }
