@@ -1,3 +1,8 @@
+## 1.6.4
+  - Enabled create new customer function in job request form
+  - Work order:
+    - Replace input tag by textarea tag for service lines
+
 ## 1.6.3
   - Use Memcache for caching data
   - Remove create new customer from job request form

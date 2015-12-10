@@ -69,7 +69,8 @@
                             <customers-select
                                 options="customers"
                                 ng-model="referral.customer_id"
-                                ng-required="true">
+                                ng-required="true"
+                                on-add="onAddCustomer(input)">
                             </customers-select>
                             <div class="help-block" ng-messages="referralForm.customer_id.$error"
                                 ng-if="referralForm.customer_id.$touched && referralForm.customer_id.$invalid">
