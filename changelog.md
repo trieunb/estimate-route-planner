@@ -1,3 +1,9 @@
+## 1.7.0
+  - Use pop-up box for create/edit customer in request and estimate forms
+
+## 1.6.5
+  - Add save route function. Only basic fields, more data(estimates) will be saved on next versions.
+
 ## 1.6.4
   - Enabled create new customer function in job request form
   - Work order:
