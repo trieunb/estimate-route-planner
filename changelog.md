@@ -2,6 +2,7 @@
   - Enabled create new customer function in job request form
   - Work order:
     - Replace input tag by textarea tag for service lines
+  - Fixed bug: missing `Completed` status in job request form
 
 ## 1.6.3
   - Use Memcache for caching data
