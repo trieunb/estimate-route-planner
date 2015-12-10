@@ -24,8 +24,26 @@ class CustomerController extends BaseController {
     }
 
     public function show() {
-        $customer = ORM::forTable('customers')->findOne($this->data['id']);
+        $customer = ORM::forTable('customers')
+            ->findOne($this->data['id']);
         $this->renderJson($customer->asArray());
+    }
+
+    public function create() {
+        // Create customer entity and push to QB
+        $customerInfo = $this->data;
+        $sync = Asynchronzier::getInstance();
+        $qbcustomerObj = $sync->createCustomer($customerInfo);
+        $customer = ORM::forTable('customers')->create();
+        $customer->set(ERPDataParser::parseCustomer($qbcustomerObj));
+        $customer->save();
+        // Parse and insert into DB
+        // Return to JS client
+        $this->renderJson([
+            'success' => true,
+            'message' => 'Customer created successfully',
+            'data' => $customer->asArray()
+        ]);
     }
 }
 ?>

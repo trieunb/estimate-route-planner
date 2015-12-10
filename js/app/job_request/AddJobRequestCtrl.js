@@ -9,7 +9,9 @@
             'sharedData',
             '$location',
             '$filter',
+            '$uibModal',
             'erpGeoLocation',
+            'APP_CONFIG',
             AddJobRequestCtrl
         ]
     );
@@ -22,7 +24,9 @@ function AddJobRequestCtrl(
     sharedData,
     $location,
     $filter,
-    erpGeoLocation) {
+    $uibModal,
+    erpGeoLocation,
+    APP_CONFIG) {
 
     $scope.setPageTitle('New Job Request');
     $scope.companyInfo = {};
@@ -56,8 +60,52 @@ function AddJobRequestCtrl(
             angular.copy(data, $scope.classes);
         });
 
+    $scope.onEditCustomer = function() {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            backdrop: false,
+            keyboard: false,
+            templateUrl: APP_CONFIG.templatesPath + 'customer/modal.html',
+            controller: 'customerModalCtrl',
+            size: 'lg',
+            resolve: {
+                customerData: function() {
+                    return {
+                        id: $scope.referral.customer_id
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {
+            console.log('update customer modal ok');
+        }, function() {
+            console.log('modal update dismissed');
+        });
+    };
+
     $scope.onAddCustomer = function(input) {
-        $scope.referral.customer_display_name = input;
+        var modalInstance = $uibModal.open({
+            animation: true,
+            backdrop: false,
+            keyboard: false,
+            templateUrl: APP_CONFIG.templatesPath + 'customer/modal.html',
+            controller: 'customerModalCtrl',
+            size: 'lg',
+            resolve: {
+                customerData: function() {
+                    return {
+                        name: input
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {
+            console.log('modal create ok');
+        }, function() {
+            console.log('modal create dismissed');
+        });
     };
 
     // What customer change to populate customer fields

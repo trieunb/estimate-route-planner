@@ -1,0 +1,172 @@
+<div class="">
+    <div class="loading-overlay" ng-if="isBusy">
+        <div style="position: relative; display: inline-block">
+            <div id="spinner"></div>
+        </div>
+    </div>
+    <div class="modal-header">
+        <h3 class="modal-title">Customer Information</h3>
+    </div>
+    <div class="modal-body">
+        <form method="post" class="form-horizontal" name="customerForm" ng-submit="save()">
+            <input type="submit" class="hide">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="first_name" class="required">First name<span>(*)</span></label>
+                            <input type="text"
+                                class="form-control"
+                                name="first_name"
+                                ng-required="true"
+                                ng-model="customer.given_name">
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="last_name">Last name</label>
+                            <input type="text"
+                                class="form-control"
+                                name="last_name"
+                                ng-model="customer.family_name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="primary_phone_number">Primary phone</label>
+                            <input type="text"
+                                class="form-control"
+                                name="primary_phone_number"
+                                ng-model="customer.primary_phone_number">
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="secondary_phone_number">Secondary phone</label>
+                            <input type="text"
+                                class="form-control"
+                                name="secondary_phone_number"
+                                ng-model="customer.secondary_phone_number">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="email">Email</label>
+                            <input type="text"
+                                class="form-control"
+                                name="email"
+                                multiple-emails
+                                ng-maxlength="100"
+                                ng-model="customer.email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="email">Is sub-customer of</label>
+                            <customers-select
+                                options="customers"
+                                ng-model="customer.parent_id">
+                            </customers-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <legend>Billing address</legend>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="Street"
+                                name="billing_address"
+                                ng-model="customer.bill_address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="City"
+                                name="billing_city"
+                                ng-model="customer.bill_city">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="State"
+                                name="billing_state"
+                                ng-model="customer.bill_state">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="Zip code"
+                                name="billing_zip_code"
+                                ng-model="customer.bill_zip_code">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="Country"
+                                name="billing_country"
+                                ng-model="customer.bill_country">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <legend>Shipping address</legend>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="Street"
+                                name="shipping_address"
+                                ng-model="customer.ship_address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="City"
+                                name="shipping_city"
+                                ng-model="customer.ship_city">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="State"
+                                name="shipping_state"
+                                ng-model="customer.ship_state">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="Zip code"
+                                name="shipping_zip_code"
+                                ng-model="customer.ship_zip_code">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text"
+                                class="form-control"
+                                placeholder="Country"
+                                name="shipping_country"
+                                ng-model="customer.ship_country">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <label><input type="checkbox" name="update_form" checked> Update form</label>
+        &nbsp;
+        <button class="btn btn-primary" type="button" ng-click="save()">Save</button>
+        <button class="btn btn-default" type="button" ng-click="close()">Close</button>
+    </div>
+</div>

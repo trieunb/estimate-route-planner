@@ -4,7 +4,10 @@ return [
     'getCustomers'          => 'Customer@index',
     'getProductServices'    => 'App@productServices',
     'getClasses'            => 'App@classes',
+
     'showCustomer'          => 'Customer@show',
+    'createCustomer'        => 'Customer@create',
+    'updateCustomer'        => 'Customer@update',
 
     'getEstimates'          => 'Estimate@index',
     'addEstimate'           => 'Estimate@add',

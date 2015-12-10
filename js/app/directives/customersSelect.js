@@ -33,21 +33,8 @@ angular
                 // Create callback if specified
                 if ('undefined' !== typeof($attrs.onAdd)) {
                     selectConfig.create = function(input, callback) {
-                        var newCustomer = {
-                            id: 0,
-                            display_name: input,
-                            order: $scope.selectOptions.length
-                        };
-                        // Remove the last new customer
-                        angular.forEach($scope.selectOptions, function(cus, index) {
-                            if (cus.id === 0) {
-                                $scope.selectOptions.splice(index, 1);
-                                return;
-                            }
-                        });
-                        $scope.selectOptions.push(newCustomer);
                         $scope.onAdd({input: input});
-                        callback(newCustomer);
+                        callback();
                     };
                 } else {
                     selectConfig.create = false;
