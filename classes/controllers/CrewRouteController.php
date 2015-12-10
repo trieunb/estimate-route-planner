@@ -141,7 +141,14 @@ class CrewRouteController extends BaseController {
      * Get the work order info
      */
     public function showWorkOrder() {
-
+        $workOrder = ORM::forTable('erpp_work_orders')
+            ->where('route_id', $this->data['route_id'])
+            ->findOne();
+        if ($workOrder) {
+            $this->renderJson($workOrder->asArray());
+        } else {
+            $this->renderEmpty();
+        }
     }
 
     public function saveWorkOrder() {
@@ -154,7 +161,17 @@ class CrewRouteController extends BaseController {
         $workOrder->route_id = $this->data['route_id'];
         $workOrder->equipment_list = $this->data['equipment_list'];
         $workOrder->start_time = $this->data['start_time'];
-        $workOrder->save();
+        if ($workOrder->save()) {
+            $this->renderJson([
+                'success' => true,
+                'message' => 'Work order saved successfully'
+            ]);
+        } else {
+            $this->renderJson([
+                'success' => false,
+                'message' => 'An error has occurred while saving route'
+            ]);
+        }
     }
 }
 ?>

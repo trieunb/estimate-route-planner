@@ -27,6 +27,12 @@ function crewRouteFactory($http) {
                 data: data
             });
         },
+        showWorkOrder: function(routeId) {
+            return $http.post(ERPApp.baseAPIPath, {
+                _do: 'showWorkOrder',
+                data: {route_id: routeId}
+            });
+        },
         saveWorkOrder: function(data) {
             return $http.post(ERPApp.baseAPIPath, {
                 _do: 'saveWorkOrder',

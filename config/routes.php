@@ -54,6 +54,7 @@ return [
     'getCrewRoute'        => 'CrewRoute@show',
     'saveCrewRoute'       => 'CrewRoute@save',
     'updateCrewRoute'     => 'CrewRoute@update',
+    'showWorkOrder'       => 'CrewRoute@showWorkOrder',
     'saveWorkOrder'       => 'CrewRoute@saveWorkOrder',
 
     // Settings

@@ -22,11 +22,21 @@ function WorkOrderCtrl(
     $scope.route = {
         assignedEstimates: []
     };
+    $scope.work_order = {};
     $scope.route_id = $routeParams.id;
-    crewRouteFactory.get($scope.route_id).
-        success(function(data) {
-            $scope.route = data;
+
+    crewRouteFactory.get($scope.route_id)
+        .success(function(routeData) {
+            $scope.route = routeData;
             $scope.route.assignedEstimates = [];
+
+            // Get saved work order
+            crewRouteFactory.showWorkOrder($scope.route_id)
+                .success(function(workOrderData) {
+                    $scope.work_order = workOrderData;
+                });
+
+            // Get assigned estimates
             estimateFactory.listAssigedToRoute($scope.route_id).
                 success(function(responseData) {
                     angular.forEach(responseData, function(estimate) {
@@ -62,11 +72,15 @@ function WorkOrderCtrl(
     $scope.save = function() {
         var data = {};
         data.route_id = $scope.route_id;
-        data.equipment_list = $scope.route.equipment_list;
-        data.start_time = $scope.route.start_time;
+        data.equipment_list = $scope.work_order.equipment_list;
+        data.start_time = $scope.work_order.start_time;
         crewRouteFactory.saveWorkOrder(data)
             .success(function(response) {
-                console.log(response);
+                if (response.success) {
+                    toastr.success(response.message);
+                } else {
+                    toastr.error(response.message);
+                }
             });
     };
 }

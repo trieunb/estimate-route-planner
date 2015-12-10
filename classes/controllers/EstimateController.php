@@ -105,23 +105,25 @@ class EstimateController extends BaseController {
         foreach ($estimates as $est) {
             $estimateIds[] = $est['id'];
         }
-        $lines = ORM::forTable('estimate_lines')
-            ->tableAlias('el')
-            ->leftOuterJoin(
-                'products_and_services',
-                ['el.product_service_id', '=', 'ps.id'],
-                'ps'
-            )
-            ->whereIn('estimate_id', $estimateIds)
-            ->select('el.*')
-            ->select('ps.name', 'product_service_name')
-            ->orderByAsc('el.line_num')
-            ->findArray();
-        foreach ($estimates as &$est) {
-            $est['lines'] = [];
-            foreach ($lines as $line) {
-                if ($line['estimate_id'] === $est['id']) {
-                    $est['lines'][] = $line;
+        if (count($estimateIds) !== 0) {
+            $lines = ORM::forTable('estimate_lines')
+                ->tableAlias('el')
+                ->leftOuterJoin(
+                    'products_and_services',
+                    ['el.product_service_id', '=', 'ps.id'],
+                    'ps'
+                )
+                ->whereIn('el.estimate_id', $estimateIds)
+                ->select('el.*')
+                ->select('ps.name', 'product_service_name')
+                ->orderByAsc('el.line_num')
+                ->findArray();
+            foreach ($estimates as &$est) {
+                $est['lines'] = [];
+                foreach ($lines as $line) {
+                    if ($line['estimate_id'] === $est['id']) {
+                        $est['lines'][] = $line;
+                    }
                 }
             }
         }
