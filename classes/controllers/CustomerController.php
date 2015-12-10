@@ -37,8 +37,7 @@ class CustomerController extends BaseController {
         $customer = ORM::forTable('customers')->create();
         $customer->set(ERPDataParser::parseCustomer($qbcustomerObj));
         $customer->save();
-        // Parse and insert into DB
-        // Return to JS client
+        ERPCacheManager::clear('customers');
         $this->renderJson([
             'success' => true,
             'message' => 'Customer created successfully',

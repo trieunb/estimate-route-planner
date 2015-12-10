@@ -652,7 +652,11 @@ class Asynchronzier
 
     public function createCustomer($data) {
         $customerObj = new IPPCustomer();
-        $customerObj->DisplayName = $data['display_name'];
+        if (@$data['display_name']) {
+          $customerObj->DisplayName = @$data['display_name'];
+        }
+        $customerObj->GivenName = @$data['given_name'];
+        $customerObj->FamilyName = @$data['family_name'];
         if (isset($data['bill_address'])) {
             $billAddr = new IPPPhysicalAddress();
             $billAddr->Line1                    = @$data['bill_address'];
@@ -701,7 +705,10 @@ class Asynchronzier
             $primaryEmail->Address = $data['email'];
             $customerObj->PrimaryEmailAddr = $primaryEmail;
         }
-
+        if (isset($data['parent_id'])) {
+            $customerObj->Job = 'true';
+            $customerObj->ParentRef = $data['parent_id'];
+        }
         return $this->dataService->Add($customerObj);
     }
 

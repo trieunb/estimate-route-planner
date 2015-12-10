@@ -10,7 +10,6 @@ angular
             erpLocalStorage,
             customerData) {
 
-            console.log(customerData);
             $scope.customer = {};
             $scope.customers = [];
 
