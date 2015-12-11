@@ -90,8 +90,7 @@
                         <select class="form-control" name="status" ng-model="estimate.status"
                             ng-options="status.value as status.label for status in ::estimateStatuses"
                             ng-required="true"
-                            ng-init="estimate.status = estimateStatuses[0].value"
-                            >
+                            ng-init="estimate.status = 'Pending'">
                         </select>
                     </div>
                 </div>
@@ -110,7 +109,8 @@
                                 options="customers"
                                 ng-model="estimate.customer_id"
                                 ng-required="true"
-                                on-add="onAddCustomer(input)">
+                                on-customer-change="onBillCustomerChange()"
+                                on-customer-update="onBillCustomerUpdate()">
                             </customers-select>
                             <div class="help-block"
                                 ng-messages="estimateForm.customer_id.$error"
@@ -215,7 +215,8 @@
                                 options="jobCustomers"
                                 ng-model="estimate.job_customer_id"
                                 ng-required="true"
-                                on-add="onAddJobCustomer(input)">
+                                on-customer-change="onJobCustomerChange()"
+                                on-customer-update="onJobCustomerUpdate()">
                             </customers-select>
                             <div class="help-block"
                                 ng-messages="estimateForm.job_customer_id.$error"

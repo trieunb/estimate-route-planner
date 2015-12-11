@@ -65,6 +65,11 @@ function AddJobRequestCtrl(
         resetCustomer();
     };
 
+    // Handler customer change to populate fields
+    $scope.onCustomerChange = function() {
+        resetCustomer();
+    };
+
     var resetCustomer = function() {
         if ('undefined' !== typeof($scope.referral.customer_id)) {
             erpLocalStorage.getCustomers()
@@ -84,11 +89,6 @@ function AddJobRequestCtrl(
                     });
                 });
         }
-    };
-
-    // Handler customer change to populate fields
-    $scope.onCustomerChange = function() {
-        resetCustomer();
     };
 
     $scope.submitForm = function() {

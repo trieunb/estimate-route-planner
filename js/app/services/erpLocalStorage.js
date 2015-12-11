@@ -149,7 +149,6 @@ function erpLocalStorage(
     };
 
     this.addCustomer = function(customer) {
-        console.log('append customer');
         if (cacheData.unsortCustomers) {
             cacheData.unsortCustomers.push(customer);
             // Re-sort customers dropdown

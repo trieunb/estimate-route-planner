@@ -105,12 +105,33 @@ function AddEstimateCtrl(
             angular.copy(data, $scope.classes);
         });
 
-    $scope.onAddCustomer = function(input) {
-        $scope.estimate.customer_display_name = input;
+    var isTheSameCustomer = function() {
+        return $scope.estimate.customer_id == $scope.estimate.job_customer_id;
     };
 
-    $scope.onAddJobCustomer = function(input) {
-        $scope.estimate.job_customer_display_name = input;
+    // When the current customer's profile has been updated in the modal
+    // And 'Update Form' is checked
+    $scope.onBillCustomerUpdate = function() {
+        resetBillCustomer();
+        if (isTheSameCustomer()) {
+            resetJobCustomer();
+        }
+    };
+
+    // Handler customer change to populate fields
+    $scope.onBillCustomerChange = function() {
+        resetBillCustomer();
+    };
+
+    $scope.onJobCustomerUpdate = function() {
+        resetJobCustomer();
+        if (isTheSameCustomer()) {
+            resetBillCustomer();
+        }
+    };
+
+    $scope.onJobCustomerChange = function() {
+        resetJobCustomer();
     };
 
     $scope.lineItemsDragListeners = {
@@ -173,45 +194,46 @@ function AddEstimateCtrl(
         });
     };
 
-    // What customer change to populate customer fields
-    $scope.$watch('estimate.customer_id', function(newVal, oldVal) {
-        if ($scope.estimateForm.$dirty && ('undefined' != typeof(newVal))) {
-            angular.forEach($scope.customers, function(cus) {
-                if (cus.id == newVal) {
-                    if (newVal != 0) { // Keep entered info if new client
-                        $scope.estimate.bill_address = cus.bill_address;
-                        $scope.estimate.bill_city = cus.bill_city;
-                        $scope.estimate.bill_state = cus.bill_state;
-                        $scope.estimate.bill_zip_code = cus.bill_zip_code;
-                        $scope.estimate.bill_country = cus.bill_country;
-                        $scope.estimate.primary_phone_number = cus.primary_phone_number;
-                        $scope.estimate.mobile_phone_number = cus.mobile_phone_number;
-                        $scope.estimate.email = cus.email;
+    var resetBillCustomer = function() {
+        if ('undefined' !== typeof($scope.estimate.customer_id)) {
+            erpLocalStorage.getCustomers()
+                .then(function(customers) {
+                    for (var i = 0; i < customers.length; i++) {
+                        if (customers[i].id == $scope.estimate.customer_id) {
+                            var cus = customers[i];
+                            $scope.estimate.bill_address = cus.bill_address;
+                            $scope.estimate.bill_city = cus.bill_city;
+                            $scope.estimate.bill_state = cus.bill_state;
+                            $scope.estimate.bill_zip_code = cus.bill_zip_code;
+                            $scope.estimate.bill_country = cus.bill_country;
+                            $scope.estimate.primary_phone_number = cus.primary_phone_number;
+                            $scope.estimate.mobile_phone_number = cus.mobile_phone_number;
+                            $scope.estimate.email = cus.email;
+                            break;
+                        }
                     }
-                    $scope.estimate.customer_display_name = cus.display_name;
-                    return;
-                }
-            });
+                });
         }
-    });
+    };
 
-    $scope.$watch('estimate.job_customer_id', function(newVal, oldVal) {
-        if ($scope.estimateForm.$dirty && ('undefined' != typeof(newVal))) {
-            angular.forEach($scope.jobCustomers, function(cus) {
-                if (cus.id == newVal) {
-                    if (newVal != 0) { // Keep entered info if new client
-                        $scope.estimate.job_address = cus.ship_address;
-                        $scope.estimate.job_city = cus.ship_city;
-                        $scope.estimate.job_state = cus.ship_state;
-                        $scope.estimate.job_zip_code = cus.ship_zip_code;
-                        $scope.estimate.job_country = cus.ship_country;
+    var resetJobCustomer = function() {
+        if ('undefined' !== typeof($scope.estimate.job_customer_id)) {
+            erpLocalStorage.getCustomers()
+                .then(function(customers) {
+                    for (var i = 0; i < customers.length; i++) {
+                        if (customers[i].id == $scope.estimate.job_customer_id) {
+                            var cus = customers[i];
+                            $scope.estimate.job_address = cus.ship_address;
+                            $scope.estimate.job_city = cus.ship_city;
+                            $scope.estimate.job_state = cus.ship_state;
+                            $scope.estimate.job_zip_code = cus.ship_zip_code;
+                            $scope.estimate.job_country = cus.ship_country;
+                            break;
+                        }
                     }
-                    $scope.estimate.job_customer_display_name = cus.display_name;
-                    return;
-                }
-            });
+                });
         }
-    });
+    };
 
     $scope.updateTotal = function() {
         var total = 0.0;
@@ -268,10 +290,6 @@ function AddEstimateCtrl(
                             .success(function(response) {
                                 if (response.success) {
                                     toastr.success(response.message);
-                                    if (isHasNewCustomer()) {
-                                        // To force reload customer list
-                                        erpLocalStorage.clearCustomers();
-                                    }
                                     $location.path('/edit-estimate/' + response.data.id);
                                 } else {
                                     var msg = response.message || 'An error occurred while saving estimate';
@@ -295,11 +313,6 @@ function AddEstimateCtrl(
 
     $scope.onSaveSignature = function(signature) {
         $scope.signatureEncoded = signature;
-    };
-
-    var isHasNewCustomer = function() {
-        return ($scope.estimate.customer_id == '0') ||
-            ($scope.estimate.job_customer_id == '0');
     };
 
     var getJobFullAddress = function() {

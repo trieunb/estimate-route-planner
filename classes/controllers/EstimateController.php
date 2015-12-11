@@ -136,8 +136,7 @@ class EstimateController extends BaseController {
     public function add() {
         $estimateModel = new EstimateModel();
         $sync = Asynchronzier::getInstance();
-        $newCustomerData = $this->_checkForCreateNewCustomers();
-        $insertData = array_merge($this->data, $newCustomerData);
+        $insertData = $this->data;
 
         // Upload customer signature
         $decodedSignature = null;
@@ -240,8 +239,7 @@ class EstimateController extends BaseController {
         $id = $updateData['id'];
         $estimate = ORM::forTable('estimates')->findOne($id);
         $sync = Asynchronzier::getInstance();
-        $newCustomerData = $this->_checkForCreateNewCustomers();
-        $updateData = array_merge($this->data, $newCustomerData);
+        $updateData = $this->data;
         $keepNullColumns = [
             'route_id', 'date_of_signature', 'accepted_date',
             'expiration_date', 'class_id'
@@ -537,97 +535,6 @@ class EstimateController extends BaseController {
                 ]);
         }
         return $query->findOne($id);
-    }
-
-    private function collectCustomerInfo() {
-        $customerInfo = [];
-        $customerInfo['display_name']   = trim($this->data['customer_display_name']);
-        $customerInfo['bill_address']   = @$this->data['bill_address'];
-        $customerInfo['bill_city']      = @$this->data['bill_city'];
-        $customerInfo['bill_state']     = @$this->data['bill_state'];
-        $customerInfo['bill_zip_code']  = @$this->data['bill_zip_code'];
-        $customerInfo['bill_country']   = @$this->data['bill_country'];
-        $customerInfo['primary_phone_number']    = @$this->data['primary_phone_number'];
-        $customerInfo['alternate_phone_number']  = @$this->data['alternate_phone_number'];
-        $customerInfo['mobile_phone_number']  = @$this->data['mobile_phone_number'];
-        $customerInfo['email']  = @$this->data['email'];
-        return $customerInfo;
-    }
-
-    private function collectJobCustomerInfo() {
-        $customerInfo = [];
-        $customerInfo['display_name']   = trim(@$this->data['job_customer_display_name']);
-        $customerInfo['ship_address']   = @$this->data['job_address'];
-        $customerInfo['ship_city']      = @$this->data['job_city'];
-        $customerInfo['ship_state']     = @$this->data['job_state'];
-        $customerInfo['ship_zip_code']  = @$this->data['job_zip_code'];
-        $customerInfo['ship_country']   = @$this->data['job_country'];
-        return $customerInfo;
-    }
-
-    /**
-     * Create new customer, push to QB and return the local record
-     */
-    private function _createCustomer($attrs) {
-        $sync = Asynchronzier::getInstance();
-        $qbcustomerObj = $sync->createCustomer($attrs);
-        $customerRecord = ORM::forTable('customers')->create();
-        $customerRecord->set(ERPDataParser::parseCustomer($qbcustomerObj));
-        $customerRecord->save();
-        return $customerRecord;
-    }
-
-    private function _checkForCreateNewCustomers() {
-        $return = [];
-        $newCustomerAttrs = $newJobCustomerAttrs = [];
-        if (($this->data['customer_id'] == 0) && // Has new billing customer
-            isset($this->data['customer_display_name']) &&
-            trim($this->data['customer_display_name'])) {
-            $newCustomerAttrs = $this->collectCustomerInfo();
-        }
-
-        // Check for new job customer
-        if (($this->data['job_customer_id'] == 0) && // Has new job customer
-            isset($this->data['job_customer_display_name']) &&
-            trim($this->data['job_customer_display_name'])) {
-            $newJobCustomerAttrs = $this->collectJobCustomerInfo();
-        }
-        // Clear cache
-        if (($this->data['customer_id'] == 0) ||
-            ($this->data['job_customer_id'] == 0)) {
-            ERPCacheManager::clear('customers');
-        }
-        try {
-            // Check if the job customer is same with billing customer
-            if ($newCustomerAttrs && $newJobCustomerAttrs &&
-                    ($newCustomerAttrs['display_name'] ===
-                        $newJobCustomerAttrs['display_name'])) {
-                $newCustomer = $this->_createCustomer(
-                    array_merge($newCustomerAttrs, $newJobCustomerAttrs)
-                );
-                $return['customer_id'] =
-                    $return['job_customer_id'] = $newCustomer->id;
-                $return['bill_address_id'] =
-                    $return['job_address_id'] = $newCustomer->bill_address_id;
-            } else {
-                if ($newCustomerAttrs) {
-                    $newCustomer = $this->_createCustomer($newCustomerAttrs);
-                    $return['customer_id'] = $newCustomer->id;
-                    $return['bill_address_id'] = $newCustomer->bill_address_id;
-                }
-                if ($newJobCustomerAttrs) {
-                    $newCustomer = $this->_createCustomer($newJobCustomerAttrs);
-                    $return['job_customer_id'] = $newCustomer->id;
-                    $return['job_address_id'] = $newCustomer->ship_address_id;
-                }
-            }
-        } catch (IdsException $e) {
-            $this->renderJson([
-                'success' => false,
-                'message' => 'Failed to create new customer'
-            ]);
-        }
-        return $return;
     }
 }
 ?>

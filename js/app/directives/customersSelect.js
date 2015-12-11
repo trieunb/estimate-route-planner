@@ -119,7 +119,6 @@ angular
                             $scope.onCustomerUpdate();
                         }
                     }, function() {
-                        console.log('Modal update dismissed');
                     });
                 };
 
@@ -151,7 +150,6 @@ angular
                             $scope.onCustomerChange();
                         }
                     }, function() {
-                        console.log('modal create dismissed');
                     });
                 };
             }]

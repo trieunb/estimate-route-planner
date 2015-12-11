@@ -111,7 +111,8 @@
                                 options="customers"
                                 ng-model="estimate.customer_id"
                                 ng-required="true"
-                                on-add="onAddCustomer(input)">
+                                on-customer-change="onBillCustomerChange()"
+                                on-customer-update="onBillCustomerUpdate()">
                             </customers-select>
                             <div class="help-block"
                                 ng-messages="estimateForm.customer_id.$error"
@@ -216,7 +217,8 @@
                                 options="jobCustomers"
                                 ng-model="estimate.job_customer_id"
                                 ng-required="true"
-                                on-add="onAddJobCustomer(input)">
+                                on-customer-change="onJobCustomerChange()"
+                                on-customer-update="onJobCustomerUpdate()">
                             </customers-select>
                             <div class="help-block"
                                 ng-messages="estimateForm.job_customer_id.$error"
