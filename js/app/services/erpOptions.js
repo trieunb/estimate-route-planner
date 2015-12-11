@@ -86,5 +86,11 @@ angular
                 value: 'Rejected',
                 label: 'Rejected'
             }
+        ],
+        mapMarkers: [
+            {
+                text: 'A',
+                color: '#ddd'
+            }
         ]
     });

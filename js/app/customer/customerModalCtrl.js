@@ -66,6 +66,7 @@ angular
             };
 
             $scope.close = function() {
+                $uibModalInstance.dismiss();
             };
         }
 );

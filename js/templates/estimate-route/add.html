@@ -129,8 +129,8 @@
                     </ui-gmap-marker>
 
                     <ui-gmap-marker ng-repeat="referral in assignedReferrals"
-                        idkey="$index" coords="referral.coords"
-                        >
+                        options="referral.options"
+                        idkey="$index" coords="referral.coords">
                         <ui-gmap-window>
                             <p>
                                 <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
