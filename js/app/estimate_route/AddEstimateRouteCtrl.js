@@ -241,6 +241,10 @@ function AddEstimateRouteCtrl(
         $scope.drawRouteDirection();
     };
 
+    $scope.openMarker = function() {
+        // TODO: implement
+    };
+
     $scope.saveRoute = function() {
         var data = {};
         data.title = $scope.route.title;
