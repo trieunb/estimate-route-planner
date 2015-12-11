@@ -298,6 +298,11 @@ function EditEstimateCtrl(
     // And 'Update Form' is checked
     $scope.onBillCustomerUpdate = function() {
         resetBillCustomer();
+        erpLocalStorage.getCustomers()
+            .then(function(data) {
+                $scope.jobCustomers = [];
+                angular.copy(data, $scope.jobCustomers);
+            });
         if (isTheSameCustomer()) {
             resetJobCustomer();
         }
@@ -310,6 +315,11 @@ function EditEstimateCtrl(
 
     $scope.onJobCustomerUpdate = function() {
         resetJobCustomer();
+        erpLocalStorage.getCustomers()
+            .then(function(data) {
+                $scope.customers = [];
+                angular.copy(data, $scope.customers);
+            });
         if (isTheSameCustomer()) {
             resetBillCustomer();
         }
