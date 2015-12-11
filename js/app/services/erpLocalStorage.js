@@ -161,7 +161,6 @@ function erpLocalStorage(
         if (cacheData.unsortCustomers) {
             for (var i = 0; i < cacheData.unsortCustomers.length; i++) {
                 if (cacheData.unsortCustomers[i].id == customer.id) {
-                    console.log('update existing customer', customer);
                     cacheData.unsortCustomers[i] = {};
                     cacheData.unsortCustomers[i] = customer;
                     // Re-sort customers dropdown

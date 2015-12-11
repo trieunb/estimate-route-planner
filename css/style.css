@@ -7,6 +7,9 @@ body.modal-open #adminmenuwrap {
 body.modal-open .modal .loading-overlay {
     background-color: rgba(226, 226, 226, 0.3);
 }
+.modal legend {
+    margin-bottom: 10px;
+}
 .unselectable {
     -webkit-user-select: none;
     -moz-user-select: none;

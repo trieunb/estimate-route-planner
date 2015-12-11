@@ -19,7 +19,7 @@ angular
                 onCustomerUpdate: '&', // Current customer's profile has been updated
                 onCustomerChange: '&' // User select another customer
             },
-            template: '<selectize ng-model="ngModel" ng-change="onCustomerChangeEvent()" config="selectConfig" options="selectOptions"></selectize> <small ng-if="addingEnabled"><a href="#" ng-click="$event.preventDefault(); onAddCustomer()">New customer</a></small> <small ng-if="editingEnabled && ngModel"><span>|</span> <a href="#" ng-click="$event.preventDefault(); onEditCustomer()">Customer details</a></small>',
+            template: '<selectize ng-model="ngModel" ng-change="onCustomerChangeEvent()" config="selectConfig" options="selectOptions"></selectize> <small ng-if="addingEnabled"><a href="#" ng-click="$event.preventDefault(); onAddCustomer()"><span class="glyphicon glyphicon-plus"></span> New customer</a></small> <small ng-if="editingEnabled && ngModel"><span>|</span> <a href="#" ng-click="$event.preventDefault(); onEditCustomer()"><span class="glyphicon glyphicon-info-sign"></span> Customer details</a></small>',
             controller: [
                 '$scope', '$attrs', '$uibModal', 'APP_CONFIG', 'erpLocalStorage', '$timeout',
                 function($scope, $attrs, $uibModal, APP_CONFIG, erpLocalStorage, $timeout) {
