@@ -19,18 +19,28 @@
                 </div>
             </div>
             <div class="assigned-routes" ui-tree="assignedListDndOptions" data-max-depth="1" data-drag-delay="150">
-                <ul ui-tree-nodes ng-model="assignedReferrals">
+                <ul ui-tree-nodes ng-model="assignedReferrals" ng-class="{'empty': assignedReferrals.length == 0}">
                     <li ui-tree-node class="box-assign" ng-repeat="referral in assignedReferrals">
-                        <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
-                        <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
-                        <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
-                        <br>
-                        {{:: referral | referralFullAddress }}
-                        <br>
-                        <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                        <span>Date: {{::referral.date_requested}}</span><br>
-                        <span>Estimator: {{referral.estimator_full_name}}</span><br>
-                        <span>Status: {{referral.status}}</span>
+                        <div class="queue-item-info">
+                            <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
+                            <br>
+                            {{:: referral | referralFullAddress }}
+                            <br>
+                            <div ng-hide="viewOptions.compact">
+                                <span>Phone: {{::referral.primary_phone_number}}</span><br>
+                                <span>Date: {{::referral.date_requested}}</span><br>
+                                <span>Estimator: {{referral.estimator_full_name}}</span><br>
+                                <span>Status: {{referral.status}}</span>
+                            </div>
+                        </div>
+                        <div class="queue-item-menu">
+                            <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                            <br>
+                            <span class="glyphicon glyphicon-save"
+                                title="Move to pending queue"
+                                ng-click="moveItemToPendingQueue(referral)"></span>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -47,24 +57,38 @@
                     </div>
                 </div>
                 <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
-                    <ul ui-tree-nodes="" ng-model="pendingReferrals">
+                    <ul ui-tree-nodes="" ng-model="pendingReferrals" ng-class="{'empty': pendingReferrals.length == 0}">
                         <li class="box-assign" ng-repeat="referral in pendingReferrals" ui-tree-node>
-                            <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
-                            <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
-                            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
-                            <br>
-                            {{:: referral | referralFullAddress }}
-                            <br>
-                            <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                            <span>Date: {{::referral.date_requested}}</span><br>
-                            <span>Estimator: {{referral.estimator_full_name}}</span><br>
-                            <span>Status: {{referral.status}}</span>
+                            <div class="queue-item-info">
+                                <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
+                                <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
+                                <br>
+                                {{:: referral | referralFullAddress }}
+                                <br>
+                                <div ng-hide="viewOptions.compact">
+                                    <span>Phone: {{::referral.primary_phone_number}}</span><br>
+                                    <span>Date: {{::referral.date_requested}}</span><br>
+                                    <span>Estimator: {{referral.estimator_full_name}}</span><br>
+                                    <span>Status: {{referral.status}}</span>
+                                </div>
+                            </div>
+                            <div class="queue-item-menu">
+                                <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                                <br>
+                                <span class="glyphicon glyphicon-open"
+                                    title="Move to assigned queue"
+                                    ng-click="moveItemToAssignedQueue(referral)"></span>
+                            </div>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="col-sm-8">
+            <div class="tools-box">
+                <label class="checkbox inline">
+                    <input type="checkbox" ng-model="viewOptions.compact">Compact view</label>
+            </div>
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
                     <ui-gmap-marker

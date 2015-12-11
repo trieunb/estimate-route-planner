@@ -51,6 +51,9 @@ function AddEstimateRouteCtrl(
     $scope.sortOptions = erpOptions.sortEstimateRoute;
     $scope.directionRenderers = [];
 
+    $scope.viewOptions = {
+        compact: true
+    };
     // Find start location for route(use company address)
     erpGeoLocation.resolve($scope.routeOriginAddress)
         .then(
@@ -214,6 +217,28 @@ function AddEstimateRouteCtrl(
                 }
             });
         }
+    };
+
+    $scope.moveItemToPendingQueue = function(referral) {
+        console.log('move to pending');
+        for (var i = 0; i < $scope.assignedReferrals.length; i++) {
+            if ($scope.assignedReferrals[i].id == referral.id) {
+                $scope.assignedReferrals.splice(i, 1);
+            }
+        }
+        $scope.pendingReferrals.push(referral);
+        $scope.drawRouteDirection();
+    };
+
+    $scope.moveItemToAssignedQueue = function(referral) {
+        console.log('move to assigned');
+        for (var i = 0; i < $scope.pendingReferrals.length; i++) {
+            if ($scope.pendingReferrals[i].id == referral.id) {
+                $scope.pendingReferrals.splice(i, 1);
+            }
+        }
+        $scope.assignedReferrals.push(referral);
+        $scope.drawRouteDirection();
     };
 
     $scope.saveRoute = function() {
