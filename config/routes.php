@@ -7,7 +7,7 @@ return [
 
     'showCustomer'          => 'Customer@show',
     'createCustomer'        => 'Customer@create',
-    'updateCustomer'        => 'Customer@update',
+    'updateCustomer'        => 'Customer@create',
 
     'getEstimates'          => 'Estimate@index',
     'addEstimate'           => 'Estimate@add',

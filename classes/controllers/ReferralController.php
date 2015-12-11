@@ -90,8 +90,7 @@ class ReferralController extends BaseController {
      * Create new job request
      */
     public function add() {
-        $customerData = $this->_checkForCreateNewCustomer();
-        $insertData = array_merge($this->data, $customerData);
+        $insertData = $this->data;
         $keepNullFields = [
             'estimator_id', 'date_requested', 'date_service', 'class_id'
         ];
@@ -133,8 +132,7 @@ class ReferralController extends BaseController {
      * Update a job request
      */
     public function update() {
-        $customerData = $this->_checkForCreateNewCustomer();
-        $updateData = array_merge($this->data, $customerData);
+        $updateData = $this->data;
         $model = new ReferralModel;
         $ref = $model->findOne($updateData['id']);
         if ($ref) {
@@ -210,38 +208,6 @@ class ReferralController extends BaseController {
             ->select('c.display_name', 'customer_display_name')
             ->findOne($_REQUEST['id']);
         require ERP_TEMPLATES_DIR . '/print/referral.php';
-    }
-
-    /**
-     * Collect referral field as customer' shipping address
-    */
-    private function _collectCustomerInfo() {
-        $customerInfo = [];
-        $customerInfo['display_name']   = trim(@$this->data['customer_display_name']);
-        $customerInfo['ship_address']   = @$this->data['address'];
-        $customerInfo['ship_city']      = @$this->data['city'];
-        $customerInfo['ship_state']     = @$this->data['state'];
-        $customerInfo['ship_zip_code']  = @$this->data['zip_code'];
-        $customerInfo['ship_country']   = @$this->data['country'];
-        $customerInfo['email']          = @$this->data['email'];
-        $customerInfo['primary_phone_number'] = @$this->data['primary_phone_number'];
-        $customerInfo['mobile_phone_number'] = @$this->data['mobile_phone_number'];
-        return $customerInfo;
-    }
-
-    private function _checkForCreateNewCustomer() {
-        $return = [];
-        if (($this->data['customer_id'] == 0) && // Has new customer
-            isset($this->data['customer_display_name']) &&
-            trim($this->data['customer_display_name'])) {
-            $sync = Asynchronzier::getInstance();
-            $qbcustomerObj = $sync->createCustomer($this->_collectCustomerInfo());
-            $customerRecord = ORM::forTable('customers')->create();
-            $customerRecord->set(ERPDataParser::parseCustomer($qbcustomerObj));
-            $customerRecord->save();
-            $return['customer_id'] = $customerRecord->id;
-        }
-        return $return;
     }
 }
 

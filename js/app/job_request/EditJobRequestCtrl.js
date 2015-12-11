@@ -67,30 +67,37 @@ function EditJobRequestCtrl(
             });
     };
 
-    $scope.onAddCustomer = function(input) {
-        $scope.referral.customer_display_name = input;
+    // When the current customer's profile has been updated in the modal
+    // And 'Update Form' is checked
+    $scope.onCustomerUpdate = function() {
+        resetCustomer();
     };
 
-    // What customer change to populate customer fields
-    $scope.$watch('referral.customer_id', function(newVal, oldVal) {
-        if ($scope.referralForm.$dirty && ('undefined' != typeof(newVal))) {
-            angular.forEach($scope.customers, function(cus) {
-                if (cus.id == newVal) {
-                    if (newVal != 0) { // Keep entered info if new client
-                        $scope.referral.address = cus.ship_address;
-                        $scope.referral.city = cus.ship_city;
-                        $scope.referral.state = cus.ship_state;
-                        $scope.referral.zip_code = cus.ship_zip_code;
-                        $scope.referral.country = cus.ship_country;
-                        $scope.referral.primary_phone_number = cus.primary_phone_number;
-                        $scope.referral.email = cus.email;
-                    }
-                    $scope.referral.customer_display_name = cus.display_name;
-                    return;
-                }
-            });
+    var resetCustomer = function() {
+        if ('undefined' !== typeof($scope.referral.customer_id)) {
+            erpLocalStorage.getCustomers()
+                .then(function(customers) {
+                    angular.forEach(customers, function(cus) {
+                        if (cus.id == $scope.referral.customer_id) {
+                            $scope.referral.address = cus.ship_address;
+                            $scope.referral.city = cus.ship_city;
+                            $scope.referral.state = cus.ship_state;
+                            $scope.referral.zip_code = cus.ship_zip_code;
+                            $scope.referral.country = cus.ship_country;
+                            $scope.referral.primary_phone_number = cus.primary_phone_number;
+                            $scope.referral.mobile_phone_number = cus.mobile_phone_number;
+                            $scope.referral.email = cus.email;
+                            return;
+                        }
+                    });
+                });
         }
-    });
+    };
+
+    // Handler customer change to populate fields
+    $scope.onCustomerChange = function() {
+        resetCustomer();
+    };
 
     $scope.submitForm = function() {
         // Check address files changed to re-geolocation
@@ -126,10 +133,6 @@ function EditJobRequestCtrl(
                 if (response.success) {
                     toastr.success(response.message);
                     $scope.referralForm.$setPristine();
-                    // Reload to get refresh customer
-                    if ($scope.referral.customer_id == 0) {
-                        $window.location.reload();
-                    }
                 } else {
                     var msg = response.message || 'An error occurred while saving job request';
                     toastr.error(msg);

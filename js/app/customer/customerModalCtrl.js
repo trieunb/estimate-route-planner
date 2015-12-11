@@ -10,6 +10,7 @@ angular
             erpLocalStorage,
             customerData) {
 
+            $scope.updateFormFlag = true;
             $scope.customer = {};
             $scope.customers = [];
 
@@ -50,11 +51,17 @@ angular
                         .success(function(response) {
                             if (response.success) {
                                 toastr.success(response.message);
+                                $uibModalInstance.close({
+                                    customer: response.customer,
+                                    updateFormFlag: $scope.updateFormFlag}
+                                );
                             }
                         })
                         .error(function() {
                             toastr.error('An error occurred while saving customer');
                         });
+                } else {
+                    // TODO: show validate messages
                 }
             };
 

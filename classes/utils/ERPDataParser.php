@@ -179,6 +179,7 @@ final class ERPDataParser {
         if (null != $entity->Level) {
             $subLevel = $entity->Level;
         }
+
         list($created_at, $last_updated_at) = self::parseMetaTime($entity->MetaData);
         $active = $entity->Active == 'true';
         $parentId = $entity->ParentRef;
@@ -200,7 +201,7 @@ final class ERPDataParser {
             'mobile_phone_number'       => $mobile_phone_number,
             'alternate_phone_number'    => $alternate_phone_number,
             'fax'                       => $fax,
-
+            'notes'             => $entity->Notes,
             'bill_address_id'   => $bill_address_id,
             'bill_address'      => $bill_address,
             'bill_line_2'       => $bill_line_2,

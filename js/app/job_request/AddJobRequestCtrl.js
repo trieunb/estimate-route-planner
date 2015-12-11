@@ -11,7 +11,6 @@
             '$filter',
             '$uibModal',
             'erpGeoLocation',
-            'APP_CONFIG',
             AddJobRequestCtrl
         ]
     );
@@ -25,8 +24,7 @@ function AddJobRequestCtrl(
     $location,
     $filter,
     $uibModal,
-    erpGeoLocation,
-    APP_CONFIG) {
+    erpGeoLocation) {
 
     $scope.setPageTitle('New Job Request');
     $scope.companyInfo = {};
@@ -34,6 +32,7 @@ function AddJobRequestCtrl(
     $scope.employees = [];
     $scope.classes = [];
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
+
     // Initial with default status
     $scope.referral = {
         status: 'Pending'
@@ -60,74 +59,37 @@ function AddJobRequestCtrl(
             angular.copy(data, $scope.classes);
         });
 
-    $scope.onEditCustomer = function() {
-        var modalInstance = $uibModal.open({
-            animation: true,
-            backdrop: false,
-            keyboard: false,
-            templateUrl: APP_CONFIG.templatesPath + 'customer/modal.html',
-            controller: 'customerModalCtrl',
-            size: 'lg',
-            resolve: {
-                customerData: function() {
-                    return {
-                        id: $scope.referral.customer_id
-                    };
-                }
-            }
-        });
-
-        modalInstance.result.then(function() {
-            console.log('update customer modal ok');
-        }, function() {
-            console.log('modal update dismissed');
-        });
+    // When the current customer's profile has been updated in the modal
+    // And 'Update Form' is checked
+    $scope.onCustomerUpdate = function() {
+        resetCustomer();
     };
 
-    $scope.onAddCustomer = function(input) {
-        var modalInstance = $uibModal.open({
-            animation: true,
-            backdrop: false,
-            keyboard: false,
-            templateUrl: APP_CONFIG.templatesPath + 'customer/modal.html',
-            controller: 'customerModalCtrl',
-            size: 'lg',
-            resolve: {
-                customerData: function() {
-                    return {
-                        name: input
-                    };
-                }
-            }
-        });
-
-        modalInstance.result.then(function() {
-            console.log('modal create ok');
-        }, function() {
-            console.log('modal create dismissed');
-        });
-    };
-
-    // What customer change to populate customer fields
-    $scope.$watch('referral.customer_id', function(newVal, oldVal) {
-        if ($scope.referralForm.$dirty && ('undefined' != typeof(newVal))) {
-            angular.forEach($scope.customers, function(cus) {
-                if (cus.id == newVal) {
-                    if (newVal != 0) { // Keep entered info if new client
-                        $scope.referral.address = cus.ship_address;
-                        $scope.referral.city = cus.ship_city;
-                        $scope.referral.state = cus.ship_state;
-                        $scope.referral.zip_code = cus.ship_zip_code;
-                        $scope.referral.country = cus.ship_country;
-                        $scope.referral.primary_phone_number = cus.primary_phone_number;
-                        $scope.referral.email = cus.email;
-                    }
-                    $scope.referral.customer_display_name = cus.display_name;
-                    return;
-                }
-            });
+    var resetCustomer = function() {
+        if ('undefined' !== typeof($scope.referral.customer_id)) {
+            erpLocalStorage.getCustomers()
+                .then(function(customers) {
+                    angular.forEach(customers, function(cus) {
+                        if (cus.id == $scope.referral.customer_id) {
+                            $scope.referral.address = cus.ship_address;
+                            $scope.referral.city = cus.ship_city;
+                            $scope.referral.state = cus.ship_state;
+                            $scope.referral.zip_code = cus.ship_zip_code;
+                            $scope.referral.country = cus.ship_country;
+                            $scope.referral.primary_phone_number = cus.primary_phone_number;
+                            $scope.referral.mobile_phone_number = cus.mobile_phone_number;
+                            $scope.referral.email = cus.email;
+                            return;
+                        }
+                    });
+                });
         }
-    });
+    };
+
+    // Handler customer change to populate fields
+    $scope.onCustomerChange = function() {
+        resetCustomer();
+    };
 
     $scope.submitForm = function() {
         if ($scope.referral.address && $scope.referral.address.length) {
@@ -156,10 +118,6 @@ function AddJobRequestCtrl(
             .success(function(response) {
                 if (response.success) {
                     toastr.success(response.message);
-                    if ($scope.referral.customer_id == 0) {
-                        // To force reload customer list
-                        erpLocalStorage.clearCustomers();
-                    }
                     $location.path('/edit-job-request/' + response.data.id);
                 } else {
                     var msg = response.message || 'An error occurred while saving job request';

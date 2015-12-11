@@ -481,8 +481,9 @@ label.required {
 }
 
 label.required span {
-    font-size: 0.7em;
+    font-size: 0.8em;
     vertical-align: super;
+    color: #a94442;
 }
 /* Override selectize style */
 .selectize-input {

@@ -29,6 +29,7 @@ function erpLocalStorage(
         productServices: null,
         employees: null,
         customers: null,
+        unsortCustomers: null,
         classes: null
     };
 
@@ -147,16 +148,45 @@ function erpLocalStorage(
         cacheData.employees = null;
     };
 
+    this.addCustomer = function(customer) {
+        console.log('append customer');
+        if (cacheData.unsortCustomers) {
+            cacheData.unsortCustomers.push(customer);
+            // Re-sort customers dropdown
+            _this.setCustomers(cacheData.unsortCustomers);
+        }
+    };
+
+    this.updateCustomer = function(customer) {
+        if (cacheData.unsortCustomers) {
+            for (var i = 0; i < cacheData.unsortCustomers.length; i++) {
+                if (cacheData.unsortCustomers[i].id == customer.id) {
+                    console.log('update existing customer', customer);
+                    cacheData.unsortCustomers[i] = {};
+                    cacheData.unsortCustomers[i] = customer;
+                    // Re-sort customers dropdown
+                    _this.setCustomers(cacheData.unsortCustomers);
+                    break;
+                }
+            }
+        }
+    };
+
+    this.setCustomers = function(customers) {
+        rememberData('unsortCustomers', customers);
+        var sortedCustomers = [];
+        if (customers.length) {
+            sortedCustomers = sortCustomers(customers);
+        }
+        rememberData('customers', sortedCustomers);
+    };
+
     this.getCustomers = function() {
         return $q(function(resolve) {
             if (null === cacheData.customers) {
                 customerFactory.all()
                     .success(function(responseData) {
-                        var customers = [];
-                        if (responseData.length) {
-                            customers = sortCustomers(responseData);
-                        }
-                        rememberData('customers', customers);
+                        _this.setCustomers(responseData);
                         resolve(cacheData.customers);
                     });
             } else {

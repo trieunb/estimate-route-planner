@@ -5,6 +5,7 @@
         </div>
     </div>
     <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" ng-click="close()"><span aria-hidden="true">×</span></button>
         <h3 class="modal-title">Customer Information</h3>
     </div>
     <div class="modal-body">
@@ -17,8 +18,10 @@
                             <label for="first_name" class="required">First name<span>(*)</span></label>
                             <input type="text"
                                 class="form-control"
+                                autofocus
                                 name="first_name"
                                 ng-required="true"
+                                ng-maxlength="25"
                                 ng-model="customer.given_name">
                         </div>
                         <div class="col-md-6 col-sm-12">
@@ -26,6 +29,7 @@
                             <input type="text"
                                 class="form-control"
                                 name="last_name"
+                                ng-maxlength="25"
                                 ng-model="customer.family_name">
                         </div>
                     </div>
@@ -34,15 +38,17 @@
                             <label for="primary_phone_number">Primary phone</label>
                             <input type="text"
                                 class="form-control"
+                                ng-maxlength="21"
                                 name="primary_phone_number"
                                 ng-model="customer.primary_phone_number">
                         </div>
                         <div class="col-md-6 col-sm-12">
-                            <label for="secondary_phone_number">Secondary phone</label>
+                            <label for="mobile_phone_number">Secondary phone</label>
                             <input type="text"
                                 class="form-control"
-                                name="secondary_phone_number"
-                                ng-model="customer.secondary_phone_number">
+                                ng-maxlength="21"
+                                name="mobile_phone_number"
+                                ng-model="customer.mobile_phone_number">
                         </div>
                     </div>
                 </div>
@@ -64,13 +70,31 @@
                             <label for="email">Is sub-customer of</label>
                             <customers-select
                                 options="customers"
-                                ng-model="customer.parent_id">
+                                ng-model="customer.parent_id"
+                                add-enabled="false"
+                                edit-enabled="false">
                             </customers-select>
                         </div>
                     </div>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="company_name">Company</label>
+                    <input name="company_name"
+                        ng-maxlength="50"
+                        ng-model="customer.company_name"
+                        class="form-control"/>
+                    <br>
+                </div>
+                <div class="col-md-6">
+                    <label for="notes">Notes</label>
+                    <textarea name="notes" rows="2"
+                        ng-model="customer.notes"
+                        class="form-control"></textarea>
+                    <br>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <legend>Billing address</legend>
@@ -80,6 +104,7 @@
                                 class="form-control"
                                 placeholder="Street"
                                 name="billing_address"
+                                ng-maxlength="255"
                                 ng-model="customer.bill_address">
                         </div>
                     </div>
@@ -89,6 +114,7 @@
                                 class="form-control"
                                 placeholder="City"
                                 name="billing_city"
+                                ng-maxlength="100"
                                 ng-model="customer.bill_city">
                         </div>
                         <div class="col-md-6">
@@ -96,6 +122,7 @@
                                 class="form-control"
                                 placeholder="State"
                                 name="billing_state"
+                                ng-maxlength="100"
                                 ng-model="customer.bill_state">
                         </div>
                     </div>
@@ -105,6 +132,7 @@
                                 class="form-control"
                                 placeholder="Zip code"
                                 name="billing_zip_code"
+                                ng-maxlength="31"
                                 ng-model="customer.bill_zip_code">
                         </div>
                         <div class="col-md-6">
@@ -112,6 +140,7 @@
                                 class="form-control"
                                 placeholder="Country"
                                 name="billing_country"
+                                ng-maxlength="100"
                                 ng-model="customer.bill_country">
                         </div>
                     </div>
@@ -124,6 +153,7 @@
                                 class="form-control"
                                 placeholder="Street"
                                 name="shipping_address"
+                                ng-maxlength="255"
                                 ng-model="customer.ship_address">
                         </div>
                     </div>
@@ -133,6 +163,7 @@
                                 class="form-control"
                                 placeholder="City"
                                 name="shipping_city"
+                                ng-maxlength="100"
                                 ng-model="customer.ship_city">
                         </div>
                         <div class="col-md-6">
@@ -140,6 +171,7 @@
                                 class="form-control"
                                 placeholder="State"
                                 name="shipping_state"
+                                ng-maxlength="100"
                                 ng-model="customer.ship_state">
                         </div>
                     </div>
@@ -149,6 +181,7 @@
                                 class="form-control"
                                 placeholder="Zip code"
                                 name="shipping_zip_code"
+                                ng-maxlength="31"
                                 ng-model="customer.ship_zip_code">
                         </div>
                         <div class="col-md-6">
@@ -156,6 +189,7 @@
                                 class="form-control"
                                 placeholder="Country"
                                 name="shipping_country"
+                                ng-maxlength="100"
                                 ng-model="customer.ship_country">
                         </div>
                     </div>
@@ -164,9 +198,10 @@
         </form>
     </div>
     <div class="modal-footer">
-        <label><input type="checkbox" name="update_form" checked> Update form</label>
+        <label title="Update the form after saving the customer info">
+            <input type="checkbox" name="update_form" ng-model="updateFormFlag"> Update form</label>
         &nbsp;
-        <button class="btn btn-primary" type="button" ng-click="save()">Save</button>
-        <button class="btn btn-default" type="button" ng-click="close()">Close</button>
+        <button class="btn btn-primary" type="button" ng-click="save()" ng-disabled="isBusy">Save</button>
+        <button class="btn btn-default" type="button" ng-click="close()" ng-disabled="isBusy">Close</button>
     </div>
 </div>

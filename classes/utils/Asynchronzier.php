@@ -651,65 +651,7 @@ class Asynchronzier
     }
 
     public function createCustomer($data) {
-        $customerObj = new IPPCustomer();
-        if (@$data['display_name']) {
-          $customerObj->DisplayName = @$data['display_name'];
-        }
-        $customerObj->GivenName = @$data['given_name'];
-        $customerObj->FamilyName = @$data['family_name'];
-        if (isset($data['bill_address'])) {
-            $billAddr = new IPPPhysicalAddress();
-            $billAddr->Line1                    = @$data['bill_address'];
-            $billAddr->City                     = @$data['bill_city'];
-            if (@$data['bill_country']) {
-                $billAddr->Country              = $data['bill_country'];
-            }
-            $billAddr->CountrySubDivisionCode   = @$data['bill_state'];
-            $billAddr->PostalCode               = @$data['bill_zip_code'];
-            $customerObj->BillAddr = $billAddr;
-        }
-        if (isset($data['ship_address'])) {
-            $shipAddr = new IPPPhysicalAddress();
-            $shipAddr->Line1                    = @$data['ship_address'];
-            $shipAddr->City                     = @$data['ship_city'];
-            if (@$data['ship_country']) {
-                $shipAddr->Country              = @$data['ship_country'];
-            }
-            $shipAddr->CountrySubDivisionCode   = @$data['ship_state'];
-            $shipAddr->PostalCode               = @$data['ship_zip_code'];
-
-            $customerObj->ShipAddr = $shipAddr;
-            // Set billing same with shipping if billing address is not set
-            if (!isset($data['bill_address'])) {
-                $customerObj->BillAddr = $shipAddr;
-            }
-        }
-
-        if (isset($data['primary_phone_number'])) {
-            $primaryPhone = new IPPTelephoneNumber();
-            $primaryPhone->FreeFormNumber = $data['primary_phone_number'];
-            $customerObj->PrimaryPhone = $primaryPhone;
-        }
-        if (isset($data['mobile_phone_number'])) {
-            $mobilePhone = new IPPTelephoneNumber();
-            $mobilePhone->FreeFormNumber = $data['mobile_phone_number'];
-            $customerObj->Mobile = $mobilePhone;
-        }
-        if (isset($data['alternate_phone_number'])) {
-            $alternatePhone = new IPPTelephoneNumber();
-            $alternatePhone->FreeFormNumber = $data['alternate_phone_number'];
-            $customerObj->AlternatePhone = $alternatePhone;
-        }
-        if (isset($data['email'])) {
-            $primaryEmail = new IPPEmailAddress();
-            $primaryEmail->Address = $data['email'];
-            $customerObj->PrimaryEmailAddr = $primaryEmail;
-        }
-        if (isset($data['parent_id'])) {
-            $customerObj->Job = 'true';
-            $customerObj->ParentRef = $data['parent_id'];
-        }
-        return $this->dataService->Add($customerObj);
+        return $this->dataService->Add($this->buildCustomerEntity($data));
     }
 
     public function buildEstimateBillAddress($localData) {
@@ -735,7 +677,6 @@ class Asynchronzier
         }
         return $billAddr;
     }
-
 
     public function buildEstimateShipAddress($localData) {
         $shipAddr = new IPPPhysicalAddress;
@@ -794,6 +735,83 @@ class Asynchronzier
 
     public function saveEstimate(IPPEstimate $estimateEntity) {
         return $this->dataService->Add($estimateEntity);
+    }
+
+    public function buildCustomerEntity($data) {
+        $customerObj = new IPPCustomer();
+        if (isset($data['id'])) {
+            $customerObj->Id = $data['id'];
+            if (isset($data['sync_token'])) {
+                $customerObj->SyncToken = $data['sync_token'];
+            }
+        }
+        if (@$data['display_name']) {
+            $customerObj->DisplayName = @$data['display_name'];
+        }
+        if (@$data['given_name'] && @$data['family_name']) {
+            $customerObj->DisplayName = $data['given_name'] . ' ' . $data['family_name'];
+        }
+        $customerObj->GivenName = @$data['given_name'];
+        $customerObj->FamilyName = @$data['family_name'];
+        if (isset($data['bill_address'])) {
+            $billAddr = new IPPPhysicalAddress();
+            $billAddr->Line1                    = @$data['bill_address'];
+            $billAddr->City                     = @$data['bill_city'];
+            if (@$data['bill_country']) {
+                $billAddr->Country              = $data['bill_country'];
+            }
+            $billAddr->CountrySubDivisionCode   = @$data['bill_state'];
+            $billAddr->PostalCode               = @$data['bill_zip_code'];
+            $customerObj->BillAddr = $billAddr;
+        }
+        if (isset($data['ship_address'])) {
+            $shipAddr = new IPPPhysicalAddress();
+            $shipAddr->Line1                    = @$data['ship_address'];
+            $shipAddr->City                     = @$data['ship_city'];
+            if (@$data['ship_country']) {
+                $shipAddr->Country              = @$data['ship_country'];
+            }
+            $shipAddr->CountrySubDivisionCode   = @$data['ship_state'];
+            $shipAddr->PostalCode               = @$data['ship_zip_code'];
+
+            $customerObj->ShipAddr = $shipAddr;
+            // Set billing same with shipping if billing address is not set
+            if (!isset($data['bill_address'])) {
+                $customerObj->BillAddr = $shipAddr;
+            }
+        }
+
+        if (isset($data['primary_phone_number'])) {
+            $primaryPhone = new IPPTelephoneNumber();
+            $primaryPhone->FreeFormNumber = $data['primary_phone_number'];
+            $customerObj->PrimaryPhone = $primaryPhone;
+        }
+        if (isset($data['mobile_phone_number'])) {
+            $mobilePhone = new IPPTelephoneNumber();
+            $mobilePhone->FreeFormNumber = $data['mobile_phone_number'];
+            $customerObj->Mobile = $mobilePhone;
+        }
+        if (isset($data['alternate_phone_number'])) {
+            $alternatePhone = new IPPTelephoneNumber();
+            $alternatePhone->FreeFormNumber = $data['alternate_phone_number'];
+            $customerObj->AlternatePhone = $alternatePhone;
+        }
+        if (isset($data['email'])) {
+            $primaryEmail = new IPPEmailAddress();
+            $primaryEmail->Address = $data['email'];
+            $customerObj->PrimaryEmailAddr = $primaryEmail;
+        }
+        if (isset($data['parent_id']) && trim($data['parent_id'])) {
+            $customerObj->Job = 'true';
+            $customerObj->ParentRef = $data['parent_id'];
+        }
+        if (isset($data['notes'])) {
+            $customerObj->Notes = $data['notes'];
+        }
+        if (isset($data['company_name'])) {
+            $customerObj->CompanyName = $data['company_name'];
+        }
+        return $customerObj;
     }
 
     public function buildEstimateEntity($localData) {
