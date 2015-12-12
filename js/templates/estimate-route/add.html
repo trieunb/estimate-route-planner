@@ -41,9 +41,9 @@
                                 title="Move to pending queue"
                                 ng-click="moveItemToPendingQueue(referral)"></span>
                             <br>
-                            <span class="glyphicon glyphicon-map-marker"
+                            <!-- <span class="glyphicon glyphicon-map-marker"
                                 title="Locate on map"
-                                ng-click="openMarker(referral)"></span>
+                                ng-click="openMarker(referral)"></span> -->
                         </div>
                     </li>
                 </ul>
@@ -83,9 +83,9 @@
                                     title="Move to assigned queue"
                                     ng-click="moveItemToAssignedQueue(referral)"></span>
                                 <br>
-                                <span class="glyphicon glyphicon-map-marker"
+                                <!-- <span class="glyphicon glyphicon-map-marker"
                                     title="Locate on map"
-                                    ng-click="openMarker(referral)"></span>
+                                    ng-click="openMarker(referral)"></span> -->
                             </div>
                         </li>
                     </ul>
@@ -95,7 +95,7 @@
         <div class="col-sm-8">
             <div class="tools-box">
                 <label class="checkbox inline">
-                    <input type="checkbox" ng-model="viewOptions.compact">Compact view</label>
+                    <input type="checkbox" ng-model="viewOptions.compact">Compact view mode</label>
             </div>
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
@@ -129,7 +129,6 @@
                     </ui-gmap-marker>
 
                     <ui-gmap-marker ng-repeat="referral in assignedReferrals"
-                        options="referral.options"
                         idkey="$index" coords="referral.coords">
                         <ui-gmap-window>
                             <p>

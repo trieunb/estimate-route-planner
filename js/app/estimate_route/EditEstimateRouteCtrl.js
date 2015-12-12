@@ -51,6 +51,10 @@ function EditEstimateRouteCtrl(
     $scope.sortOptions = erpOptions.sortEstimateRoute;
     $scope.directionRenderers = [];
 
+    $scope.viewOptions = {
+        compact: true
+    };
+
     // Get route data
     estimateRouteFactory.get($routeParams.id)
         .success(function(response) {
@@ -251,6 +255,34 @@ function EditEstimateRouteCtrl(
                     }
                 }
             });
+    };
+
+    $scope.moveItemToPendingQueue = function(referral) {
+        $scope.pending_queue_sort_by = '';
+        $scope.assigned_queue_sort_by = '';
+        for (var i = 0; i < $scope.assignedReferrals.length; i++) {
+            if ($scope.assignedReferrals[i].id == referral.id) {
+                $scope.assignedReferrals.splice(i, 1);
+            }
+        }
+        $scope.pendingReferrals.push(referral);
+        $scope.drawRouteDirection();
+    };
+
+    $scope.moveItemToAssignedQueue = function(referral) {
+        $scope.pending_queue_sort_by = '';
+        $scope.assigned_queue_sort_by = '';        
+        for (var i = 0; i < $scope.pendingReferrals.length; i++) {
+            if ($scope.pendingReferrals[i].id == referral.id) {
+                $scope.pendingReferrals.splice(i, 1);
+            }
+        }
+        $scope.assignedReferrals.push(referral);
+        $scope.drawRouteDirection();
+    };
+
+    $scope.openMarker = function() {
+        // TODO: implement
     };
 
     $scope.saveRoute = function() {

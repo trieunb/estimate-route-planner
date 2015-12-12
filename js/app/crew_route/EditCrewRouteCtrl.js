@@ -51,6 +51,10 @@ function EditCrewRouteCtrl(
     $scope.sortOptions = erpOptions.sortCrewRoute;
     $scope.directionRenderers = [];
 
+    $scope.viewOptions = {
+        compact: true
+    };
+
     // Get route data
     crewRouteFactory.get($routeParams.id)
         .success(function(response) {
@@ -233,6 +237,34 @@ function EditCrewRouteCtrl(
                 }
             });
         }
+    };
+
+    $scope.moveItemToPendingQueue = function(estimate) {
+        $scope.pending_queue_sort_by = '';
+        $scope.assigned_queue_sort_by = '';
+        for (var i = 0; i < $scope.assignedEstimates.length; i++) {
+            if ($scope.assignedEstimates[i].id == estimate.id) {
+                $scope.assignedEstimates.splice(i, 1);
+            }
+        }
+        $scope.pendingEstimates.push(estimate);
+        $scope.drawRouteDirection();
+    };
+
+    $scope.moveItemToAssignedQueue = function(estimate) {
+        $scope.pending_queue_sort_by = '';
+        $scope.assigned_queue_sort_by = '';
+        for (var i = 0; i < $scope.pendingEstimates.length; i++) {
+            if ($scope.pendingEstimates[i].id == estimate.id) {
+                $scope.pendingEstimates.splice(i, 1);
+            }
+        }
+        $scope.assignedEstimates.push(estimate);
+        $scope.drawRouteDirection();
+    };
+
+    $scope.openMarker = function() {
+        // TODO: implement
     };
 
     $scope.saveRoute = function() {

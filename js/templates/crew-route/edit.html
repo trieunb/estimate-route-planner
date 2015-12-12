@@ -19,18 +19,32 @@
                 </div>
             </div>
             <div class="assigned-routes" ui-tree="assignedListDndOptions" data-max-depth="1" data-drag-delay="150">
-                <ul ui-tree-nodes ng-model="assignedEstimates">
+                <ul ui-tree-nodes ng-model="assignedEstimates" ng-class="{'empty': assignedEstimates.length == 0}">
                     <li ui-tree-node class="box-assign" ng-repeat="estimate in assignedEstimates">
-                        <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
-                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
-                        <br>
-                        {{:: estimate | estimateJobFullAddress }}
-                        <br>
-                        Phone: {{::estimate.primary_phone_number}}<br>
-                        Exp: {{::estimate.expiration_date}}<br>
-                        Total: ${{::estimate.total}}<br>
-                        Status: {{estimate.status}}
+                        <div class="queue-item-info">
+                            <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                            <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                            <br>
+                            {{:: estimate | estimateJobFullAddress }}
+                            <br>
+                            <div ng-hide="viewOptions.compact">
+                                Phone: {{::estimate.primary_phone_number}}<br>
+                                Exp: {{::estimate.expiration_date}}<br>
+                                Status: {{estimate.status}}<br>
+                            </div>
+                            Total: ${{::estimate.total}}<br>
+                        </div>
+                        <div class="queue-item-menu">
+                            <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                            <br>
+                            <span class="glyphicon glyphicon-save"
+                                title="Move to accepted queue"
+                                ng-click="moveItemToPendingQueue(estimate)"></span>
+                            <br>
+                            <!-- <span class="glyphicon glyphicon-map-marker"
+                                title="Locate on map"
+                                ng-click="openMarker(estimate)"></span> -->
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -47,23 +61,41 @@
                 </div>
             </div>
             <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
-                <ul ui-tree-nodes ng-model="pendingEstimates">
+                <ul ui-tree-nodes ng-model="pendingEstimates" ng-class="{'empty': pendingEstimates.length == 0}">
                     <li ui-tree-node class="box-assign" ng-repeat="estimate in pendingEstimates">
-                        <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
-                        <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
-                        <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
-                        <br>
-                        {{:: estimate | estimateJobFullAddress }}
-                        <br>
-                        Phone: {{::estimate.primary_phone_number}}<br>
-                        Exp: {{::estimate.expiration_date}}<br>
-                        Total: ${{::estimate.total}}<br>
-                        Status: {{estimate.status}}
+                        <div class="queue-item-info">
+                            <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
+                            <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
+                            <br>
+                            {{:: estimate | estimateJobFullAddress }}
+                            <br>
+                            <div ng-hide="viewOptions.compact">
+                                Phone: {{::estimate.primary_phone_number}}<br>
+                                Exp: {{::estimate.expiration_date}}<br>
+                                Status: {{estimate.status}}<br>
+                            </div>
+                            Total: ${{::estimate.total}}<br>
+                        </div>
+                        <div class="queue-item-menu">
+                            <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                            <br>
+                            <span class="glyphicon glyphicon-open"
+                                title="Move to assigned queue"
+                                ng-click="moveItemToAssignedQueue(estimate)"></span>
+                            <br>
+                            <!-- <span class="glyphicon glyphicon-map-marker"
+                                title="Locate on map"
+                                ng-click="openMarker(estimate)"></span> -->
+                        </div>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="col-sm-8">
+            <div class="tools-box">
+                <label class="checkbox inline">
+                    <input type="checkbox" ng-model="viewOptions.compact">Compact view mode</label>
+            </div>
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
                     <ui-gmap-marker

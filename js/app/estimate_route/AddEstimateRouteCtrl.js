@@ -104,17 +104,6 @@ function AddEstimateRouteCtrl(
             return true;
         },
         dropped: function(evt) {
-            $scope.drawRouteDirection();
-            return true;
-        }
-    };
-
-    $scope.assignedListDndOptions = {
-        dragStart: function() {
-            $scope.assigned_queue_sort_by = '';
-            return true;
-        },
-        dropped: function(evt) {
             // Check for a real moving
             if ( (evt.source.nodesScope.$id != evt.dest.nodesScope.$id) ||
                 (evt.dest.index != evt.source.index) ) {
@@ -181,18 +170,6 @@ function AddEstimateRouteCtrl(
             var point = {};
             var latLng = new google.maps.LatLng(
                 referral.coords.latitude, referral.coords.longitude);
-            referral.options = {
-                // icon: {
-                //     path: 'M0-48c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z',
-                //     // fillColor: '#FF0000',
-                //     // strokeWeight: 0,
-                //     // scale: .25,
-                // },
-                label: {
-                    text: markerTexts[index],
-                    color: '#fff'
-                }
-            };
             point.location = latLng;
             waypts.push(point);
         });
@@ -233,7 +210,8 @@ function AddEstimateRouteCtrl(
     };
 
     $scope.moveItemToPendingQueue = function(referral) {
-        console.log('move to pending');
+        $scope.pending_queue_sort_by = '';
+        $scope.assigned_queue_sort_by = '';
         for (var i = 0; i < $scope.assignedReferrals.length; i++) {
             if ($scope.assignedReferrals[i].id == referral.id) {
                 $scope.assignedReferrals.splice(i, 1);
@@ -244,7 +222,8 @@ function AddEstimateRouteCtrl(
     };
 
     $scope.moveItemToAssignedQueue = function(referral) {
-        console.log('move to assigned');
+        $scope.pending_queue_sort_by = '';
+        $scope.assigned_queue_sort_by = '';
         for (var i = 0; i < $scope.pendingReferrals.length; i++) {
             if ($scope.pendingReferrals[i].id == referral.id) {
                 $scope.pendingReferrals.splice(i, 1);

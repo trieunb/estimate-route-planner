@@ -52,6 +52,9 @@ body.modal-open .modal .loading-overlay {
 #erp-content .tools-box {
     padding-left: 20px;
 }
+#erp-content .tools-box .checkbox{
+    margin-top: 0;
+}
 .wp-admin #erp-content select {
     height: 34px;
 }
@@ -253,7 +256,7 @@ span.new-referal {
     float: right;
 }
 .box-assign .queue-item-menu br {
-    line-height: 22px;
+    line-height: 25px;
 }
 /*--------------- estimates style ----------------*/
 #erp-wrapper .service-argreement.pull-right {
