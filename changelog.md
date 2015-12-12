@@ -3,6 +3,7 @@
   - Route planning view:
     - Add compact view mode
     - Add button to quickly move items between two queues
+  - Some minor UI style changes
 
 ## 1.6.5
   - Add save route function. Only basic fields, more data(estimates) will be saved on next versions.

@@ -294,6 +294,18 @@ function EditEstimateCtrl(
         return $scope.estimate.customer_id == $scope.estimate.job_customer_id;
     };
 
+    /**
+     * When a new customer has been created by bill customers dropdown
+     */
+    $scope.onBillCustomerCreated = function() {
+        // Update job customers dropdown
+        erpLocalStorage.getCustomers()
+            .then(function(data) {
+                $scope.jobCustomers = [];
+                angular.copy(data, $scope.jobCustomers);
+            });
+    };
+
     // When the current customer's profile has been updated in the modal
     // And 'Update Form' is checked
     $scope.onBillCustomerUpdate = function() {
@@ -311,6 +323,18 @@ function EditEstimateCtrl(
     // Handler customer change to populate fields
     $scope.onBillCustomerChange = function() {
         resetBillCustomer();
+    };
+
+    /**
+     * When a new customer has been created by job customers dropdown
+     */
+    $scope.onJobCustomerCreated = function() {
+        // Update billing customers dropdown
+        erpLocalStorage.getCustomers()
+            .then(function(data) {
+                $scope.customers = [];
+                angular.copy(data, $scope.customers);
+            });
     };
 
     $scope.onJobCustomerUpdate = function() {

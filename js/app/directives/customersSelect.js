@@ -17,7 +17,8 @@ angular
                 ngRequired: '&',
                 ngChange: '=',
                 onCustomerUpdate: '&', // Current customer's profile has been updated
-                onCustomerChange: '&' // User select another customer
+                onCustomerChange: '&', // User select another customer
+                onCustomerCreated: '&' // User created new customer
             },
             template: '<selectize ng-model="ngModel" ng-change="onCustomerChangeEvent()" config="selectConfig" options="selectOptions"></selectize> <small ng-if="addingEnabled"><a href="#" ng-click="$event.preventDefault(); onAddCustomer()"><span class="glyphicon glyphicon-plus"></span> New customer</a></small> <small ng-if="editingEnabled && ngModel"><span>|</span> <a href="#" ng-click="$event.preventDefault(); onEditCustomer()"><span class="glyphicon glyphicon-info-sign"></span> Customer details</a></small>',
             controller: [
@@ -144,11 +145,15 @@ angular
                                 $scope.selectOptions = [];
                                 angular.copy(data, $scope.selectOptions);
                             });
+                        $scope.onCustomerCreated();
+
                         // Update parent scope model to the new customer
                         $scope.ngModel = returnData.customer.id;
-                        if (returnData.updateFormFlag) {
-                            $scope.onCustomerChange();
-                        }
+                        $timeout(function() {
+                            if (returnData.updateFormFlag) {
+                                $scope.onCustomerChange();
+                            }
+                        }, 100);
                     }, function() {
                     });
                 };

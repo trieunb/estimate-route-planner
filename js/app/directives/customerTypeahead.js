@@ -22,6 +22,6 @@ function customerTypeahead() {
             }
         ],
         restrict: 'E',
-        template: '<input class="form-control" typeahead-on-select="typeaheadOnSelect($item, $model, $label)" ng-model="ngModel" placeholder="{{placeholder}}" uib-typeahead="customer.display_name as customer.display_name for customer in ::customers | filter:$viewValue | limitTo:30" typeahead-wait-ms="200" placeholder="Search by customer name, number ... ">'
+        template: '<input class="form-control" typeahead-focus-first="false" typeahead-on-select="typeaheadOnSelect($item, $model, $label)" ng-model="ngModel" placeholder="{{placeholder}}" uib-typeahead="customer.display_name as customer.display_name for customer in ::customers | filter:$viewValue | limitTo:30" typeahead-wait-ms="200" placeholder="Search by customer name, number ... ">'
     };
 }
