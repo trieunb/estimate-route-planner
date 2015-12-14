@@ -182,7 +182,7 @@ function AddEstimateRouteCtrl(
         var MAX_WAYPOINTS_EXCEEDED = 8;
         for (var i = 0, j = waypointsCount; i < j; i += MAX_WAYPOINTS_EXCEEDED - 1) {
             if (i + 1 == waypointsCount) {
-             break;
+                break;
             }
             var part = waypts.slice(i, i + MAX_WAYPOINTS_EXCEEDED);
             var request = {

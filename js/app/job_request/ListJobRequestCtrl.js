@@ -122,40 +122,66 @@ function ListJobRequestCtrl(
         $scope.assignReferralForm.$setPristine();
     };
 
+
     $scope.startCheckGeolocation = function() {
         $scope.isCheckingGeoLocation = true;
-        var length = $scope.referrals.length;
-        angular.forEach($scope.referrals, function(referral) {
-            referral.geolocation = {
-                is_checking: true,
-                is_checked: false
-            };
-            if (referral.address.length === 0) {
-                referral.geolocation.ok = false;
-                referral.geolocation.is_checking = false;
-                referral.geolocation.is_checked = true;
-            } else {
-                var fullAddress = referral.address + ' ' + referral.city + ' ' +
-                    referral.state + ' ' + referral.zip_code;
-
-                $timeout(function() {
-                    erpGeoLocation.resolve(fullAddress)
-                        .then(
-                            function(result) {
-                                referral.geolocation.ok = true;
-                            },
-                            function() {
-                                referral.geolocation.ok = false;
-                                toastr.error("An error has occurred! You might had exceed the Google Maps API usage limits. Please try again in few seconds.");
-                            }
-                        );
-                    referral.geolocation.is_checking = false;
-                    referral.geolocation.is_checked = true;
-                }, 100);
+        window.scrollTo(0, angular.element("#erp-content")[0].offsetTop - 100);
+        var errorsCount = 0;
+        var delay = 200;
+        var nextItemIndex = 0;
+        var geocoder = new google.maps.Geocoder();
+        var itemsCount = $scope.referrals.length;
+        for (var i = 0; i < itemsCount; i++) {
+            if ('undefined' === typeof($scope.referrals[i].geolocation)) {
+                $scope.referrals[i].geolocation = {};
             }
-        });
+            $scope.referrals[i].geolocation.is_checked = false;
+        }
+        var checkReferral = function(next) {
+            var ref = $scope.referrals[nextItemIndex];
+            var fullAddress = ref.address + ' ' + ref.city + ' ' + ref.state + ' ' + ref.zip_code;
+            ref.geolocation.is_checking = true;
+            $scope.$apply();
+            geocoder.geocode( { address: fullAddress }, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
+                    ref.geolocation.ok = true;
+                    ref.geolocation.is_checking = false;
+                    ref.geolocation.is_checked = true;
+                } else {
+                    if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                        nextItemIndex--;
+                        delay += 200;
+                    } else {
+                        ref.geolocation.is_checking = false;
+                        ref.geolocation.is_checked = true;
+                        ref.geolocation.ok = false;
+                        errorsCount += 1;
+                    }
+                }
+                $scope.$apply();
+                if (nextItemIndex + 1 == itemsCount) {
+                    $scope.isCheckingGeoLocation = false;
+                    $timeout(function() {
+                        if (errorsCount > 0) {
+                            toastr.error("Found " + errorsCount + ' items has geolocation issue!');
+                        } else {
+                            toastr.success("No any geolocation issues found");
+                        }
+                    }, 500);
+                }
+                next();
+            });
+        };
 
-        $scope.isCheckingGeoLocation = false;
+        var startCheck = function() {
+            if (nextItemIndex < itemsCount) {
+                setTimeout(function() {
+                    checkReferral(startCheck);
+                    nextItemIndex++;
+                }, delay);
+            }
+        };
+        startCheck();
     };
 
     $scope.updateReferralStatus = function() {

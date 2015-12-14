@@ -50,9 +50,15 @@
                   <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.txn_date}}</span></a>
                   <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.txn_date}}</span>
                 </td>
-                <td>
-                  <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.customer_display_name}}</span></a>
-                  <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.customer_display_name}}</span>
+                <td class="address-cell" ng-class="{'danger': est.geolocation.is_checked && !est.geolocation.ok }">
+                    <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.customer_display_name}}</span></a>
+                    <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.customer_display_name}}</span>
+                    <span class="glyphicon glyphicon-repeat spin text-warning"
+                        ng-class="{'visibility': est.geolocation.is_checking}"></span>
+                    <span class="glyphicon glyphicon-ok text-success" title="Geolocation error"
+                        ng-class="{'visibility': est.geolocation.is_checked && est.geolocation.ok}"></span>
+                    <span class="glyphicon glyphicon glyphicon-warning-sign text-danger" title="Geolocation is OK"
+                        ng-class="{'visibility': est.geolocation.is_checked && !est.geolocation.ok}"></span>
                 </td>
                 <td>
                   <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.doc_number}}</span></a>
@@ -128,7 +134,7 @@
           <erp-pagination></erp-pagination>
       </div>
       <div class="col-md-4 text-right">
-          <button type="button" class="btn btn-primary"
+          <button type="button" class="btn btn-info"
               title="Check geolocation issue for the displaying items"
               ng-if="!isBusy && estimates.length != 0"
               ng-click="startCheckGeolocation()"

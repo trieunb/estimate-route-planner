@@ -42,7 +42,8 @@ class EstimateController extends BaseController {
             ->selectMany(
                 'e.id', 'e.txn_date', 'e.doc_number',
                 'e.expiration_date', 'e.total',
-                'e.status', 'e.email'
+                'e.status', 'e.email',
+                'e.job_address', 'e.job_city', 'e.job_state', 'e.job_zip_code'
             )
             ->select('c.display_name', 'customer_display_name')
             ->select('jc.display_name', 'job_customer_display_name')

@@ -1,6 +1,6 @@
 <?php
 class BaseController {
-    const PAGE_SIZE = 30;
+    const PAGE_SIZE = 15;
 
     /* @var array */
     protected $data;

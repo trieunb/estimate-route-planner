@@ -7,9 +7,11 @@ angular
             '$rootScope',
             '$routeParams',
             '$location',
+            '$timeout',
             'estimateFactory',
             'sharedData',
             'erpLocalStorage',
+            'erpGeoLocation',
             ListEstimateCtrl
         ]
     );
@@ -19,9 +21,11 @@ function ListEstimateCtrl(
         $rootScope,
         $routeParams,
         $location,
+        $timeout,
         estimateFactory,
         sharedData,
-        erpLocalStorage) {
+        erpLocalStorage,
+        erpGeoLocation) {
 
     $scope.setPageTitle('Estimates List');
     $scope.estimates = {};
@@ -39,6 +43,7 @@ function ListEstimateCtrl(
     }
     $scope.currentPage = currentPage;
     $scope.customers = [];
+    $scope.isCheckingGeoLocation = false;
 
     var paginate = function() {
         var query = {
@@ -111,6 +116,68 @@ function ListEstimateCtrl(
             label: 'Rejected'
         }
     ];
+
+    $scope.startCheckGeolocation = function() {
+        $scope.isCheckingGeoLocation = true;
+        window.scrollTo(0, angular.element("#erp-content")[0].offsetTop - 100);
+        var errorsCount = 0;
+        var delay = 200;
+        var nextItemIndex = 0;
+        var geocoder = new google.maps.Geocoder();
+        var itemsCount = $scope.estimates.length;
+        for (var i = 0; i < itemsCount; i++) {
+            if ('undefined' === typeof($scope.estimates[i].geolocation)) {
+                $scope.estimates[i].geolocation = {};
+            }
+            $scope.estimates[i].geolocation.is_checked = false;
+        }
+        var checkEstimate = function(next) {
+            var estimate = $scope.estimates[nextItemIndex];
+            var fullAddress = estimate.job_address + ' ' + estimate.job_city + ' ' +
+                estimate.job_state + ' ' + estimate.job_zip_code;
+            estimate.geolocation.is_checking = true;
+            $scope.$apply();
+            geocoder.geocode( { address: fullAddress }, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
+                    estimate.geolocation.ok = true;
+                    estimate.geolocation.is_checking = false;
+                    estimate.geolocation.is_checked = true;
+                } else {
+                    if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                        nextItemIndex--;
+                        delay += 200;
+                    } else {
+                        estimate.geolocation.is_checking = false;
+                        estimate.geolocation.is_checked = true;
+                        estimate.geolocation.ok = false;
+                        errorsCount++;
+                    }
+                }
+                $scope.$apply();
+                if (nextItemIndex + 1 == itemsCount) {
+                    $scope.isCheckingGeoLocation = false;
+                    $timeout(function() {
+                        if (errorsCount > 0) {
+                            toastr.error("Found " + errorsCount + ' items has geolocation issue!');
+                        } else {
+                            toastr.success("No any geolocation issues found");
+                        }
+                    }, 500);
+                }
+                next();
+            });
+        };
+
+        var startCheck = function() {
+            if (nextItemIndex < itemsCount) {
+                setTimeout(function() {
+                    checkEstimate(startCheck);
+                    nextItemIndex++;
+                }, delay);
+            }
+        };
+        startCheck();
+    };
 
     $scope.openSendMailModal = function(estimate) {
         $scope.showModal = true;
