@@ -6,8 +6,10 @@ angular
         'jobRequestFactory',
         'estimateRouteFactory',
         'erpLocalStorage',
+        'erpGeoLocation',
         'erpOptions',
         '$ngBootbox',
+        '$timeout',
         ListJobRequestCtrl
     ]);
 
@@ -17,8 +19,10 @@ function ListJobRequestCtrl(
     jobRequestFactory,
     estimateRouteFactory,
     erpLocalStorage,
+    erpGeoLocation,
     erpOptions,
-    $ngBootbox) {
+    $ngBootbox,
+    $timeout) {
 
     $scope.setPageTitle('Job Requests List');
     $scope.referrals = {};
@@ -28,6 +32,8 @@ function ListJobRequestCtrl(
     $scope.filter = {};
     $scope.total = 0;
     $scope.referralStatuses = erpOptions.referralStatuses;
+
+    $scope.isCheckingGeoLocation = false;
 
     var currentPage = 1;
     if ('undefined' !== typeof($routeParams.pageNumber)) {
@@ -114,6 +120,42 @@ function ListJobRequestCtrl(
         });
         $scope.currentReferral = {};
         $scope.assignReferralForm.$setPristine();
+    };
+
+    $scope.startCheckGeolocation = function() {
+        $scope.isCheckingGeoLocation = true;
+        var length = $scope.referrals.length;
+        angular.forEach($scope.referrals, function(referral) {
+            referral.geolocation = {
+                is_checking: true,
+                is_checked: false
+            };
+            if (referral.address.length === 0) {
+                referral.geolocation.ok = false;
+                referral.geolocation.is_checking = false;
+                referral.geolocation.is_checked = true;
+            } else {
+                var fullAddress = referral.address + ' ' + referral.city + ' ' +
+                    referral.state + ' ' + referral.zip_code;
+
+                $timeout(function() {
+                    erpGeoLocation.resolve(fullAddress)
+                        .then(
+                            function(result) {
+                                referral.geolocation.ok = true;
+                            },
+                            function() {
+                                referral.geolocation.ok = false;
+                                toastr.error("An error has occurred! You might had exceed the Google Maps API usage limits. Please try again in few seconds.");
+                            }
+                        );
+                    referral.geolocation.is_checking = false;
+                    referral.geolocation.is_checked = true;
+                }, 100);
+            }
+        });
+
+        $scope.isCheckingGeoLocation = false;
     };
 
     $scope.updateReferralStatus = function() {

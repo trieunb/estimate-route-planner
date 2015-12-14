@@ -84,8 +84,7 @@
             </tr>
         </tbody>
     </table>
-    <p ng-if="!$root.isBusy && estimates.length == 0"
-      class="text-center">
+    <p ng-if="!$root.isBusy && estimates.length == 0" class="text-center">
       No results were found!
     </p>
     <div class="modal fade" ng-class="{'in': showModal}" ng-style="{'display': showModal ? 'block' : 'none'}">
@@ -124,5 +123,17 @@
             </div>
         </div>
     </div>
-    <erp-pagination></erp-pagination>
+    <div class="row">
+      <div class="col-md-8">
+          <erp-pagination></erp-pagination>
+      </div>
+      <div class="col-md-4 text-right">
+          <button type="button" class="btn btn-primary"
+              title="Check geolocation issue for the displaying items"
+              ng-if="!isBusy && estimates.length != 0"
+              ng-click="startCheckGeolocation()"
+              ng-disabled="isCheckingGeoLocation">
+              <span class="glyphicon glyphicon-map-marker"></span> Check for geolocation issue</button>
+      </div>
+    </div>
 </div>

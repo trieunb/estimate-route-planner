@@ -17,7 +17,8 @@ class ReferralController extends BaseController {
         $countQuery = clone($searchQuery);
         $refs = $searchQuery
             ->selectMany(
-                'r.id', 'r.address', 'r.primary_phone_number',
+                'r.id', 'r.address', 'r.city', 'r.state', 'r.zip_code',
+                'r.primary_phone_number',
                 'r.date_service', 'r.status', 'r.date_requested',
                 'r.estimator_id'
             )

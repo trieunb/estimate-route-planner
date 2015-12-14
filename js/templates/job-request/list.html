@@ -21,70 +21,80 @@
             </form>
         </div>
     </div>
-  <table class="table table-bordered table-hover table-fixed header-fixed">
-    <thead>
-      <tr>
-        <th>Customer</th>
-        <th>Address</th>
-        <th style="width: 125px;">Date requested</th>
-        <th style="width: 140px;">Phone Number</th>
-        <th style="width: 150px;">Estimator Assigned</th>
-        <th style="width: 100px;">Date service</th>
-        <th style="width: 130px;">Status</th>
-        <th style="width: 70px;">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="ref in referrals">
-        <td>
-          <a href="#/edit-job-request/{{::ref.id}}" ng-if="::hasCap('erpp_edit_job_requests')"><span>{{::ref.customer_display_name}}</span></a>
-          <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.customer_display_name}}</span>
-        </td>
-        <td><span>{{::ref.address}}</span></td>
-        <td><span>{{::ref.date_requested}}</span></td>
-        <td><span>{{::ref.primary_phone_number}}</span></td>
-        <td><span>{{::ref.estimator_full_name }}</span></td>
-        <td><span>{{::ref.date_service}}</span></td>
-        <td>
-            <select ng-if="::hasCap('erpp_edit_job_requests')"
-                ng-init="ref.new_status = ref.status"
-                ng-model="ref.new_status"
-                ng-options="status.value as status.label for status in ::referralStatuses"
-                ng-change="showModalUpdateStatus(ref)">
-            </select>
-            <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.status}}</span>
-        </td>
-        <td class="text-center">
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown">View
-              <span class="caret"></span></button>
-              <ul class="dropdown-menu right-align">
-                <li ng-if="::hasCap('erpp_edit_job_requests')"><a href="#/edit-job-request/{{::ref.id}}">Edit</a></li>
-                <li ng-if="::hasCap('erpp_create_estimates')"><a href="#/new-estimate?ref={{::ref.id}}">Create estimate</a></li>
-                <li ng-if="::hasCap('erpp_print_job_requests')"><a target="_blank" href="{{::$root.baseAPIPath}}&_do=printReferral&id={{ref.id}}">Print</a></li>
-              </ul>
-            </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <p ng-if="!$root.isBusy && referrals.length == 0"
+    <table class="table table-bordered table-hover table-fixed header-fixed">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Address</th>
+            <th style="width: 125px;">Date requested</th>
+            <th style="width: 140px;">Phone Number</th>
+            <th style="width: 150px;">Estimator Assigned</th>
+            <th style="width: 100px;">Date service</th>
+            <th style="width: 130px;">Status</th>
+            <th style="width: 70px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="ref in referrals">
+            <td>
+              <a href="#/edit-job-request/{{::ref.id}}" ng-if="::hasCap('erpp_edit_job_requests')"><span>{{::ref.customer_display_name}}</span></a>
+              <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.customer_display_name}}</span>
+            </td>
+            <td class="address-cell" ng-class="{'danger': ref.geolocation.is_checked && !ref.geolocation.ok }">
+                <span class="glyphicon glyphicon-repeat spin text-warning"
+                    ng-class="{'visibility': ref.geolocation.is_checking}"></span>
+                <span class="glyphicon glyphicon-ok text-success"
+                    ng-class="{'visibility': ref.geolocation.is_checked && ref.geolocation.ok}"></span>
+                <span class="glyphicon glyphicon glyphicon-warning-sign text-danger"
+                    ng-class="{'visibility': ref.geolocation.is_checked && !ref.geolocation.ok}"></span>
+                <span>{{::ref | referralFullAddress}}</span>
+            </td>
+            <td><span>{{::ref.date_requested}}</span></td>
+            <td><span>{{::ref.primary_phone_number}}</span></td>
+            <td><span>{{::ref.estimator_full_name }}</span></td>
+            <td><span>{{::ref.date_service}}</span></td>
+            <td>
+                <select ng-if="::hasCap('erpp_edit_job_requests')"
+                    ng-init="ref.new_status = ref.status"
+                    ng-model="ref.new_status"
+                    ng-options="status.value as status.label for status in ::referralStatuses"
+                    ng-change="showModalUpdateStatus(ref)">
+                </select>
+                <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::ref.status}}</span>
+            </td>
+            <td class="text-center">
+                <div class="dropdown">
+                  <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown">View
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu right-align">
+                    <li ng-if="::hasCap('erpp_edit_job_requests')"><a href="#/edit-job-request/{{::ref.id}}">Edit</a></li>
+                    <li ng-if="::hasCap('erpp_create_estimates')"><a href="#/new-estimate?ref={{::ref.id}}">Create estimate</a></li>
+                    <li ng-if="::hasCap('erpp_print_job_requests')"><a target="_blank" href="{{::$root.baseAPIPath}}&_do=printReferral&id={{ref.id}}">Print</a></li>
+                  </ul>
+                </div>
+            </td>
+          </tr>
+        </tbody>
+    </table>
+  <p ng-if="!isBusy && referrals.length == 0"
     class="text-center">
     No results were found!
   </p>
-  <div class="html-pagination hide">
-    <ul class="pagination" style="display: none;">
-      <li><a href="#" rel="prev">Previous</a></li>
-      <li><a href="#">1</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li><a href="#">4</a></li>
-      <li><a href="#">5</a></li>
-      <li><a href="#" rel="next">Next</a></li>
-    </ul>
+  <div class="row">
+    <div class="col-md-8">
+        <erp-pagination></erp-pagination>
+    </div>
+    <div class="col-md-4 text-right">
+        <button type="button" class="btn btn-primary"
+            title="Check geolocation issue for the displaying items"
+            ng-click="startCheckGeolocation()"
+            ng-if="!isBusy && referrals.length != 0"
+            ng-disabled="isCheckingGeoLocation">
+            <span class="glyphicon glyphicon-map-marker"></span> Check for geolocation issue</button>
+    </div>
   </div>
-  <div class="modal fade" ng-class="{'in': showAssignModal}" ng-style="{'display': showAssignModal ? 'block' : 'none'}">
-      <div class="modal-dialog">
+    <div class="modal fade" ng-class="{'in': showAssignModal}" ng-style="{'display': showAssignModal ? 'block' : 'none'}">
+        <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
                   <h4>Please select route to assign:</h4>
@@ -109,5 +119,4 @@
           </div>
       </div>
     </div>
-    <erp-pagination></erp-pagination>
 </div>
