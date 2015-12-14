@@ -745,12 +745,13 @@ class Asynchronzier
                 $customerObj->SyncToken = $data['sync_token'];
             }
         }
-        if (@$data['display_name']) {
-            $customerObj->DisplayName = @$data['display_name'];
-        }
-        if (@$data['given_name'] && @$data['family_name']) {
+        if (@$data['given_name'] || @$data['family_name']) {
             $customerObj->DisplayName = $data['given_name'] . ' ' . $data['family_name'];
         }
+        if (@$data['display_name']) {
+            $customerObj->DisplayName = $data['display_name'];
+        }
+
         $customerObj->GivenName = @$data['given_name'];
         $customerObj->FamilyName = @$data['family_name'];
         if (isset($data['bill_address'])) {
@@ -804,6 +805,9 @@ class Asynchronzier
         if (isset($data['parent_id']) && trim($data['parent_id'])) {
             $customerObj->Job = 'true';
             $customerObj->ParentRef = $data['parent_id'];
+        } else {
+            $customerObj->Job = 'false';
+            $customerObj->ParentRef = null;
         }
         if (isset($data['notes'])) {
             $customerObj->Notes = $data['notes'];

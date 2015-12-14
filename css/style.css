@@ -686,3 +686,6 @@ div.queue-toolbar {
     cursor: pointer;
     color: #31708f;
 }
+.modal-body .form-group {
+    margin-bottom: 5px;
+}
