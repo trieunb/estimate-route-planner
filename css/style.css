@@ -110,6 +110,7 @@ span.glyphicon.spin {
 }
 #erp-content .tools-box .checkbox{
     margin-top: 0;
+    display: inline-block;
 }
 .wp-admin #erp-content select {
     height: 34px;
@@ -257,7 +258,7 @@ span.new-referal {
     overflow: auto;
 }
 .angular-ui-tree-node.highlight {
-    background-color: #fcf8e3;
+    background-color: #fff2a8;
 }
 
 .angular-ui-tree-nodes.empty .angular-ui-tree-placeholder {
@@ -295,9 +296,9 @@ span.new-referal {
 
 .box-assign .queue-item-menu span.glyphicon {
     float: right;
-    right: 5px;
+    top: -3px;
     color: #B6B6B6;
-    font-size: 1em;
+    font-size: 0.9em;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -308,16 +309,16 @@ span.new-referal {
     color: #4E4E4E;
 }
 .box-assign .queue-item-info {
-    width: 85%;
+    width: 87%;
     display: inline-block;
 }
 .box-assign .queue-item-menu {
-    width: 15%;
+    width: 13%;
     display: inline-block;
     float: right;
 }
 .box-assign .queue-item-menu br {
-    line-height: 20px;
+    line-height: 23px;
 }
 /*--------------- estimates style ----------------*/
 #erp-wrapper .service-argreement.pull-right {
@@ -444,7 +445,7 @@ span.new-referal {
 }
 @media (min-width: 1024px) {
     .gmap-container {
-        margin-top: 11px;
+        margin-top: 8px;
     }
 }
 

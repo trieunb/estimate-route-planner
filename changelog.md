@@ -1,6 +1,7 @@
 ## 1.7.1
   - Improve route planning page:
     - Open marker when click the item in queue list.
+    - Highlight item when click on the marker.
 
 ## 1.7.1
   - Add `Display name` to customer pop-up

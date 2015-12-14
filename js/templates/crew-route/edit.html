@@ -18,9 +18,10 @@
                     </select>
                 </div>
             </div>
+
             <div class="assigned-routes" ui-tree="assignedListDndOptions" data-max-depth="1" data-drag-delay="150">
                 <ul ui-tree-nodes ng-model="assignedEstimates" ng-class="{'empty': assignedEstimates.length == 0}">
-                    <li ui-tree-node class="box-assign" ng-repeat="estimate in assignedEstimates">
+                    <li ui-tree-node class="box-assign" ng-repeat="estimate in assignedEstimates" ng-class="{'highlight': estimate.highlight}">
                         <div class="queue-item-info">
                             <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
                             <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
@@ -41,9 +42,9 @@
                                 title="Move to accepted queue"
                                 ng-click="moveItemToPendingQueue(estimate)"></span>
                             <br>
-                            <!-- <span class="glyphicon glyphicon-map-marker"
+                            <span class="glyphicon glyphicon-map-marker"
                                 title="Locate on map"
-                                ng-click="openMarker(estimate)"></span> -->
+                                ng-click="openMarker(estimate)"></span>
                         </div>
                     </li>
                 </ul>
@@ -62,7 +63,7 @@
             </div>
             <div class="assigned-routes" ui-tree="pendingListDndOptions" data-max-depth="1" data-drag-delay="150">
                 <ul ui-tree-nodes ng-model="pendingEstimates" ng-class="{'empty': pendingEstimates.length == 0}">
-                    <li ui-tree-node class="box-assign" ng-repeat="estimate in pendingEstimates">
+                    <li ui-tree-node class="box-assign" ng-repeat="estimate in pendingEstimates" ng-class="{'highlight': estimate.highlight}">
                         <div class="queue-item-info">
                             <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
                             <span ng-if="::!hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
@@ -83,9 +84,9 @@
                                 title="Move to assigned queue"
                                 ng-click="moveItemToAssignedQueue(estimate)"></span>
                             <br>
-                            <!-- <span class="glyphicon glyphicon-map-marker"
+                            <span class="glyphicon glyphicon-map-marker"
                                 title="Locate on map"
-                                ng-click="openMarker(estimate)"></span> -->
+                                ng-click="openMarker(estimate)"></span>
                         </div>
                     </li>
                 </ul>
@@ -108,39 +109,48 @@
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
+
                     <ui-gmap-marker ng-repeat="estimate in pendingEstimates"
                         icon="pendingMarkerIcon"
-                        idkey="$index" coords="estimate.coords"
-                        >
-                        <ui-gmap-window>
+                        idkey="$index"
+                        coords="estimate.coords"
+                        events="estimate.markerEvents">
+                        <ui-gmap-window show="estimate.show_infor_window" closeClick="estimate.show_infor_window = false; estimate.highlight = false">
                             <p>
                                 <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
                                 <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
                                 {{:: estimate | estimateJobFullAddress }}
                                 <br>
-                                Phone: {{::estimate.primary_phone_number}}<br>
-                                Exp: {{::estimate.expiration_date}}<br>
-                                Total: ${{::estimate.total}}<br>
-                                Status: {{estimate.status}}
+                                Total: ${{::estimate.total}}
+                                <span ng-hide="$parent.viewOptions.compact">
+                                    <br>
+                                    Phone: {{::estimate.primary_phone_number}}<br>
+                                    Exp: {{::estimate.expiration_date}}<br>
+                                    Status: {{estimate.status}}
+                                </span>
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>
 
                     <ui-gmap-marker ng-repeat="estimate in assignedEstimates"
-                        idkey="$index" coords="estimate.coords"
-                        >
-                        <ui-gmap-window>
+                        idkey="$index"
+                        coords="estimate.coords"
+                        events="estimate.markerEvents">
+                        <ui-gmap-window show="estimate.show_infor_window" closeClick="estimate.show_infor_window = false; estimate.highlight = false">
                             <p>
                                 <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
                                 <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
                                 {{:: estimate | estimateJobFullAddress }}
                                 <br>
-                                Phone: {{::estimate.primary_phone_number}}<br>
-                                Exp: {{::estimate.expiration_date}}<br>
-                                Total: ${{::estimate.total}}<br>
-                                Status: {{estimate.status}}
+                                Total: ${{::estimate.total}}
+                                <span ng-hide="$parent.viewOptions.compact">
+                                    <br>
+                                    Phone: {{::estimate.primary_phone_number}}<br>
+                                    Exp: {{::estimate.expiration_date}}<br>
+                                    Status: {{estimate.status}}
+                                </span>
                             </p>
                         </ui-gmap-window>
                     </ui-gmap-marker>

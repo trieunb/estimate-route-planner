@@ -85,6 +85,12 @@ function AddCrewRouteCtrl(
                         latitude: estimate.job_lat,
                         longitude: estimate.job_lng
                     };
+                    estimate.markerEvents = {
+                        click: function() {
+                            $scope.clearHighlights();
+                            estimate.highlight = true;
+                        }
+                    };
                     estimate.total = parseFloat(estimate.total);
                     $scope.pendingEstimates.push(estimate);
                 }
@@ -239,8 +245,23 @@ function AddCrewRouteCtrl(
         $scope.drawRouteDirection();
     };
 
-    $scope.openMarker = function() {
-        // TODO: implement
+    $scope.openMarker = function(estimate) {
+        estimate.show_infor_window = true;
+        $scope.map.control.getGMap().setCenter(
+            new google.maps.LatLng(
+                estimate.coords.latitude,
+                estimate.coords.longitude
+            )
+        );
+    };
+
+    $scope.clearHighlights = function() {
+        for (var i = 0; i < $scope.pendingEstimates.length; i++) {
+            $scope.pendingEstimates[i].highlight = false;
+        }
+        for (var j = 0; j < $scope.assignedEstimates.length; j++) {
+            $scope.assignedEstimates[j].highlight = false;
+        }
     };
 
     $scope.saveRoute = function() {

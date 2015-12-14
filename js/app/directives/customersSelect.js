@@ -55,7 +55,7 @@ angular
                     sortField: 'order',
                     selectOnTab: true,
                     maxItems: 1,
-                    maxOptions: 10000
+                    maxOptions: 500
                 };
 
                 // Create callback
