@@ -154,7 +154,7 @@ function ListEstimateCtrl(
                     }
                 }
                 $scope.$apply();
-                if (nextItemIndex + 1 == itemsCount) {
+                if ((nextItemIndex + 1 == itemsCount) || (nextItemIndex == itemsCount)) {
                     $scope.isCheckingGeoLocation = false;
                     $timeout(function() {
                         if (errorsCount > 0) {
