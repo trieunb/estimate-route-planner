@@ -42,7 +42,10 @@ function AddEstimateRouteCtrl(
     $scope.recentRoutes = [];
     $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png' };
     $scope.startMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/start-marker.png' };
-    $scope.map = {control: {}};  // Hold map instance
+    $scope.map = {
+        control: {},
+        markersControl: {}
+    };  // Hold map instance
     $scope.map.options = {};
     $scope.assigned_queue_sort_by = '';
     $scope.pending_queue_sort_by = '';
@@ -88,6 +91,12 @@ function AddEstimateRouteCtrl(
                 referral.coords = {
                     latitude: referral.lat,
                     longitude: referral.lng
+                };
+                referral.markerEvents = {
+                    click: function() {
+                        $scope.clearHighlights();
+                        referral.highlight = true;
+                    }
                 };
                 $scope.pendingReferrals.push(referral);
             });
@@ -233,8 +242,23 @@ function AddEstimateRouteCtrl(
         $scope.drawRouteDirection();
     };
 
-    $scope.openMarker = function() {
-        // TODO: implement
+    $scope.openMarker = function(referral) {
+        referral.show_infor_window = true;
+        $scope.map.control.getGMap().setCenter(
+            new google.maps.LatLng(
+                referral.coords.latitude,
+                referral.coords.longitude
+            )
+        );
+    };
+
+    $scope.clearHighlights = function() {
+        for (var i = 0; i < $scope.pendingReferrals.length; i++) {
+            $scope.pendingReferrals[i].highlight = false;
+        }
+        for (var j = 0; j < $scope.assignedReferrals.length; j++) {
+            $scope.assignedReferrals[j].highlight = false;
+        }
     };
 
     $scope.saveRoute = function() {

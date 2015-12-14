@@ -247,14 +247,19 @@ span.new-referal {
 .angular-ui-tree-nodes .angular-ui-tree-nodes {
     padding-left: 20px;
 }
-.angular-ui-tree-node,.angular-ui-tree-placeholder {
+.angular-ui-tree-node, .angular-ui-tree-placeholder {
     display: block;
     position: relative;
     margin: 0;
     padding: 0;
     min-height: 20px;
-    line-height: 20px
+    line-height: 20px;
+    overflow: auto;
 }
+.angular-ui-tree-node.highlight {
+    background-color: #fcf8e3;
+}
+
 .angular-ui-tree-nodes.empty .angular-ui-tree-placeholder {
     height: 390px !important;
 }
@@ -312,7 +317,7 @@ span.new-referal {
     float: right;
 }
 .box-assign .queue-item-menu br {
-    line-height: 25px;
+    line-height: 20px;
 }
 /*--------------- estimates style ----------------*/
 #erp-wrapper .service-argreement.pull-right {

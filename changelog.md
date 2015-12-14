@@ -1,4 +1,8 @@
 ## 1.7.1
+  - Improve route planning page:
+    - Open marker when click the item in queue list.
+
+## 1.7.1
   - Add `Display name` to customer pop-up
   - Add button to check geolocation issue for job requests and estimates list
 

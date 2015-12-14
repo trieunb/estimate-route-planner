@@ -69,6 +69,12 @@ function EditEstimateRouteCtrl(
                     latitude: referral.lat,
                     longitude: referral.lng
                 };
+                referral.markerEvents = {
+                    click: function() {
+                        $scope.clearHighlights();
+                        referral.highlight = true;
+                    }
+                };
                 $scope.assignedReferrals.push(referral);
                 $scope.currentAssignedReferrals.push(referral);
             });
@@ -113,6 +119,12 @@ function EditEstimateRouteCtrl(
                     referral.coords = {
                         latitude: referral.lat,
                         longitude: referral.lng
+                    };
+                    referral.markerEvents = {
+                        click: function() {
+                            $scope.clearHighlights();
+                            referral.highlight = true;
+                        }
                     };
                     $scope.pendingReferrals.push(referral);
                 }
@@ -271,7 +283,7 @@ function EditEstimateRouteCtrl(
 
     $scope.moveItemToAssignedQueue = function(referral) {
         $scope.pending_queue_sort_by = '';
-        $scope.assigned_queue_sort_by = '';        
+        $scope.assigned_queue_sort_by = '';
         for (var i = 0; i < $scope.pendingReferrals.length; i++) {
             if ($scope.pendingReferrals[i].id == referral.id) {
                 $scope.pendingReferrals.splice(i, 1);
@@ -281,8 +293,23 @@ function EditEstimateRouteCtrl(
         $scope.drawRouteDirection();
     };
 
-    $scope.openMarker = function() {
-        // TODO: implement
+    $scope.openMarker = function(referral) {
+        referral.show_infor_window = true;
+        $scope.map.control.getGMap().setCenter(
+            new google.maps.LatLng(
+                referral.coords.latitude,
+                referral.coords.longitude
+            )
+        );
+    };
+
+    $scope.clearHighlights = function() {
+        for (var i = 0; i < $scope.pendingReferrals.length; i++) {
+            $scope.pendingReferrals[i].highlight = false;
+        }
+        for (var j = 0; j < $scope.assignedReferrals.length; j++) {
+            $scope.assignedReferrals[j].highlight = false;
+        }
     };
 
     $scope.saveRoute = function() {
