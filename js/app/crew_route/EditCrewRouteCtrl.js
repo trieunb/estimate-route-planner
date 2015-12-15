@@ -150,6 +150,9 @@ function EditCrewRouteCtrl(
                             estimate.highlight = true;
                         }
                     };
+                    estimate.markerOptions = {
+                        icon: $scope.pendingMarkerIcon
+                    };
                     estimate.total = parseFloat(estimate.total);
                     $scope.pendingEstimates.push(estimate);
                }
