@@ -3,25 +3,24 @@
  * CLI agruments
  *   -m, --mode The sync mode: normal(default), reset(ignore SyncToken, just sync from scratch)
  */
-define('NORMAL_SYNC_MODE', 'normal');
-define('RESET_SYNC_MODE', 'reset');
+// define('NORMAL_SYNC_MODE', 'normal');
+// define('RESET_SYNC_MODE', 'reset');
+//
+// $args = getopt('m:f:');
+// var_dump($args);
+//
+// function erp_get_agrument($key, $defaultValue) {
+//     if (isset($args['m'])) {
+//         return $args['m'];
+//     } else {
+//         return $defaultValue;
+//     }
+// }
+//
+// $syncOpts['mode'] = erp_get_agrument('m', NORMAL_SYNC_MODE);
+// $syncOpts['force'] = erp_get_agrument('m', false);
+// var_dump($syncOpts);
 
-$args = getopt('m:f:');
-var_dump($args);
-
-function erp_get_agrument($key, $defaultValue) {
-    if (isset($args['m'])) {
-        return $args['m'];
-    } else {
-        return $defaultValue;
-    }
-}
-
-$syncOpts['mode'] = erp_get_agrument('m', NORMAL_SYNC_MODE);
-$syncOpts['force'] = erp_get_agrument('m', false);
-
-var_dump($syncOpts);
-die();
 require_once 'bootstrap.php';
 
 $prefs = ORM::forTable('preferences')->findOne();
@@ -30,7 +29,7 @@ if (!$prefs) {
 }
 if (ERPConfig::isOAuthTokenValid()) {
     $loger = new ERPLogger('sync.log');
-    $loger->log("\n\n=== Sync job(" . $syncOpts['mode'] .") started at: " . date('Y-m-d H:i:s') . " ===");
+    $loger->log("\n\n=== Sync job started at: " . date('Y-m-d H:i:s') . " ===");
     $jobStartAt = time();
     // Check to force to sync even is_synchronizing flag is true
     // If the lastest sync was so long
