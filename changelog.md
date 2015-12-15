@@ -1,6 +1,7 @@
 ## 1.7.3
-  - Change color of route on map
-  - Add color and letter indicators to item and markers.
+  - Improve route planning page:
+    - Change color of route direction on map
+    - Add color indicators and letters to item and markers.
 
 ## 1.7.2
   - Customer popup:
