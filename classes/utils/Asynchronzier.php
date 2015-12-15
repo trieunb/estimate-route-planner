@@ -222,6 +222,7 @@ class Asynchronzier
                 $loger->log("Got $resCount records");
                 ORM::getDB()->beginTransaction();
                 foreach ($res as $estimateObj) {
+                    // Dont know why this entry appear twice in QB response
                     if ($estimateObj->Id == '29791') { continue; }
                     $estRecord = ORM::forTable('estimates')->create();
                     $localEstimateData = null;
@@ -229,15 +230,11 @@ class Asynchronzier
                     // Estimate data
                     foreach ($localEstimates as $index => $estimate) {
                         if ($estimateObj->Id == $estimate->id) {
-                            if ($estimateObj->SyncToken != $estimate->sync_token) {
-                                $localEstimateData = ORM::forTable('estimates')
-                                    ->findOne($estimate->id)
-                                    ->asArray();
-                                $estRecord = ORM::forTable('estimates')->hydrate();
-                                ++$updateCount;
-                            } else {
-                                $estRecord = null;
-                            }
+                            $localEstimateData = ORM::forTable('estimates')
+                                ->findOne($estimate->id)
+                                ->asArray();
+                            $estRecord = ORM::forTable('estimates')->hydrate();
+                            ++$updateCount;
                             unset($localEstimates[$index]);
                             --$createCount;
                             break;
