@@ -2,6 +2,7 @@
   - Improve route planning page:
     - Change color of route direction on map
     - Add color indicators and letters to item and markers.
+  - Change auto fill `Display name` in format "<Last name>, <First name>"
 
 ## 1.7.2
   - Customer popup:
