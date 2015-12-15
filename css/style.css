@@ -253,12 +253,12 @@ span.new-referal {
     position: relative;
     margin: 0;
     padding: 0;
-    min-height: 20px;
+    min-height: 70px;
     line-height: 20px;
     overflow: auto;
 }
 .angular-ui-tree-node.highlight {
-    background-color: #fff2a8;
+    background-color: rgba(255, 242, 168, 0.48);
 }
 
 .angular-ui-tree-nodes.empty .angular-ui-tree-placeholder {
@@ -294,10 +294,9 @@ span.new-referal {
     opacity: .8;
 }
 
-.box-assign .queue-item-menu span.glyphicon {
+.box-assign .queue-item-menu span {
     float: right;
-    top: -3px;
-    color: #B6B6B6;
+    color: #797979;
     font-size: 0.9em;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -308,6 +307,25 @@ span.new-referal {
 .box-assign span.glyphicon:hover {
     color: #4E4E4E;
 }
+.box-assign span.drag-handler {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+.box-assign .queue-item-menu.routed span.drag-handler {
+    padding: 3px 8px;
+    top: -6px;
+    right: -6px;
+    position: relative;
+    font-weight: 600;
+    color: #FFF;
+    font-size: 120%;
+    width: 26px;
+    text-align: center;
+}
+
 .box-assign .queue-item-info {
     width: 87%;
     display: inline-block;
@@ -429,7 +447,8 @@ span.new-referal {
     clear: both;
 }
 .box-assign {
-    border: 1px solid #B6B6B6;
+    border: 1px solid #E5E5E5;
+    overflow: visible;
     margin-top: 10px;
     padding: 5px;
 }

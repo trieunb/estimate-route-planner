@@ -40,12 +40,15 @@ function AddEstimateRouteCtrl(
     $scope.pendingReferrals = [];
     $scope.assignedReferrals = [];
     $scope.recentRoutes = [];
-    $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png' };
-    $scope.startMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/start-marker.png' };
-    $scope.map = {
-        control: {},
-        markersControl: {}
-    };  // Hold map instance
+
+    // TODO: DRY-ing up
+    $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png'};
+    $scope.startMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/grey-marker.png'};
+    $scope.firstMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/green-marker.png'};
+    $scope.middleMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/purple-marker.png'};
+    $scope.lastMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/red-marker.png'};
+
+    $scope.map = { control: {} };  // Hold map instance
     $scope.map.options = {};
     $scope.assigned_queue_sort_by = '';
     $scope.pending_queue_sort_by = '';
@@ -98,6 +101,9 @@ function AddEstimateRouteCtrl(
                         referral.highlight = true;
                     }
                 };
+                referral.markerOptions = {
+                    icon: $scope.pendingMarkerIcon
+                };
                 $scope.pendingReferrals.push(referral);
             });
         });
@@ -135,6 +141,17 @@ function AddEstimateRouteCtrl(
         }
     };
 
+    $scope.sortAssignedQueue = function() {
+        if ($scope.assignedReferrals.length > 1) {
+            $scope.assignedReferrals = orderBy(
+                $scope.assignedReferrals,
+                $scope.assigned_queue_sort_by,
+                false
+            );
+            $scope.drawRouteDirection();
+        }
+    };
+
     $scope.sortPendingQueue = function() {
         if ($scope.pendingReferrals.length > 1) {
             $scope.pendingReferrals = orderBy(
@@ -153,19 +170,50 @@ function AddEstimateRouteCtrl(
         $scope.directionRenderers = [];
     };
 
+    var refreshMarkers = function() {
+        angular.forEach($scope.pendingReferrals, function(referral, index) {
+            var markerOptions = {
+                icon: $scope.pendingMarkerIcon
+            };
+            referral.markerOptions = markerOptions;
+        });
+
+        angular.forEach($scope.assignedReferrals, function(referral, index) {
+            var markerOptions = {
+                label: {
+                    text: erpOptions.map.markerLabels[index],
+                    color: '#FFF'
+                }
+            };
+            if (index === 0) {
+                markerOptions.label.backgroundColor = erpOptions.map.firstPointColor;
+                markerOptions.icon = $scope.firstMarkerIcon;
+            } else {
+                if (index + 1 === $scope.assignedReferrals.length) {
+                    markerOptions.label.backgroundColor = erpOptions.map.lastPointColor;
+                    markerOptions.icon = $scope.lastMarkerIcon;
+                } else {
+                    markerOptions.label.backgroundColor = erpOptions.map.middlePointColor;
+                    markerOptions.icon = $scope.middleMarkerIcon;
+                }
+            }
+            referral.markerOptions = markerOptions;
+        });
+    };
+
     /**
      * Repaint direction
      */
     $scope.drawRouteDirection = function() {
+        refreshMarkers();
         if ($scope.routeOrigin === null) {
             toastr.error('Could not find geo location of company address! The route could not draw!');
             return;
         }
+        clearDirections();
         if ($scope.assignedReferrals.length < 1) {
-            clearDirections();
             return;
         }
-        clearDirections();
         $scope.loadingOn();
 
         var originLatLng = new google.maps.LatLng(
@@ -174,7 +222,10 @@ function AddEstimateRouteCtrl(
             location: originLatLng
         }];
 
+        var startColor = '#77DB2B';
+        var stopColor = '#FC0A16';
         var markerTexts = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
         angular.forEach($scope.assignedReferrals, function(referral, index) {
             var point = {};
             var latLng = new google.maps.LatLng(
@@ -201,13 +252,13 @@ function AddEstimateRouteCtrl(
                 optimizeWaypoints: true,
                 travelMode: google.maps.TravelMode.DRIVING
             };
-            var directionRenderer = new google.maps.DirectionsRenderer({
-                suppressMarkers: true,
-                polylineOptions: erpOptions.mapPolylineOptions
-            });
-            $scope.directionRenderers.push(directionRenderer);
-            directionRenderer.setMap($scope.map.control.getGMap());
             directionsService.route(request, function (response, status) {
+                var directionRenderer = new google.maps.DirectionsRenderer({
+                    suppressMarkers: true,
+                    polylineOptions: erpOptions.mapPolylineOptions
+                });
+                $scope.directionRenderers.push(directionRenderer);
+                directionRenderer.setMap($scope.map.control.getGMap());
                 $scope.loadingOff();
                 $scope.$apply();
                 if (status == google.maps.DirectionsStatus.OK) {

@@ -34,8 +34,10 @@
                                 <span>Status: {{referral.status}}</span>
                             </div>
                         </div>
-                        <div class="queue-item-menu">
-                            <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                        <div class="queue-item-menu routed">
+                            <span ui-tree-handle class="drag-handler"
+                                ng-style="{'background-color': referral.markerOptions.label.backgroundColor}">
+                                {{referral.markerOptions.label.text}}</span>
                             <br>
                             <span class="glyphicon glyphicon-save"
                                 title="Move to pending queue"
@@ -100,7 +102,7 @@
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
                     <ui-gmap-marker
-                        icon="startMarkerIcon"
+                        icon="::startMarkerIcon"
                         idkey="routeOrigin"
                         coords="routeOrigin">
                         <ui-gmap-window>
@@ -111,9 +113,9 @@
                     </ui-gmap-marker>
 
                     <ui-gmap-marker ng-repeat="referral in pendingReferrals"
-                        icon="::pendingMarkerIcon"
                         idkey="$index"
                         coords="referral.coords"
+                        options="referral.markerOptions"
                         events="referral.markerEvents">
                         <ui-gmap-window show="referral.show_infor_window" closeClick="referral.show_infor_window = false; referral.highlight = false">
                             <p>
@@ -135,6 +137,7 @@
                     <ui-gmap-marker ng-repeat="referral in assignedReferrals"
                         idkey="$index"
                         coords="referral.coords"
+                        options="referral.markerOptions"
                         events="referral.markerEvents">
                         <ui-gmap-window show="referral.show_infor_window" closeClick="referral.show_infor_window = false; referral.highlight = false">
                             <p>

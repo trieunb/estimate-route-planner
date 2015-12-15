@@ -1,10 +1,14 @@
+## 1.7.3
+  - Change color of route on map
+  - Add color and letter indicators to item and markers.
+
 ## 1.7.2
   - Customer popup:
     - Change `First name` and `Last name` of customer to be required
     - Auto fill `Display Name` with First and Last name if blank
   - Bugfix: estimate statuses does not get synced after creating invoices.
   - Bugfix: duplicate flash messages after checking geolocation issues
-  
+
 ## 1.7.1
   - Improve route planning page:
     - Open marker when click the item in queue list.
