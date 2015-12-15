@@ -255,7 +255,7 @@ function AddEstimateRouteCtrl(
             directionsService.route(request, function (response, status) {
                 var directionRenderer = new google.maps.DirectionsRenderer({
                     suppressMarkers: true,
-                    polylineOptions: erpOptions.mapPolylineOptions
+                    polylineOptions: erpOptions.map.polylineOptions
                 });
                 $scope.directionRenderers.push(directionRenderer);
                 directionRenderer.setMap($scope.map.control.getGMap());

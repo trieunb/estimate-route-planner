@@ -35,8 +35,14 @@ function AddCrewRouteCtrl(
     $scope.pendingEstimates = [];
     $scope.assignedEstimates = [];
     $scope.recentRoutes = [];
-    $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png' };
-    $scope.startMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/start-marker.png' };
+
+    // TODO: DRY-ing up
+    $scope.pendingMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/blue-marker.png'};
+    $scope.startMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/grey-marker.png'};
+    $scope.firstMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/green-marker.png'};
+    $scope.middleMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/purple-marker.png'};
+    $scope.lastMarkerIcon = {url: $rootScope.baseERPPluginUrl + 'images/red-marker.png'};
+
     $scope.map = {control: {}};  // Hold map instance
     $scope.map.options = {};
     $scope.assigned_queue_sort_by = '';
@@ -90,6 +96,9 @@ function AddCrewRouteCtrl(
                             $scope.clearHighlights();
                             estimate.highlight = true;
                         }
+                    };
+                    estimate.markerOptions = {
+                        icon: $scope.pendingMarkerIcon
                     };
                     estimate.total = parseFloat(estimate.total);
                     $scope.pendingEstimates.push(estimate);
@@ -160,16 +169,48 @@ function AddCrewRouteCtrl(
         $scope.directionRenderers = [];
     };
 
+    var refreshMarkers = function() {
+        angular.forEach($scope.pendingEstimates, function(estimate, index) {
+            var markerOptions = {
+                icon: $scope.pendingMarkerIcon
+            };
+            estimate.markerOptions = markerOptions;
+        });
+
+        angular.forEach($scope.assignedEstimates, function(estimate, index) {
+            var markerOptions = {
+                label: {
+                    text: erpOptions.map.markerLabels[index],
+                    color: '#FFF',
+                    fontWeight: '600'
+                }
+            };
+            if (index === 0) {
+                markerOptions.label.backgroundColor = erpOptions.map.firstPointColor;
+                markerOptions.icon = $scope.firstMarkerIcon;
+            } else {
+                if (index + 1 === $scope.assignedEstimates.length) {
+                    markerOptions.label.backgroundColor = erpOptions.map.lastPointColor;
+                    markerOptions.icon = $scope.lastMarkerIcon;
+                } else {
+                    markerOptions.label.backgroundColor = erpOptions.map.middlePointColor;
+                    markerOptions.icon = $scope.middleMarkerIcon;
+                }
+            }
+            estimate.markerOptions = markerOptions;
+        });
+    };
+
     $scope.drawRouteDirection = function() {
+        refreshMarkers();
         if ($scope.routeOrigin === null) {
             toastr.error('Could not find geo location of company address! The route could not draw!');
             return;
         }
+        clearDirections();
         if ($scope.assignedEstimates.length < 1) {
-            clearDirections();
             return;
         }
-        clearDirections();
         $scope.loadingOn();
 
         var originLatLng = new google.maps.LatLng(
@@ -204,13 +245,13 @@ function AddCrewRouteCtrl(
                 optimizeWaypoints: true,
                 travelMode: google.maps.TravelMode.DRIVING
             };
-            var directionRenderer = new google.maps.DirectionsRenderer({
-                suppressMarkers: true,
-                polylineOptions: erpOptions.mapPolylineOptions
-            });
-            $scope.directionRenderers.push(directionRenderer);
-            directionRenderer.setMap($scope.map.control.getGMap());
             directionsService.route(request, function (response, status) {
+                var directionRenderer = new google.maps.DirectionsRenderer({
+                    suppressMarkers: true,
+                    polylineOptions: erpOptions.map.polylineOptions
+                });
+                $scope.directionRenderers.push(directionRenderer);
+                directionRenderer.setMap($scope.map.control.getGMap());
                 $scope.loadingOff();
                 $scope.$apply();
                 if (status == google.maps.DirectionsStatus.OK) {

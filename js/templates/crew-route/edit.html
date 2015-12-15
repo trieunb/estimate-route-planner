@@ -35,8 +35,10 @@
                             </div>
                             Total: ${{::estimate.total}}<br>
                         </div>
-                        <div class="queue-item-menu">
-                            <span ui-tree-handle class="drag-handler glyphicon glyphicon-th-large"></span>
+                        <div class="queue-item-menu routed">
+                            <span ui-tree-handle class="drag-handler"
+                                ng-style="{'background-color': estimate.markerOptions.label.backgroundColor}">
+                                {{estimate.markerOptions.label.text}}</span>
                             <br>
                             <span class="glyphicon glyphicon-save"
                                 title="Move to accepted queue"
@@ -100,7 +102,7 @@
             <div class="gmap-container">
                 <ui-gmap-google-map center='map.options.center' zoom='map.options.zoom' control="map.control">
                     <ui-gmap-marker
-                        icon="startMarkerIcon"
+                        icon="::startMarkerIcon"
                         idkey="routeOrigin"
                         coords="routeOrigin">
                         <ui-gmap-window>
@@ -111,10 +113,10 @@
                     </ui-gmap-marker>
 
                     <ui-gmap-marker ng-repeat="estimate in pendingEstimates"
-                        icon="pendingMarkerIcon"
                         idkey="$index"
                         coords="estimate.coords"
-                        events="estimate.markerEvents">
+                        events="estimate.markerEvents"
+                        options="estimate.markerOptions">
                         <ui-gmap-window show="estimate.show_infor_window" closeClick="estimate.show_infor_window = false; estimate.highlight = false">
                             <p>
                                 <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>
@@ -136,7 +138,8 @@
                     <ui-gmap-marker ng-repeat="estimate in assignedEstimates"
                         idkey="$index"
                         coords="estimate.coords"
-                        events="estimate.markerEvents">
+                        events="estimate.markerEvents"
+                        options="estimate.markerOptions">
                         <ui-gmap-window show="estimate.show_infor_window" closeClick="estimate.show_infor_window = false; estimate.highlight = false">
                             <p>
                                 <a href="#/edit-estimate/{{::estimate.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</a>

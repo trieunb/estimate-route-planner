@@ -230,7 +230,8 @@ function EditEstimateRouteCtrl(
             var markerOptions = {
                 label: {
                     text: erpOptions.map.markerLabels[index],
-                    color: '#FFF'
+                    color: '#FFF',
+                    fontWeight: '600'
                 }
             };
             if (index === 0) {
@@ -299,7 +300,7 @@ function EditEstimateRouteCtrl(
             directionsService.route(request, function (response, status) {
                 var directionRenderer = new google.maps.DirectionsRenderer({
                     suppressMarkers: true,
-                    polylineOptions: erpOptions.mapPolylineOptions
+                    polylineOptions: erpOptions.map.polylineOptions
                 });
                 directionRenderer.setMap($scope.map.control.getGMap());
                 $scope.directionRenderers.push(directionRenderer);
