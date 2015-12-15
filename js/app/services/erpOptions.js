@@ -92,5 +92,10 @@ angular
                 text: 'A',
                 color: '#ddd'
             }
-        ]
+        ],
+        mapPolylineOptions: {
+            strokeColor: '#353BE1',
+            strokeOpacity: 0.7,
+            strokeWeight: 5
+        }
     });

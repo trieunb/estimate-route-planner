@@ -234,7 +234,8 @@ function EditEstimateRouteCtrl(
                 travelMode: google.maps.TravelMode.DRIVING
             };
             var directionRenderer = new google.maps.DirectionsRenderer({
-                suppressMarkers: true // Hide direction marker
+                suppressMarkers: true,
+                polylineOptions: erpOptions.mapPolylineOptions
             });
             $scope.directionRenderers.push(directionRenderer);
             directionRenderer.setMap($scope.map.control.getGMap());
