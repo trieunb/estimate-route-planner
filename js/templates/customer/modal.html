@@ -15,19 +15,23 @@
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
                         <div class="col-md-6 col-sm-12">
-                            <label for="first_name">First name</label>
+                            <label for="first_name" class="required">First name<span>(*)</span></label>
                             <input type="text"
+                                autofocus
                                 class="form-control"
                                 name="first_name"
                                 ng-required="true"
                                 ng-maxlength="25"
+                                ng-change="fillDisplayName()"
                                 ng-model="customer.given_name">
                         </div>
                         <div class="col-md-6 col-sm-12">
-                            <label for="last_name">Last name</label>
+                            <label for="last_name" class="required">Last name<span>(*)</span></label>
                             <input type="text"
                                 class="form-control"
+                                ng-required="true"
                                 name="last_name"
+                                ng-change="fillDisplayName()"
                                 ng-maxlength="25"
                                 ng-model="customer.family_name">
                         </div>
@@ -37,7 +41,6 @@
                             <label for="display_name" class="required">Display name<span>(*)</span></label>
                             <input type="text"
                                 class="form-control"
-                                autofocus
                                 name="display_name"
                                 ng-maxlength="100"
                                 ng-required="true"

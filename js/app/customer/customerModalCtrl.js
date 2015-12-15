@@ -45,6 +45,22 @@ angular
                 return $scope.customerForm.$valid;
             };
 
+            $scope.fillDisplayName = function() {
+                // Only auto fill when add new customer and
+                // the Display Name input is not dirty
+                if (!$scope.customerForm.display_name.$dirty && !$scope.customer.id) {
+                    var currentDisplayName = '';
+                    if (!$scope.customer.given_name) {
+                        $scope.customer.given_name = '';
+                    }
+                    if (!$scope.customer.family_name) {
+                        $scope.customer.family_name = '';
+                    }
+                    $scope.customer.display_name = ($scope.customer.given_name +
+                        ' ' + $scope.customer.family_name).trim();
+                }
+            };
+
             $scope.save = function() {
                 if ($scope.validateForm()) {
                     customerFactory.create($scope.customer)
