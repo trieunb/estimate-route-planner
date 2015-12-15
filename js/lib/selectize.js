@@ -1219,7 +1219,7 @@
 			});
 
             var typingTimer;
-            var doneTypingInterval = 300;
+            var doneTypingInterval = 200;
 			$control_input.on({
 				mousedown : function(e) { e.stopPropagation(); },
 				keydown   : function() {
