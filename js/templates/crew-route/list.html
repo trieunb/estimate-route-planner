@@ -27,7 +27,7 @@
           <th style="width: 50px">ID</th>
           <th>Title</th>
           <th style="width: 155px">Created at</th>
-          <th style="width: 120px">Action</th>
+          <th style="width: 140px">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -43,6 +43,8 @@
           <td><span>{{::route.created_at}}</span></td>
           <td>
             <a href="#/edit-crew-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_crew_routes')">Edit</a>
+            |
+            <a href="#/crew-route/{{::route.id}}/work-order" ng-if="::hasCap('erpp_edit_crew_routes')">Work Order</a>
           </td>
         </tr>
     </tbody>
