@@ -145,6 +145,7 @@ span.glyphicon.spin {
 }
 h1#erp-header {
     font-size: 30px;
+    display: inline-block;
 }
 /*--------------- referral style ----------------*/
 span.top-leaf {
@@ -176,6 +177,11 @@ span.new-referal {
 }
 #erp-wrapper button.btn.btn-default.dropdown-toggle {
     border-radius: 0 !important;
+}
+#erp-wrapper .erp-tool-bar {
+    display: inline-block;
+    float: right;
+    padding-top: 20px;
 }
 .space_nomal{
     margin-top: 20px;

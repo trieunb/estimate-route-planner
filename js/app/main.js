@@ -24,8 +24,8 @@ angular
             'yaru22.angular-timeago',
             'ui.tree'
         ]
-    ).run(['$rootScope', 'dataFactory', 'sharedData', '$location', 'userPermission',
-        function($rootScope, dataFactory, sharedData, $location, userPermission) {
+    ).run(['$rootScope', 'dataFactory', 'sharedData', '$location', 'userPermission', '$route',
+        function($rootScope, dataFactory, sharedData, $location, userPermission, $route) {
         $rootScope.pageTitle = ERPApp.pluginName;
         $rootScope.isBusy = true;
         $rootScope.baseAPIPath = ERPApp.baseAPIPath;
@@ -44,6 +44,10 @@ angular
 
         $rootScope.loadingOff = function() {
             $rootScope.isBusy = false;
+        };
+
+        $rootScope.refreshPage = function() {
+            $route.reload();
         };
 
         $rootScope.hasCap = function(cap) {

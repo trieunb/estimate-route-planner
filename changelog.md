@@ -1,3 +1,10 @@
+## 1.7.4
+  - Work order:
+    - Save ETAs and service lines info
+    - Add `Reset` button to remove saved work order info to start from scratch
+    - Add `Edit` buttons next to estimate numbers
+  - Add `Refresh` button for soft reloading. It's much faster than F5 or browser refresh.
+
 ## 1.7.3
   - Improve route planning page:
     - Change color of route direction on map

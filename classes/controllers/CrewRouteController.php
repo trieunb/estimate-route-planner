@@ -145,6 +145,7 @@ class CrewRouteController extends BaseController {
             ->where('route_id', $this->data['route_id'])
             ->findOne();
         if ($workOrder) {
+            $workOrder->estimates_data = json_decode($workOrder->estimates_data);
             $this->renderJson($workOrder->asArray());
         } else {
             $this->renderEmpty();
@@ -152,6 +153,21 @@ class CrewRouteController extends BaseController {
     }
 
     public function saveWorkOrder() {
+        // Estimates data format
+        // [
+        //     [
+        //         'id' => 1, // Estimate id
+        //         'eta' => '08:00 AM',
+        //         'lines' => [ // Enabled lines
+        //             [
+        //                 'id' => 12, // line_id
+        //                 'content' => 'Abc def' // line_content
+        //             ],
+        //             ... other lines
+        //         ]
+        //     ],
+        //     ... other estimates
+        // ];
         $workOrder = ORM::forTable('erpp_work_orders')
             ->where('route_id', $this->data['route_id'])
             ->findOne();
@@ -161,6 +177,9 @@ class CrewRouteController extends BaseController {
         $workOrder->route_id = $this->data['route_id'];
         $workOrder->equipment_list = $this->data['equipment_list'];
         $workOrder->start_time = $this->data['start_time'];
+        if (is_array($this->data['estimates_data'])) {
+            $workOrder->estimates_data = json_encode($this->data['estimates_data']);
+        }
         if ($workOrder->save()) {
             $this->renderJson([
                 'success' => true,
@@ -172,6 +191,19 @@ class CrewRouteController extends BaseController {
                 'message' => 'An error has occurred while saving route'
             ]);
         }
+    }
+
+    public function deleteWorkOrder() {
+        $workOrder = ORM::forTable('erpp_work_orders')
+            ->where('route_id', $this->data['route_id'])
+            ->findOne();
+        if ($workOrder) {
+            $workOrder->delete();
+        }
+        $this->renderJson([
+            'success' => true,
+            'message' => 'Work order has been deleted successfully'
+        ]);
     }
 }
 ?>
