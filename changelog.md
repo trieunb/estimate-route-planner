@@ -4,6 +4,7 @@
     - Add `Reset` button to remove saved work order info to start from scratch
     - Add `Edit` buttons next to estimate numbers
   - Add `Refresh` button for soft reloading. It's much faster than F5 or browser refresh.
+  - Add link to work order to crew routes listing page
 
 ## 1.7.3
   - Improve route planning page:
