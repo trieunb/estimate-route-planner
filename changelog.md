@@ -1,6 +1,6 @@
 ## 1.7.4
   - Work order:
-    - Save ETA, service lines
+    - Save ETAs and service lines info
     - Add `Reset` button to remove saved work order info to start from scratch
     - Add `Edit` buttons next to estimate numbers
 
