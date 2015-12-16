@@ -145,7 +145,11 @@ class CrewRouteController extends BaseController {
             ->where('route_id', $this->data['route_id'])
             ->findOne();
         if ($workOrder) {
-            $workOrder->estimates_data = json_decode($workOrder->estimates_data);
+            if ($workOrder->estimates_data) {
+                $workOrder->estimates_data = json_decode($workOrder->estimates_data);
+            } else {
+                $workOrder->estimates_data = [];
+            }
             $this->renderJson($workOrder->asArray());
         } else {
             $this->renderEmpty();
