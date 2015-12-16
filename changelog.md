@@ -1,3 +1,9 @@
+## 1.7.4
+  - Work order:
+    - Save ETA, service lines
+    - Add `Reset` button to remove saved work order info to start from scratch
+    - Add `Edit` buttons next to estimate numbers
+
 ## 1.7.3
   - Improve route planning page:
     - Change color of route direction on map

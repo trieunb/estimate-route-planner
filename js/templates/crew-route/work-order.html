@@ -1,6 +1,11 @@
 <div ng-controller="WorkOrderCtrl">
     <div class="row">
         <div class="col-md-12 text-right">
+            <button type="button"
+                ng-if="work_order.is_saved"
+                ng-click="reset()" title="Clear saved info and re-create work order"
+                class="pull-left btn btn-warning hide-print">
+                <span class="glyphicon glyphicon-flash"></span> Reset</button>
             <button type="button" ng-click="print()" class="btn btn-default hide-print">Print</button>
             <button type="button" ng-click="save()" class="btn btn-primary hide-print">Save</button>
         </div>
@@ -10,7 +15,7 @@
         <h3 class="text-center legend"><b>Work Order</b></h3>
         <form name="workOrderForm" ng-submit="save()">
             <div class="route-title">
-                <strong>Route Name:</strong> {{ ::route.title}} <small><a class="hide-print" href="#/edit-crew-route/{{:: route.id}}">(Edit)</a></small>
+                <strong>Route Name:</strong> {{ ::route.title}} <small><a class="hide-print" href="#/edit-crew-route/{{::route.id}}">(Edit)</a></small>
             </div>
             <div class="equipment-list">
                 <strong>Equipment list:</strong> <span class="print-only" ng-bind="work_order.equipment_list"></span>
@@ -26,10 +31,11 @@
             <ul class="list-unstyled">
                 <li ng-repeat="est in route.assignedEstimates">
                     <p>
-                        <strong>ETA:</strong> <span ng-bind="est.time" class="print-only"></span>
-                        <input type="text" class="input-time hide-print" ng-model="est.time">
+                        <strong>ETA:</strong> <span ng-bind="est.eta" class="print-only"></span>
+                        <input type="text" class="input-time hide-print" ng-model="est.eta">
                         <br>
-                        <span>Estimate #{{ ::est.doc_number}}</span>
+                        <span>Estimate #{{::est.doc_number}}</span>
+                        <span class="hide-print"><a href="#edit-estimate/{{::est.id}}">(Edit)</a></span>
                         <br>
                         Estimator: {{::est.estimators.join(', ')}}
                     </p>
@@ -49,7 +55,7 @@
                         <strong>Product and Services:</strong>
                     </p>
                     <ul class="list-unstyled lines">
-                        <li ng-repeat="line in est.lines" ng-init="line.visible = true"
+                        <li ng-repeat="line in ::est.lines"
                             class="worker-order-line"
                             ng-class="{'line-invisible': !line.visible, 'hide-print': !line.visible}">
                             <div ng-if="!line.is_empty">

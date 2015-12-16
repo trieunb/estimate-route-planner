@@ -33,6 +33,12 @@ function crewRouteFactory($http) {
                 data: {route_id: routeId}
             });
         },
+        deleteWorkOrder: function(routeId) {
+            return $http.post(ERPApp.baseAPIPath, {
+                _do: 'deleteWorkOrder',
+                data: {route_id: routeId}
+            });
+        },
         saveWorkOrder: function(data) {
             return $http.post(ERPApp.baseAPIPath, {
                 _do: 'saveWorkOrder',
