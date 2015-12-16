@@ -14,7 +14,7 @@
             </div>
             <div class="equipment-list">
                 <strong>Equipment list:</strong> <span class="print-only" ng-bind="work_order.equipment_list"></span>
-                <input type="text" class="hide-print input-equipment-list" ng-model="work_order.equipment_list">
+                <input type="text" autofocus class="hide-print input-equipment-list" ng-model="work_order.equipment_list">
             </div>
             <div class="start-time">
                 <strong>Start time:</strong> <span ng-bind="work_order.start_time" class="print-only"></span>
@@ -31,7 +31,7 @@
                         <br>
                         <span>Estimate #{{ ::est.doc_number}}</span>
                         <br>
-                        Estimator: {{est.estimators.join(', ')}}
+                        Estimator: {{::est.estimators.join(', ')}}
                     </p>
                     <p>
                         <strong>Job Information:</strong>
@@ -71,7 +71,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12 text-right">
+        <div class="col-md-12 text-right ng-cloak">
             <button type="button" ng-click="print()" class="hide-print btn btn-default">Print</button>
             <button type="button" ng-click="save()" class="hide-print btn btn-primary">Save</button>
         </div>
