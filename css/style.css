@@ -309,6 +309,7 @@ span.new-referal {
     -ms-user-select: none;
     user-select: none;
     cursor: pointer;
+    clear: both;
 }
 .box-assign span.glyphicon:hover {
     color: #4E4E4E;
