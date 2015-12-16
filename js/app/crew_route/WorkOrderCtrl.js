@@ -44,69 +44,68 @@ function WorkOrderCtrl(
                             $scope.work_order = workOrderData;
                             $scope.work_order.is_saved = true;
                         }
-                    });
-
-                // Get assigned estimates
-                estimateFactory.listAssigedToRoute($scope.route_id).
-                    success(function(responseData) {
-                        var savedEstimatesData = [];
-                        if ($scope.work_order.estimates_data !== undefined) {
-                            savedEstimatesData =$scope.work_order.estimates_data;
-                        }
-
-                        angular.forEach(responseData, function(estimate) {
-                            var savedEstimate;
-                            if (savedEstimatesData.length) {
-                                for (var i = 0; i < savedEstimatesData.length; i++) {
-                                    if (savedEstimatesData[i].id == estimate.id) {
-                                        savedEstimate = savedEstimatesData[i];
-                                        break;
-                                    }
+                        // Get assigned estimates
+                        estimateFactory.listAssigedToRoute($scope.route_id).
+                            success(function(responseData) {
+                                var savedEstimatesData = [];
+                                if ($scope.work_order.estimates_data !== undefined) {
+                                    savedEstimatesData = $scope.work_order.estimates_data;
                                 }
-                            }
-
-                            if (savedEstimate) {
-                                estimate.eta = savedEstimate.eta;
-                            }
-
-                            estimate.estimators = [];
-                            if (estimate.sold_by_1) {
-                                estimate.estimators.push(estimate.sold_by_1);
-                            }
-                            if (estimate.sold_by_2) {
-                                estimate.estimators.push(estimate.sold_by_2);
-                            }
-                            $scope.route.assignedEstimates.push(estimate);
-
-                            angular.forEach(estimate.lines, function(line) {
-                                line.visible = true;
-
-                                line.is_empty = !line.product_service_id && // A separate line
-                                    !line.description;
-
-                                if (!line.is_empty) {
-                                    // When line is new
-                                    line.worker_order_line = '';
-                                    if (line.qty) {
-                                        line.worker_order_line += line.qty + ' - ';
-                                    }
-                                    if (line.description !== null) {
-                                        line.worker_order_line += line.description;
-                                    }
-                                }
-
-                                if (savedEstimate) {
-                                    line.visible = false;
-                                    for (var j = 0; j < savedEstimate.lines.length; j++) {
-                                        if (savedEstimate.lines[j].id == line.line_id) {
-                                            line.visible = true;
-                                            line.worker_order_line = savedEstimate.lines[j].content;
-                                            break;
+                                for (var e = 0; e < responseData.length; e++) {
+                                    var estimate = responseData[e];
+                                    var savedEstimate;
+                                    if (savedEstimatesData.length) {
+                                        for (var i = 0; i < savedEstimatesData.length; i++) {
+                                            if (savedEstimatesData[i].id == estimate.id) {
+                                                savedEstimate = savedEstimatesData[i];
+                                                break;
+                                            }
                                         }
                                     }
+
+                                    if (savedEstimate) {
+                                        estimate.eta = savedEstimate.eta;
+                                    }
+
+                                    estimate.estimators = [];
+                                    if (estimate.sold_by_1) {
+                                        estimate.estimators.push(estimate.sold_by_1);
+                                    }
+                                    if (estimate.sold_by_2) {
+                                        estimate.estimators.push(estimate.sold_by_2);
+                                    }
+                                    $scope.route.assignedEstimates.push(estimate);
+
+                                    angular.forEach(estimate.lines, function(line) {
+                                        line.visible = true;
+
+                                        line.is_empty = !line.product_service_id && // A separate line
+                                            !line.description;
+
+                                        if (!line.is_empty) {
+                                            // When line is new
+                                            line.worker_order_line = '';
+                                            if (line.qty) {
+                                                line.worker_order_line += line.qty + ' - ';
+                                            }
+                                            if (line.description !== null) {
+                                                line.worker_order_line += line.description;
+                                            }
+                                        }
+
+                                        if (savedEstimate) {
+                                            line.visible = false;
+                                            for (var j = 0; j < savedEstimate.lines.length; j++) {
+                                                if (savedEstimate.lines[j].id == line.line_id) {
+                                                    line.visible = true;
+                                                    line.worker_order_line = savedEstimate.lines[j].content;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    });
                                 }
                             });
-                        });
                     });
             });
     };
@@ -146,7 +145,7 @@ function WorkOrderCtrl(
             };
             for (var j = 0; j < est.lines.length; j++) {
                 var line = est.lines[j];
-                if (line.visible) {
+                if (line.visible && !line.is_empty) {
                     estData.lines.push({
                         id: line.line_id, // NOTE: use line_id, not id in DB
                         content: line.worker_order_line
