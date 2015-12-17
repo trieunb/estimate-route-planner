@@ -64,6 +64,50 @@ angular
                 }
             };
 
+            $scope.onParentChange = function() {
+                if ($scope.customer.parent_id !== undefined) {
+                    for (var i = 0; i < $scope.customers.length; i++) {
+                        if ($scope.customers[i].id == $scope.customer.parent_id) {
+                            var parentCustomer = $scope.customers[i];
+                            var autoFillFields = [
+                                'email',
+                                'primary_phone_number',
+                                'mobile_phone_number',
+                                'company_name',
+                                'bill_address',
+                                'bill_city',
+                                'bill_state',
+                                'bill_zip_code',
+                                'bill_country',
+                            ];
+                            for (var j = 0; j < autoFillFields.length; j++) {
+                                var field = autoFillFields[j];
+                                if (parentCustomer[field]) {
+                                    $scope.customer[field] = parentCustomer[field];
+                                }
+                            }
+                            $scope.fillShippingWithBilling();
+                            break;
+                        }
+                    }
+                }
+
+            };
+
+            $scope.fillShippingWithBilling = function() {
+                var addressFields = [
+                    'address',
+                    'city',
+                    'state',
+                    'zip_code',
+                    'country'
+                ];
+                for (var i = 0; i < addressFields.length; i++) {
+                    var field = addressFields[i];
+                    $scope.customer['ship_' + field] = $scope.customer['bill_' + field];
+                }
+            };
+
             $scope.save = function() {
                 if ($scope.validateForm()) {
                     customerFactory.create($scope.customer)
@@ -80,7 +124,7 @@ angular
                             toastr.error('An error occurred while saving customer');
                         });
                 } else {
-                    // TODO: show validate messages
+                    toastr.warning("Please fill out required fields");
                 }
             };
 
