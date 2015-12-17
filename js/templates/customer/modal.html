@@ -15,21 +15,19 @@
                 <div class="col-md-6 col-sm-12">
                     <div class="form-group">
                         <div class="col-md-6 col-sm-12">
-                            <label for="first_name" class="required">First name<span>(*)</span></label>
+                            <label for="first_name">First name</label>
                             <input type="text"
                                 autofocus
                                 class="form-control"
                                 name="first_name"
-                                ng-required="true"
                                 ng-maxlength="25"
                                 ng-change="fillDisplayName()"
                                 ng-model="customer.given_name">
                         </div>
                         <div class="col-md-6 col-sm-12">
-                            <label for="last_name" class="required">Last name<span>(*)</span></label>
+                            <label for="last_name">Last name</label>
                             <input type="text"
                                 class="form-control"
-                                ng-required="true"
                                 name="last_name"
                                 ng-change="fillDisplayName()"
                                 ng-maxlength="25"
@@ -95,6 +93,7 @@
                             <customers-select
                                 options="customers"
                                 ng-model="customer.parent_id"
+                                on-customer-change="onParentChange()"
                                 add-enabled="false"
                                 edit-enabled="false">
                             </customers-select>
@@ -119,7 +118,7 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="Street"
-                                name="billing_address"
+                                name="bill_address"
                                 ng-maxlength="255"
                                 ng-model="customer.bill_address">
                         </div>
@@ -129,7 +128,7 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="City"
-                                name="billing_city"
+                                name="bill_city"
                                 ng-maxlength="100"
                                 ng-model="customer.bill_city">
                         </div>
@@ -137,7 +136,7 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="State"
-                                name="billing_state"
+                                name="bill_state"
                                 ng-maxlength="100"
                                 ng-model="customer.bill_state">
                         </div>
@@ -147,7 +146,7 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="Zip code"
-                                name="billing_zip_code"
+                                name="bill_zip_code"
                                 ng-maxlength="31"
                                 ng-model="customer.bill_zip_code">
                         </div>
@@ -155,20 +154,22 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="Country"
-                                name="billing_country"
+                                name="bill_country"
                                 ng-maxlength="100"
                                 ng-model="customer.bill_country">
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <legend>Shipping address</legend>
+                    <legend class="pull-left">Shipping address</legend>
+                    <small class="pull-right">
+                        <a href="#" ng-click="$event.preventDefault(); fillShippingWithBilling();">Same as billing address</a></small>
                     <div class="form-group">
                         <div class="col-md-12">
                             <input type="text"
                                 class="form-control"
                                 placeholder="Street"
-                                name="shipping_address"
+                                name="ship_address"
                                 ng-maxlength="255"
                                 ng-model="customer.ship_address">
                         </div>
@@ -178,7 +179,7 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="City"
-                                name="shipping_city"
+                                name="ship_city"
                                 ng-maxlength="100"
                                 ng-model="customer.ship_city">
                         </div>
@@ -186,7 +187,7 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="State"
-                                name="shipping_state"
+                                name="ship_state"
                                 ng-maxlength="100"
                                 ng-model="customer.ship_state">
                         </div>
@@ -196,7 +197,7 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="Zip code"
-                                name="shipping_zip_code"
+                                name="ship_zip_code"
                                 ng-maxlength="31"
                                 ng-model="customer.ship_zip_code">
                         </div>
@@ -204,7 +205,7 @@
                             <input type="text"
                                 class="form-control"
                                 placeholder="Country"
-                                name="shipping_country"
+                                name="ship_country"
                                 ng-maxlength="100"
                                 ng-model="customer.ship_country">
                         </div>
