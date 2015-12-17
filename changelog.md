@@ -1,3 +1,10 @@
+## 1.7.5
+  - Work order:
+    - Make the time inputs to wider.
+  - Customer info pop-up:
+    - Change first and last name to not required
+    - Auto fills the phone, email, company and billing address from parent customer
+
 ## 1.7.4
   - Work order:
     - Save ETAs and service lines info
