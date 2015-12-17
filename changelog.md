@@ -3,7 +3,8 @@
     - Make the time inputs to wider.
   - Customer info pop-up:
     - Change first and last name to not required
-    - Auto fills the phone, email, company and billing address from parent customer
+    - Auto fills phone numbers, email, company and billing address from parent customer
+    - Add button to make shipping address to same as billing address
 
 ## 1.7.4
   - Work order:
