@@ -632,7 +632,7 @@ label.required span {
 }
 /* Work order form */
 #form-work-order .input-time {
-    width: 90px;
+    width: 250px;
 }
 #form-work-order .route-title {
     font-size: 20px;
