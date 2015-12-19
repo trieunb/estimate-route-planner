@@ -14,8 +14,8 @@ angular
                value: 'total'
             },
             {
-               label: 'Exp date',
-               value: 'expiration_date'
+               label: 'Estimate date',
+               value: 'txn_date'
             }
         ],
 
