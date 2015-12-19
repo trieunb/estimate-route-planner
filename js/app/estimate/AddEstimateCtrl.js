@@ -183,6 +183,7 @@ function AddEstimateCtrl(
                             $scope.estimate.primary_phone_number = cus.primary_phone_number;
                             $scope.estimate.mobile_phone_number = cus.mobile_phone_number;
                             $scope.estimate.email = cus.email;
+                            $scope.estimate.bill_company_name = cus.company_name;
                             break;
                         }
                     }
@@ -202,6 +203,7 @@ function AddEstimateCtrl(
                             $scope.estimate.job_state = cus.ship_state;
                             $scope.estimate.job_zip_code = cus.ship_zip_code;
                             $scope.estimate.job_country = cus.ship_country;
+                            $scope.estimate.job_company_name = cus.company_name;
                             break;
                         }
                     }
