@@ -9,7 +9,7 @@ class CustomerController extends BaseController {
                 ->selectMany(
                     'c.id', 'c.display_name', 'c.parent_id', 'c.sub_level', 'c.email',
                     'c.primary_phone_number', 'c.alternate_phone_number',
-                    'c.mobile_phone_number', 'c.notes',
+                    'c.mobile_phone_number', 'c.notes', 'c.company_name',
                     'c.bill_address', 'c.bill_city', 'c.bill_state', 'c.bill_zip_code',
                     'c.bill_country',
                     'c.ship_address', 'c.ship_city', 'c.ship_state', 'c.ship_zip_code',
