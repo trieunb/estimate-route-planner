@@ -1,3 +1,11 @@
+## 1.7.6
+  - Crew route: change Exp date to Estimate date
+  - Add `Company name` field to job request form and estimate form
+  - Print estimate:
+    - Decrease the font size
+    - Remove service/product from description line
+    - Add bullets/remove bottom borders from desciption lines
+
 ## 1.7.5
   - Work order:
     - Make the time inputs to wider.
