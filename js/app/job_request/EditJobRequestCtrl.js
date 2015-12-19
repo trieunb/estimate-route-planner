@@ -68,7 +68,7 @@ function EditJobRequestCtrl(
     };
 
     // When the current customer's profile has been updated in the modal
-    // And 'Update Form' is checked
+    // and 'Update Form' is checked
     $scope.onCustomerUpdate = function() {
         resetCustomer();
     };
@@ -87,6 +87,7 @@ function EditJobRequestCtrl(
                             $scope.referral.primary_phone_number = cus.primary_phone_number;
                             $scope.referral.mobile_phone_number = cus.mobile_phone_number;
                             $scope.referral.email = cus.email;
+                            $scope.referral.company_name = cus.company_name;
                             return;
                         }
                     });

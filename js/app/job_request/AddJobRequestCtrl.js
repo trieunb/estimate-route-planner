@@ -84,6 +84,7 @@ function AddJobRequestCtrl(
                             $scope.referral.primary_phone_number = cus.primary_phone_number;
                             $scope.referral.mobile_phone_number = cus.mobile_phone_number;
                             $scope.referral.email = cus.email;
+                            $scope.referral.company_name = cus.company_name;
                             return;
                         }
                     });

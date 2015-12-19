@@ -426,6 +426,7 @@ final class ERPDataParser {
             'bill_state' => $bill_state,
             'bill_zip_code' => $bill_zip_code,
             'bill_country' => $bill_country,
+            'bill_company_name' => $data_local['bill_company_name'],
 
             'status' => $status,
             'created_at' => $created_at,
@@ -454,7 +455,7 @@ final class ERPDataParser {
             'job_state'         => $job_state,
             'job_zip_code'      => $job_zip_code,
             'job_country'       => $job_country,
-
+            'job_company_name'  => $data_local['job_company_name'],
             'job_lat' => $data_local['job_lat'],
             'job_lng' => $data_local['job_lng'],
         ];

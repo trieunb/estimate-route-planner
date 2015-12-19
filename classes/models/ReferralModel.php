@@ -14,6 +14,7 @@ class ReferralModel extends AbstractModel {
         'zip_code',
         'country',
         'email',
+        'company_name',
         'primary_phone_number',
         'mobile_phone_number',
         'date_service',

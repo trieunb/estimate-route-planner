@@ -17,7 +17,7 @@
             <?php endif; ?>
         </style>
     </head>
-    <body>
+    <body class="print">
         <div class="print-container">
             <div class="section header">
                 <div class="logo">
@@ -120,7 +120,7 @@
                 </div>
             </div>
             <div class="section lines">
-                <table class="bordered">
+                <table class="bordered-columns">
                     <tr class="head">
                         <td>
                             Description
@@ -141,18 +141,14 @@
                             $blankLine = !$line['product_service_name'] && !$line['description'] && ($amount == 0);
                     ?>
                         <?php if ($blankLine) : ?>
-                            <tr>
+                            <tr class="line-blank">
                                 <td colspan="4">
                                 </td>
                             </tr>
                         <?php else : ?>
                             <tr>
                                 <td>
-                                    <?php if ($line['product_service_name']) : ?>
-                                        <span class="product-name"><?php echo $line['product_service_name'] ?></span>
-                                        <br>
-                                    <?php endif; ?>
-                                    <?php echo $line['description'] ?>
+                                    <li><?php echo $line['description'] ?></li>
                                 </td>
                                 <td><span><?php echo $line['qty'] ?></span></td>
                                 <td><span><?php echo $line['rate'] ?></span></td>
