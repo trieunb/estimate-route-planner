@@ -73,7 +73,6 @@ angular
                                 'email',
                                 'primary_phone_number',
                                 'mobile_phone_number',
-                                'company_name',
                                 'bill_address',
                                 'bill_city',
                                 'bill_state',
@@ -85,6 +84,11 @@ angular
                                 if (parentCustomer[field]) {
                                     $scope.customer[field] = parentCustomer[field];
                                 }
+                            }
+                            if (parentCustomer.company_name) {
+                                $scope.customer.company_name = parentCustomer.company_name;
+                            } else {
+                                $scope.customer.company_name = parentCustomer.display_name;
                             }
                             $scope.fillShippingWithBilling();
                             break;
