@@ -1,3 +1,7 @@
+## 1.7.7
+  - Auto fill company field for sub-customer by master display name if is blank
+  - Use company name instead of customer display name for print estimate
+
 ## 1.7.6
   - Crew route: change Exp date to Estimate date
   - Add `Company name` field to job request form and estimate form
