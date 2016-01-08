@@ -91,7 +91,11 @@
                         </tr>
                         <tr>
                             <td>
-                                <?php echo $estimate->customer_display_name ?>
+                                <?php if ($estimate->bill_company_name) : ?>
+                                    <?php echo $estimate->bill_company_name ?>
+                                <?php else: ?>
+                                    <?php echo $estimate->customer_display_name ?>
+                                <?php endif ?>
                                 <br>
                                 <?php echo $estimate->bill_address ?>
                                 <br>
@@ -109,7 +113,11 @@
                         </tr>
                         <tr>
                             <td>
-                                <?php echo $estimate->job_customer_display_name ?>
+                                <?php if ($estimate->job_company_name) : ?>
+                                    <?php echo $estimate->job_company_name ?>
+                                <?php else: ?>
+                                    <?php echo $estimate->job_customer_display_name ?>
+                                <?php endif ?>
                                 <br>
                                 <?php echo $estimate->job_address ?>
                                 <br>
