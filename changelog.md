@@ -1,3 +1,6 @@
+## 1.7.8
+  - Bugfix: Print Work order - Line descriptions does not break lines
+
 ## 1.7.7
   - Auto fill company field for sub-customer by master display name if is blank
   - Use company name instead of customer display name for print estimate
