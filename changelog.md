@@ -1,3 +1,8 @@
+## 1.7.9
+  - Bugfix: line descriptions does not break lines when print estimates
+  - Auto fill phone number fields with dashs
+  - Fix some issue on Ipad
+
 ## 1.7.8
   - Bugfix: Print Work order - Line descriptions does not break lines
 
