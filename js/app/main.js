@@ -22,7 +22,8 @@ angular
             'ui.bootstrap',
             'ngMessages',
             'yaru22.angular-timeago',
-            'ui.tree'
+            'ui.tree',
+            'ui.mask'
         ]
     ).run(['$rootScope', 'dataFactory', 'sharedData', '$location', 'userPermission', '$route',
         function($rootScope, dataFactory, sharedData, $location, userPermission, $route) {

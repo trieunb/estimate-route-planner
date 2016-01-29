@@ -208,7 +208,7 @@
         </div>
         <?php if ($_REQUEST['_do'] === 'printEstimate') : ?>
             <script type="text/javascript">
-                // window.onload = function() { self.print(); }
+                window.onload = function() { self.print(); }
             </script>
         <?php endif; ?>
     </body>

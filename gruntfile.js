@@ -27,7 +27,8 @@ module.exports = function (grunt) {
                         'js/lib/ngBootbox.js',
                         'js/lib/angular-dropzone.js',
                         'js/lib/angular-timeago.js',
-                        'js/lib/angular-ui-tree.js'
+                        'js/lib/angular-ui-tree.js',
+                        'js/lib/angular-ui-mask.js'
                     ]
                 }
             },
