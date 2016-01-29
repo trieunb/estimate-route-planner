@@ -28,6 +28,7 @@ function erp_enqueue_scripts() {
                 'angular-ui-bootstrap'  => 'js/lib/ui-bootstrap-tpls-0.14.3.js',
                 'angular-timeago'       => 'js/lib/angular-timeago.js',
                 'angular-ui-tree'       => 'js/lib/angular-ui-tree.js',
+                'angular-ui-mask'       => 'js/lib/angular-ui-mask.js',
             ];
             foreach ($libJS as $name => $path) {
                 wp_register_script(

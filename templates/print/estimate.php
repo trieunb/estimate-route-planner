@@ -156,7 +156,7 @@
                         <?php else : ?>
                             <tr>
                                 <td>
-                                    <li><?php echo $line['description'] ?></li>
+                                    <li><?php echo nl2br($line['description']) ?></li>
                                 </td>
                                 <td><span><?php echo $line['qty'] ?></span></td>
                                 <td><span><?php echo $line['rate'] ?></span></td>
@@ -176,10 +176,10 @@
             </div>
             <div class="section footer">
                 <div class="left">
-                    <strong>Disclaimer:</strong> <?php echo $estimate->disclaimer ?>
+                    <strong>Disclaimer:</strong> <?php echo nl2br($estimate->disclaimer) ?>
                     <br>
                     <br>
-                    <strong>Accepted agreement:</strong> <?php echo $estimate->estimate_footer ?>
+                    <strong>Accepted agreement:</strong> <?php echo nl2br($estimate->estimate_footer) ?>
                     <br>
                     <br>
                     <br>
