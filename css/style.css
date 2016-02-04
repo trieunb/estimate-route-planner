@@ -518,9 +518,6 @@ span.new-referal {
 .lines-table tbody tr .form-control {
     padding: 2px 6px;
 }
-.lines-table tbody tr textarea {
-    resize: none;
-}
 .lines-table tbody tr select {
     width: 100%;
 }
