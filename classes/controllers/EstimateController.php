@@ -165,7 +165,6 @@ class EstimateController extends BaseController {
         $parsedEstimateData = ERPDataParser::parseEstimate($result, $insertData);
 
         // Parse lines data
-        $estimateLineModel = new EstimateLineModel();
         foreach ($result->Line as $line) {
             $result_line = ERPDataParser::parseEstimateLine($line, $parsedEstimateData['id']);
             if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {

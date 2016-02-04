@@ -1,3 +1,7 @@
+## 1.8.0
+  - Enable resizing for textareas of line descriptions.
+  - Fix phone fields validation
+
 ## 1.7.9
   - Bugfix: line descriptions does not break lines when print estimates
   - Auto fill phone number fields with dashs
