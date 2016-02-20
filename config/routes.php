@@ -20,6 +20,7 @@ return [
     'printEstimate'         => 'Estimate@printPDF',
     'sendEstimate'          => 'Estimate@sendEstimate',
     'getEstimateAttachments'=> 'Estimate@attachments',
+    'previewPdfEstimate'    => 'Estimate@previewPdf',
 
     'getAttachment'         => 'Attachment@show',
 

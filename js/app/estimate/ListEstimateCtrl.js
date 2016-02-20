@@ -188,6 +188,12 @@ function ListEstimateCtrl(
         $scope.sendEmailForm.$setPristine();
     };
 
+    $scope.previewPdfEstimate = function(estimate) {
+        $scope.showModal = false;
+        $scope.showModalPdf = true;
+        $scope.sendMailData.id = estimate.id;
+    }
+
     $scope.sendMailEstimate = function() {
         $scope.showModal = false;
         estimateFactory.sendMail($scope.sendMailData)

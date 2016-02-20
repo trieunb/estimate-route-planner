@@ -519,6 +519,37 @@ class EstimateController extends BaseController {
         }
     }
 
+    public function previewPdf() {
+        $companyInfo = ORM::forTable('company_info')->findOne();
+        $estimateId = $_REQUEST['id'];
+        $estimate = $this->getEstimateDataForPrint($estimateId);
+        if ($estimate) {
+            $lines = ORM::forTable('estimate_lines')
+                    ->tableAlias('el')
+                    ->leftOuterJoin(
+                        'products_and_services',
+                        ['el.product_service_id', '=', 'ps.id'],
+                        'ps'
+                    )
+                    ->where('el.estimate_id', $estimateId)
+                    ->select('el.*')
+                    ->select('ps.name', 'product_service_name')
+                    ->orderByAsc('el.line_num')
+                    ->findArray();
+            ob_start();
+            require ERP_TEMPLATES_DIR . '/print/estimate.php';
+            $html = ob_get_clean();
+            $dompdf = new DOMPDF();
+            $dompdf->load_html($html);
+            $dompdf->set_paper('legal');
+            $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
+            $dompdf->render();
+            $dompdf->stream('estimate-123.pdf', ['Attachment' => 0]);
+        } else {
+            $this->render404();
+        }
+    }
+
     private function getEstimateDataForPrint($id) {
         $query = ORM::forTable('estimates')
             ->tableAlias('e')
