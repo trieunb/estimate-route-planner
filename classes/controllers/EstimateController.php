@@ -416,7 +416,7 @@ class EstimateController extends BaseController {
         $estimateId = $_REQUEST['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
         if ($estimate) {
-            $lines = $this->estimateLines();
+            $lines = $this->getEstimateLines($estimateId);
             require ERP_TEMPLATES_DIR . '/print/estimate.php';
         } else {
             $this->render404();
@@ -428,7 +428,7 @@ class EstimateController extends BaseController {
         $estimateId = $this->data['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
         if ($estimate) {
-            $lines = $this->estimateLines();
+            $lines = $this->getEstimateLines($estimateId);
             ob_start();
             require ERP_TEMPLATES_DIR . '/print/estimate.php';
             $html = ob_get_clean();
@@ -502,7 +502,7 @@ class EstimateController extends BaseController {
         $estimateId = $_REQUEST['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
         if ($estimate) {
-            $lines = $this->estimateLines();
+            $lines = $this->getEstimateLines($estimateId);
             ob_start();
             require ERP_TEMPLATES_DIR . '/print/estimate.php';
             $html = ob_get_clean();
@@ -511,13 +511,13 @@ class EstimateController extends BaseController {
             $dompdf->set_paper('legal');
             $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
             $dompdf->render();
-            $dompdf->stream('estimate-'. $estimateId .'.pdf', ['Attachment' => 0]);
+            $dompdf->stream('estimate-'. $estimate['doc_number'] .'.pdf', ['Attachment' => 0]);
         } else {
             $this->render404();
         }
     }
 
-    private function estimateLines() {
+    private function getEstimateLines($estimateId) {
         return ORM::forTable('estimate_lines')
                 ->tableAlias('el')
                 ->leftOuterJoin(

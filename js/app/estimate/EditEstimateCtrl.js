@@ -502,7 +502,7 @@ function EditEstimateCtrl(
     };
 
     $scope.previewPdfEstimate = function(estimate) {
-        $scope.showSendModal = false;
+        $scope.showModal = false;
         $scope.showModalPdf = true;
         $scope.sendMailData.id = estimate.id;
     }
