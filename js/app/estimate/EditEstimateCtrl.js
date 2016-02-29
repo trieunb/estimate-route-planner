@@ -477,6 +477,7 @@ function EditEstimateCtrl(
                                         $scope.sendMailData = {
                                             id: $scope.estimate.id,
                                             to: $scope.estimate.email,
+                                            doc_number: $scope.estimate.doc_number,
                                             subject: 'Estimate from ' + $scope.companyInfo.name
                                         };
                                         $scope.sendMailForm.$setPristine();
