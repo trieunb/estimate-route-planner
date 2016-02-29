@@ -435,7 +435,7 @@ function EditEstimateCtrl(
             });
     };
 
-    $scope.submitForm = function(sendMail) {
+    $scope.submitForm = function(sendMail, print) {
         if (isEmptyLines()) {
             toastr.error('You must fill out at least one split line.');
         } else {
@@ -481,6 +481,9 @@ function EditEstimateCtrl(
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;
+                                    } 
+                                    if (print) {
+                                        window.open(ERPApp.baseAPIPath + '&_do=printEstimate&id=' + $scope.estimate.id, '_blank');
                                     }
                                 } else {
                                     var msg = response.message || 'An error occurred while saving estimate';
@@ -497,6 +500,12 @@ function EditEstimateCtrl(
                 );
         }
     };
+
+    $scope.previewPdfEstimate = function(estimate) {
+        $scope.showSendModal = false;
+        $scope.showModalPdf = true;
+        $scope.sendMailData.id = estimate.id;
+    }
 
     $scope.showSignatureBox = function() {
         $scope.isShowModalSignature = true;

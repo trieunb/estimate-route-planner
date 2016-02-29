@@ -620,7 +620,8 @@
             <div class="col-sm-12 col-xs-12">
                 <div class="text-right">
                     <button type="submit" class="btn btn-primary" ng-disabled="estimateForm.$invalid || $root.isBusy">Save</button>
-                    <button type="button" class="btn btn-default" ng-click="submitForm(true)"
+                    <button type="button" class="btn btn-default" ng-click="submitForm(false, true)" ng-disabled="estimateForm.$invalid || $root.isBusy">Print</button>
+                    <button type="button" class="btn btn-default" ng-click="submitForm(true, false)"
                         ng-disabled="estimateForm.$invalid || isUploading || $root.isBusy">Save and Send</button>
                 </div>
             </div>
@@ -669,9 +670,27 @@
                     </div>
                     <div class="modal-footer">
                       <button class="btn btn-primary" ng-click="sendMailEstimate()" ng-disabled="sendMailForm.$invalid || $root.isBusy">Send</button>
+                      <button class="btn btn-default" type="button" ng-click="previewPdfEstimate(sendMailData)">Print Preview
+                      </button>
                       <button class="btn" type="button" ng-click="showSendModal = false">Cancel</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!-- show model preview pdf estimate -->
+    <div class="modal fade" ng-class="{'in': showModalPdf}" ng-style="{'display': showModalPdf ? 'block' : 'none'}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                  <object type="application/pdf" 
+                    data="{{::$root.baseAPIPath}}&_do=previewPdfEstimate&id={{sendMailData.id}}" width="100%" height="480">
+                  </object>
+                </div>  
+                <div class="modal-footer">
+                  <button class="btn" type="button" ng-click="showModalPdf = false">Close
+                  </button>
+                </div>
             </div>
         </div>
     </div>

@@ -9,7 +9,7 @@ class CompanyInfoController extends BaseController {
 
         $fillableCols = [
             'name', 'full_address', 'primary_phone_number', 'fax', 'email',
-            'website', 'email_template', 'estimate_footer', 'mailing_address', 'disclaimer'
+            'website', 'estimate_footer', 'mailing_address', 'disclaimer'
         ];
         foreach ($fillableCols as $col) {
             if (isset($this->data[$col])) {

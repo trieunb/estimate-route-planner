@@ -585,7 +585,8 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-right">
-                <button type="submit" class="btn btn-primary" ng-disabled="$root.isBusy || estimateForm.$invalid">Print Preview</button>
+                <button type="submit" class="btn btn-primary" ng-disabled="$root.isBusy || estimateForm.$invalid">Save</button>
+                <button type="button" class="btn btn-default" ng-click="submitForm(true)" ng-disabled="$root.isBusy || estimateForm.$invalid">Print</button>
             </div>
         </div>
     </form>
