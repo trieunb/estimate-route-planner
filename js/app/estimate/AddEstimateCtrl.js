@@ -327,6 +327,7 @@ function AddEstimateCtrl(
                                 if (response.success) {
                                     toastr.success(response.message);
                                     $location.path('/edit-estimate/' + response.data.id);
+                                    window.open(ERPApp.baseAPIPath + '&_do=printEstimate&id=' + response.data.id, '_blank');
                                 } else {
                                     var msg = response.message || 'An error occurred while saving estimate';
                                     toastr.error(msg);

@@ -180,11 +180,15 @@ function ListEstimateCtrl(
     };
 
     $scope.openSendMailModal = function(estimate) {
+        var email_template = sharedData.companyInfo.email_template;
+        var customer_name = estimate.customer_display_name;
+        var estimate_id = estimate.id;
         $scope.showModal = true;
-        $scope.sendMailData.id = estimate.id;
+        $scope.sendMailData.id = estimate_id;
         $scope.sendMailData.to = estimate.email;
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
-        $scope.sendMailData.body = '';
+        var mail_message = email_template.replace('{customer_display_name}', customer_name);
+        $scope.sendMailData.body = mail_message.replace('{estimate_number}', '#' + estimate_id);
         $scope.sendEmailForm.$setPristine();
     };
 
