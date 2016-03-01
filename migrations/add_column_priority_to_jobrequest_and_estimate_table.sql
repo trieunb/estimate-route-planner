@@ -1,0 +1,3 @@
+ALTER TABLE referrals ADD priority INT(4) DEFAULT 0 NOT NULL,
+
+ALTER TABLE estimates ADD priority INT(4) DEFAULT 0 NOT NULL
