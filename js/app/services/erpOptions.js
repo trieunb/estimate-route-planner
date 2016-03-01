@@ -87,6 +87,20 @@ angular
                 label: 'Rejected'
             }
         ],
+        estimatePriorities: [
+            {
+                value: 'Normal',
+                label: 'Normal'
+            },
+            {
+                value: 'High',
+                label: 'High'
+            },
+            {
+                value: 'Storm Damage',
+                label: 'Storm Damage'
+            }
+        ],
         map: {
             firstPointColor: '#52BC2B',
             middlePointColor: '#3F51B5',

@@ -54,6 +54,7 @@ function AddEstimateCtrl(
     $scope.estimate.sold_by_1 = sharedData.currentUserName;
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;
+    $scope.estimatePriorities = erpOptions.estimatePriorities;
 
     $scope.estimate.txn_date = $filter('date')(new Date(), "yyyy-MM-dd");
     $scope.estimate.expiration_date =

@@ -429,6 +429,7 @@ final class ERPDataParser {
             'bill_company_name' => $data_local['bill_company_name'],
 
             'status' => $status,
+            'priority' => $data_local['priority'],
             'created_at' => $created_at,
             'last_updated_at' => $last_updated_at,
             'total' => $data->TotalAmt,

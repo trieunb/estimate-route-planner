@@ -51,6 +51,7 @@ function EditEstimateCtrl(
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;
+    $scope.estimatePriorities = erpOptions.estimatePriorities;
 
     $scope.soldBySelectConfig = {
         valueField: 'name',
