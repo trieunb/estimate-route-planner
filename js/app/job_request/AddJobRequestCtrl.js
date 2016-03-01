@@ -35,7 +35,8 @@ function AddJobRequestCtrl(
 
     // Initial with default status
     $scope.referral = {
-        status: 'Pending'
+        status: 'Pending',
+        priority: 'Normal'
     };
 
     // Load customers list
