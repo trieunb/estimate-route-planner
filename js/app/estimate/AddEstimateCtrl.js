@@ -373,6 +373,7 @@ function AddEstimateCtrl(
                     // Set to customer billing address
                     resetBillCustomer();
                     $timeout(function() {
+                        $scope.estimate.priority = jobRequestData.priority;
                         $scope.estimate.job_address = jobRequestData.address;
                         $scope.estimate.job_city = jobRequestData.city;
                         $scope.estimate.job_state = jobRequestData.state;
