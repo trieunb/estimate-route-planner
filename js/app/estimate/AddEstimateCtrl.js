@@ -56,9 +56,8 @@ function AddEstimateCtrl(
     $scope.estimateStatuses = erpOptions.estimateStatuses;
     $scope.jobPriorities = erpOptions.jobPriorities;
 
-    $scope.estimate.txn_date = $filter('date')(new Date(), "yyyy-MM-dd");
-    $scope.estimate.expiration_date =
-        $filter('date')((new Date()).getTime() + (30 * 86400000), "yyyy-MM-dd");
+    $scope.estimate.txn_date = new Date();
+    $scope.estimate.expiration_date = new Date( (new Date()).getTime() + (30 * 86400000));
 
     erpLocalStorage.getProductServices()
         .then(function(data) {
@@ -323,6 +322,7 @@ function AddEstimateCtrl(
                         if ($scope.signatureEncoded) {
                             estimate.customer_signature_encoded = $scope.signatureEncoded;
                         }
+                        // console.log(estimate);
                         estimateFactory.save(estimate)
                             .success(function(response) {
                                 if (response.success) {

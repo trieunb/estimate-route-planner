@@ -12,7 +12,7 @@
     <tbody>
         <tr ng-repeat="referral in currentAssignedReferrals">
             <td><span>{{ ::referral.customer_display_name }}</span></td>
-            <td><span>{{ ::referral.date_requested }}</span></td>
+            <td><span>{{ ::referral.date_requested | date:'MM-dd-yyyy'}}</span></td>
             <td><span>{{ ::referral.status }}</span></td>
             <td><span>{{ ::referral.priority }}</span></td>
             <td ng-if="::hasCap('erpp_edit_job_requests')">

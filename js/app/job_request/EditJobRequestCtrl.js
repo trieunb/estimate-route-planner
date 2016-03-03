@@ -41,6 +41,8 @@ function EditJobRequestCtrl(
         jobRequestFactory.show($routeParams.id)
             .success(function(response) {
                 $scope.referral = response;
+                $scope.referral.date_requested = new Date(response.date_requested);
+                $scope.referral.date_service = new Date(response.date_service);
                 // Load customers list
                 erpLocalStorage.getCustomers()
                     .then(function(data) {

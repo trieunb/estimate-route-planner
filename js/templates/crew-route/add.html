@@ -32,7 +32,7 @@
                             <br>
                             <div ng-hide="viewOptions.compact">
                                 Phone: {{::estimate.primary_phone_number}}<br>
-                                Date: {{::estimate.txn_date}}<br>
+                                Date: {{::estimate.txn_date | date:'MM-dd-yyyy'}}<br>
                                 Status: {{estimate.status}}<br>
                             </div>
                             Total: ${{::estimate.total}}<br>
@@ -80,7 +80,7 @@
                             <br>
                             <div ng-hide="viewOptions.compact">
                                 Phone: {{::estimate.primary_phone_number}}<br>
-                                Date: {{::estimate.txn_date}}<br>
+                                Date: {{::estimate.txn_date | date:'MM-dd-yyyy'}}<br>
                                 Status: {{estimate.status}}<br>
                             </div>
                             Total: ${{::estimate.total}}<br>
@@ -136,7 +136,7 @@
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     Phone: {{::estimate.primary_phone_number}}<br>
-                                    Date: {{::estimate.txn_date}}<br>
+                                    Date: {{::estimate.txn_date | date:'MM-dd-yyyy'}}<br>
                                     Status: {{estimate.status}}
                                 </span>
                             </p>
@@ -161,7 +161,7 @@
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     Phone: {{::estimate.primary_phone_number}}<br>
-                                    Date: {{::estimate.txn_date}}<br>
+                                    Date: {{::estimate.txn_date | date:'MM-dd-yyyy'}}<br>
                                     Status: {{estimate.status}}
                                 </span>
                             </p>
@@ -183,7 +183,7 @@
                 <tbody>
                   <tr ng-repeat="route in recentRoutes">
                     <td><span>{{::route.title}}</span></td>
-                    <td><span>{{::route.created_at}}</span></td>
+                    <td><span>{{::route.created_at | datetimeToDate:'MM-dd-yyyy'}}</span></td>
                     <td>
                         <a href="#/edit-crew-route/{{route.id}}">View</a>
                     </td>

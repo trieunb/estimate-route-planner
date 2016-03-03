@@ -49,10 +49,10 @@
                     ng-class="{'visibility': ref.geolocation.is_checked && !ref.geolocation.ok}"></span>
                 <span>{{::ref | referralFullAddress}}</span>
             </td>
-            <td><span>{{::ref.date_requested}}</span></td>
+            <td><span>{{::ref.date_requested | date:'MM-dd-yyyy'}}</span></td>
             <td><span>{{::ref.primary_phone_number}}</span></td>
             <td><span>{{::ref.estimator_full_name }}</span></td>
-            <td><span>{{::ref.date_service}}</span></td>
+            <td><span>{{::ref.date_service | date:'MM-dd-yyyy'}}</span></td>
             <td>
                 <select ng-if="::hasCap('erpp_edit_job_requests')"
                     ng-init="ref.new_status = ref.status"

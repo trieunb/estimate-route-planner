@@ -146,7 +146,10 @@ function EditEstimateCtrl(
                 $scope.signatureEncoded =
                     $rootScope.baseERPPluginUrl + estimate.customer_signature;
             }
+
             $scope.estimate = estimate;
+            $scope.estimate.txn_date = new Date(estimate.txn_date);
+            $scope.estimate.expiration_date = new Date(estimate.expiration_date);
             $scope.updateTotal();
 
             // Load customers

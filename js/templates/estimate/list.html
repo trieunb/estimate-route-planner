@@ -47,7 +47,7 @@
         <tbody>
             <tr ng-repeat="est in estimates">
                 <td>
-                  <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.txn_date}}</span></a>
+                  <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.txn_date | date: 'MM-dd-yyyy'}}</span></a>
                   <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.txn_date}}</span>
                 </td>
                 <td class="address-cell" ng-class="{'danger': est.geolocation.is_checked && !est.geolocation.ok }">
@@ -66,7 +66,7 @@
                 </td>
                 <td><span>{{::est.source_name}}</span></td>
 
-                <td><span>{{::est.expiration_date}}</span></td>
+                <td><span>{{::est.expiration_date | date: 'MM-dd-yyyy'}}</span></td>
 
                 <td ng-if="::hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
 

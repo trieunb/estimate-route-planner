@@ -57,7 +57,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <?php echo $estimate->txn_date ?>
+                                    <?php echo Date('m-d-Y', strtotime($estimate->txn_date)) ?>
                                 </td>
                                 <td>
                                     <?php echo $estimate->doc_number ?>
@@ -74,7 +74,7 @@
                                 <td class="invisible">
                                 </td>
                                 <td>
-                                    <?php echo $estimate->expiration_date ?>
+                                    <?php echo Date('m-d-Y',strtotime($estimate->expiration_date)) ?>
                                 </td>
                             </tr>
                         </tbody>

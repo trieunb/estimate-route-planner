@@ -40,7 +40,7 @@
             <a href="#/edit-crew-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_crew_routes')"><span>{{::route.title}}</span></a>
             <span ng-if="::!hasCap('erpp_edit_crew_routes')">{{::route.title}}</span>
           </td>
-          <td><span>{{::route.created_at}}</span></td>
+          <td><span>{{::route.created_at | datetimeToDate:'MM-dd-yyyy'}}</span></td>
           <td>
             <a href="#/edit-crew-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_crew_routes')">Edit</a>
             |

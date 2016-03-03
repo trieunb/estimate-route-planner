@@ -40,7 +40,7 @@
                 </div>
                 <div class="col-xs-6 text-right">
                     <br>
-                    <label>Date:</label> <span><?php echo $referral['date_requested'] ?></span>
+                    <label>Date:</label> <span><?php if ($referral['date_requested']) echo Date('m-d-Y', strtotime($referral['date_requested'])) ?></span>
                     <br>
                     <label>Status:</label> <span><?php echo $referral['status'] ?></span>
                 </div>
@@ -105,7 +105,7 @@
                                     <label>Date service is needed</label>
                                 </td>
                                 <td colspan="3">
-                                    <span><?php echo $referral['date_service'] ?></span>
+                                    <span><?php if ($referral['date_service']) echo Date('m-d-Y', strtotime($referral['date_service'])) ?></span>
                                 </td>
                             </tr>
                             <tr>
