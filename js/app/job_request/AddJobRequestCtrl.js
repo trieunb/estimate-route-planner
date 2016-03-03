@@ -11,6 +11,7 @@
             '$filter',
             '$uibModal',
             'erpGeoLocation',
+            'erpOptions',
             AddJobRequestCtrl
         ]
     );
@@ -24,18 +25,22 @@ function AddJobRequestCtrl(
     $location,
     $filter,
     $uibModal,
-    erpGeoLocation) {
+    erpGeoLocation,
+    erpOptions) {
 
     $scope.setPageTitle('New Job Request');
     $scope.companyInfo = {};
     $scope.customers = [];
     $scope.employees = [];
     $scope.classes = [];
+    $scope.jobPriorities = erpOptions.jobPriorities;
+
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
     // Initial with default status
     $scope.referral = {
-        status: 'Pending'
+        status: 'Pending',
+        priority: 'Normal'
     };
 
     // Load customers list

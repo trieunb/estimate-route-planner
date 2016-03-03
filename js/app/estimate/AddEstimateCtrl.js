@@ -54,6 +54,7 @@ function AddEstimateCtrl(
     $scope.estimate.sold_by_1 = sharedData.currentUserName;
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;
+    $scope.jobPriorities = erpOptions.jobPriorities;
 
     $scope.estimate.txn_date = $filter('date')(new Date(), "yyyy-MM-dd");
     $scope.estimate.expiration_date =
@@ -298,7 +299,7 @@ function AddEstimateCtrl(
         return $scope.estimate.lines.length === 0;
     };
 
-    $scope.submitForm = function() {
+    $scope.submitForm = function(print) {
         if (isEmptyLines()) {
             toastr.error('You must fill out at least one split line.');
         } else {
@@ -327,6 +328,9 @@ function AddEstimateCtrl(
                                 if (response.success) {
                                     toastr.success(response.message);
                                     $location.path('/edit-estimate/' + response.data.id);
+                                    if (print) {
+                                        window.open(ERPApp.baseAPIPath + '&_do=printEstimate&id=' + response.data.id, '_blank');
+                                    }
                                 } else {
                                     var msg = response.message || 'An error occurred while saving estimate';
                                     toastr.error(msg);
@@ -369,6 +373,7 @@ function AddEstimateCtrl(
                     // Set to customer billing address
                     resetBillCustomer();
                     $timeout(function() {
+                        $scope.estimate.priority = jobRequestData.priority;
                         $scope.estimate.job_address = jobRequestData.address;
                         $scope.estimate.job_city = jobRequestData.city;
                         $scope.estimate.job_state = jobRequestData.state;

@@ -97,7 +97,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4>Send estimate</h4>
+                    <h4>Send estimate #{{ sendMailData.doc_number }}</h4>
                 </div>
                 <form role="form" name="sendEmailForm">
                     <div class="modal-body">
@@ -123,9 +123,28 @@
                     </div>
                     <div class="modal-footer">
                       <button class="btn btn-primary" ng-click="sendMailEstimate()" ng-disabled="sendEmailForm.$invalid || $root.isBusy">Send</button>
-                      <button class="btn" type="button" ng-click="showModal = false">Cancel</button>
+                      <button class="btn btn-default" type="button" ng-click="previewPdfEstimate(sendMailData)">Print Preview
+                      </button>
+                      <button class="btn" type="button" ng-click="showModal = false">Cancel
+                      </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!-- show model preview pdf estimate -->
+    <div class="modal fade" ng-class="{'in': showModalPdf}" ng-style="{'display': showModalPdf ? 'block' : 'none'}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                  <object type="application/pdf" 
+                    data="{{::$root.baseAPIPath}}&_do=previewPdfEstimate&id={{sendMailData.id}}" width="100%" height="480">
+                  </object>
+                </div>  
+                <div class="modal-footer">
+                  <button class="btn" type="button" ng-click="showModalPdf = false">Close
+                  </button>
+                </div>
             </div>
         </div>
     </div>

@@ -18,7 +18,6 @@ angular
                value: 'txn_date'
             }
         ],
-
         sortEstimateRoute: [
             {
                 label: 'Custom',
@@ -85,6 +84,20 @@ angular
             {
                 value: 'Rejected',
                 label: 'Rejected'
+            }
+        ],
+        jobPriorities: [
+            {
+                value: 'Normal',
+                label: 'Normal'
+            },
+            {
+                value: 'High',
+                label: 'High'
+            },
+            {
+                value: 'Storm Damage',
+                label: 'Storm Damage'
             }
         ],
         map: {

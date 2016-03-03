@@ -12,6 +12,7 @@ angular
             '$filter',
             '$window',
             'erpGeoLocation',
+            'erpOptions',
             EditJobRequestCtrl
         ]
     );
@@ -25,12 +26,15 @@ function EditJobRequestCtrl(
     $routeParams,
     $filter,
     $window,
-    erpGeoLocation) {
+    erpGeoLocation,
+    erpOptions) {
+
     $scope.setPageTitle('Edit Job Request');
     $scope.companyInfo = {};
     $scope.customers = [];
     $scope.employees = [];
     $scope.classes = [];
+    $scope.jobPriorities = erpOptions.jobPriorities;
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
     var init = function() {

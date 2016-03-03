@@ -94,6 +94,16 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-5 required" for="priority">Priority</label>
+                    <div class="col-sm-7">
+                        <select class="form-control" name="priority"
+                            ng-model="estimate.priority"
+                            ng-options="priority.value as priority.label for priority in ::jobPriorities"
+                            ng-init="estimate.priority = 'Normal'">
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -586,6 +596,7 @@
         <div class="row">
             <div class="col-md-12 text-right">
                 <button type="submit" class="btn btn-primary" ng-disabled="$root.isBusy || estimateForm.$invalid">Save</button>
+                <button type="button" class="btn btn-default" ng-click="submitForm(true)" ng-disabled="$root.isBusy || estimateForm.$invalid">Print</button>
             </div>
         </div>
     </form>

@@ -22,6 +22,7 @@ class ReferralModel extends AbstractModel {
         'status',
         'lat',
         'lng',
+        'priority'
     ];
 
     public function getTableName() {

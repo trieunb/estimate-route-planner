@@ -58,6 +58,15 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="control-label col-sm-4" for="priority">Priority</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" name="priority"
+                            ng-model="referral.priority"
+                            ng-options="priority.value as priority.label for priority in ::jobPriorities">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="control-label col-sm-4" for="status">Estimator</label>
                     <div class="col-sm-8">
                         <employees-select options="employees" ng-model="referral.estimator_id"></employees-select>

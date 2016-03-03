@@ -69,7 +69,7 @@ class EstimateController extends BaseController {
                 'e.id', 'e.expiration_date', 'e.txn_date', 'e.doc_number',
                 'e.job_address', 'e.job_city', 'e.primary_phone_number',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
-                'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
+                'e.total', 'e.job_lat', 'e.job_lng', 'e.status', 'e.priority'
             )
             ->select('c.display_name', 'job_customer_display_name')
             ->orderByDesc('e.id')
@@ -416,18 +416,7 @@ class EstimateController extends BaseController {
         $estimateId = $_REQUEST['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
         if ($estimate) {
-            $lines = ORM::forTable('estimate_lines')
-                    ->tableAlias('el')
-                    ->leftOuterJoin(
-                        'products_and_services',
-                        ['el.product_service_id', '=', 'ps.id'],
-                        'ps'
-                    )
-                    ->where('el.estimate_id', $estimateId)
-                    ->select('el.*')
-                    ->select('ps.name', 'product_service_name')
-                    ->orderByAsc('el.line_num')
-                    ->findArray();
+            $lines = $this->getEstimateLines($estimateId);
             require ERP_TEMPLATES_DIR . '/print/estimate.php';
         } else {
             $this->render404();
@@ -439,18 +428,7 @@ class EstimateController extends BaseController {
         $estimateId = $this->data['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
         if ($estimate) {
-            $lines = ORM::forTable('estimate_lines')
-                    ->tableAlias('el')
-                    ->leftOuterJoin(
-                        'products_and_services',
-                        ['el.product_service_id', '=', 'ps.id'],
-                        'ps'
-                    )
-                    ->where('el.estimate_id', $estimateId)
-                    ->select('el.*')
-                    ->select('ps.name', 'product_service_name')
-                    ->orderByAsc('el.line_num')
-                    ->findArray();
+            $lines = $this->getEstimateLines($estimateId);
             ob_start();
             require ERP_TEMPLATES_DIR . '/print/estimate.php';
             $html = ob_get_clean();
@@ -517,6 +495,40 @@ class EstimateController extends BaseController {
         } else {
             $this->render404();
         }
+    }
+
+    public function previewPdf() {
+        $companyInfo = ORM::forTable('company_info')->findOne();
+        $estimateId = $_REQUEST['id'];
+        $estimate = $this->getEstimateDataForPrint($estimateId);
+        if ($estimate) {
+            $lines = $this->getEstimateLines($estimateId);
+            ob_start();
+            require ERP_TEMPLATES_DIR . '/print/estimate.php';
+            $html = ob_get_clean();
+            $dompdf = new DOMPDF();
+            $dompdf->load_html($html);
+            $dompdf->set_paper('legal');
+            $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
+            $dompdf->render();
+            $dompdf->stream('estimate-'. $estimate['doc_number'] .'.pdf', ['Attachment' => 0]);
+        } else {
+            $this->render404();
+        }
+    }
+
+    private function getEstimateLines($estimateId) {
+        return ORM::forTable('estimate_lines')
+                ->tableAlias('el')
+                ->leftOuterJoin(
+                    'products_and_services',
+                    ['el.product_service_id', '=', 'ps.id'],
+                    'ps')
+                ->where('el.estimate_id', $estimateId)
+                ->select('el.*')
+                ->select('ps.name', 'product_service_name')
+                ->orderByAsc('el.line_num')
+                ->findArray();
     }
 
     private function getEstimateDataForPrint($id) {

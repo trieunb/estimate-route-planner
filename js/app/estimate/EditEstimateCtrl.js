@@ -51,6 +51,7 @@ function EditEstimateCtrl(
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;
+    $scope.jobPriorities = erpOptions.jobPriorities;
 
     $scope.soldBySelectConfig = {
         valueField: 'name',
@@ -435,7 +436,7 @@ function EditEstimateCtrl(
             });
     };
 
-    $scope.submitForm = function(sendMail) {
+    $scope.submitForm = function(sendMail, print) {
         if (isEmptyLines()) {
             toastr.error('You must fill out at least one split line.');
         } else {
@@ -477,10 +478,14 @@ function EditEstimateCtrl(
                                         $scope.sendMailData = {
                                             id: $scope.estimate.id,
                                             to: $scope.estimate.email,
+                                            doc_number: $scope.estimate.doc_number,
                                             subject: 'Estimate from ' + $scope.companyInfo.name
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;
+                                    }
+                                    if (print) {
+                                        window.open(ERPApp.baseAPIPath + '&_do=printEstimate&id=' + $scope.estimate.id, '_blank');
                                     }
                                 } else {
                                     var msg = response.message || 'An error occurred while saving estimate';
@@ -497,6 +502,12 @@ function EditEstimateCtrl(
                 );
         }
     };
+
+    $scope.previewPdfEstimate = function(estimate) {
+        $scope.showModal = false;
+        $scope.showModalPdf = true;
+        $scope.sendMailData.id = estimate.id;
+    }
 
     $scope.showSignatureBox = function() {
         $scope.isShowModalSignature = true;

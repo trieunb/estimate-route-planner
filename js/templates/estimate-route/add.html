@@ -27,6 +27,8 @@
                             <br>
                             {{:: referral | referralFullAddress }}
                             <br>
+                            <span>Priority: {{referral.priority}}</span>
+                            <br>
                             <div ng-hide="viewOptions.compact">
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                 <span>Date: {{::referral.date_requested}}</span><br>
@@ -70,6 +72,8 @@
                                 <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 {{:: referral | referralFullAddress }}
+                                <br>
+                                <span>Priority: {{referral.priority}}</span>
                                 <br>
                                 <div ng-hide="viewOptions.compact">
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
@@ -126,6 +130,8 @@
                                 <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 {{:: referral | referralFullAddress }}
+                                <br>
+                                <span>Priority: {{referral.priority}}</span>
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
@@ -148,6 +154,8 @@
                                 <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 {{:: referral | referralFullAddress }}
+                                <br>
+                                <span>Priority: {{referral.priority}}</span>
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
