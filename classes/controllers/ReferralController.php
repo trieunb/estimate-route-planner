@@ -75,7 +75,7 @@ class ReferralController extends BaseController {
             )
             ->selectMany(
                 'r.id', 'r.customer_id', 'r.address', 'r.city',
-                'r.state', 'r.zip_code', 'r.primary_phone_number',
+                'r.state', 'r.zip_code', 'r.primary_phone_number', 'r.priority',
                 'r.status', 'r.date_requested', 'r.lat', 'r.lng'
             )
             ->selectExpr("CONCAT_WS(' ',wpum1.meta_value, wpum2.meta_value)", 'estimator_full_name')

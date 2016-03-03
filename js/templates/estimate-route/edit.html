@@ -27,12 +27,13 @@
                             <br>
                             {{:: referral | referralFullAddress }}
                             <br>
+                            <span>Priority: {{::referral.priority }}</span>
+                            <br>
                             <div ng-hide="viewOptions.compact">
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                 <span>Date: {{::referral.date_requested}}</span><br>
                                 <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                 <span>Status: {{referral.status}}</span><br>
-                                <span>Priority: {{::referral.priority}}</span>
                             </div>
                         </div>
                         <div class="queue-item-menu routed">
@@ -70,14 +71,14 @@
                                 <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
                                 <span ng-if="::!hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
-                                {{:: referral | referralFullAddress }}
+                                {{:: referral | referralFullAddress }}<br>
+                                <span>Priority: {{::referral.priority}}</span>
                                 <br>
                                 <div ng-hide="viewOptions.compact">
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                     <span>Date: {{::referral.date_requested}}</span><br>
                                     <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                     <span>Status: {{referral.status}}</span><br>
-                                    <span>Priority: {{referral.priority}}</span>
                                 </div>
                             </div>
                             <div class="queue-item-menu">
@@ -124,7 +125,8 @@
                                 <a href="#/edit-job-request/{{::referral.id}}" target="_blank" ng-if="::$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</a>
                                 <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
-                                {{:: referral | referralFullAddress }}
+                                {{:: referral | referralFullAddress }}<br>
+                                <span>Priority: {{::referral.priority}}</span>
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
@@ -147,6 +149,8 @@
                                 <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 {{:: referral | referralFullAddress }}
+                                <br>
+                                <span>Priority: {{::referral.priority}}</span>
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>

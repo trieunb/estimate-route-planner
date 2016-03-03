@@ -18,7 +18,6 @@ angular
                value: 'txn_date'
             }
         ],
-
         sortEstimateRoute: [
             {
                 label: 'Custom',
@@ -87,7 +86,7 @@ angular
                 label: 'Rejected'
             }
         ],
-        estimatePriorities: [
+        jobPriorities: [
             {
                 value: 'Normal',
                 label: 'Normal'

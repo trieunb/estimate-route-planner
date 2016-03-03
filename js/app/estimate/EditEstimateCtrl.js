@@ -51,7 +51,7 @@ function EditEstimateCtrl(
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;
-    $scope.estimatePriorities = erpOptions.estimatePriorities;
+    $scope.jobPriorities = erpOptions.jobPriorities;
 
     $scope.soldBySelectConfig = {
         valueField: 'name',
@@ -483,7 +483,7 @@ function EditEstimateCtrl(
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;
-                                    } 
+                                    }
                                     if (print) {
                                         window.open(ERPApp.baseAPIPath + '&_do=printEstimate&id=' + $scope.estimate.id, '_blank');
                                     }

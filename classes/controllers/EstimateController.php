@@ -69,7 +69,7 @@ class EstimateController extends BaseController {
                 'e.id', 'e.expiration_date', 'e.txn_date', 'e.doc_number',
                 'e.job_address', 'e.job_city', 'e.primary_phone_number',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
-                'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
+                'e.total', 'e.job_lat', 'e.job_lng', 'e.status', 'e.priority'
             )
             ->select('c.display_name', 'job_customer_display_name')
             ->orderByDesc('e.id')

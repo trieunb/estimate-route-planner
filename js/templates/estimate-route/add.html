@@ -27,12 +27,13 @@
                             <br>
                             {{:: referral | referralFullAddress }}
                             <br>
+                            <span>Priority: {{referral.priority}}</span>
+                            <br>
                             <div ng-hide="viewOptions.compact">
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                 <span>Date: {{::referral.date_requested}}</span><br>
                                 <span>Estimator: {{referral.estimator_full_name}}</span><br>
-                                <span>Status: {{referral.status}}</span><br>
-                                <span>Priority: {{referral.priority}}</span>
+                                <span>Status: {{referral.status}}</span>
                             </div>
                         </div>
                         <div class="queue-item-menu routed">
@@ -72,12 +73,13 @@
                                 <br>
                                 {{:: referral | referralFullAddress }}
                                 <br>
+                                <span>Priority: {{referral.priority}}</span>
+                                <br>
                                 <div ng-hide="viewOptions.compact">
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
                                     <span>Date: {{::referral.date_requested}}</span><br>
                                     <span>Estimator: {{referral.estimator_full_name}}</span><br>
-                                    <span>Status: {{referral.status}}</span><br>
-                                    <span>Priority: {{referral.priority}}</span>
+                                    <span>Status: {{referral.status}}</span>
                                 </div>
                             </div>
                             <div class="queue-item-menu">
@@ -128,6 +130,8 @@
                                 <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 {{:: referral | referralFullAddress }}
+                                <br>
+                                <span>Priority: {{referral.priority}}</span>
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
@@ -150,6 +154,8 @@
                                 <span ng-if="::!$root.hasCap('erpp_edit_job_requests')">{{::referral.customer_display_name}}</span>
                                 <br>
                                 {{:: referral | referralFullAddress }}
+                                <br>
+                                <span>Priority: {{referral.priority}}</span>
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>

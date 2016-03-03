@@ -28,11 +28,12 @@
                             <br>
                             {{:: estimate | estimateJobFullAddress }}
                             <br>
+                            Priority: {{estimate.priority}}
+                            <br>
                             <div ng-hide="viewOptions.compact">
                                 Phone: {{::estimate.primary_phone_number}}<br>
                                 Date: {{::estimate.txn_date}}<br>
-                                Status: {{estimate.status}}<br>
-                                Priority: {{estimate.priority}}<br>
+                                Status: {{estimate.status}}
                             </div>
                             Total: ${{::estimate.total}}<br>
                         </div>
@@ -73,11 +74,12 @@
                             <br>
                             {{:: estimate | estimateJobFullAddress }}
                             <br>
+                            Priority: {{estimate.priority}}
+                            <br>
                             <div ng-hide="viewOptions.compact">
                                 Phone: {{::estimate.primary_phone_number}}<br>
                                 Date: {{::estimate.txn_date}}<br>
-                                Status: {{estimate.status}}<br>
-                                Priority: {{estimate.priority}}<br>
+                                Status: {{estimate.status}}
                             </div>
                             Total: ${{::estimate.total}}<br>
                         </div>
@@ -126,6 +128,8 @@
                                 <br>
                                 {{:: estimate | estimateJobFullAddress }}
                                 <br>
+                                Priority: {{estimate.priority}}
+                                <br>
                                 Total: ${{::estimate.total}}
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
@@ -148,6 +152,8 @@
                                 <span ng-if="::!$root.hasCap('erpp_edit_estimates')">{{::estimate.job_customer_display_name}}</span>
                                 <br>
                                 {{:: estimate | estimateJobFullAddress }}
+                                <br>
+                                Priority: {{estimate.priority}}
                                 <br>
                                 Total: ${{::estimate.total}}
                                 <span ng-hide="$parent.viewOptions.compact">
@@ -179,6 +185,7 @@
                     <th>Number</th>
                     <th ng-if="::hasCap('erpp_view_estimate_total')">Total</th>
                     <th>Status</th>
+                    <th>Priority</th>
                     <th ng-if="::hasCap('erpp_edit_estimates')">
                     </th>
                   </tr>
@@ -190,6 +197,7 @@
                     <td><span>{{::est.doc_number}}</span></td>
                     <td ng-if="::hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
                     <td><span>{{::est.status}}</span></td>
+                    <td><span>{{::est.priority}}</span></td>
                     <td ng-if="::hasCap('erpp_edit_estimates')">
                         <a href="#/edit-estimate/{{est.id}}">Edit</a>
                     </td>
