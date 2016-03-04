@@ -4,11 +4,12 @@ class EstimateController extends BaseController {
     /**
      * Listing all estimates
      */
+
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
+        $dateExpiredEstimates = date('Y-m-d', strtotime('-'.self::DATE_EXP_EST.'day'));
         $filteredStatus = "";
-
         if (isset($_REQUEST['status'])) {
             $filteredStatus = $_REQUEST['status'];
         }
@@ -35,6 +36,10 @@ class EstimateController extends BaseController {
                     ['e.sold_by_1' => $currentUserName],
                     ['e.sold_by_2' => $currentUserName]
                 ]);
+        }
+        if ($this->currentUserHasCap('erpp_hide_expired_estimates')) {
+            $searchQuery
+                ->whereRaw('`txn_date` >= ?', [$dateExpiredEstimates]);
         }
 
         $countQuery = clone($searchQuery);
@@ -198,6 +203,7 @@ class EstimateController extends BaseController {
     public function show() {
         $id = $this->data['id'];
         $estimate = null;
+        $dateExpiredEstimates = date('Y-m-d', strtotime('-'.self::DATE_EXP_EST.'day'));
         $query = ORM::forTable('estimates')
             ->tableAlias('e')
             ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
@@ -213,11 +219,15 @@ class EstimateController extends BaseController {
             $estimate = $query->whereAnyIs([
                     ['sold_by_1' => $currentUserName],
                     ['sold_by_2' => $currentUserName]
-                ])
-                ->findOne($id);
+                ]);
         } else {
-            $estimate = $query->findOne($id);
+            $estimate = $query;
         }
+        if ($this->currentUserHasCap('erpp_hide_expired_estimates')) {
+            $estimate = $query
+                        ->whereRaw('`txn_date` >= ?', [$dateExpiredEstimates]);
+        }
+        $estimate = $query->findOne($id);
         if ($estimate) {
             $estimate = $estimate->asArray();
             $estimate['lines'] = ORM::forTable('estimate_lines')

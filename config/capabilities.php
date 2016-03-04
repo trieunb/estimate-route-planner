@@ -55,6 +55,10 @@ return [
     // Hide `Pending Routes` list so the person can't assign requests to themselves
     'erpp_hide_estimate_pending_list' => [
         'enable' => false
+    ],
+    //Auto permission to hide expired estimates
+    'erpp_hide_expired_estimates' => [
+        'enable' => false
     ]
 ];
 ?>
