@@ -322,7 +322,6 @@ function AddEstimateCtrl(
                         if ($scope.signatureEncoded) {
                             estimate.customer_signature_encoded = $scope.signatureEncoded;
                         }
-                        // console.log(estimate);
                         estimateFactory.save(estimate)
                             .success(function(response) {
                                 if (response.success) {

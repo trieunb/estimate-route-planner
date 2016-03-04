@@ -148,8 +148,12 @@ function EditEstimateCtrl(
             }
 
             $scope.estimate = estimate;
-            $scope.estimate.txn_date = new Date(estimate.txn_date);
-            $scope.estimate.expiration_date = new Date(estimate.expiration_date);
+            if ($scope.estimate.txn_date) {
+                $scope.estimate.txn_date = new Date(estimate.txn_date);
+            }
+            if ($scope.estimate.expiration_date) {
+                $scope.estimate.expiration_date = new Date(estimate.expiration_date);
+            }
             $scope.updateTotal();
 
             // Load customers
