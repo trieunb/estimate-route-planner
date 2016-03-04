@@ -110,9 +110,9 @@ angular
                         // Update customers dropdown
                         erpLocalStorage.updateCustomer(returnData.customer);
                         for (var i = 0; i < $scope.selectOptions.length; i++) {
-                            var customer = $scope.selectOptions[i];
-                            if (customer.id == returnData.customer.id) {
+                            if ($scope.selectOptions[i].id == returnData.customer.id) {
                                 $scope.selectOptions[i] = returnData.customer;
+                                break;
                             }
                         }
                         // Update parent scope model

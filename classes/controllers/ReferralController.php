@@ -93,7 +93,8 @@ class ReferralController extends BaseController {
     public function add() {
         $insertData = $this->data;
         $keepNullFields = [
-            'estimator_id', 'date_requested', 'date_service', 'class_id'
+            'estimator_id', 'date_requested', 'date_service', 'class_id',
+            'date_service', 'lat', 'lng'
         ];
         foreach ($keepNullFields as $field) {
             if (!$insertData[$field]) {
@@ -140,7 +141,7 @@ class ReferralController extends BaseController {
             $ref->set($updateData);
             $keepNullFields = [
                 'route_id', 'estimator_id', 'date_requested',
-                'date_service', 'class_id'
+                'date_service', 'class_id', 'lat', 'lng'
             ];
             foreach ($keepNullFields as $field) {
                 if (!$updateData[$field]) {

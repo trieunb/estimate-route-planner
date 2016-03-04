@@ -115,7 +115,6 @@
                                 options="customers"
                                 ng-model="estimate.customer_id"
                                 ng-required="true"
-                                ng-disabled="::hasCap('erpp_restrict_client_dropdown')"
                                 on-customer-change="onBillCustomerChange()"
                                 on-customer-update="onBillCustomerUpdate()"
                                 on-customer-created="onBillCustomerCreated()">
@@ -239,7 +238,6 @@
                                 options="jobCustomers"
                                 ng-model="estimate.job_customer_id"
                                 ng-required="true"
-                                ng-disabled="::hasCap('erpp_restrict_client_dropdown')"
                                 on-customer-change="onJobCustomerChange()"
                                 on-customer-update="onJobCustomerUpdate()"
                                 on-customer-created="onJobCustomerCreated()">
