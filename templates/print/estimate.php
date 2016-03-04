@@ -57,7 +57,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <?php echo Date('m-d-Y', strtotime($estimate->txn_date)) ?>
+                                    <?php if ($estimate->txn_date) echo Date('m-d-Y', strtotime($estimate->txn_date)) ?>
                                 </td>
                                 <td>
                                     <?php echo $estimate->doc_number ?>
@@ -74,7 +74,7 @@
                                 <td class="invisible">
                                 </td>
                                 <td>
-                                    <?php echo Date('m-d-Y',strtotime($estimate->expiration_date)) ?>
+                                    <?php if ($estimate->expiration_date) echo Date('m-d-Y',strtotime($estimate->expiration_date)) ?>
                                 </td>
                             </tr>
                         </tbody>
@@ -190,7 +190,7 @@
                     <?php endif ?>
                 </div>
                 <div class="right">
-                    <strong>Date of Signature:</strong> <?php echo $estimate->date_of_signature ?>
+                    <strong>Date of Signature:</strong> <?php if ($estimate->date_of_signature) echo Date('m-d-Y', strtotime($estimate->date_of_signature)) ?>
                     <br>
                     <?php if ($estimate->customer_signature) : ?>
                         <?php

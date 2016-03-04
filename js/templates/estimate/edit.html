@@ -512,12 +512,12 @@
                     <input class="form-control"
                         type="text"
                         name="date_of_signature"
-                        uib-datepicker-popup
+                        uib-datepicker-popup="MM-dd-yyyy"
                         ng-init="openDateSignaturePicker = false"
                         is-open="openDateSignaturePicker"
                         ng-model="estimate.date_of_signature"
                         ng-focus="openDateSignaturePicker = true"
-                        placeholder="yyyy-mm-dd">
+                        placeholder="mm-dd-yyyy">
                 </div>
             </div>
         </div>

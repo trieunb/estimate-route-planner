@@ -47,7 +47,7 @@
         <td>
             {{:: route.estimator_full_name }}
         </td>
-        <td><span>{{::route.created_at}}</span></td>
+        <td><span>{{::route.created_at | datetimeToDate:'MM-dd-yyyy'}}</span></td>
         <td>
           <select
             ng-if="::hasCap('erpp_edit_estimate_routes')"
