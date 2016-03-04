@@ -7,7 +7,7 @@
  */
 angular
     .module('Erp')
-    .directive('customersSelect', function() {
+    .directive('customersSelect', ['APP_CONFIG', function(APP_CONFIG) {
         return {
             restrict: 'E',
             scope: {
@@ -20,11 +20,10 @@ angular
                 onCustomerChange: '&', // User select another customer
                 onCustomerCreated: '&' // User created new customer
             },
-            template: '<selectize ng-model="ngModel" ng-change="onCustomerChangeEvent()" config="selectConfig" options="selectOptions"></selectize> <small ng-if="addingEnabled"><a href="#" ng-click="$event.preventDefault(); onAddCustomer()"><span class="glyphicon glyphicon-plus"></span> New customer</a></small> <small ng-if="editingEnabled && ngModel"><span>|</span> <a href="#" ng-click="$event.preventDefault(); onEditCustomer()"><span class="glyphicon glyphicon-info-sign"></span> Customer details</a></small>',
+            templateUrl: APP_CONFIG.templatesPath + 'customer/select-box.html',
             controller: [
-                '$scope', '$attrs', '$uibModal', 'APP_CONFIG', 'erpLocalStorage', '$timeout',
-                function($scope, $attrs, $uibModal, APP_CONFIG, erpLocalStorage, $timeout) {
-
+                '$scope', '$attrs', '$uibModal', 'APP_CONFIG', 'erpLocalStorage', '$timeout', 'customerFactory',
+                function($scope, $attrs, $uibModal, APP_CONFIG, erpLocalStorage, $timeout, customerFactory) {
                 $scope.addingEnabled = $scope.editingEnabled = false;
 
                 $scope.onCustomerChangeEvent = function() {
@@ -110,11 +109,12 @@ angular
                     modalInstance.result.then(function(returnData) {
                         // Update customers dropdown
                         erpLocalStorage.updateCustomer(returnData.customer);
-                        erpLocalStorage.getCustomers()
-                            .then(function(data) {
-                                $scope.selectOptions = [];
-                                angular.copy(data, $scope.selectOptions);
-                            });
+                        for (var i = 0; i < $scope.selectOptions.length; i++) {
+                            if ($scope.selectOptions[i].id == returnData.customer.id) {
+                                $scope.selectOptions[i] = returnData.customer;
+                                break;
+                            }
+                        }
                         // Update parent scope model
                         if (returnData.updateFormFlag) {
                             $scope.onCustomerUpdate();
@@ -140,11 +140,7 @@ angular
                     modalInstance.result.then(function(returnData) {
                         // Update customers dropdown
                         erpLocalStorage.addCustomer(returnData.customer);
-                        erpLocalStorage.getCustomers()
-                            .then(function(data) {
-                                $scope.selectOptions = [];
-                                angular.copy(data, $scope.selectOptions);
-                            });
+                        $scope.selectOptions.push(returnData.customer);
                         $scope.onCustomerCreated();
 
                         // Update parent scope model to the new customer
@@ -159,4 +155,4 @@ angular
                 };
             }]
         };
-    });
+    }]);
