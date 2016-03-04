@@ -58,6 +58,10 @@ return [
     // Hide `Pending Routes` list so the person can't assign requests to themselves
     'erpp_hide_estimate_pending_list' => [
         'enable' => false
+    ],
+    // Auto hide estimates has txn date greater than 14 days
+    'erpp_hide_expired_estimates' => [
+        'enable' => false
     ]
 ];
 ?>

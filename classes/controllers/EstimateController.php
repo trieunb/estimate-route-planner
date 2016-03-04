@@ -1,6 +1,8 @@
 <?php
 class EstimateController extends BaseController {
 
+    const DATE_EXP_EST = 14;
+
     /**
      * Listing all estimates
      */
@@ -35,6 +37,12 @@ class EstimateController extends BaseController {
                     ['e.sold_by_1' => $currentUserName],
                     ['e.sold_by_2' => $currentUserName]
                 ]);
+        }
+        if ($this->currentUserHasCap('erpp_hide_expired_estimates')) {
+            $searchQuery->whereGte(
+                'txn_date',
+                date('Y-m-d', strtotime('-' . self::DATE_EXP_EST . 'days'))
+            );
         }
 
         $countQuery = clone($searchQuery);
@@ -198,6 +206,7 @@ class EstimateController extends BaseController {
     public function show() {
         $id = $this->data['id'];
         $estimate = null;
+
         $query = ORM::forTable('estimates')
             ->tableAlias('e')
             ->select('e.*');
@@ -207,11 +216,17 @@ class EstimateController extends BaseController {
             $estimate = $query->whereAnyIs([
                     ['sold_by_1' => $currentUserName],
                     ['sold_by_2' => $currentUserName]
-                ])
-                ->findOne($id);
+                ]);
         } else {
-            $estimate = $query->findOne($id);
+            $estimate = $query;
         }
+        if ($this->currentUserHasCap('erpp_hide_expired_estimates')) {
+            $estimate = $query->whereGte(
+                'txn_date',
+                date('Y-m-d', strtotime('-' . self::DATE_EXP_EST . 'days'))
+            );
+        }
+        $estimate = $query->findOne($id);
         if ($estimate) {
             $estimate = $estimate->asArray();
             $estimate['lines'] = ORM::forTable('estimate_lines')
