@@ -26,11 +26,9 @@
                         <input type="text"
                             class="form-control"
                             uib-datepicker-popup="MM-dd-yyyy"
-                            ng-init="openDateRequestPicker = false"
-                            ng-focus="openDateRequestPicker = true"
+                            datepicker-auto-open
                             ng-model="referral.date_requested"
                             name="date_requested"
-                            is-open="openDateRequestPicker"
                             placeholder="mm-dd-yyyy"/>
                         <div class="help-block"
                             ng-messages="referralForm.date_requested.$error"
@@ -235,10 +233,8 @@
                            <input type="text" class="form-control"
                                 name="date_service"
                                 uib-datepicker-popup="MM-dd-yyyy"
-                                ng-init="openDateServicePicker = false"
-                                ng-focus="openDateServicePicker = true"
+                                datepicker-auto-open
                                 ng-model="referral.date_service"
-                                is-open="openDateServicePicker"
                                 placeholder="mm-dd-yyyy"/>
                             <div class="help-block"
                                 ng-messages="referralForm.date_service.$error"

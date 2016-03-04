@@ -44,10 +44,8 @@
                         <input class="form-control"
                             type="text"
                             uib-datepicker-popup="MM-dd-yyyy"
+                            datepicker-auto-open
                             ng-required="true"
-                            ng-init="openDatetxnPicker = false"
-                            ng-focus="openDatetxnPicker = true"
-                            is-open="openDatetxnPicker"
                             placeholder="yyyy-mm-dd"
                             name="txn_date"
                             ng-model="estimate.txn_date">
@@ -68,9 +66,7 @@
                             type="text"
                             name="expiration_date"
                             uib-datepicker-popup="MM-dd-yyyy"
-                            ng-init="openExpDatePicker = false"
-                            is-open="openExpDatePicker"
-                            ng-focus="openExpDatePicker = true"
+                            datepicker-auto-open
                             placeholder="yyyy-mm-dd"
                             ng-required="true"
                             ng-model="estimate.expiration_date">
@@ -512,10 +508,8 @@
                                 type="text"
                                 name="date_of_signature"
                                 uib-datepicker-popup="MM-dd-yyyy"
-                                ng-init="openDateSignaturePicker = false"
-                                is-open="openDateSignaturePicker"
+                                datepicker-auto-open
                                 ng-model="estimate.date_of_signature"
-                                ng-focus="openDateSignaturePicker = true"
                                 placeholder="mm-dd-yyyy">
                         </div>
                     </div>

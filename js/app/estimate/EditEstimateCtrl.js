@@ -154,6 +154,9 @@ function EditEstimateCtrl(
             if ($scope.estimate.expiration_date) {
                 $scope.estimate.expiration_date = new Date(estimate.expiration_date);
             }
+            if ($scope.estimate.date_of_signature) {
+                $scope.estimate.date_of_signature = new Date(estimate.date_of_signature);
+            }
             $scope.updateTotal();
 
             // Load customers
