@@ -777,3 +777,9 @@ div.queue-toolbar {
 .pagination {
     margin-top: 5px;
 }
+.selectize-control .selectize-input.disabled {
+    opacity: 0.8;
+}
+.selectize-control .selectize-input.disabled:after {
+    display: none;
+}

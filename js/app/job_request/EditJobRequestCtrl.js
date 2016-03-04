@@ -48,18 +48,20 @@ function EditJobRequestCtrl(
                     $scope.referral.date_service = new Date(response.date_service);
                 }
                 // Load customers list
-                erpLocalStorage.getCustomers()
-                    .then(function(data) {
-                        var customers = data;
-                        if ($scope.referral.customer_active == '0') {
-                            customers.push({
-                                id: $scope.referral.customer_id,
-                                display_name: $scope.referral.customer_display_name,
-                                order: customers.length
-                            });
-                        }
-                        angular.copy(customers, $scope.customers);
-                    });
+                if ($scope.hasCap('erpp_restrict_client_dropdown')) {
+                    var customers = [];
+                    customers.push($scope.referral.customer);
+                    angular.copy(customers, $scope.customers);
+                } else {
+                    erpLocalStorage.getCustomers()
+                        .then(function(data) {
+                            var customers = data;
+                            if ($scope.referral.customer.active == '0') {
+                                customers.push($scope.referral.customer);
+                            }
+                            angular.copy(customers, $scope.customers);
+                        });
+                }
 
                 // Load employees
                 erpLocalStorage.getEmployees()

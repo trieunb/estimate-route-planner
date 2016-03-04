@@ -208,13 +208,7 @@ class EstimateController extends BaseController {
         
         $query = ORM::forTable('estimates')
             ->tableAlias('e')
-            ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
-            ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
-            ->select('e.*')
-            ->select('c.display_name', 'customer_display_name')
-            ->select('c.active', 'customer_active')
-            ->select('jc.display_name', 'job_customer_display_name')
-            ->select('jc.active', 'job_customer_active');
+            ->select('e.*');
 
         if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
             $currentUserName = $this->getCurrentUserName();
@@ -240,7 +234,12 @@ class EstimateController extends BaseController {
                 ->where('estimate_id', $id)
                 ->where('is_customer_signature', 0)
                 ->findArray();
-            $this->renderJson($estimate);
+            $resData = $estimate;
+            $resData['customer'] = ORM::forTable('customers')
+                ->findOne($estimate['customer_id'])->asArray();
+            $resData['job_customer'] = ORM::forTable('customers')
+                ->findOne($estimate['job_customer_id'])->asArray();
+            $this->renderJson($resData);
         } else {
             $this->render404();
         }

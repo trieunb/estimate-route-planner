@@ -20,7 +20,8 @@ function active_plugin() {
     $exceptAdminCaps = [
         'erpp_view_sales_estimates',
         'erpp_estimator_only_routes',
-        'erpp_hide_estimate_pending_list'
+        'erpp_hide_estimate_pending_list',
+        'erpp_restrict_client_dropdown'
     ];
     $adminRoles = ['administrator', 'erppadmin', 'erpp_admin'];
 
