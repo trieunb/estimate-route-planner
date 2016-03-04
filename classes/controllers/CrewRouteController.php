@@ -40,7 +40,7 @@ class CrewRouteController extends BaseController {
                 ->join('customers', ['e.job_customer_id', '=', 'c.id'], 'c')
                 ->where('e.route_id', $routeId)
                 ->selectMany(
-                    'e.id', 'e.doc_number', 'e.status', 'e.txn_date',
+                    'e.id', 'e.doc_number', 'e.status', 'e.priority', 'e.txn_date',
                     'e.expiration_date', 'e.job_address', 'e.job_city',
                     'e.job_state', 'e.job_zip_code', 'e.total', 'e.job_lat',
                     'e.route_order', 'e.job_lng', 'e.status',

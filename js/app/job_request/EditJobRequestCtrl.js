@@ -12,6 +12,7 @@ angular
             '$filter',
             '$window',
             'erpGeoLocation',
+            'erpOptions',
             EditJobRequestCtrl
         ]
     );
@@ -25,31 +26,42 @@ function EditJobRequestCtrl(
     $routeParams,
     $filter,
     $window,
-    erpGeoLocation) {
+    erpGeoLocation,
+    erpOptions) {
+
     $scope.setPageTitle('Edit Job Request');
     $scope.companyInfo = {};
     $scope.customers = [];
     $scope.employees = [];
     $scope.classes = [];
+    $scope.jobPriorities = erpOptions.jobPriorities;
     angular.copy(sharedData.companyInfo, $scope.companyInfo);
 
     var init = function() {
         jobRequestFactory.show($routeParams.id)
             .success(function(response) {
                 $scope.referral = response;
+                if ($scope.referral.date_requested) {
+                    $scope.referral.date_requested = new Date(response.date_requested);
+                }
+                if ($scope.referral.date_service) {
+                    $scope.referral.date_service = new Date(response.date_service);
+                }
                 // Load customers list
-                erpLocalStorage.getCustomers()
-                    .then(function(data) {
-                        var customers = data;
-                        if ($scope.referral.customer_active == '0') {
-                            customers.push({
-                                id: $scope.referral.customer_id,
-                                display_name: $scope.referral.customer_display_name,
-                                order: customers.length
-                            });
-                        }
-                        angular.copy(customers, $scope.customers);
-                    });
+                if ($scope.hasCap('erpp_restrict_client_dropdown')) {
+                    var customers = [];
+                    customers.push($scope.referral.customer);
+                    angular.copy(customers, $scope.customers);
+                } else {
+                    erpLocalStorage.getCustomers()
+                        .then(function(data) {
+                            var customers = data;
+                            if ($scope.referral.customer.active == '0') {
+                                customers.push($scope.referral.customer);
+                            }
+                            angular.copy(customers, $scope.customers);
+                        });
+                }
 
                 // Load employees
                 erpLocalStorage.getEmployees()

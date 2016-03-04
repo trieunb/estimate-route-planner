@@ -1,3 +1,9 @@
+## 1.8.1
+  - Add more capabilities: `erpp_hide_expired_estimates` and `erpp_restrict_client_dropdown`
+  - Change date format to mm-dd-yyyy
+  - Estimate print previewing
+  - Add `Priority` to job requests and estimate
+
 ## 1.8.0
   - Enable resizing for textareas of line descriptions.
   - Fix phone fields validation

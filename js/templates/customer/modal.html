@@ -95,6 +95,7 @@
                         <div class="col-md-12">
                             <label for="email">Is sub-customer of</label>
                             <customers-select
+                                ng-disabled="::hasCap('erpp_restrict_client_dropdown')"
                                 options="customers"
                                 ng-model="customer.parent_id"
                                 on-customer-change="onParentChange()"

@@ -47,7 +47,7 @@
         <tbody>
             <tr ng-repeat="est in estimates">
                 <td>
-                  <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.txn_date}}</span></a>
+                  <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.txn_date | date: 'MM-dd-yyyy'}}</span></a>
                   <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.txn_date}}</span>
                 </td>
                 <td class="address-cell" ng-class="{'danger': est.geolocation.is_checked && !est.geolocation.ok }">
@@ -66,7 +66,7 @@
                 </td>
                 <td><span>{{::est.source_name}}</span></td>
 
-                <td><span>{{::est.expiration_date}}</span></td>
+                <td><span>{{::est.expiration_date | date: 'MM-dd-yyyy'}}</span></td>
 
                 <td ng-if="::hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
 
@@ -97,7 +97,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4>Send estimate</h4>
+                    <h4>Send estimate #{{ sendMailData.doc_number }}</h4>
                 </div>
                 <form role="form" name="sendEmailForm">
                     <div class="modal-body">
@@ -123,9 +123,34 @@
                     </div>
                     <div class="modal-footer">
                       <button class="btn btn-primary" ng-click="sendMailEstimate()" ng-disabled="sendEmailForm.$invalid || $root.isBusy">Send</button>
-                      <button class="btn" type="button" ng-click="showModal = false">Cancel</button>
+                      <button class="btn btn-default" type="button" ng-click="previewPdfEstimate(sendMailData)">Print Preview
+                      </button>
+                      <button class="btn" type="button" ng-click="showModal = false">Cancel
+                      </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    <!-- show model preview pdf estimate -->
+    <div class="modal fade" ng-class="{'in': showModalPdf}" ng-style="{'display': showModalPdf ? 'block' : 'none'}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                  Print Preview
+                  <button type="button" class="close btn-close" aria-label="Close"
+                    ng-click="showModalPdf = false"><span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <object type="application/pdf"
+                    data="{{::$root.baseAPIPath}}&_do=previewPdfEstimate&id={{sendMailData.id}}" width="100%" height="420">
+                  </object>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn" type="button" ng-click="showModalPdf = false">Close
+                  </button>
+                </div>
             </div>
         </div>
     </div>

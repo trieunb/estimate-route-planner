@@ -25,13 +25,11 @@
                     <div class="col-sm-8">
                         <input type="text"
                             class="form-control"
-                            uib-datepicker-popup
-                            ng-init="openDateRequestPicker = false"
-                            ng-focus="openDateRequestPicker = true"
+                            uib-datepicker-popup="MM-dd-yyyy"
+                            datepicker-auto-open
                             ng-model="referral.date_requested"
                             name="date_requested"
-                            is-open="openDateRequestPicker"
-                            placeholder="yyyy-mm-dd"/>
+                            placeholder="mm-dd-yyyy"/>
                         <div class="help-block"
                             ng-messages="referralForm.date_requested.$error"
                             ng-if="referralForm.date_requested.$touched && referralForm.date_requested.$invalid">
@@ -52,6 +50,16 @@
                         </select>
                     </div>
                 </div>
+                 <div class="form-group">
+                    <label class="control-label col-sm-4" for="priority">Priority</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" name="priority"
+                            ng-model="referral.priority"
+                            ng-options="priority.value as priority.label for priority in ::jobPriorities"
+                            ng-init="referral.priority = 'Normal'">
+                        </select>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="control-label col-sm-4" for="status">Estimator</label>
                     <div class="col-sm-8">
@@ -68,6 +76,7 @@
                         <label class="control-label col-sm-3 required" for="name">Name<span>(*)</span></label>
                         <div class="col-sm-8">
                             <customers-select
+                                ng-disabled="::hasCap('erpp_restrict_client_dropdown')"
                                 options="customers"
                                 ng-model="referral.customer_id"
                                 on-customer-change="onCustomerChange()"
@@ -224,12 +233,10 @@
                         <div class="col-sm-3">
                            <input type="text" class="form-control"
                                 name="date_service"
-                                uib-datepicker-popup
-                                ng-init="openDateServicePicker = false"
-                                ng-focus="openDateServicePicker = true"
+                                uib-datepicker-popup="MM-dd-yyyy"
+                                datepicker-auto-open
                                 ng-model="referral.date_service"
-                                is-open="openDateServicePicker"
-                                placeholder="yyyy-mm-dd"/>
+                                placeholder="mm-dd-yyyy"/>
                             <div class="help-block"
                                 ng-messages="referralForm.date_service.$error"
                                 ng-if="referralForm.date_service.$touched && referralForm.date_service.$invalid">

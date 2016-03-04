@@ -181,12 +181,18 @@ function ListEstimateCtrl(
 
     $scope.openSendMailModal = function(estimate) {
         $scope.showModal = true;
+        $scope.sendMailData.doc_number = estimate.doc_number;
         $scope.sendMailData.id = estimate.id;
         $scope.sendMailData.to = estimate.email;
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
         $scope.sendMailData.body = '';
         $scope.sendEmailForm.$setPristine();
     };
+
+    $scope.previewPdfEstimate = function(estimate) {
+        $scope.showModalPdf = true;
+        $scope.sendMailData.id = estimate.id;
+    }
 
     $scope.sendMailEstimate = function() {
         $scope.showModal = false;

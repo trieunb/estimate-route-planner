@@ -52,6 +52,7 @@ class EstimateModel extends BaseModel {
         'bill_country',
         'bill_company_name',
         'status',
+        'priority',
         'last_updated_at',
         'created_at',
         'total'

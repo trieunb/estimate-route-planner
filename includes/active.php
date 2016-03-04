@@ -11,16 +11,19 @@ function active_plugin() {
     global $wpdb;
     $sql = file_get_contents(ERP_PLUGIN_DIR . '/db/install.sql');
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
+    // dbDelta($sql);
 
     /* Add all plugin capabilities to all roles */
     global $wp_roles;
     $pluginCaps = erp_get_capabilities();
     // Skip these caps for admin role
+    // TODO: should use 'admin' flag as convention
     $exceptAdminCaps = [
         'erpp_view_sales_estimates',
         'erpp_estimator_only_routes',
-        'erpp_hide_estimate_pending_list'
+        'erpp_hide_estimate_pending_list',
+        'erpp_restrict_client_dropdown',
+        'erpp_hide_expired_estimates'
     ];
     $adminRoles = ['administrator', 'erppadmin', 'erpp_admin'];
 
@@ -41,7 +44,7 @@ function deactive_plugin() {
     /* Remove tables from DB */
     global $wpdb;
     $sql = file_get_contents(ERP_PLUGIN_DIR . '/db/uninstall.sql');
-    $wpdb->query($sql);
+    // $wpdb->query($sql);
 
     /* Remove all role capabitities */
     global $wp_roles;

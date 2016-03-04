@@ -39,7 +39,6 @@ function AddEstimateCtrl(
 
     $scope.setPageTitle('New estimate');
     $scope.customers = [];
-    $scope.jobCustomers = [];
     $scope.employees = [];
     $scope.estimate = {};
     $scope.estimate.lines = []; // Initial by 1 empty line
@@ -54,10 +53,10 @@ function AddEstimateCtrl(
     $scope.estimate.sold_by_1 = sharedData.currentUserName;
     $scope.isShowModalSignature = false;
     $scope.estimateStatuses = erpOptions.estimateStatuses;
+    $scope.jobPriorities = erpOptions.jobPriorities;
 
-    $scope.estimate.txn_date = $filter('date')(new Date(), "yyyy-MM-dd");
-    $scope.estimate.expiration_date =
-        $filter('date')((new Date()).getTime() + (30 * 86400000), "yyyy-MM-dd");
+    $scope.estimate.txn_date = new Date();
+    $scope.estimate.expiration_date = new Date( (new Date()).getTime() + (30 * 86400000));
 
     erpLocalStorage.getProductServices()
         .then(function(data) {
@@ -86,9 +85,7 @@ function AddEstimateCtrl(
     erpLocalStorage.getCustomers()
         .then(function(data) {
             $scope.customers = [];
-            $scope.jobCustomers = [];
             angular.copy(data, $scope.customers);
-            angular.copy(data, $scope.jobCustomers);
         });
 
     // Load employees
@@ -109,27 +106,10 @@ function AddEstimateCtrl(
         return $scope.estimate.customer_id == $scope.estimate.job_customer_id;
     };
 
-    /**
-     * When a new customer has been created by bill customers dropdown
-     */
-    $scope.onBillCustomerCreated = function() {
-        // Update job customers dropdown
-        erpLocalStorage.getCustomers()
-            .then(function(data) {
-                $scope.jobCustomers = [];
-                angular.copy(data, $scope.jobCustomers);
-            });
-    };
-
     // When the current customer's profile has been updated in the modal
     // And 'Update Form' is checked
     $scope.onBillCustomerUpdate = function() {
         resetBillCustomer();
-        erpLocalStorage.getCustomers()
-            .then(function(data) {
-                $scope.jobCustomers = [];
-                angular.copy(data, $scope.jobCustomers);
-            });
         if (isTheSameCustomer()) {
             resetJobCustomer();
         }
@@ -140,25 +120,8 @@ function AddEstimateCtrl(
         resetBillCustomer();
     };
 
-    /**
-     * When a new customer has been created by job customers dropdown
-     */
-    $scope.onJobCustomerCreated = function() {
-        // Update billing customers dropdown
-        erpLocalStorage.getCustomers()
-            .then(function(data) {
-                $scope.customers = [];
-                angular.copy(data, $scope.customers);
-            });
-    };
-
     $scope.onJobCustomerUpdate = function() {
         resetJobCustomer();
-        erpLocalStorage.getCustomers()
-            .then(function(data) {
-                $scope.customers = [];
-                angular.copy(data, $scope.customers);
-            });
         if (isTheSameCustomer()) {
             resetBillCustomer();
         }
@@ -170,44 +133,38 @@ function AddEstimateCtrl(
 
     var resetBillCustomer = function() {
         if ('undefined' !== typeof($scope.estimate.customer_id)) {
-            erpLocalStorage.getCustomers()
-                .then(function(customers) {
-                    for (var i = 0; i < customers.length; i++) {
-                        if (customers[i].id == $scope.estimate.customer_id) {
-                            var cus = customers[i];
-                            $scope.estimate.bill_address = cus.bill_address;
-                            $scope.estimate.bill_city = cus.bill_city;
-                            $scope.estimate.bill_state = cus.bill_state;
-                            $scope.estimate.bill_zip_code = cus.bill_zip_code;
-                            $scope.estimate.bill_country = cus.bill_country;
-                            $scope.estimate.primary_phone_number = cus.primary_phone_number;
-                            $scope.estimate.mobile_phone_number = cus.mobile_phone_number;
-                            $scope.estimate.email = cus.email;
-                            $scope.estimate.bill_company_name = cus.company_name;
-                            break;
-                        }
-                    }
-                });
+            for (var i = 0; i < $scope.customers.length; i++) {
+                var cus = $scope.customers[i];
+                if (cus.id == $scope.estimate.customer_id) {
+                    $scope.estimate.bill_address = cus.bill_address;
+                    $scope.estimate.bill_city = cus.bill_city;
+                    $scope.estimate.bill_state = cus.bill_state;
+                    $scope.estimate.bill_zip_code = cus.bill_zip_code;
+                    $scope.estimate.bill_country = cus.bill_country;
+                    $scope.estimate.primary_phone_number = cus.primary_phone_number;
+                    $scope.estimate.mobile_phone_number = cus.mobile_phone_number;
+                    $scope.estimate.email = cus.email;
+                    $scope.estimate.bill_company_name = cus.company_name;
+                    break;
+                }
+            }
         }
     };
 
     var resetJobCustomer = function() {
         if ('undefined' !== typeof($scope.estimate.job_customer_id)) {
-            erpLocalStorage.getCustomers()
-                .then(function(customers) {
-                    for (var i = 0; i < customers.length; i++) {
-                        if (customers[i].id == $scope.estimate.job_customer_id) {
-                            var cus = customers[i];
-                            $scope.estimate.job_address = cus.ship_address;
-                            $scope.estimate.job_city = cus.ship_city;
-                            $scope.estimate.job_state = cus.ship_state;
-                            $scope.estimate.job_zip_code = cus.ship_zip_code;
-                            $scope.estimate.job_country = cus.ship_country;
-                            $scope.estimate.job_company_name = cus.company_name;
-                            break;
-                        }
-                    }
-                });
+            for (var i = 0; i < $scope.customers.length; i++) {
+                var cus = $scope.customers[i];
+                if (cus.id == $scope.estimate.job_customer_id) {
+                    $scope.estimate.job_address = cus.ship_address;
+                    $scope.estimate.job_city = cus.ship_city;
+                    $scope.estimate.job_state = cus.ship_state;
+                    $scope.estimate.job_zip_code = cus.ship_zip_code;
+                    $scope.estimate.job_country = cus.ship_country;
+                    $scope.estimate.job_company_name = cus.company_name;
+                    break;
+                }
+            }
         }
     };
 
@@ -298,7 +255,7 @@ function AddEstimateCtrl(
         return $scope.estimate.lines.length === 0;
     };
 
-    $scope.submitForm = function() {
+    $scope.submitForm = function(print) {
         if (isEmptyLines()) {
             toastr.error('You must fill out at least one split line.');
         } else {
@@ -327,6 +284,9 @@ function AddEstimateCtrl(
                                 if (response.success) {
                                     toastr.success(response.message);
                                     $location.path('/edit-estimate/' + response.data.id);
+                                    if (print) {
+                                        window.open(ERPApp.baseAPIPath + '&_do=printEstimate&id=' + response.data.id, '_blank');
+                                    }
                                 } else {
                                     var msg = response.message || 'An error occurred while saving estimate';
                                     toastr.error(msg);
@@ -369,6 +329,7 @@ function AddEstimateCtrl(
                     // Set to customer billing address
                     resetBillCustomer();
                     $timeout(function() {
+                        $scope.estimate.priority = jobRequestData.priority;
                         $scope.estimate.job_address = jobRequestData.address;
                         $scope.estimate.job_city = jobRequestData.city;
                         $scope.estimate.job_state = jobRequestData.state;

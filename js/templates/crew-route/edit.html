@@ -28,10 +28,12 @@
                             <br>
                             {{:: estimate | estimateJobFullAddress }}
                             <br>
+                            Priority: {{estimate.priority}}
+                            <br>
                             <div ng-hide="viewOptions.compact">
                                 Phone: {{::estimate.primary_phone_number}}<br>
-                                Date: {{::estimate.txn_date}}<br>
-                                Status: {{estimate.status}}<br>
+                                Date: {{::estimate.txn_date | date:'MM-dd-yyyy'}}<br>
+                                Status: {{estimate.status}}
                             </div>
                             Total: ${{::estimate.total}}<br>
                         </div>
@@ -72,10 +74,12 @@
                             <br>
                             {{:: estimate | estimateJobFullAddress }}
                             <br>
+                            Priority: {{estimate.priority}}
+                            <br>
                             <div ng-hide="viewOptions.compact">
                                 Phone: {{::estimate.primary_phone_number}}<br>
-                                Date: {{::estimate.txn_date}}<br>
-                                Status: {{estimate.status}}<br>
+                                Date: {{::estimate.txn_date | date:'MM-dd-yyyy'}}<br>
+                                Status: {{estimate.status}}
                             </div>
                             Total: ${{::estimate.total}}<br>
                         </div>
@@ -124,11 +128,13 @@
                                 <br>
                                 {{:: estimate | estimateJobFullAddress }}
                                 <br>
+                                Priority: {{estimate.priority}}
+                                <br>
                                 Total: ${{::estimate.total}}
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     Phone: {{::estimate.primary_phone_number}}<br>
-                                    Date: {{::estimate.txn_date}}<br>
+                                    Date: {{::estimate.txn_date | date:'MM-dd-yyyy'}}<br>
                                     Status: {{estimate.status}}
                                 </span>
                             </p>
@@ -147,11 +153,13 @@
                                 <br>
                                 {{:: estimate | estimateJobFullAddress }}
                                 <br>
+                                Priority: {{estimate.priority}}
+                                <br>
                                 Total: ${{::estimate.total}}
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     Phone: {{::estimate.primary_phone_number}}<br>
-                                    Date: {{::estimate.txn_date}}<br>
+                                    Date: {{::estimate.txn_date | date:'MM-dd-yyyy'}}<br>
                                     Status: {{estimate.status}}
                                 </span>
                             </p>
@@ -177,17 +185,19 @@
                     <th>Number</th>
                     <th ng-if="::hasCap('erpp_view_estimate_total')">Total</th>
                     <th>Status</th>
+                    <th>Priority</th>
                     <th ng-if="::hasCap('erpp_edit_estimates')">
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr ng-repeat="est in currentAssignedEstimates">
-                    <td><span>{{::est.txn_date}}</span></td>
+                    <td><span>{{::est.txn_date | date:'MM-dd-yyyy'}}</span></td>
                     <td><span>{{::est.job_customer_display_name}}</span></td>
                     <td><span>{{::est.doc_number}}</span></td>
                     <td ng-if="::hasCap('erpp_view_estimate_total')"><span>${{::est.total}}</span></td>
                     <td><span>{{::est.status}}</span></td>
+                    <td><span>{{::est.priority}}</span></td>
                     <td ng-if="::hasCap('erpp_edit_estimates')">
                         <a href="#/edit-estimate/{{est.id}}">Edit</a>
                     </td>

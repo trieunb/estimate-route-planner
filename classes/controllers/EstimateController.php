@@ -1,6 +1,8 @@
 <?php
 class EstimateController extends BaseController {
 
+    const DATE_EXP_EST = 14;
+
     /**
      * Listing all estimates
      */
@@ -36,6 +38,12 @@ class EstimateController extends BaseController {
                     ['e.sold_by_2' => $currentUserName]
                 ]);
         }
+        if ($this->currentUserHasCap('erpp_hide_expired_estimates')) {
+            $searchQuery->whereGte(
+                'txn_date',
+                date('Y-m-d', strtotime('-' . self::DATE_EXP_EST . 'days'))
+            );
+        }
 
         $countQuery = clone($searchQuery);
         $estimates = $searchQuery
@@ -69,7 +77,7 @@ class EstimateController extends BaseController {
                 'e.id', 'e.expiration_date', 'e.txn_date', 'e.doc_number',
                 'e.job_address', 'e.job_city', 'e.primary_phone_number',
                 'e.job_country', 'e.job_state', 'e.job_zip_code',
-                'e.total', 'e.job_lat', 'e.job_lng', 'e.status'
+                'e.total', 'e.job_lat', 'e.job_lng', 'e.status', 'e.priority'
             )
             ->select('c.display_name', 'job_customer_display_name')
             ->orderByDesc('e.id')
@@ -198,26 +206,27 @@ class EstimateController extends BaseController {
     public function show() {
         $id = $this->data['id'];
         $estimate = null;
+
         $query = ORM::forTable('estimates')
             ->tableAlias('e')
-            ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
-            ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
-            ->select('e.*')
-            ->select('c.display_name', 'customer_display_name')
-            ->select('c.active', 'customer_active')
-            ->select('jc.display_name', 'job_customer_display_name')
-            ->select('jc.active', 'job_customer_active');
+            ->select('e.*');
 
         if ($this->currentUserHasCap('erpp_view_sales_estimates')) {
             $currentUserName = $this->getCurrentUserName();
             $estimate = $query->whereAnyIs([
                     ['sold_by_1' => $currentUserName],
                     ['sold_by_2' => $currentUserName]
-                ])
-                ->findOne($id);
+                ]);
         } else {
-            $estimate = $query->findOne($id);
+            $estimate = $query;
         }
+        if ($this->currentUserHasCap('erpp_hide_expired_estimates')) {
+            $estimate = $query->whereGte(
+                'txn_date',
+                date('Y-m-d', strtotime('-' . self::DATE_EXP_EST . 'days'))
+            );
+        }
+        $estimate = $query->findOne($id);
         if ($estimate) {
             $estimate = $estimate->asArray();
             $estimate['lines'] = ORM::forTable('estimate_lines')
@@ -227,7 +236,12 @@ class EstimateController extends BaseController {
                 ->where('estimate_id', $id)
                 ->where('is_customer_signature', 0)
                 ->findArray();
-            $this->renderJson($estimate);
+            $resData = $estimate;
+            $resData['customer'] = ORM::forTable('customers')
+                ->findOne($estimate['customer_id'])->asArray();
+            $resData['job_customer'] = ORM::forTable('customers')
+                ->findOne($estimate['job_customer_id'])->asArray();
+            $this->renderJson($resData);
         } else {
             $this->render404();
         }
@@ -416,18 +430,7 @@ class EstimateController extends BaseController {
         $estimateId = $_REQUEST['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
         if ($estimate) {
-            $lines = ORM::forTable('estimate_lines')
-                    ->tableAlias('el')
-                    ->leftOuterJoin(
-                        'products_and_services',
-                        ['el.product_service_id', '=', 'ps.id'],
-                        'ps'
-                    )
-                    ->where('el.estimate_id', $estimateId)
-                    ->select('el.*')
-                    ->select('ps.name', 'product_service_name')
-                    ->orderByAsc('el.line_num')
-                    ->findArray();
+            $lines = $this->getEstimateLines($estimateId);
             require ERP_TEMPLATES_DIR . '/print/estimate.php';
         } else {
             $this->render404();
@@ -439,18 +442,7 @@ class EstimateController extends BaseController {
         $estimateId = $this->data['id'];
         $estimate = $this->getEstimateDataForPrint($estimateId);
         if ($estimate) {
-            $lines = ORM::forTable('estimate_lines')
-                    ->tableAlias('el')
-                    ->leftOuterJoin(
-                        'products_and_services',
-                        ['el.product_service_id', '=', 'ps.id'],
-                        'ps'
-                    )
-                    ->where('el.estimate_id', $estimateId)
-                    ->select('el.*')
-                    ->select('ps.name', 'product_service_name')
-                    ->orderByAsc('el.line_num')
-                    ->findArray();
+            $lines = $this->getEstimateLines($estimateId);
             ob_start();
             require ERP_TEMPLATES_DIR . '/print/estimate.php';
             $html = ob_get_clean();
@@ -517,6 +509,40 @@ class EstimateController extends BaseController {
         } else {
             $this->render404();
         }
+    }
+
+    public function previewPdf() {
+        $companyInfo = ORM::forTable('company_info')->findOne();
+        $estimateId = $_REQUEST['id'];
+        $estimate = $this->getEstimateDataForPrint($estimateId);
+        if ($estimate) {
+            $lines = $this->getEstimateLines($estimateId);
+            ob_start();
+            require ERP_TEMPLATES_DIR . '/print/estimate.php';
+            $html = ob_get_clean();
+            $dompdf = new DOMPDF();
+            $dompdf->load_html($html);
+            $dompdf->set_paper('legal');
+            $dompdf->set_base_path(ERP_ROOT_DIR); // For load local images
+            $dompdf->render();
+            $dompdf->stream('estimate-'. $estimate['doc_number'] .'.pdf', ['Attachment' => 0]);
+        } else {
+            $this->render404();
+        }
+    }
+
+    private function getEstimateLines($estimateId) {
+        return ORM::forTable('estimate_lines')
+                ->tableAlias('el')
+                ->leftOuterJoin(
+                    'products_and_services',
+                    ['el.product_service_id', '=', 'ps.id'],
+                    'ps')
+                ->where('el.estimate_id', $estimateId)
+                ->select('el.*')
+                ->select('ps.name', 'product_service_name')
+                ->orderByAsc('el.line_num')
+                ->findArray();
     }
 
     private function getEstimateDataForPrint($id) {
