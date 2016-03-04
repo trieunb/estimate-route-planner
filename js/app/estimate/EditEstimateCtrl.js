@@ -160,27 +160,27 @@ function EditEstimateCtrl(
             $scope.updateTotal();
 
             // Load customers
-            erpLocalStorage.getCustomers()
-                .then(function(data) {
-                    $scope.customers = [];
-                    $scope.jobCustomers = [];
-                    angular.copy(data, $scope.customers);
-                    if ($scope.estimate.customer_active === '0') {
-                        $scope.customers.push({
-                            id: $scope.estimate.customer_id,
-                            display_name: $scope.estimate.customer_display_name,
-                            order: $scope.customers.length
-                        });
-                    }
-                    angular.copy(data, $scope.jobCustomers);
-                    if ($scope.estimate.job_customer_active === '0') {
-                        $scope.jobCustomers.push({
-                            id: $scope.estimate.job_customer_id,
-                            display_name: $scope.estimate.job_customer_display_name,
-                            order: $scope.jobCustomers.length
-                        });
-                    }
-                });
+            if ($scope.hasCap('erpp_restrict_client_dropdown')) {
+                $scope.customers = [];
+                $scope.jobCustomers = [];
+                $scope.customers.push(estimate.customer);
+                $scope.jobCustomers.push(estimate.job_customer);
+            } else {
+                erpLocalStorage.getCustomers()
+                    .then(function(data) {
+                        $scope.customers = [];
+                        $scope.jobCustomers = [];
+                        angular.copy(data, $scope.customers);
+                        if ($scope.estimate.customer.active === '0') {
+                            $scope.customers.push($scope.estimate.customer);
+                        }
+                        angular.copy(data, $scope.jobCustomers);
+                        if ($scope.estimate.job_customer.active === '0') {
+                            $scope.jobCustomers.push($scope.estimate.job_customer);
+                        }
+                    });
+            }
+
         });
 
     $scope.dropzoneConfig = {

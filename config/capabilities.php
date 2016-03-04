@@ -31,7 +31,6 @@ return [
     'erpp_print_estimates'          => [],
     'erpp_send_estimates'           => [],
 
-
     // Crew route
     'erpp_create_crew_routes'       => [],
     'erpp_edit_crew_routes'         => [],
@@ -42,9 +41,13 @@ return [
     'erpp_settings'                 => [
         'admin_only' => true
     ],
-
+    // Restrict to see customers dropdown
+    'erpp_restrict_client_dropdown' => [
+        'enable' => false
+    ],
     // Other non-resources caps
 
+    // Restrict to see only estimates which assigned to user
     'erpp_view_sales_estimates'     => [
         'enable' => false
     ],

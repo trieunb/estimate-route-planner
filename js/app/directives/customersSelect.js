@@ -7,7 +7,7 @@
  */
 angular
     .module('Erp')
-    .directive('customersSelect', function() {
+    .directive('customersSelect',['APP_CONFIG', function(APP_CONFIG) {
         return {
             restrict: 'E',
             scope: {
@@ -20,11 +20,10 @@ angular
                 onCustomerChange: '&', // User select another customer
                 onCustomerCreated: '&' // User created new customer
             },
-            template: '<selectize ng-model="ngModel" ng-change="onCustomerChangeEvent()" config="selectConfig" options="selectOptions"></selectize> <small ng-if="addingEnabled"><a href="#" ng-click="$event.preventDefault(); onAddCustomer()"><span class="glyphicon glyphicon-plus"></span> New customer</a></small> <small ng-if="editingEnabled && ngModel"><span>|</span> <a href="#" ng-click="$event.preventDefault(); onEditCustomer()"><span class="glyphicon glyphicon-info-sign"></span> Customer details</a></small>',
+            templateUrl: APP_CONFIG.templatesPath + 'customer/select-box.html',
             controller: [
-                '$scope', '$attrs', '$uibModal', 'APP_CONFIG', 'erpLocalStorage', '$timeout',
-                function($scope, $attrs, $uibModal, APP_CONFIG, erpLocalStorage, $timeout) {
-
+                '$scope', '$attrs', '$uibModal', 'APP_CONFIG', 'erpLocalStorage', '$timeout', 'customerFactory',
+                function($scope, $attrs, $uibModal, APP_CONFIG, erpLocalStorage, $timeout, customerFactory) {
                 $scope.addingEnabled = $scope.editingEnabled = false;
 
                 $scope.onCustomerChangeEvent = function() {
@@ -159,4 +158,4 @@ angular
                 };
             }]
         };
-    });
+    }]);

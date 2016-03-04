@@ -14,16 +14,23 @@ angular
             $scope.customer = {};
             $scope.customers = [];
 
-            erpLocalStorage.getCustomers()
-                .then(function(data) {
-                    $scope.customers = [];
-                    angular.copy(data, $scope.customers);
-                });
+            if (!$scope.hasCap('erpp_restrict_client_dropdown')) {
+                erpLocalStorage.getCustomers()
+                    .then(function(data) {
+                        $scope.customers = [];
+                        angular.copy(data, $scope.customers);
+                    });
+            }
+
             // Deteach to set first and last name by given entered full name
             var customerId = customerData.id;
-            if ('undefined' !== typeof(customerId)) {
+            if ('undefined' !== typeof(customerId)) { // Edit mode
                 customerFactory.show(customerId)
                     .success(function(customerInfo) {
+                        if ($scope.hasCap('erpp_restrict_client_dropdown') && customerInfo.parent_id) {
+                            // Only parent customer available
+                            $scope.customers.push(customerInfo.parent);
+                        }
                         $scope.customer = customerInfo;
                     });
             } else {
@@ -65,6 +72,7 @@ angular
             };
 
             $scope.onParentChange = function() {
+                console.log("parent change");
                 if ($scope.customer.parent_id !== undefined) {
                     for (var i = 0; i < $scope.customers.length; i++) {
                         if ($scope.customers[i].id == $scope.customer.parent_id) {
