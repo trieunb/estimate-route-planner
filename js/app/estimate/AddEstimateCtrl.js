@@ -39,7 +39,6 @@ function AddEstimateCtrl(
 
     $scope.setPageTitle('New estimate');
     $scope.customers = [];
-    $scope.jobCustomers = [];
     $scope.employees = [];
     $scope.estimate = {};
     $scope.estimate.lines = []; // Initial by 1 empty line
@@ -86,9 +85,7 @@ function AddEstimateCtrl(
     erpLocalStorage.getCustomers()
         .then(function(data) {
             $scope.customers = [];
-            $scope.jobCustomers = [];
             angular.copy(data, $scope.customers);
-            angular.copy(data, $scope.jobCustomers);
         });
 
     // Load employees
@@ -156,8 +153,8 @@ function AddEstimateCtrl(
 
     var resetJobCustomer = function() {
         if ('undefined' !== typeof($scope.estimate.job_customer_id)) {
-            for (var i = 0; i < $scope.jobCustomers.length; i++) {
-                var cus = $scope.jobCustomers[i];
+            for (var i = 0; i < $scope.customers.length; i++) {
+                var cus = $scope.customers[i];
                 if (cus.id == $scope.estimate.job_customer_id) {
                     $scope.estimate.job_address = cus.ship_address;
                     $scope.estimate.job_city = cus.ship_city;

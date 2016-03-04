@@ -39,7 +39,6 @@ function EditEstimateCtrl(
 
     $scope.setPageTitle('Estimate');
     $scope.customers = [];
-    $scope.jobCustomers = [];
     $scope.employees = [];
     $scope.estimate = {};
     $scope.uploadProgress = 0;
@@ -162,25 +161,21 @@ function EditEstimateCtrl(
             // Load customers
             if ($scope.hasCap('erpp_restrict_client_dropdown')) {
                 $scope.customers = [];
-                $scope.jobCustomers = [];
                 var visibleCustomers = [estimate.customer];
                 if (estimate.customer.id != estimate.job_customer.id) {
                     visibleCustomers.push(estimate.job_customer);
                 }
                 angular.copy(visibleCustomers, $scope.customers);
-                angular.copy(visibleCustomers, $scope.jobCustomers);
             } else {
                 erpLocalStorage.getCustomers()
                     .then(function(data) {
                         $scope.customers = [];
-                        $scope.jobCustomers = [];
                         angular.copy(data, $scope.customers);
                         if ($scope.estimate.customer.active === '0') {
                             $scope.customers.push($scope.estimate.customer);
                         }
-                        angular.copy(data, $scope.jobCustomers);
                         if ($scope.estimate.job_customer.active === '0') {
-                            $scope.jobCustomers.push($scope.estimate.job_customer);
+                            $scope.customers.push($scope.estimate.job_customer);
                         }
                     });
             }
@@ -323,21 +318,11 @@ function EditEstimateCtrl(
         resetBillCustomer();
     };
 
-    $scope.onBillCustomerCreated = function() {
-        console.log('onBillCustomerCreated');
-        angular.copy($scope.customers, $scope.jobCustomers);
-    };
-
     $scope.onJobCustomerUpdate = function() {
         resetJobCustomer();
         if (isTheSameCustomer()) {
             resetBillCustomer();
         }
-    };
-
-    $scope.onJobCustomerCreated = function() {
-        console.log('onJobCustomerCreated');
-        angular.copy($scope.jobCustomers, $scope.customers);
     };
 
     $scope.onJobCustomerChange = function() {
@@ -366,8 +351,8 @@ function EditEstimateCtrl(
 
     var resetJobCustomer = function() {
         if ('undefined' !== typeof($scope.estimate.job_customer_id)) {
-            for (var i = 0; i < $scope.jobCustomers.length; i++) {
-                var cus = $scope.jobCustomers[i];
+            for (var i = 0; i < $scope.customers.length; i++) {
+                var cus = $scope.customers[i];
                 if (cus.id == $scope.estimate.job_customer_id) {
                     $scope.estimate.job_address = cus.ship_address;
                     $scope.estimate.job_city = cus.ship_city;
