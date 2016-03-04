@@ -7,7 +7,7 @@
  */
 angular
     .module('Erp')
-    .directive('customersSelect',['APP_CONFIG', function(APP_CONFIG) {
+    .directive('customersSelect', ['APP_CONFIG', function(APP_CONFIG) {
         return {
             restrict: 'E',
             scope: {
@@ -109,11 +109,12 @@ angular
                     modalInstance.result.then(function(returnData) {
                         // Update customers dropdown
                         erpLocalStorage.updateCustomer(returnData.customer);
-                        erpLocalStorage.getCustomers()
-                            .then(function(data) {
-                                $scope.selectOptions = [];
-                                angular.copy(data, $scope.selectOptions);
-                            });
+                        for (var i = 0; i < $scope.selectOptions.length; i++) {
+                            var customer = $scope.selectOptions[i];
+                            if (customer.id == returnData.customer.id) {
+                                $scope.selectOptions[i] = returnData.customer;
+                            }
+                        }
                         // Update parent scope model
                         if (returnData.updateFormFlag) {
                             $scope.onCustomerUpdate();
@@ -139,11 +140,7 @@ angular
                     modalInstance.result.then(function(returnData) {
                         // Update customers dropdown
                         erpLocalStorage.addCustomer(returnData.customer);
-                        erpLocalStorage.getCustomers()
-                            .then(function(data) {
-                                $scope.selectOptions = [];
-                                angular.copy(data, $scope.selectOptions);
-                            });
+                        $scope.selectOptions.push(returnData.customer);
                         $scope.onCustomerCreated();
 
                         // Update parent scope model to the new customer

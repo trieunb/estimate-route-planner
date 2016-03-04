@@ -72,7 +72,6 @@ angular
             };
 
             $scope.onParentChange = function() {
-                console.log("parent change");
                 if ($scope.customer.parent_id !== undefined) {
                     for (var i = 0; i < $scope.customers.length; i++) {
                         if ($scope.customers[i].id == $scope.customer.parent_id) {
