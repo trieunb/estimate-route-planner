@@ -31,7 +31,7 @@
                             <br>
                             <div ng-hide="viewOptions.compact">
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                <span>Date: {{::referral.date_requested}}</span><br>
+                                <span>Date: {{::referral.date_requested | date:'MM-dd-yyyy'}}</span><br>
                                 <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                 <span>Status: {{referral.status}}</span><br>
                             </div>
@@ -76,7 +76,7 @@
                                 <br>
                                 <div ng-hide="viewOptions.compact">
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                    <span>Date: {{::referral.date_requested}}</span><br>
+                                    <span>Date: {{::referral.date_requested | date:'MM-dd-yyyy'}}</span><br>
                                     <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                     <span>Status: {{referral.status}}</span><br>
                                 </div>
@@ -130,7 +130,7 @@
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                    <span>Date: {{::referral.date_requested}}</span><br>
+                                    <span>Date: {{::referral.date_requested | date:'MM-dd-yyyy'}}</span><br>
                                     <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                     <span>Status: {{referral.status}}</span>
                                 </span>
@@ -154,7 +154,7 @@
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                    <span>Date: {{::referral.date_requested}}</span><br>
+                                    <span>Date: {{::referral.date_requested | date:'MM-dd-yyyy'}}</span><br>
                                     <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                     <span>Status: {{referral.status}}</span>
                                 </span>

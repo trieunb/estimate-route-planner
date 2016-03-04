@@ -31,7 +31,7 @@
                             <br>
                             <div ng-hide="viewOptions.compact">
                                 <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                <span>Date: {{::referral.date_requested}}</span><br>
+                                <span>Date: {{::referral.date_requested | date:'MM-dd-yyyy'}}</span><br>
                                 <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                 <span>Status: {{referral.status}}</span>
                             </div>
@@ -77,7 +77,7 @@
                                 <br>
                                 <div ng-hide="viewOptions.compact">
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                    <span>Date: {{::referral.date_requested}}</span><br>
+                                    <span>Date: {{::referral.date_requested | date:'MM-dd-yyyy'}}</span><br>
                                     <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                     <span>Status: {{referral.status}}</span>
                                 </div>
@@ -135,7 +135,7 @@
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                    <span>Date: {{::referral.date_requested}}</span><br>
+                                    <span>Date: {{::referral.date_requested | date:'MM-dd-yyyy'}}</span><br>
                                     <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                     <span>Status: {{referral.status}}</span>
                                 </span>
@@ -159,7 +159,7 @@
                                 <span ng-hide="$parent.viewOptions.compact">
                                     <br>
                                     <span>Phone: {{::referral.primary_phone_number}}</span><br>
-                                    <span>Date: {{::referral.date_requested}}</span><br>
+                                    <span>Date: {{::referral.date_requested | date:'MM-dd-yyyy'}}</span><br>
                                     <span>Estimator: {{referral.estimator_full_name}}</span><br>
                                     <span>Status: {{referral.status}}</span>
                                 </span>
@@ -185,7 +185,7 @@
                   <tr ng-repeat="route in ::recentRoutes">
                     <td><span>{{::route.title}}</span></td>
                     <td><span>{{::route.estimator_full_name}}</span></td>
-                    <td><span>{{::route.created_at}}</span></td>
+                    <td><span>{{::route.created_at | date:'MM-dd-yyyy'}}</span></td>
                     <td><span>{{::route.status}}</span></td>
                     <td class="text-center">
                       <a href="#/edit-estimate-route/{{::route.id}}" ng-if="::hasCap('erpp_edit_estimate_routes')">View</a>

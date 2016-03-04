@@ -46,11 +46,9 @@
                     <div class="col-sm-7">
                         <input class="form-control"
                             type="text"
-                            uib-datepicker-popup
+                            uib-datepicker-popup="MM-dd-yyyy"
                             ng-required="true"
-                            ng-init="openDatetxnPicker = false"
-                            ng-focus="openDatetxnPicker = true"
-                            is-open="openDatetxnPicker"
+                            datepicker-auto-open
                             placeholder="yyyy-mm-dd"
                             name="txn_date"
                             ng-model="estimate.txn_date">
@@ -70,10 +68,8 @@
                         <input class="form-control"
                             type="text"
                             name="expiration_date"
-                            uib-datepicker-popup
-                            ng-init="openExpDatePicker = false"
-                            is-open="openExpDatePicker"
-                            ng-focus="openExpDatePicker = true"
+                            uib-datepicker-popup="MM-dd-yyyy"
+                            datepicker-auto-open
                             placeholder="yyyy-mm-dd"
                             ng-required="true"
                             ng-model="estimate.expiration_date">
@@ -512,12 +508,10 @@
                     <input class="form-control"
                         type="text"
                         name="date_of_signature"
-                        uib-datepicker-popup
-                        ng-init="openDateSignaturePicker = false"
-                        is-open="openDateSignaturePicker"
+                        uib-datepicker-popup="MM-dd-yyyy"
+                        datepicker-auto-open
                         ng-model="estimate.date_of_signature"
-                        ng-focus="openDateSignaturePicker = true"
-                        placeholder="yyyy-mm-dd">
+                        placeholder="mm-dd-yyyy">
                 </div>
             </div>
         </div>
