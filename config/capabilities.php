@@ -56,7 +56,7 @@ return [
     'erpp_hide_estimate_pending_list' => [
         'enable' => false
     ],
-    //Auto permission to hide expired estimates
+    // Auto permission to hide expired estimates
     'erpp_hide_expired_estimates' => [
         'enable' => false
     ]

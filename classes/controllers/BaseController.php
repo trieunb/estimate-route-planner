@@ -1,7 +1,6 @@
 <?php
 class BaseController {
     const PAGE_SIZE = 15;
-    const DATE_EXP_EST = 14;
 
     /* @var array */
     protected $data;
