@@ -59,7 +59,7 @@ return [
     'erpp_hide_estimate_pending_list' => [
         'enable' => false
     ],
-    // Auto permission to hide expired estimates
+    // Auto hide estimates has txn date greater than 14 days
     'erpp_hide_expired_estimates' => [
         'enable' => false
     ]

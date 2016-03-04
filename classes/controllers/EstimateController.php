@@ -1,11 +1,11 @@
 <?php
 class EstimateController extends BaseController {
 
+    const DATE_EXP_EST = 14;
+
     /**
      * Listing all estimates
      */
-    const DATE_EXP_EST = 14;
-
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
@@ -39,9 +39,10 @@ class EstimateController extends BaseController {
                 ]);
         }
         if ($this->currentUserHasCap('erpp_hide_expired_estimates')) {
-            $dateExpiredEstimates = date('Y-m-d', strtotime('-'.self::DATE_EXP_EST.'day'));
-            $searchQuery
-                ->whereRaw('`txn_date` >= ?', [$dateExpiredEstimates]);
+            $searchQuery->whereGte(
+                'txn_date',
+                date('Y-m-d', strtotime('-' . self::DATE_EXP_EST . 'days'))
+            );
         }
 
         $countQuery = clone($searchQuery);
@@ -205,7 +206,7 @@ class EstimateController extends BaseController {
     public function show() {
         $id = $this->data['id'];
         $estimate = null;
-        
+
         $query = ORM::forTable('estimates')
             ->tableAlias('e')
             ->select('e.*');
@@ -220,9 +221,10 @@ class EstimateController extends BaseController {
             $estimate = $query;
         }
         if ($this->currentUserHasCap('erpp_hide_expired_estimates')) {
-            $dateExpiredEstimates = date('Y-m-d', strtotime('-'.self::DATE_EXP_EST.'day'));
-            $estimate = $query
-                        ->whereRaw('`txn_date` >= ?', [$dateExpiredEstimates]);
+            $estimate = $query->whereGte(
+                'txn_date',
+                date('Y-m-d', strtotime('-' . self::DATE_EXP_EST . 'days'))
+            );
         }
         $estimate = $query->findOne($id);
         if ($estimate) {
