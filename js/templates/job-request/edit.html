@@ -80,7 +80,6 @@
                         <label class="control-label col-sm-3 required" for="name">Name<span>(*)</span></label>
                         <div class="col-sm-8">
                             <customers-select
-                                ng-disabled="::hasCap('erpp_restrict_client_dropdown')"
                                 options="customers"
                                 ng-model="referral.customer_id"
                                 on-customer-change="onCustomerChange()"
