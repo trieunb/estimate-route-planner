@@ -15,6 +15,7 @@ define('ERP_PLUGIN_NAME', 'ER Planner Pro');
 define('ERP_PLUGIN_SCRIPT', __FILE__);
 
 require_once(ERP_PLUGIN_DIR . '/config/plugin.php');
+require_once(ERP_PLUGIN_DIR . '/config/autoload.php');
 
 $includes = [
     'functions.php',
