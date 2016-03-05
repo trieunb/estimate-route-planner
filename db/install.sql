@@ -24,6 +24,7 @@ CREATE TABLE `company_info` (
   `email` varchar(255) DEFAULT NULL,
   `website` varchar(255) DEFAULT NULL,
   `disclaimer` text,
+  `email_template` text,
   `estimate_footer` text,
   `logo_url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)

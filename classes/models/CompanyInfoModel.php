@@ -2,8 +2,8 @@
 class CompanyInfoModel extends BaseModel {
 
     protected $fillable = [
-        'name', 'full_address', 'primary_phone_number', 'fax', 'email',
-        'website', 'estimate_footer', 'logo_url', 'mailing_address', 'disclaimer'
+        'name', 'full_address', 'primary_phone_number', 'fax', 'email', 'website', 
+        'estimate_footer', 'logo_url', 'mailing_address', 'disclaimer', 'email_template'
     ];
 
     public function getTableName() {
