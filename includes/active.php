@@ -3,9 +3,6 @@
  * Hooks for activing/deactivating plugin
  */
 
-register_activation_hook(ERP_PLUGIN_SCRIPT, 'active_plugin');
-register_deactivation_hook(ERP_PLUGIN_SCRIPT, 'deactive_plugin');
-
 function active_plugin() {
     /* Insert tables to DB */
     global $wpdb;
@@ -14,30 +11,8 @@ function active_plugin() {
     // dbDelta($sql);
 
     /* Add all plugin capabilities to all roles */
-    global $wp_roles;
-    $pluginCaps = erp_get_capabilities();
-    // Skip these caps for admin role
-    // TODO: should use 'admin' flag as convention
-    $exceptAdminCaps = [
-        'erpp_view_sales_estimates',
-        'erpp_estimator_only_routes',
-        'erpp_hide_estimate_pending_list',
-        'erpp_restrict_client_dropdown',
-        'erpp_hide_expired_estimates'
-    ];
-    $adminRoles = ['administrator', 'erppadmin', 'erpp_admin'];
-
-    foreach ($wp_roles->get_names() as $roleName => $label) {
-        $role = get_role($roleName);
-        if ($role) {
-            foreach ($pluginCaps as $cap => $options) {
-                if (in_array($roleName, $adminRoles) && in_array($cap, $exceptAdminCaps)) {
-                    continue;
-                }
-                $role->add_cap($cap);
-            }
-        }
-    }
+    $capsRegister = new ERPCapabilityRegister();
+    $capsRegister->register(erp_get_capabilities());
 }
 
 function deactive_plugin() {
@@ -47,15 +22,10 @@ function deactive_plugin() {
     // $wpdb->query($sql);
 
     /* Remove all role capabitities */
-    global $wp_roles;
-    $pluginCaps = erp_get_capabilities();
-    foreach ($wp_roles->get_names() as $roleName => $label) {
-        $role = get_role($roleName);
-        if ($role) {
-            foreach ($pluginCaps as $cap => $options) {
-                $role->remove_cap($cap);
-            }
-        }
-    }
+    $capsRegister = new ERPCapabilityRegister();
+    $capsRegister->unregister(erp_get_capabilities());
 }
+
+register_activation_hook(ERP_PLUGIN_SCRIPT, 'active_plugin');
+register_deactivation_hook(ERP_PLUGIN_SCRIPT, 'deactive_plugin');
 ?>

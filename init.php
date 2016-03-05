@@ -7,6 +7,7 @@ define('ERP_TEMPLATES_DIR', ERP_ROOT_DIR . '/templates/');
 define('ERP_TMP_DIR', ERP_ROOT_DIR . '/tmp/');
 
 require_once(ERP_ROOT_DIR . '/config/plugin.php');
+require_once(ERP_ROOT_DIR . '/config/autoload.php');
 
 // Some global functions use in plugin
 require_once(ERP_ROOT_DIR . '/lib/helper.php');
@@ -17,23 +18,6 @@ ORM::configure('mysql:dbname=' . DB_NAME . ';host=' . DB_HOST);
 ORM::configure('username', DB_USER);
 ORM::configure('password', DB_PASSWORD);
 ORM::configure('logging', ERP_DEBUG);
-
-// Autoload plugin classes
-spl_autoload_register(function($class) {
-    $posibleLocations = [
-        ERP_ROOT_DIR . '/classes/models',
-        ERP_ROOT_DIR . '/classes/utils',
-        ERP_ROOT_DIR . '/classes/controllers',
-        ERP_ROOT_DIR . '/schedule',
-        ERP_ROOT_DIR . '/classes/services'
-    ];
-    foreach ($posibleLocations as $location) {
-        if (file_exists($location . '/' . $class . '.php')) {
-            require_once $location . '/' . $class . '.php';
-            return true;
-        }
-    }
-});
 
 // Autoload QBO SDK
 define('QBO_SDK_ROOT', ERP_ROOT_DIR . '/lib/quickbooks-sdk/');
