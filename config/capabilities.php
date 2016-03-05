@@ -42,26 +42,16 @@ return [
         'admin_only' => true
     ],
     // Restrict to see customers dropdown
-    'erpp_restrict_client_dropdown' => [
-        'enable' => false
-    ],
+    'erpp_restrict_client_dropdown' => [],
     // Other non-resources caps
 
     // Restrict to see only estimates which assigned to user
-    'erpp_view_sales_estimates'     => [
-        'enable' => false
-    ],
+    'erpp_view_sales_estimates'     => [],
     // Only shows estimate routes that assigned to the user
-    'erpp_estimator_only_routes'    => [
-        'enable' => false
-    ],
+    'erpp_estimator_only_routes'    => [],
     // Hide `Pending Routes` list so the person can't assign requests to themselves
-    'erpp_hide_estimate_pending_list' => [
-        'enable' => false
-    ],
+    'erpp_hide_estimate_pending_list' => [],
     // Auto hide estimates has txn date greater than 14 days
-    'erpp_hide_expired_estimates' => [
-        'enable' => false
-    ]
+    'erpp_hide_expired_estimates' => []
 ];
 ?>
