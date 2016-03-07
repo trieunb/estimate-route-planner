@@ -448,7 +448,8 @@ function EditEstimateCtrl(
                                             id: $scope.estimate.id,
                                             to: $scope.estimate.email,
                                             doc_number: $scope.estimate.doc_number,
-                                            subject: 'Estimate from ' + $scope.companyInfo.name
+                                            subject: 'Estimate from ' + $scope.companyInfo.name,
+                                            body: erpLocalStorage.getEmailTemplateEstimate(estimate)
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;

@@ -54,7 +54,6 @@ function ListEstimateCtrl(
         };
         estimateFactory.list(query)
             .success(function(response) {
-                console.log(response);
                 $scope.estimates = response.data;
                 $scope.total = parseInt(response.total);
             });
@@ -186,31 +185,9 @@ function ListEstimateCtrl(
         $scope.sendMailData.id = estimate.id;
         $scope.sendMailData.to = estimate.email;
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
-        var contentEmail = sharedData.companyInfo.email_template;
-
-        var emailTemplate = {
-            '{estimate_number}' : estimate.doc_number,
-            '{estimate_total}' : estimate.total,
-            '{billing_customer_display_name}': estimate.customer_display_name,
-            '{billing_customer_first_name}': estimate.billing_customer_first_name,
-            '{billing_customer_last_name}' : estimate.billing_customer_last_name,
-            '{billing_customer_email}' : estimate.billing_customer_email,
-            '{shipping_customer_display_name}' : estimate.job_customer_display_name,
-            '{shipping_customer_first_name}' : estimate.shipping_customer_first_name,
-            '{shipping_customer_last_name}' : estimate.shipping_customer_last_name,
-            '{shipping_customer_email}' : estimate.shipping_customer_email
-        };
-
-        $scope.sendMailData.body = emailTemplateEstimate(contentEmail, emailTemplate);
+        $scope.sendMailData.body = erpLocalStorage.getEmailTemplateEstimate(estimate);
         $scope.sendEmailForm.$setPristine();
     };
-
-    var emailTemplateEstimate = function(contentEmail, emailTemplate) {
-        angular.forEach(emailTemplate, function(value, key) {
-            contentEmail = contentEmail.replace(key, value);
-        })
-        return contentEmail;
-    }
 
     $scope.previewPdfEstimate = function(estimate) {
         $scope.showModalPdf = true;

@@ -1,1 +1,1 @@
-ALTER TABLE `company_info` ADD `email_template` text after `disclaimer`;
+ALTER TABLE `company_info` ADD `email_template` text NULL after `disclaimer`;

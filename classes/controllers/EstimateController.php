@@ -53,18 +53,8 @@ class EstimateController extends BaseController {
                 'e.status', 'e.email',
                 'e.job_address', 'e.job_city', 'e.job_state', 'e.job_zip_code'
             )
-            ->selectMany([
-                    'customer_display_name' => 'c.display_name',
-                    'billing_customer_first_name' => 'c.given_name',
-                    'billing_customer_last_name' => 'c.family_name',
-                    'billing_customer_email' => 'c.email'
-                ])
-            ->selectMany([
-                    'job_customer_display_name' => 'jc.display_name',
-                    'shipping_customer_first_name' => 'jc.given_name',
-                    'shipping_customer_last_name' => 'jc.family_name',
-                    'shipping_customer_email' => 'jc.email'
-                ])
+            ->select('c.display_name', 'billing_customer_display_name')
+            ->select('jc.display_name', 'shipping_customer_display_name')
             ->select('classes.name', 'source_name')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
@@ -236,7 +226,12 @@ class EstimateController extends BaseController {
                 date('Y-m-d', strtotime('-' . self::DATE_EXP_EST . 'days'))
             );
         }
-        $estimate = $query->findOne($id);
+        $estimate = $query
+            ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
+            ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
+            ->select('c.display_name', 'billing_customer_display_name')
+            ->select('jc.display_name', 'shipping_customer_display_name')
+            ->findOne($id);
         if ($estimate) {
             $estimate = $estimate->asArray();
             $estimate['lines'] = ORM::forTable('estimate_lines')
