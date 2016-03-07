@@ -205,7 +205,7 @@ function ListEstimateCtrl(
             contentMail = contentMail.replace(key, value);
         })
 
-        $scope.sendMailData.body = body;
+        $scope.sendMailData.body = contentMail;
         $scope.sendEmailForm.$setPristine();
     };
 
