@@ -53,8 +53,8 @@ class EstimateController extends BaseController {
                 'e.status', 'e.email',
                 'e.job_address', 'e.job_city', 'e.job_state', 'e.job_zip_code'
             )
-            ->select('c.display_name', 'customer_display_name')
-            ->select('jc.display_name', 'job_customer_display_name')
+            ->select('c.display_name', 'billing_customer_display_name')
+            ->select('jc.display_name', 'shipping_customer_display_name')
             ->select('classes.name', 'source_name')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
@@ -226,7 +226,12 @@ class EstimateController extends BaseController {
                 date('Y-m-d', strtotime('-' . self::DATE_EXP_EST . 'days'))
             );
         }
-        $estimate = $query->findOne($id);
+        $estimate = $query
+            ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
+            ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
+            ->select('c.display_name', 'billing_customer_display_name')
+            ->select('jc.display_name', 'shipping_customer_display_name')
+            ->findOne($id);
         if ($estimate) {
             $estimate = $estimate->asArray();
             $estimate['lines'] = ORM::forTable('estimate_lines')

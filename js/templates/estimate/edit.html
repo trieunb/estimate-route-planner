@@ -648,7 +648,10 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4>Send estimate #{{ sendMailData.doc_number }}</h4>
+                    Send estimate #{{ sendMailData.doc_number }}
+                    <button type="button" class="close btn-close" aria-label="Close"
+                    ng-click="showSendModal = false"><span aria-hidden="true">×</span>
+                  </button>
                 </div>
                 <form role="form" name="sendMailForm">
                     <div class="modal-body">
@@ -687,6 +690,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
+                    Print Preview
                   <button type="button" class="close btn-close" aria-label="Close"
                     ng-click="showModalPdf = false"><span aria-hidden="true">×</span>
                   </button>
