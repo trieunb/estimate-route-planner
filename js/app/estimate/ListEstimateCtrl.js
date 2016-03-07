@@ -187,7 +187,7 @@ function ListEstimateCtrl(
         $scope.sendMailData.id = estimate.id;
         $scope.sendMailData.to = estimate.email;
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
-        $scope.sendMailData.body = emailComposer.getEmailTemplateEstimate(estimate);
+        $scope.sendMailData.body = emailComposer.getEstimateEmailContent(estimate);
         $scope.sendEmailForm.$setPristine();
     };
 

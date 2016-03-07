@@ -234,6 +234,5 @@ function erpLocalStorage(
             }
         });
     };
-    
     init();
 }

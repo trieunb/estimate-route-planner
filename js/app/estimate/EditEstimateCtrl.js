@@ -451,7 +451,7 @@ function EditEstimateCtrl(
                                             to: $scope.estimate.email,
                                             doc_number: $scope.estimate.doc_number,
                                             subject: 'Estimate from ' + $scope.companyInfo.name,
-                                            body: emailComposer.getEmailTemplateEstimate(estimate)
+                                            body: emailComposer.getEstimateEmailContent(estimate)
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;
