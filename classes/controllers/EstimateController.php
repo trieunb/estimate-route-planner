@@ -54,7 +54,13 @@ class EstimateController extends BaseController {
                 'e.job_address', 'e.job_city', 'e.job_state', 'e.job_zip_code'
             )
             ->select('c.display_name', 'customer_display_name')
+            ->select('c.given_name', 'billing_customer_first_name')
+            ->select('c.family_name', 'billing_customer_last_name')
+            ->select('c.email', 'billing_customer_email')
             ->select('jc.display_name', 'job_customer_display_name')
+            ->select('jc.given_name', 'shipping_customer_first_name')
+            ->select('jc.family_name', 'shipping_customer_last_name')
+            ->select('jc.email', 'shipping_customer_email')
             ->select('classes.name', 'source_name')
             ->limit(self::PAGE_SIZE)
             ->offset(($page - 1) * self::PAGE_SIZE)
