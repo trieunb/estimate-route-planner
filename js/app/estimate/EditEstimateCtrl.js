@@ -14,6 +14,7 @@ angular
             'erpGeoLocation',
             'attachmentUploader',
             'sharedData',
+            'emailComposer',
             'erpOptions',
             '$ngBootbox',
             '$window',
@@ -33,6 +34,7 @@ function EditEstimateCtrl(
         erpGeoLocation,
         attachmentUploader,
         sharedData,
+        emailComposer,
         erpOptions,
         $ngBootbox,
         $window) {
@@ -449,7 +451,7 @@ function EditEstimateCtrl(
                                             to: $scope.estimate.email,
                                             doc_number: $scope.estimate.doc_number,
                                             subject: 'Estimate from ' + $scope.companyInfo.name,
-                                            body: erpLocalStorage.getEmailTemplateEstimate(estimate)
+                                            body: emailComposer.getEmailTemplateEstimate(estimate)
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;
