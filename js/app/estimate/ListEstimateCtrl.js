@@ -186,9 +186,9 @@ function ListEstimateCtrl(
         $scope.sendMailData.id = estimate.id;
         $scope.sendMailData.to = estimate.email;
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
-        var contentMail = sharedData.companyInfo.email_template;
+        var contentEmail = sharedData.companyInfo.email_template;
 
-        var searchvalue = {
+        var emailTemplate = {
             '{estimate_number}' : estimate.doc_number,
             '{estimate_total}' : estimate.total,
             '{billing_customer_display_name}': estimate.customer_display_name,
@@ -201,13 +201,16 @@ function ListEstimateCtrl(
             '{shipping_customer_email}' : estimate.shipping_customer_email
         };
 
-        angular.forEach(searchvalue, function(value, key) {
-            contentMail = contentMail.replace(key, value);
-        })
-
-        $scope.sendMailData.body = contentMail;
+        $scope.sendMailData.body = emailTemplateEstimate(contentEmail, emailTemplate);
         $scope.sendEmailForm.$setPristine();
     };
+
+    var emailTemplateEstimate = function(contentEmail, emailTemplate) {
+        angular.forEach(emailTemplate, function(value, key) {
+            contentEmail = contentEmail.replace(key, value);
+        })
+        return contentEmail;
+    }
 
     $scope.previewPdfEstimate = function(estimate) {
         $scope.showModalPdf = true;
