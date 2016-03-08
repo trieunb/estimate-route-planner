@@ -1,8 +1,9 @@
 ## 1.8.2
   - Fix "&" character in service line's descriptions
   - Fix customers dropdown when creating estimates from job requests if acting user restricted the customer dropdown.
-  - Add estimate email template
-  - Minor UI improvements
+  - Add estimate email template.
+  - Change to autofill only billing address from master customer.
+  - Minor UI improvements.
 
 ## 1.8.1
   - Add more capabilities: `erpp_hide_expired_estimates` and `erpp_restrict_client_dropdown`
