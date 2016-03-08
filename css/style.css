@@ -784,6 +784,10 @@ div.queue-toolbar {
     display: none;
 }
 .modal-print-estimate .modal-body {
-    height: 450px;
+    height: 460px;
     overflow-y: scroll;
+    overflow-x: scroll;
+}
+.modal-print-estimate .modal-body object{
+    min-height: 100%;
 }
