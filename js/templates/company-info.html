@@ -98,14 +98,19 @@
                         </div>
                         <div class="row space_nomal">
                             <div class="form-group">
-                                <label class="control-label col-sm-3">Email Template</label>
+                                <label class="control-label col-sm-3">Estimate Email Template</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control textarea_size" 
-                                    type="text" 
+                                    <textarea class="form-control textarea_size"
+                                    type="text"
                                     name="setting.email_template"
-                                    rows="8"
+                                    rows="10"
                                     ng-model="info.email_template">
                                     </textarea>
+                                    <p class="text-muted">
+                                    Embeddable variables: <span class="text-info">estimate_number, estimate_total, billing_customer_display_name, shipping_customer_display_name</span>
+                                    <br>
+                                    Usage: <span ng-non-bindable class="text-info">Dear {{billing_customer_display_name}}</span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +124,7 @@
                                     ng-model="info.disclaimer" ng-required="true"></textarea>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                         <div class="row space_nomal">
                             <div class="form-group">
                                 <label class="control-label col-sm-3">Accepted Agreement</label>
