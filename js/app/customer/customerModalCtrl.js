@@ -97,7 +97,6 @@ angular
                             } else {
                                 $scope.customer.company_name = parentCustomer.display_name;
                             }
-                            $scope.fillShippingWithBilling();
                             break;
                         }
                     }
