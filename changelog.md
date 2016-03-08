@@ -1,3 +1,9 @@
+## 1.8.2
+  - Fix "&" character in service line's descriptions
+  - Fix customers dropdown when creating estimates from job requests if acting user restricted the customer dropdown.
+  - Add estimate email template
+  - Minor UI improvements
+
 ## 1.8.1
   - Add more capabilities: `erpp_hide_expired_estimates` and `erpp_restrict_client_dropdown`
   - Change date format to mm-dd-yyyy
