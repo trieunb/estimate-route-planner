@@ -189,6 +189,9 @@ function ListEstimateCtrl(
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
         $scope.sendMailData.body = emailComposer.getEstimateEmailContent(estimate);
         $scope.sendEmailForm.$setPristine();
+        setTimeout(function() {
+            angular.element('.estimate-mail-content')[0].focus();
+        });
     };
 
     $scope.previewPdfEstimate = function(estimate) {

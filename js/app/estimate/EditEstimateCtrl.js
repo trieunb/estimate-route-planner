@@ -455,6 +455,9 @@ function EditEstimateCtrl(
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;
+                                        setTimeout(function() {
+                                            angular.element('.estimate-mail-content')[0].focus();
+                                        });
                                     }
                                     if (print) {
                                         window.open(ERPApp.baseAPIPath + '&_do=printEstimate&id=' + $scope.estimate.id, '_blank');
