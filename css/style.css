@@ -524,6 +524,12 @@ span.new-referal {
 .lines-table tbody td {
     vertical-align: middle !important;
 }
+.lines-table tbody td.drag-shell {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 /* Remove spinner in input numbers */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {

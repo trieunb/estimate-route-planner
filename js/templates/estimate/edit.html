@@ -453,7 +453,7 @@
                     </thead>
                     <tbody as-sortable="lineItemsDragListeners" data-ng-model="estimate.lines" is-disabled="estimate.lines.length == 1">
                       <tr ng-repeat="line in estimate.lines" as-sortable-item>
-                        <td ng-if="::hasCap('erpp_view_estimate_total')"><span class="glyphicon glyphicon-th" data-as-sortable-item-handle></span></td>
+                        <td ng-if="::hasCap('erpp_view_estimate_total')" class="drag-shell" data-as-sortable-item-handle><span class="glyphicon glyphicon-th"></span></td>
                         <td><span ng-bind="$index + 1"></span></td>
                         <td>
                             <selectize
