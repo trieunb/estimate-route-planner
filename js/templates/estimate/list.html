@@ -136,8 +136,8 @@
         </div>
     </div>
     <!-- show model preview pdf estimate -->
-    <div class="modal fade" ng-class="{'in': showModalPdf}" ng-style="{'display': showModalPdf ? 'block' : 'none'}">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade modal-print-estimate" ng-class="{'in': showModalPdf}" ng-style="{'display': showModalPdf ? 'block' : 'none'}">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                   Print Preview
@@ -147,11 +147,11 @@
                 </div>
                 <div class="modal-body">
                   <object type="application/pdf"
-                    data="{{::$root.baseAPIPath}}&_do=previewPdfEstimate&id={{sendMailData.id}}" width="100%" height="420">
+                    data="{{::$root.baseAPIPath}}&_do=previewPdfEstimate&id={{sendMailData.id}}" width="100%">
                   </object>
                 </div>
                 <div class="modal-footer">
-                  <button class="btn" type="button" ng-click="showModalPdf = false">Close
+                  <button class="btn btn-default" type="button" ng-click="showModalPdf = false">Close
                   </button>
                 </div>
             </div>

@@ -783,3 +783,7 @@ div.queue-toolbar {
 .selectize-control .selectize-input.disabled:after {
     display: none;
 }
+.modal-print-estimate .modal-body {
+    height: 450px;
+    overflow-y: scroll;
+}
