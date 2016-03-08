@@ -1,0 +1,1 @@
+ALTER TABLE `company_info` ADD `email_template` text NULL after `disclaimer`;

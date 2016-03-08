@@ -12,6 +12,7 @@ angular
             '$location',
             'estimateFactory',
             'jobRequestFactory',
+            'customerFactory',
             'erpGeoLocation',
             '$ngBootbox',
             'sharedData',
@@ -31,6 +32,7 @@ function AddEstimateCtrl(
         $location,
         estimateFactory,
         jobRequestFactory,
+        customerFactory,
         erpGeoLocation,
         $ngBootbox,
         sharedData,
@@ -324,6 +326,9 @@ function AddEstimateCtrl(
         if ('undefined' !== typeof(jobRequestId)) {
             jobRequestFactory.show(jobRequestId)
                 .success(function(jobRequestData) {
+                    if ($scope.hasCap('erpp_restrict_client_dropdown')) {
+                        $scope.customers.push(jobRequestData.customer);
+                    }
                     $scope.estimate.customer_id = jobRequestData.customer_id;
                     $scope.estimate.job_customer_id = jobRequestData.customer_id;
                     // Set to customer billing address
@@ -340,7 +345,7 @@ function AddEstimateCtrl(
                         $scope.estimate.primary_phone_number = jobRequestData.primary_phone_number;
                         $scope.estimate.class_id = jobRequestData.class_id;
                         if (jobRequestData.estimator_id) {
-                            for(var i = 0; i < $scope.employees.length; i++) {
+                            for (var i = 0; i < $scope.employees.length; i++) {
                                 if ($scope.employees[i].id == jobRequestData.estimator_id) {
                                     $scope.estimate.sold_by_1 = $scope.employees[i].name;
                                     break;

@@ -305,7 +305,7 @@ class Php2Xml extends Common {
                             
                         } else {
                             //SDK-39
-                            $el = $this->dom->createElement($code.":".$propDocs['xmlName'], $value);
+                            $el = $this->dom->createElement($code.":".$propDocs['xmlName'], htmlentities($value));
                             $element->appendChild($el);
                         }
                         //print_r("Added element ".$propDocs['xmlName']." with NS = ".$propDocs['xmlNamespace']." \n");

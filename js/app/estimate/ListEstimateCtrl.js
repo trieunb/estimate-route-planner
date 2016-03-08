@@ -12,6 +12,7 @@ angular
             'sharedData',
             'erpLocalStorage',
             'erpGeoLocation',
+            'emailComposer',
             ListEstimateCtrl
         ]
     );
@@ -25,7 +26,8 @@ function ListEstimateCtrl(
         estimateFactory,
         sharedData,
         erpLocalStorage,
-        erpGeoLocation) {
+        erpGeoLocation,
+        emailComposer) {
 
     $scope.setPageTitle('Estimates List');
     $scope.estimates = {};
@@ -185,8 +187,11 @@ function ListEstimateCtrl(
         $scope.sendMailData.id = estimate.id;
         $scope.sendMailData.to = estimate.email;
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
-        $scope.sendMailData.body = '';
+        $scope.sendMailData.body = emailComposer.getEstimateEmailContent(estimate);
         $scope.sendEmailForm.$setPristine();
+        setTimeout(function() {
+            angular.element('.estimate-mail-content')[0].focus();
+        });
     };
 
     $scope.previewPdfEstimate = function(estimate) {

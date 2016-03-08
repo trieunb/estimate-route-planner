@@ -14,6 +14,7 @@ angular
             'erpGeoLocation',
             'attachmentUploader',
             'sharedData',
+            'emailComposer',
             'erpOptions',
             '$ngBootbox',
             '$window',
@@ -33,6 +34,7 @@ function EditEstimateCtrl(
         erpGeoLocation,
         attachmentUploader,
         sharedData,
+        emailComposer,
         erpOptions,
         $ngBootbox,
         $window) {
@@ -448,10 +450,14 @@ function EditEstimateCtrl(
                                             id: $scope.estimate.id,
                                             to: $scope.estimate.email,
                                             doc_number: $scope.estimate.doc_number,
-                                            subject: 'Estimate from ' + $scope.companyInfo.name
+                                            subject: 'Estimate from ' + $scope.companyInfo.name,
+                                            body: emailComposer.getEstimateEmailContent(estimate)
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;
+                                        setTimeout(function() {
+                                            angular.element('.estimate-mail-content')[0].focus();
+                                        });
                                     }
                                     if (print) {
                                         window.open(ERPApp.baseAPIPath + '&_do=printEstimate&id=' + $scope.estimate.id, '_blank');

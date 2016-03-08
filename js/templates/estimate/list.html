@@ -51,7 +51,7 @@
                   <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.txn_date}}</span>
                 </td>
                 <td class="address-cell" ng-class="{'danger': est.geolocation.is_checked && !est.geolocation.ok }">
-                    <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.customer_display_name}}</span></a>
+                    <a href="#/edit-estimate/{{::est.id}}" ng-if="::hasCap('erpp_edit_estimates')"><span>{{::est.billing_customer_display_name}}</span></a>
                     <span ng-if="::!hasCap('erpp_edit_estimates')">{{::est.customer_display_name}}</span>
                     <span class="glyphicon glyphicon-repeat spin text-warning"
                         ng-class="{'visibility': est.geolocation.is_checking}"></span>
@@ -97,7 +97,10 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4>Send estimate #{{ sendMailData.doc_number }}</h4>
+                    Send estimate #{{ sendMailData.doc_number }}
+                    <button type="button" class="close btn-close" aria-label="Close"
+                    ng-click="showModal = false"><span aria-hidden="true">×</span>
+                  </button>
                 </div>
                 <form role="form" name="sendEmailForm">
                     <div class="modal-body">
@@ -116,7 +119,7 @@
                       </div>
                       <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea class="form-control" rows="5" placeholder="Content"
+                        <textarea class="form-control estimate-mail-content" rows="8" placeholder="Content"
                             ng-required="true"
                             ng-model="sendMailData.body"></textarea>
                       </div>
