@@ -7,11 +7,7 @@ class ReferralController extends BaseController {
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
-        $filteredStatus = "";
-
-        if (isset($_REQUEST['status'])) {
-            $filteredStatus = $_REQUEST['status'];
-        }
+        $filteredStatus = $this->getParam('status');
 
         $searchQuery = ORM::forTable('referrals')
             ->tableAlias('r')

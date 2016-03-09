@@ -9,14 +9,14 @@
         <div class="col-md-8 col-xs-12">
             <form name="searchReferralForm" ng-submit="searchReferral()">
                 <div class="col-md-5 n-p">
-                    <customer-typeahead on-select="onSelectCustomer(item)" ng-model="filter.keyword" placeholder="Search by customer name"></customer-typeahead>
+                    <customer-typeahead on-select="onSelectCustomer(item)" ng-model="filterParams.keyword" placeholder="Search by customer name"></customer-typeahead>
                 </div>
                 <div class="col-md-4 col-sm-4 n-p">
                     <label class="control-label col-sm-4">Status:</label>
                     <div class="col-sm-8">
-                        <select ng-model="filter.status" class="form-control"
+                        <select ng-model="filterParams.status" class="form-control"
                             ng-change="changeFilterStatus()"
-                            ng-options="status.value as status.label for status in filterStatuses">
+                            ng-options="status.value as status.label for status in ::filterStatuses">
                         </select>
                     </div>
                 </div>

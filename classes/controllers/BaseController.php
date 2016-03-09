@@ -79,12 +79,16 @@ class BaseController {
     }
 
     protected function getKeywordParam() {
-        if (isset($_REQUEST['keyword'])) {
-            $keyword = $_REQUEST['keyword'];
+        return $this->getParam('keyword');
+    }
+
+    protected function getParam($param) {
+        if (isset($_REQUEST[$param])) {
+            $get_param = $_REQUEST[$param];
         } else {
-            $keyword = "";
+            $get_param = "";
         }
-        return $keyword;
+        return $get_param;
     }
 
     protected function currentUserHasCap($capability) {

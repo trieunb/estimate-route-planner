@@ -10,9 +10,14 @@ function jobRequestFactory($http) {
                 data: referral
             });
         },
-        list: function(query) {
+        list: function(page, status, keyword) {
             return $http.get(ERPApp.baseAPIPath, {
-                params: query
+                params: {
+                    _do: 'getReferrals',
+                    page: page,
+                    status: status,
+                    keyword: keyword
+                }
             });
         },
         listPending: function() {

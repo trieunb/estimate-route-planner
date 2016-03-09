@@ -29,7 +29,7 @@ function ListJobRequestCtrl(
     $scope.date = new Date();
     $scope.routes = [];
     $scope.showAssignModal = false;
-    $scope.filter = {
+    $scope.filterParams = {
         keyword: '',
         status: ''
     };
@@ -61,13 +61,10 @@ function ListJobRequestCtrl(
         });
 
     var paginate = function() {
-        var query = {
-            _do: 'getReferrals',
-            page: $scope.currentPage,
-            status: $scope.filter.status,
-            keyword: $scope.filter.keyword
-        };
-        jobRequestFactory.list(query)
+        var page = $scope.currentPage;
+        var status = $scope.filterParams.status;
+        var keyword = $scope.filterParams.keyword;
+        jobRequestFactory.list(page, status, keyword)
             .success(function(response) {
                 $scope.referrals = response.data;
                 $scope.total = parseInt(response.total);
@@ -85,7 +82,7 @@ function ListJobRequestCtrl(
     };
 
     $scope.onSelectCustomer = function(customer) {
-        $scope.filter.keyword = customer.display_name;
+        $scope.filterParams.keyword = customer.display_name;
         $scope.searchReferral();
     };
 
@@ -95,7 +92,7 @@ function ListJobRequestCtrl(
     };
 
     $scope.clearSearch = function() {
-        $scope.filter = {
+        $scope.filterParams = {
             keyword: '',
             status: ''
         };

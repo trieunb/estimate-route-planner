@@ -9,11 +9,8 @@ class EstimateController extends BaseController {
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
-        $filteredStatus = "";
+        $filteredStatus = $this->getParam('status');
 
-        if (isset($_REQUEST['status'])) {
-            $filteredStatus = $_REQUEST['status'];
-        }
         $searchQuery = ORM::forTable('estimates')
             ->tableAlias('e')
             ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')

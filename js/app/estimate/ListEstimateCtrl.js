@@ -33,7 +33,7 @@ function ListEstimateCtrl(
     $scope.estimates = {};
     $scope.selectedStatus = '';
     $scope.sendMailData = {};
-    $scope.filter = {
+    $scope.filterParams = {
         keyword: '',
         status: ''
     };
@@ -48,13 +48,10 @@ function ListEstimateCtrl(
     $scope.isCheckingGeoLocation = false;
 
     var paginate = function() {
-        var query = {
-            _do: 'getEstimates',
-            page: $scope.currentPage,
-            status: $scope.filter.status,
-            keyword: $scope.filter.keyword
-        };
-        estimateFactory.list(query)
+        var page = $scope.currentPage;
+        var status = $scope.filterParams.status;
+        var keyword = $scope.filterParams.keyword;
+        estimateFactory.list(page, status, keyword)
             .success(function(response) {
                 $scope.estimates = response.data;
                 $scope.total = parseInt(response.total);
@@ -71,7 +68,7 @@ function ListEstimateCtrl(
     };
 
     $scope.onSelectCustomer = function(customer) {
-        $scope.filter.keyword = customer.display_name;
+        $scope.filterParams.keyword = customer.display_name;
         $scope.searchEstimate();
     };
 
@@ -81,7 +78,7 @@ function ListEstimateCtrl(
     };
 
     $scope.clearSearch = function() {
-        $scope.filter = {
+        $scope.filterParams = {
             keyword: '',
             status: ''
         };
