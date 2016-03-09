@@ -16,14 +16,9 @@ function estimateFactory($http) {
                 data: {id: routeId}
             });
         },
-        list: function(page, status, keyword) {
+        list: function(query) {
             return $http.get(ERPApp.baseAPIPath, {
-                params: {
-                    _do: 'getEstimates',
-                    page: page,
-                    status: status,
-                    keyword: keyword
-                }
+                params: Object.assign(query, {_do: 'getEstimates'})
             });
         },
         show: function(id) {

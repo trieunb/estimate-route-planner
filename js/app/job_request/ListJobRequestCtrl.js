@@ -61,10 +61,12 @@ function ListJobRequestCtrl(
         });
 
     var paginate = function() {
-        var page = $scope.currentPage;
-        var status = $scope.filterParams.status;
-        var keyword = $scope.filterParams.keyword;
-        jobRequestFactory.list(page, status, keyword)
+        var query = {
+            page: $scope.currentPage,
+            status: $scope.filterParams.status,
+            keyword: $scope.filterParams.keyword
+        };
+        jobRequestFactory.list(query)
             .success(function(response) {
                 $scope.referrals = response.data;
                 $scope.total = parseInt(response.total);

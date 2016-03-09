@@ -48,10 +48,12 @@ function ListEstimateCtrl(
     $scope.isCheckingGeoLocation = false;
 
     var paginate = function() {
-        var page = $scope.currentPage;
-        var status = $scope.filterParams.status;
-        var keyword = $scope.filterParams.keyword;
-        estimateFactory.list(page, status, keyword)
+        var query = {
+            page: $scope.currentPage,
+            status: $scope.filterParams.status,
+            keyword: $scope.filterParams.keyword
+        };
+        estimateFactory.list(query)
             .success(function(response) {
                 $scope.estimates = response.data;
                 $scope.total = parseInt(response.total);
