@@ -12,7 +12,7 @@ function jobRequestFactory($http) {
         },
         list: function(query) {
             return $http.get(ERPApp.baseAPIPath, {
-                params: Object.assign(query, {_do: 'getReferrals'})
+                params: angular.extend(query, {_do: 'getReferrals'})
             });
         },
         listPending: function() {

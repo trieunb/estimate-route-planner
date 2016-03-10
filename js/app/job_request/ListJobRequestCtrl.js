@@ -62,6 +62,7 @@ function ListJobRequestCtrl(
 
     var paginate = function() {
         var query = {
+            _do: 'getEstimates',
             page: $scope.currentPage,
             status: $scope.filterParams.status,
             keyword: $scope.filterParams.keyword

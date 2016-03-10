@@ -69,13 +69,7 @@ class BaseController {
     }
 
     protected function getPageParam() {
-        $page = "";
-        if (isset($_REQUEST['page'])) {
-            $page = $_REQUEST['page'];
-        } else {
-            $page = 1;
-        }
-        return $page;
+        return $this->getParam('page', 1);
     }
 
     protected function getKeywordParam() {
@@ -84,11 +78,11 @@ class BaseController {
 
     protected function getParam($key, $defaultValue = null) {
         if (isset($_REQUEST[$key])) {
-            $get_param = $_REQUEST[$key];
+            $result = $_REQUEST[$key];
         } else {
-            $get_param = "";
+            $result = $defaultValue;
         }
-        return $get_param;
+        return $result;
     }
 
     protected function currentUserHasCap($capability) {

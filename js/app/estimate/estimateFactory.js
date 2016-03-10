@@ -18,7 +18,7 @@ function estimateFactory($http) {
         },
         list: function(query) {
             return $http.get(ERPApp.baseAPIPath, {
-                params: Object.assign(query, {_do: 'getEstimates'})
+                params: angular.extend(query, {_do: 'getEstimates'})
             });
         },
         show: function(id) {
