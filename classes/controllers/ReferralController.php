@@ -7,10 +7,15 @@ class ReferralController extends BaseController {
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
+        $filteredStatus = $this->getParam('status');
+
         $searchQuery = ORM::forTable('referrals')
             ->tableAlias('r')
-            ->join('customers', ['r.customer_id', '=', 'c.id'], 'c')
-            ->whereIn('r.status', ["Pending", "Assigned"]);
+            ->join('customers', ['r.customer_id', '=', 'c.id'], 'c');
+        if ($filteredStatus) {
+            $searchQuery->where('r.status', $filteredStatus);
+        }
+
         if ($keyword) {
             $searchQuery->whereLike('c.display_name', "%$keyword%");
         }
