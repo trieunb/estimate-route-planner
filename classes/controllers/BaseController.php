@@ -78,11 +78,11 @@ class BaseController {
 
     protected function getParam($key, $defaultValue = null) {
         if (isset($_REQUEST[$key])) {
-            $result = $_REQUEST[$key];
+            $value = $_REQUEST[$key];
         } else {
-            $result = $defaultValue;
+            $value = $defaultValue;
         }
-        return $result;
+        return $value;
     }
 
     protected function currentUserHasCap($capability) {
