@@ -82,9 +82,9 @@ class BaseController {
         return $this->getParam('keyword');
     }
 
-    protected function getParam($param) {
-        if (isset($_REQUEST[$param])) {
-            $get_param = $_REQUEST[$param];
+    protected function getParam($key, $defaultValue = null) {
+        if (isset($_REQUEST[$key])) {
+            $get_param = $_REQUEST[$key];
         } else {
             $get_param = "";
         }
