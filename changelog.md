@@ -1,3 +1,8 @@
+## 1.8.3
+  - Add first and last name variables to estimate email template
+  - Add status filter to job requests list
+  - Fix estimate print preview popup in Chrome/Ipad
+
 ## 1.8.2
   - Fix "&" character in service line's descriptions
   - Fix customers dropdown when creating estimates from job requests if acting user restricted the customer dropdown.
