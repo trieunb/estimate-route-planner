@@ -331,6 +331,15 @@ function EditEstimateCtrl(
         resetJobCustomer();
     };
 
+    var getBillCustomer = function() {
+        for (var i = 0; i < $scope.customers.length; i++) {
+            var cus = $scope.customers[i];
+            if (cus.id == $scope.estimate.customer_id) {
+                return cus;
+            }
+        }
+    };
+
     var resetBillCustomer = function() {
         if ('undefined' !== typeof($scope.estimate.customer_id)) {
             for (var i = 0; i < $scope.customers.length; i++) {
@@ -446,12 +455,12 @@ function EditEstimateCtrl(
                                     $scope.isChangedSignature = false;
                                     toastr.success(response.message);
                                     if (sendMail) {
-                                        $scope.sendMailData = {
+                                           $scope.sendMailData = {
                                             id: $scope.estimate.id,
                                             to: $scope.estimate.email,
                                             doc_number: $scope.estimate.doc_number,
                                             subject: 'Estimate from ' + $scope.companyInfo.name,
-                                            body: emailComposer.getEstimateEmailContent(estimate)
+                                            body: emailComposer.getEstimateEmailContent(estimate, getBillCustomer())
                                         };
                                         $scope.sendMailForm.$setPristine();
                                         $scope.showSendModal = true;

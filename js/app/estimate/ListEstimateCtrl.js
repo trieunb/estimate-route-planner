@@ -186,7 +186,11 @@ function ListEstimateCtrl(
         $scope.sendMailData.id = estimate.id;
         $scope.sendMailData.to = estimate.email;
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
-        $scope.sendMailData.body = emailComposer.getEstimateEmailContent(estimate);
+        var customerData = {
+            family_name: estimate.billing_customer_family_name,
+            given_name: estimate.billing_customer_given_name
+        };
+        $scope.sendMailData.body = emailComposer.getEstimateEmailContent(estimate, customerData);
         $scope.sendEmailForm.$setPristine();
         setTimeout(function() {
             angular.element('.estimate-mail-content')[0].focus();
