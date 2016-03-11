@@ -69,22 +69,20 @@ class BaseController {
     }
 
     protected function getPageParam() {
-        $page = "";
-        if (isset($_REQUEST['page'])) {
-            $page = $_REQUEST['page'];
-        } else {
-            $page = 1;
-        }
-        return $page;
+        return $this->getParam('page', 1);
     }
 
     protected function getKeywordParam() {
-        if (isset($_REQUEST['keyword'])) {
-            $keyword = $_REQUEST['keyword'];
+        return $this->getParam('keyword');
+    }
+
+    protected function getParam($key, $defaultValue = null) {
+        if (isset($_REQUEST[$key])) {
+            $value = $_REQUEST[$key];
         } else {
-            $keyword = "";
+            $value = $defaultValue;
         }
-        return $keyword;
+        return $value;
     }
 
     protected function currentUserHasCap($capability) {

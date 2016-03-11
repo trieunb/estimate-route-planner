@@ -29,7 +29,10 @@ function ListJobRequestCtrl(
     $scope.date = new Date();
     $scope.routes = [];
     $scope.showAssignModal = false;
-    $scope.filter = {};
+    $scope.filterParams = {
+        keyword: '',
+        status: ''
+    };
     $scope.total = 0;
     $scope.referralStatuses = erpOptions.referralStatuses;
 
@@ -59,9 +62,9 @@ function ListJobRequestCtrl(
 
     var paginate = function() {
         var query = {
-            _do: 'getReferrals',
             page: $scope.currentPage,
-            keyword: $scope.filter.keyword
+            status: $scope.filterParams.status,
+            keyword: $scope.filterParams.keyword
         };
         jobRequestFactory.list(query)
             .success(function(response) {
@@ -74,8 +77,14 @@ function ListJobRequestCtrl(
         paginate();
     };
 
+    $scope.changeFilterStatus = function() {
+        // Reset page to 1
+        $scope.currentPage = 1;
+        paginate();
+    };
+
     $scope.onSelectCustomer = function(customer) {
-        $scope.filter.keyword = customer.display_name;
+        $scope.filterParams.keyword = customer.display_name;
         $scope.searchReferral();
     };
 
@@ -85,9 +94,30 @@ function ListJobRequestCtrl(
     };
 
     $scope.clearSearch = function() {
-        $scope.filter = {};
+        $scope.filterParams = {
+            keyword: '',
+            status: ''
+        };
         paginate();
     };
+    $scope.filterStatuses = [
+        {
+            value: '',
+            label: 'All'
+        },
+        {
+            value: 'Pending',
+            label: 'Pending'
+        },
+        {
+            value: 'Assigned',
+            label: 'Assigned'
+        },
+        {
+            value: 'Completed',
+            label: 'Completed'
+        }
+    ];
 
     $scope.showModalUpdateStatus = function(referral) {
         $scope.currentReferral = {};

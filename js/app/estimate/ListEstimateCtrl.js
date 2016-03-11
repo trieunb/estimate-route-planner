@@ -33,7 +33,7 @@ function ListEstimateCtrl(
     $scope.estimates = {};
     $scope.selectedStatus = '';
     $scope.sendMailData = {};
-    $scope.filter = {
+    $scope.filterParams = {
         keyword: '',
         status: ''
     };
@@ -49,10 +49,9 @@ function ListEstimateCtrl(
 
     var paginate = function() {
         var query = {
-            _do: 'getEstimates',
             page: $scope.currentPage,
-            status: $scope.filter.status,
-            keyword: $scope.filter.keyword
+            status: $scope.filterParams.status,
+            keyword: $scope.filterParams.keyword
         };
         estimateFactory.list(query)
             .success(function(response) {
@@ -71,7 +70,7 @@ function ListEstimateCtrl(
     };
 
     $scope.onSelectCustomer = function(customer) {
-        $scope.filter.keyword = customer.display_name;
+        $scope.filterParams.keyword = customer.display_name;
         $scope.searchEstimate();
     };
 
@@ -81,7 +80,7 @@ function ListEstimateCtrl(
     };
 
     $scope.clearSearch = function() {
-        $scope.filter = {
+        $scope.filterParams = {
             keyword: '',
             status: ''
         };
@@ -187,7 +186,11 @@ function ListEstimateCtrl(
         $scope.sendMailData.id = estimate.id;
         $scope.sendMailData.to = estimate.email;
         $scope.sendMailData.subject = 'Estimate from ' + sharedData.companyInfo.name;
-        $scope.sendMailData.body = emailComposer.getEstimateEmailContent(estimate);
+        var customerData = {
+            family_name: estimate.billing_customer_family_name,
+            given_name: estimate.billing_customer_given_name
+        };
+        $scope.sendMailData.body = emailComposer.getEstimateEmailContent(estimate, customerData);
         $scope.sendEmailForm.$setPristine();
         setTimeout(function() {
             angular.element('.estimate-mail-content')[0].focus();

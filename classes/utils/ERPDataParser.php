@@ -286,10 +286,10 @@ final class ERPDataParser {
         }
         $expiration_date = $data_local['expiration_date'];
         if ($data->ExpirationDate) {
-            $expiration_date = date('Y-m-d H:i:s', strtotime($data->ExpirationDate));
+            $expiration_date = $data->ExpirationDate;
         }
         if ($data->DueDate) {
-            $due_date = date('Y-m-d H:i:s', strtotime($data->DueDate));
+            $due_date = $data->DueDate;
         }
         $billAddress = $data->BillAddr;
         $bill_address_id

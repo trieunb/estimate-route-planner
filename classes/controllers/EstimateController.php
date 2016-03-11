@@ -9,11 +9,8 @@ class EstimateController extends BaseController {
     public function index() {
         $page = $this->getPageParam();
         $keyword = $this->getKeywordParam();
-        $filteredStatus = "";
+        $filteredStatus = $this->getParam('status');
 
-        if (isset($_REQUEST['status'])) {
-            $filteredStatus = $_REQUEST['status'];
-        }
         $searchQuery = ORM::forTable('estimates')
             ->tableAlias('e')
             ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
@@ -54,6 +51,8 @@ class EstimateController extends BaseController {
                 'e.job_address', 'e.job_city', 'e.job_state', 'e.job_zip_code'
             )
             ->select('c.display_name', 'billing_customer_display_name')
+            ->select('c.given_name', 'billing_customer_given_name')
+            ->select('c.family_name', 'billing_customer_family_name')
             ->select('jc.display_name', 'shipping_customer_display_name')
             ->select('classes.name', 'source_name')
             ->limit(self::PAGE_SIZE)
@@ -230,6 +229,8 @@ class EstimateController extends BaseController {
             ->leftOuterJoin('customers', ['e.customer_id', '=', 'c.id'], 'c')
             ->leftOuterJoin('customers', ['e.job_customer_id', '=', 'jc.id'], 'jc')
             ->select('c.display_name', 'billing_customer_display_name')
+            ->select('c.given_name', 'billing_customer_given_name')
+            ->select('c.family_name', 'billing_customer_family_name')
             ->select('jc.display_name', 'shipping_customer_display_name')
             ->findOne($id);
         if ($estimate) {

@@ -32,7 +32,7 @@ CREATE TABLE `company_info` (
 
 LOCK TABLES `company_info` WRITE;
 /*!40000 ALTER TABLE `company_info` DISABLE KEYS */;
-INSERT INTO `company_info` VALUES (1,'Your Company Name','Company business address','Company mailing address','(123) 456-7890','123-456-789','company-name@example.com','http://example.com',NULL, 'Thank you for your business and have a great day!',NULL);
+INSERT INTO `company_info` VALUES (1,'Your Company Name','Company business address','Company mailing address','(123) 456-7890','123-456-789','company-name@example.com','http://example.com',NULL, NULL, 'Thank you for your business and have a great day!',NULL);
 /*!40000 ALTER TABLE `company_info` ENABLE KEYS */;
 UNLOCK TABLES;
 --

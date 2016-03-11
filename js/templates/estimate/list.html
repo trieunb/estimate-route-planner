@@ -8,15 +8,15 @@
             ng-submit="searchEstimate()">
                 <div class="col-md-5 col-sm-4 n-p">
                     <div class="col-sm-12">
-                        <customer-typeahead on-select="onSelectCustomer(item)" ng-model="filter.keyword" placeholder="Search by customer name, number ... "></customer-typeahead>
+                        <customer-typeahead on-select="onSelectCustomer(item)" ng-model="filterParams.keyword" placeholder="Search by customer name, number ... "></customer-typeahead>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 n-p">
                     <label class="control-label col-sm-4">Status:</label>
                     <div class="col-sm-8">
-                        <select ng-model="filter.status" class="form-control"
+                        <select ng-model="filterParams.status" class="form-control"
                             ng-change="changeFilterStatus()"
-                            ng-options="status.value as status.label for status in filterStatuses">
+                            ng-options="status.value as status.label for status in ::filterStatuses">
                         </select>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                       <button class="btn btn-primary" ng-click="sendMailEstimate()" ng-disabled="sendEmailForm.$invalid || $root.isBusy">Send</button>
                       <button class="btn btn-default" type="button" ng-click="previewPdfEstimate(sendMailData)">Print Preview
                       </button>
-                      <button class="btn" type="button" ng-click="showModal = false">Cancel
+                      <button class="btn btn-default" type="button" ng-click="showModal = false">Cancel
                       </button>
                     </div>
                 </form>
@@ -136,8 +136,8 @@
         </div>
     </div>
     <!-- show model preview pdf estimate -->
-    <div class="modal fade" ng-class="{'in': showModalPdf}" ng-style="{'display': showModalPdf ? 'block' : 'none'}">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade modal-print-estimate" ng-class="{'in': showModalPdf}" ng-style="{'display': showModalPdf ? 'block' : 'none'}">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                   Print Preview
@@ -147,11 +147,11 @@
                 </div>
                 <div class="modal-body">
                   <object type="application/pdf"
-                    data="{{::$root.baseAPIPath}}&_do=previewPdfEstimate&id={{sendMailData.id}}" width="100%" height="420">
+                    data="{{::$root.baseAPIPath}}&_do=previewPdfEstimate&id={{sendMailData.id}}" width="100%">
                   </object>
                 </div>
                 <div class="modal-footer">
-                  <button class="btn" type="button" ng-click="showModalPdf = false">Close
+                  <button class="btn btn-default" type="button" ng-click="showModalPdf = false">Close
                   </button>
                 </div>
             </div>

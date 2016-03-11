@@ -100,7 +100,6 @@ angular
         $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
         $httpProvider.interceptors.push('erpHttpInterceptor');
         uiGmapGoogleMapApiProvider.configure({
-            key: '',
             v: '3.17',
             libraries: 'geometry, visualization'
         });
