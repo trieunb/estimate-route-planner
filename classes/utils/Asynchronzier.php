@@ -65,12 +65,56 @@ class Asynchronzier
 
     public static function isSynchronizing() {
         $lockFile = fopen(ERP_TMP_DIR . self::SYNC_LOCK_FILE, "a+");
-        if (flock($fp, LOCK_EX | LOCK_NB)) {
-            flock($fp, LOCK_UN);
+        if (flock($lockFile, LOCK_EX | LOCK_NB)) {
+            flock($lockFile, LOCK_UN);
             return false;
         } else {
             return true;
         }
+    }
+
+    public function start($syncFromTime) {
+        $logger = new ERPLogger('sync.log');
+        $startAt = time();
+        $logger->log("\n\n=== Sync started at: " . date('Y-m-d H:i:s') . " ===");
+        $lockFile = fopen(ERP_TMP_DIR . self::SYNC_LOCK_FILE, "a+");
+        if (flock($lockFile, LOCK_EX | LOCK_NB)) {
+            $syncHistory = ORM::forTable('sync_histories')->create();
+            try {
+                $syncHistory->start_at = date('Y-m-d H:i:s');
+                $syncHistory->status = 'In-progress';
+                $syncHistory->save();
+
+                // $this->syncCustomer($syncFromTime);
+                // $this->syncEmployee($syncFromTime);
+                $this->syncEstimate($syncFromTime);
+                // $this->syncProductService($syncFromTime);
+                // $this->syncClass($syncFromTime);
+                // $this->syncAttachment($syncFromTime);
+                //
+
+                $syncHistory->end_at = date('Y-m-d H:i:s');
+                $syncHistory->status = 'Success';
+                $syncHistory->save();
+                flock($lockFile, LOCK_UN);
+            } catch (\Exception $e) {
+                if (ORM::getDB()->inTransaction()) {
+                    ORM::getDB()->rollBack();
+                }
+                $syncHistory->end_at = date('Y-m-d H:i:s');
+                $syncHistory->status = 'Error';
+                $syncHistory->note = $e->getMessage();
+                $syncHistory->save();
+                $logger->log("Sync error: " . $e->getMessage());
+                $logger->log($e->getTraceAsString());
+                flock($lockFile, LOCK_UN);
+                throw $e;
+            }
+        } else {
+            $logger->log("Cancelled due to another synchronize instance is running");
+            throw new \Exception("Another synchronize instance is running");
+        }
+        $logger->log("=== Finished sync job. Taken: " . ( time() - $startAt) . " secs ===");
     }
 
     /**

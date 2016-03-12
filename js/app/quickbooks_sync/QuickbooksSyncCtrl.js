@@ -26,6 +26,7 @@ function QuickbooksSyncCtrl(
         toastr.warning('Please wait, this might take few minutes to to finish ..');
         quickbooksSyncFactory.startSync()
             .success(function(response) {
+                toastr.clear();
                 if (response.success) {
                     toastr.success(response.message);
                     // Expire cached data
