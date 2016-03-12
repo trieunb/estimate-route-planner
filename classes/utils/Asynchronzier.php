@@ -3,6 +3,7 @@
 class Asynchronzier
 {
     const QB_QUERY_SIZE = 1000;
+    const SYNC_LOCK_FILE = 'sync.lock';
     public $access_token;
     public $access_token_secret;
     public $consumer_key;
@@ -26,8 +27,7 @@ class Asynchronzier
             'realmId' => 'value'
             ]
     */
-    public function __construct($data)
-    {
+    public function __construct($data) {
         $this->access_token = $data['access_token'];
         $this->access_token_secret = $data['access_token_secret'];
         $this->consumer_key = $data['consumer_key'];
@@ -62,6 +62,17 @@ class Asynchronzier
         }
         return self::$instance;
     }
+
+    public static function isSynchronizing() {
+        $lockFile = fopen(ERP_TMP_DIR . self::SYNC_LOCK_FILE, "a+");
+        if (flock($fp, LOCK_EX | LOCK_NB)) {
+            flock($fp, LOCK_UN);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Sync all customers.
      *
@@ -205,9 +216,6 @@ class Asynchronzier
         $localEstimates = ORM::forTable('estimates')
             ->selectMany('id', 'sync_token')
             ->findMany();
-        $localLines = ORM::forTable('estimate_lines')
-            ->selectMany('id', 'estimate_id', 'line_id')
-            ->findMany();
         $loger->log('Local count: ' . count($localEstimates));
         $updateCount = $createCount = 0;
         while (true) {
@@ -233,8 +241,12 @@ class Asynchronzier
                             $localEstimateData = ORM::forTable('estimates')
                                 ->findOne($estimate->id)
                                 ->asArray();
-                            $estRecord = ORM::forTable('estimates')->hydrate();
-                            ++$updateCount;
+                            if ($localEstimateData['sync_token'] != $estimateObj->SyncToken) {
+                                $estRecord = ORM::forTable('estimates')->hydrate();
+                                ++$updateCount;
+                            } else {
+                                $estRecord = null;
+                            }
                             unset($localEstimates[$index]);
                             --$createCount;
                             break;
@@ -245,27 +257,23 @@ class Asynchronzier
                         $estRecord->set($parsedEstimateData)->save();
 
                         // Sync lines
-                        $estimateLineModel = new EstimateLineModel();
-                        $localEstLines = [];
-                        foreach ($localLines as $index => $localLine) {
-                            if ($localLine->estimate_id == $estimateObj->Id) {
-                                $localEstLines[] = $localLine;
-                                unset($localLines[$index]);
-                            }
-                        }
+                        $localEstLines = ORM::forTable('estimate_lines')
+                                         ->where('estimate_id', $estimateObj->Id)
+                                         ->findMany();
                         foreach ($estimateObj->Line as $lineObj) {
                             $parsedLine = ERPDataParser::parseEstimateLine($lineObj, $estimateObj->Id);
                             if ($parsedLine) {
-                                $exists = false;
+                                $lineExists = false;
                                 foreach ($localEstLines as $index => $localLine) {
                                     if ($localLine->line_id == $parsedLine['line_id']) {
                                         $localLine->set($parsedLine);
                                         $localLine->save();
-                                        $exists = true;
+                                        $lineExists = true;
                                         unset($localEstLines[$index]);
+                                        break;
                                     }
                                 }
-                                if (!$exists) {
+                                if (!$lineExists) {
                                     $lineRecord = ORM::forTable('estimate_lines')->create();
                                     $lineRecord->set($parsedLine);
                                     $lineRecord->save();
