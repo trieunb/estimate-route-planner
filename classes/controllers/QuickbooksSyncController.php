@@ -88,7 +88,6 @@ class QuickbooksSyncController extends BaseController {
             $prefs->qbo_company_id = null;
             $prefs->qbo_oauth_token = null;
             $prefs->qbo_oauth_secret = null;
-            $prefs->is_synchronizing = false;
             $prefs->save();
             $this->renderJson([
                 'success' => true

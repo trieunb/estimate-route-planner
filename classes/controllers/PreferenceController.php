@@ -111,7 +111,6 @@ class PreferenceController extends BaseController {
         } else {
             $this->renderJson(json_decode("{}"));
         }
-
     }
 }
 ?>

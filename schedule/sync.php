@@ -33,10 +33,12 @@ if (ERPConfig::isOAuthTokenValid()) {
     if ($prefs->last_sync_at) {
         $syncFromTime = date("c", strtotime($prefs->last_sync_at));
     }
-
-    Asynchronzier::getInstance()->start($syncFromTime);
-
-    $prefs->last_sync_at = $startSyncAt;
-    $prefs->save();
+    try {
+        Asynchronzier::getInstance()->start($syncFromTime);
+        $prefs->last_sync_at = $startSyncAt;
+        $prefs->save();
+    } catch(\Exception $e) {
+        // Do nothing
+    }
 }
 ?>

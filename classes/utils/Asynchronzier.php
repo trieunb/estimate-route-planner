@@ -302,8 +302,9 @@ class Asynchronzier
                                          ->where('estimate_id', $estimateObj->Id)
                                          ->findMany();
                         foreach ($estimateObj->Line as $lineObj) {
-                            $parsedLine = ERPDataParser::parseEstimateLine($lineObj, $estimateObj->Id);
+                            $parsedLine = ERPDataParser::parseEstimateLine($lineObj);
                             if ($parsedLine) {
+                                $parsedLine['estimate_id'] = $parsedEstimateData['id'];
                                 $lineExists = false;
                                 foreach ($localEstLines as $index => $localLine) {
                                     if ($localLine->line_id == $parsedLine['line_id']) {
