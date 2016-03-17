@@ -246,7 +246,6 @@ CREATE TABLE `preferences` (
   `qbo_token_expires_at` datetime DEFAULT NULL,
   `qbo_consumer_secret` varchar(255) DEFAULT NULL,
   `qbo_consumer_key` varchar(255) DEFAULT NULL,
-  `is_synchronizing` tinyint(1) NOT NULL DEFAULT '0',
   `gmail_username` varchar(255) DEFAULT NULL,
   `gmail_password` varchar(255) DEFAULT NULL,
   `gmail_server` varchar(255) DEFAULT NULL,

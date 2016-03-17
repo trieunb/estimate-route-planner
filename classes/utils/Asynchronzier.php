@@ -3,6 +3,8 @@
 class Asynchronzier
 {
     const QB_QUERY_SIZE = 1000;
+    const SYNC_LOCK_FILE = 'sync.lock';
+
     public $access_token;
     public $access_token_secret;
     public $consumer_key;
@@ -26,8 +28,7 @@ class Asynchronzier
             'realmId' => 'value'
             ]
     */
-    public function __construct($data)
-    {
+    public function __construct($data) {
         $this->access_token = $data['access_token'];
         $this->access_token_secret = $data['access_token_secret'];
         $this->consumer_key = $data['consumer_key'];
@@ -35,17 +36,17 @@ class Asynchronzier
         $this->realmId = $data['realmId'];
 
         $this->requestValidator = new OAuthRequestValidator(
-                $this->access_token,
-                $this->access_token_secret,
-                $this->consumer_key,
-                $this->consumer_secret
-            );
+            $this->access_token,
+            $this->access_token_secret,
+            $this->consumer_key,
+            $this->consumer_secret
+        );
 
         $this->serviceContext = new ServiceContext(
-                $this->realmId,
-                $this->serviceType,
-                $this->requestValidator
-            );
+            $this->realmId,
+            $this->serviceType,
+            $this->requestValidator
+        );
         if (!$this->serviceContext) {
             exit("Problem while initializing ServiceContext.\n");
         }
@@ -62,13 +63,66 @@ class Asynchronzier
         }
         return self::$instance;
     }
+
+    public static function isSynchronizing() {
+        $lockFile = fopen(ERP_TMP_DIR . self::SYNC_LOCK_FILE, "a+");
+        if (flock($lockFile, LOCK_EX | LOCK_NB)) {
+            flock($lockFile, LOCK_UN);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function start($syncFromTime) {
+        $logger = new ERPLogger('sync.log');
+        $startAt = time();
+        $logger->log("\n\n=== Sync started at: " . date('Y-m-d H:i:s') . " ===");
+        $lockFile = fopen(ERP_TMP_DIR . self::SYNC_LOCK_FILE, "a+");
+        if (flock($lockFile, LOCK_EX | LOCK_NB)) {
+            $syncHistory = ORM::forTable('sync_histories')->create();
+            try {
+                $syncHistory->start_at = date('Y-m-d H:i:s');
+                $syncHistory->status = 'In-progress';
+                $syncHistory->save();
+
+                $this->syncCustomer($syncFromTime);
+                // $this->syncEmployee($syncFromTime);
+                $this->syncEstimate($syncFromTime);
+                $this->syncProductService($syncFromTime);
+                $this->syncClass($syncFromTime);
+                $this->syncAttachment($syncFromTime);
+
+                $syncHistory->end_at = date('Y-m-d H:i:s');
+                $syncHistory->status = 'Success';
+                $syncHistory->save();
+                flock($lockFile, LOCK_UN);
+            } catch (\Exception $e) {
+                if (ORM::getDB()->inTransaction()) {
+                    ORM::getDB()->rollBack();
+                }
+                $syncHistory->end_at = date('Y-m-d H:i:s');
+                $syncHistory->status = 'Error';
+                $syncHistory->note = $e->getMessage();
+                $syncHistory->save();
+                $logger->log("Sync error: " . $e->getMessage());
+                $logger->log($e->getTraceAsString());
+                flock($lockFile, LOCK_UN);
+                throw $e;
+            }
+        } else {
+            $logger->log("Cancelled due to another synchronize instance is running");
+            throw new \Exception("Another synchronize instance is running");
+        }
+        $logger->log("=== Finished sync. Taken: " . ( time() - $startAt) . " secs ===");
+    }
+
     /**
      * Sync all customers.
      *
      * @param $lastSyncedTime the time in ISO 8601 format
      */
-    public function syncCustomer($lastSyncedTime = null)
-    {
+    public function syncCustomer($lastSyncedTime = null) {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log('== Sync customer started');
@@ -135,8 +189,7 @@ class Asynchronzier
      *
      * @param $lastSyncedTime the time in ISO 8601 format
      */
-    public function syncEmployee($lastSyncedTime = null)
-    {
+    public function syncEmployee($lastSyncedTime = null) {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync employee started");
@@ -196,17 +249,13 @@ class Asynchronzier
         $loger->log('= Sync employee done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function syncEstimate($lastSyncedTime = null)
-    {
+    public function syncEstimate($lastSyncedTime = null) {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync estimate started");
         $startPos = 1;
         $localEstimates = ORM::forTable('estimates')
             ->selectMany('id', 'sync_token')
-            ->findMany();
-        $localLines = ORM::forTable('estimate_lines')
-            ->selectMany('id', 'estimate_id', 'line_id')
             ->findMany();
         $loger->log('Local count: ' . count($localEstimates));
         $updateCount = $createCount = 0;
@@ -233,8 +282,12 @@ class Asynchronzier
                             $localEstimateData = ORM::forTable('estimates')
                                 ->findOne($estimate->id)
                                 ->asArray();
-                            $estRecord = ORM::forTable('estimates')->hydrate();
-                            ++$updateCount;
+                            if ($localEstimateData['sync_token'] != $estimateObj->SyncToken) {
+                                $estRecord = ORM::forTable('estimates')->hydrate();
+                                ++$updateCount;
+                            } else {
+                                $estRecord = null;
+                            }
                             unset($localEstimates[$index]);
                             --$createCount;
                             break;
@@ -245,27 +298,24 @@ class Asynchronzier
                         $estRecord->set($parsedEstimateData)->save();
 
                         // Sync lines
-                        $estimateLineModel = new EstimateLineModel();
-                        $localEstLines = [];
-                        foreach ($localLines as $index => $localLine) {
-                            if ($localLine->estimate_id == $estimateObj->Id) {
-                                $localEstLines[] = $localLine;
-                                unset($localLines[$index]);
-                            }
-                        }
+                        $localEstLines = ORM::forTable('estimate_lines')
+                                         ->where('estimate_id', $estimateObj->Id)
+                                         ->findMany();
                         foreach ($estimateObj->Line as $lineObj) {
-                            $parsedLine = ERPDataParser::parseEstimateLine($lineObj, $estimateObj->Id);
+                            $parsedLine = ERPDataParser::parseEstimateLine($lineObj);
                             if ($parsedLine) {
-                                $exists = false;
+                                $parsedLine['estimate_id'] = $parsedEstimateData['id'];
+                                $lineExists = false;
                                 foreach ($localEstLines as $index => $localLine) {
                                     if ($localLine->line_id == $parsedLine['line_id']) {
                                         $localLine->set($parsedLine);
                                         $localLine->save();
-                                        $exists = true;
+                                        $lineExists = true;
                                         unset($localEstLines[$index]);
+                                        break;
                                     }
                                 }
-                                if (!$exists) {
+                                if (!$lineExists) {
                                     $lineRecord = ORM::forTable('estimate_lines')->create();
                                     $lineRecord->set($parsedLine);
                                     $lineRecord->save();
@@ -312,8 +362,7 @@ class Asynchronzier
      *
      * @param $lastSyncedTime the time in ISO 8601 format
      */
-    public function syncProductService($lastSyncedTime = null)
-    {
+    public function syncProductService($lastSyncedTime = null) {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync product/services started");
@@ -363,8 +412,7 @@ class Asynchronzier
         $loger->log('= Sync product/services done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function syncAttachment($lastSyncedTime = null)
-    {
+    public function syncAttachment($lastSyncedTime = null) {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync attachments started");
@@ -432,8 +480,7 @@ class Asynchronzier
         $loger->log('= Sync attachments done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function syncClass($lastSyncedTime = null)
-    {
+    public function syncClass($lastSyncedTime = null) {
         $loger = new ERPLogger('sync.log');
         $startedAt = time();
         $loger->log("\n= Sync classes started");
@@ -481,8 +528,7 @@ class Asynchronzier
         $loger->log('= Sync classes done, taken: '.($endAt - $startedAt)." secs\n");
     }
 
-    public function mergeData($dataGet, $dataLocal)
-    {
+    public function mergeData($dataGet, $dataLocal) {
         $diff = [];
         foreach ($dataLocal as $l) {
             $exist = false;
@@ -504,8 +550,7 @@ class Asynchronzier
         $positionStart is Integer,
         $maxResult is Integer
     */
-    public function findAll($name, $postionStart, $maxResult)
-    {
+    public function findAll($name, $postionStart, $maxResult) {
         return $this->dataService->FindAll($name, $postionStart, $maxResult);
     }
 
@@ -516,8 +561,7 @@ class Asynchronzier
             'IPPCustomer': [{Taxable: true},{IPPPhysicalAddress: [{id:2, }]}]
         }
     */
-    public function findById($entity)
-    {
+    public function findById($entity) {
         return $this->dataService->FindById($entity);
     }
 
@@ -525,13 +569,11 @@ class Asynchronzier
         $Query is String
         Ex: "SECLECT * FROM Customer"
     */
-    public function Query($query)
-    {
+    public function Query($query) {
         return $this->dataService->Query($query);
     }
 
-    public function Create($entity)
-    {
+    public function Create($entity) {
         $object = new $entity['name']();
         foreach ($entity['attributes'] as $key => $value) {
             if (!is_array($entity['attributes'][$key])) {
@@ -584,67 +626,8 @@ class Asynchronzier
         Param $object of function Update is object
         Ex: $entity = Customer
     */
-    public function Update($entity)
-    {
-        $object = new $entity['name']();
-        foreach ($entity['attributes'] as $key => $value) {
-            if (!is_array($entity['attributes'][$key])) {
-                $object->$key = $value;
-            } else {
-                if ($key == 'Line' || $key == 'CustomField') {
-                    $object->$key = [];
-                    foreach ($entity['attributes'][$key] as $sub) {
-                        $sub_object = new $sub['name']();
-                        foreach ($sub['attributes'] as $sub_key => $sub_value) {
-                            if (!is_array($sub['attributes'][$sub_key])) {
-                                $sub_object->$sub_key = $sub_value;
-                            } else {
-                                foreach ($sub['attributes'][$sub_key] as $sub_sub) {
-                                    $sub_sub_object = new $sub_sub['name']();
-                                    $sub_object->$sub_key = $sub_sub_object;
-                                    foreach ($sub_sub['attributes'] as $sub_sub_key => $sub_sub_value) {
-                                        $sub_object->$sub_key->$sub_sub_key = $sub_sub_value;
-                                    }
-                                }
-                            }
-                        }
-                        array_push($object->$key, $sub_object);
-                    }
-                } else {
-                    foreach ($entity['attributes'][$key] as $sub) {
-                        $sub_object = new $sub['name']();
-                        $object->$key = $sub_object;
-                        foreach ($sub['attributes'] as $sub_key => $sub_value) {
-                            if (!is_array($sub['attributes'][$sub_key])) {
-                                $object->$key->$sub_key = $sub_value;
-                            } else {
-                                foreach ($sub['attributes'][$sub_key] as $sub_sub) {
-                                    $sub_sub_object = new $sub_sub['name']();
-                                    $object->$key->$sub_key = $sub_sub_object;
-                                    foreach ($sub_sub['attributes'] as $sub_sub_key => $sub_sub_value) {
-                                        $object->$key->$sub_key->$sub_sub_key = $sub_sub_value;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return $this->dataService->Add($object);
-    }
-
-    /*
-        Param $object of function Update is object
-        Ex: $entity = Customer
-    */
-    public function Delete($object)
-    {
+    public function Delete($object) {
         return $this->dataService->Delete($object);
-    }
-    public function Edit($object)
-    {
-        return $this->dataService->Add($object);
     }
 
     public function createCustomer($data) {
@@ -730,8 +713,8 @@ class Asynchronzier
         return $lineEntities;
     }
 
-    public function saveEstimate(IPPEstimate $estimateEntity) {
-        return $this->dataService->Add($estimateEntity);
+    public function saveEntity($entity) {
+        return $this->dataService->Add($entity);
     }
 
     public function buildCustomerEntity($data) {
@@ -861,116 +844,6 @@ class Asynchronzier
         }
         return $estimateObj;
     }
-    /**
-     * Create Entity object by given raw array of attributes
-     */
-    public function decodeEstimate($localData)
-    {
-        $value = [
-            'name' => 'IPPEstimate',
-            'attributes' => [
-                'CustomerRef'   => $localData['customer_id'],
-                'ClassRef'      => $localData['class_id'],
-                'SyncToken'     => $localData['sync_token'],
-                'DocNumber'     => $localData['doc_number'],
-                'TxnDate'       => $localData['txn_date'],
-                'ExpirationDate'=> $localData['expiration_date'],
-                'CustomerMemo'  => $localData['estimate_footer'],
-                'CustomField'   => [
-                    // Sold by 1
-                    [
-                        'name' => 'IPPCustomField',
-                        'attributes' => [
-                            'DefinitionId' => '2',
-                            'Type' => 'StringType',
-                            'Name' => 'Sales Rep',
-                            'StringValue' => @$localData['sold_by_1'] . ''
-                        ]
-                    ],
-                    // Sold by 2
-                    [
-                        'name' => 'IPPCustomField',
-                        'attributes' => [
-                            'DefinitionId' => '3',
-                            'Type' => 'StringType',
-                            'Name' => 'Sales Rep',
-                            'StringValue' => @$localData['sold_by_2'] . ''
-                        ]
-                    ]
-                ],
-                'BillAddr' => [
-                    [
-                        'name' => 'IPPPhysicalAddress',
-                        'attributes' => [
-                            'Id' => $localData['bill_address_id'],
-                            'Line1' => $localData['bill_address'],
-                            'City' => $localData['bill_city'],
-                            'CountrySubDivisionCode' => $localData['bill_state'],
-                            'PostalCode' => $localData['bill_zip_code']
-                        ],
-                    ],
-                ],
-                'ShipAddr' => [
-                    [
-                        'name' => 'IPPPhysicalAddress',
-                        'attributes' => [
-                            'Id' => $localData['job_address_id'],
-                            'Line1' => $localData['job_address'],
-                            'City' => $localData['job_city'],
-                            'CountrySubDivisionCode' => $localData['job_state'],
-                            'PostalCode' => $localData['job_zip_code']
-                        ],
-                    ],
-                ],
-                'BillEmail' => [
-                    [
-                        'name' => 'IPPEmailAddress',
-                        'attributes' => [
-                            'Address' => $localData['email'],
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $value['attributes']['Line'] = [];
-        foreach ($localData['lines'] as $index => $line) {
-            $value_line = [
-                'name' => 'IPPLine',
-                'attributes' => [
-                    'Id' => $line['line_id'],
-                    'LineNum' => $index,
-                    'Description' => $line['description']
-                ],
-            ];
-            if ($line['product_service_id']) {
-                $value_line['attributes']['DetailType'] = 'SalesItemLineDetail';
-                $value_line['attributes']['Amount'] = (float) $line['qty'] * (float) $line['rate'];
-                $value_line['attributes']['SalesItemLineDetail'] = [
-                    [
-                        'name' => 'IPPSalesItemLineDetail',
-                        'attributes' => [
-                            'ItemRef' => $line['product_service_id'],
-                            'Qty' => $line['qty'],
-                            'UnitPrice' => $line['rate'],
-                        ],
-                    ]
-                ];
-            } else { // Consider lines without product service are DescriptionOnly
-                $value_line['attributes']['DetailType'] = 'DescriptionOnly';
-            }
-            array_push($value['attributes']['Line'], $value_line);
-        }
-        if (isset($localData['id'])) {
-            $value['attributes']['Id'] = $localData['id'];
-        }
-        if ($localData['status'] == 'Completed' || $localData['status'] == 'Routed') {
-            $value['attributes']['TxnStatus'] = 'Accepted';
-        } else {
-            $value['attributes']['TxnStatus'] = $localData['status'];
-        }
-        return $value;
-    }
 
     /**
      * Returns an entity under the specified realm. The realm must be set in the context.
@@ -979,18 +852,11 @@ class Asynchronzier
      *
      * @return IPPIntuitEntity Returns an entity of specified Id.
      */
-    public function Retrieve($entity)
-    {
+    public function Retrieve($entity) {
         return $this->dataService->Retrieve($entity);
     }
 
-    public function Add($entity)
-    {
-        return $this->dataService->Add($entity);
-    }
-
-    public function upload($fileContent, $fileName, $mimeType, $objAttachable)
-    {
+    public function upload($fileContent, $fileName, $mimeType, $objAttachable) {
         return $this->dataService->Upload($fileContent, $fileName, $mimeType, $objAttachable);
     }
 }

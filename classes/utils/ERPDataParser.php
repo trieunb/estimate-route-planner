@@ -67,7 +67,7 @@ final class ERPDataParser {
         ];
     }
 
-    public function parseEstimateLine($entity, $estimateId) {
+    public function parseEstimateLine($entity) {
         if ($entity->Id) {
             $qty = $rate = $product_service_id = null;
             switch ($entity->DetailType) {
@@ -92,7 +92,6 @@ final class ERPDataParser {
             return [
                 'line_id'       => $entity->Id,
                 'line_num'      => $entity->LineNum,
-                'estimate_id'   => $estimateId,
                 'product_service_id' => $product_service_id,
                 'qty'           => $qty,
                 'rate'          => $rate,

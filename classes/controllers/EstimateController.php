@@ -168,15 +168,15 @@ class EstimateController extends BaseController {
         }
         // Save estimate to QB
         $estimateEntity = $sync->buildEstimateEntity($insertData);
-        $result = $sync->saveEstimate($estimateEntity);
-        $parsedEstimateData = ERPDataParser::parseEstimate($result, $insertData);
+        $resEntity = $sync->saveEntity($estimateEntity);
+        $parsedEstimateData = ERPDataParser::parseEstimate($resEntity, $insertData);
 
         // Parse lines data
-        foreach ($result->Line as $line) {
-            $result_line = ERPDataParser::parseEstimateLine($line, $parsedEstimateData['id']);
-            if (($result_line['line_id'] != null) && ($result_line['estimate_id'] != null)) {
-                $localLine = ORM::forTable('estimate_lines')->create($result_line);
-                $localLine->save();
+        foreach ($resEntity->Line as $line) {
+            $parsedLine = ERPDataParser::parseEstimateLine($line);
+            if ($parsedLine['line_id'] != null) {
+                $parsedLine['estimate_id'] = $parsedEstimateData['id'];
+                ORM::forTable('estimate_lines')->create($parsedLine)->save();
             }
         }
         // Save estimate to local DB
@@ -315,7 +315,7 @@ class EstimateController extends BaseController {
         $updateData['sync_token'] = $estimate->sync_token;
         $estimateEntity = $sync->buildEstimateEntity($updateData);
         try {
-            $result = $sync->saveEstimate($estimateEntity);
+            $resEntity = $sync->saveEntity($estimateEntity);
         } catch (QuickbooksAPIException $e) {
             if ($e->getStatusCode() == '400') { // Maybe the sync token wrong
                 // Try to get update token
@@ -324,7 +324,7 @@ class EstimateController extends BaseController {
                 $responseEstimate = $sync->Retrieve($objEstimate);
                 if ($estimateEntity->SyncToken != $responseEstimate->SyncToken) {
                     $estimateEntity->SyncToken = $responseEstimate->SyncToken;
-                    $result = $sync->saveEstimate($estimateEntity);
+                    $resEntity = $sync->saveEntity($estimateEntity);
                 } else {
                     throw $e;
                 }
@@ -332,14 +332,13 @@ class EstimateController extends BaseController {
                 throw $e;
             }
         }
-        $parsedEstimateData = ERPDataParser::parseEstimate($result, $updateData);
+        $parsedEstimateData = ERPDataParser::parseEstimate($resEntity, $updateData);
         // Start sync lines
         $currentLineIds = [];
-        foreach ($result->Line as $line) {
-            $parsedLine = ERPDataParser::parseEstimateLine($line, $id);
-            if (($parsedLine['line_id'] != null) &&
-                ($parsedLine['estimate_id'] != null)) {
-
+        foreach ($resEntity->Line as $line) {
+            $parsedLine = ERPDataParser::parseEstimateLine($line);
+            if ($parsedLine['line_id'] != null) {
+                $parsedLine['estimate_id'] = $id;
                 $currentLineIds[] = $parsedLine['line_id'];
                 $localLine = ORM::forTable('estimate_lines')
                     ->where('estimate_id', $id)
