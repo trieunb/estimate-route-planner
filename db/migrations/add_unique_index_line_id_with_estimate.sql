@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX line_estimate_id_line_id ON `estimate_lines` (estimate_id, line_id);
