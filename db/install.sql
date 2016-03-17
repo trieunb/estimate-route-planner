@@ -296,6 +296,7 @@ CREATE TABLE `estimate_lines` (
   `rate` float DEFAULT '0' COMMENT 'UnitPrice on QB',
   `description` text,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `line_estimate_id_line_id` (`estimate_id`,`line_id`),
   KEY `line_estimate_id` (`estimate_id`),
   KEY `line_product_service_id` (`product_service_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

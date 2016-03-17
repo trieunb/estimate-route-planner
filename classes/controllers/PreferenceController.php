@@ -46,8 +46,7 @@ class PreferenceController extends BaseController {
     }
 
     public function sendTestEmail() {
-        $companyInfoModel = new CompanyInfoModel;
-        $companyInfo = $companyInfoModel->first();
+        $companyInfo = ORM::forTable('company_info')->findOne();
         try {
             $STMPSetting = new SMTPSetting(
                 $this->data['setting']['gmail_username'],
@@ -57,9 +56,9 @@ class PreferenceController extends BaseController {
             );
             $mailer = new ERPMailer($STMPSetting);
             $to = $this->data['to'];
-            $subject = $companyInfo['name'] . ' - Test email';
+            $subject = $companyInfo->name . ' - Test email';
             $body = 'This is a test email to check email sending feature of the plugin';
-            if ($mailer->sendmail($subject, $body, $to, ['fromName' => $companyInfo['name']])) {
+            if ($mailer->sendmail($subject, $body, $to, ['fromName' => $companyInfo->name])) {
                 $this->renderJson([
                     'success' => true,
                     'message' => 'Email was sent successfully'
