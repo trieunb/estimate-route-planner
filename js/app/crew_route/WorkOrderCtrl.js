@@ -20,6 +20,7 @@ function WorkOrderCtrl(
         $window,
         crewRouteFactory,
         estimateFactory) {
+
     $scope.setPageTitle('Work Order');
 
     var init = function() {
@@ -46,14 +47,14 @@ function WorkOrderCtrl(
                         }
                         // Get assigned estimates
                         estimateFactory.listAssigedToRoute($scope.route_id).
-                            success(function(responseData) {
+                            success(function(resData) {
                                 var savedEstimatesData = [];
                                 if ($scope.work_order.estimates_data !== undefined) {
                                     savedEstimatesData = $scope.work_order.estimates_data;
                                 }
-                                for (var e = 0; e < responseData.length; e++) {
-                                    var estimate = responseData[e];
-                                    var savedEstimate;
+                                for (var e = 0; e < resData.length; e++) {
+                                    var estimate = resData[e];
+                                    var savedEstimate = null;
                                     if (savedEstimatesData.length) {
                                         for (var i = 0; i < savedEstimatesData.length; i++) {
                                             if (savedEstimatesData[i].id == estimate.id) {
