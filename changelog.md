@@ -1,3 +1,6 @@
+## 1.8.5
+  - Fix replicating service lines in a work order after changing or adding new estimates.
+
 ## 1.8.4
   - Change auto hide estimates from 30 days
   - Some optimization on synchronize module
