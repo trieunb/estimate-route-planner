@@ -1,3 +1,8 @@
+## 1.8.4
+  - Change auto hide estimates from 30 days
+  - Some optimization on synchronize module
+  - Add unique index to prevent duplicating lines in an estimate.
+
 ## 1.8.3
   - Add first and last name variables to estimate email template
   - Add status filter to job requests list
