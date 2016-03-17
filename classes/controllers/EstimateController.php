@@ -1,7 +1,7 @@
 <?php
 class EstimateController extends BaseController {
 
-    const DATE_EXP_EST = 14;
+    const DATE_EXP_EST = 30;
 
     /**
      * Listing all estimates
