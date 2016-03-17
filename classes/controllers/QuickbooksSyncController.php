@@ -42,22 +42,6 @@ class QuickbooksSyncController extends BaseController {
     }
 
     public function syncAll() {
-        // $qbCreds = [
-        //     'access_token' => 'qyprd4xpJ5pjHR9gvqi0Dn6f1qYWacuIAtJ4M4vSVxgAbXG4',
-        //     'access_token_secret' => '1QU5O5YKb5meJVNTFB0fEKY8uzjk7lHPtZ3g3pSS',
-        //     'consumer_key' => 'qyprd5907oo7C4TBBOWt279fMSudtP',
-        //     'consumer_secret' => 'EO4aufQJgbfuMn7bhzXutMvDGpRA657G1iUJVXGq',
-        //     'realmId' => '1006926190'
-        // ];
-        // $sync = new Asynchronzier($qbCreds);
-
-        // $sync = Asynchronzier::getInstance();
-        // $res = $sync->dataService->CDC(['Estimate', 'Customer'] , '2016-03-10T07:20:23-00:00');
-        // dd($res);
-
-        // $qbCustomerEntity = new IPPCustomer();
-        // $qbCustomerEntity->Id = 6972;
-        // dd($sync->Retrieve($qbCustomerEntity));
         if (ERPConfig::isOAuthTokenValid()) {
             $prefs = ORM::forTable('preferences')->findOne();
             try {
