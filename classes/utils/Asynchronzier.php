@@ -269,8 +269,8 @@ class Asynchronzier
             $resCount = count($res);
             if ($resCount !== 0) {
                 $loger->log("Got $resCount records");
-                ORM::getDB()->beginTransaction();
                 foreach ($res as $estimateObj) {
+                    ORM::getDB()->beginTransaction();
                     // Dont know why this entry appear twice in QB response
                     if ($estimateObj->Id == '29791') { continue; }
                     $estRecord = ORM::forTable('estimates')->create();
@@ -327,8 +327,8 @@ class Asynchronzier
                             $line->delete();
                         }
                     }
+                    ORM::getDB()->commit();
                 }
-                ORM::getDB()->commit();
             } else {
                 $loger->log('End of data.');
                 break;
@@ -337,21 +337,6 @@ class Asynchronzier
         }
         $loger->log("Update: $updateCount");
         $loger->log("Create: $createCount");
-        // $loger->log("Delete: " . count($localEstimates));
-        // Delete removed estiamtes form local DB
-        // ORM::getDB()->beginTransaction();
-        // foreach ($localEstimates as $estimate) {
-        //     ORM::forTable('estimate_lines')
-        //         ->where('estimate_id', $estimate->id)
-        //         ->findResultSet()
-        //         ->delete();
-        //     ORM::forTable('estimate_attachments')
-        //         ->where('estimate_id', $estimate->id)
-        //         ->findResultSet()
-        //         ->delete();
-        //     $estimate->delete();
-        // }
-        // ORM::getDB()->commit();
         $endAt = time();
         $loger->log('= Sync estimate done, taken: '.($endAt - $startedAt)." secs\n");
     }
