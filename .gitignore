@@ -12,3 +12,4 @@ uploads/*
 !uploads/.keep
 .DS_Store
 node_modules
+config/plugin.local.php
