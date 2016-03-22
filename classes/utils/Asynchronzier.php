@@ -145,7 +145,6 @@ class Asynchronzier
             $resCount = count($res);
             if ($resCount !== 0) {
                 $loger->log("Got $resCount records.");
-                ORM::getDB()->beginTransaction();
                 foreach ($res as $cusObj) {
                     $cusRecord = null;
                     $exists = false;
@@ -169,7 +168,6 @@ class Asynchronzier
                         $cusRecord->set($parsedCus)->save();
                     }
                 }
-                ORM::getDB()->commit();
             } else {
                 $loger->log('End of data.');
                 break;
@@ -282,7 +280,9 @@ class Asynchronzier
                             $localEstimateData = ORM::forTable('estimates')
                                 ->findOne($estimate->id)
                                 ->asArray();
-                            if ($localEstimateData['sync_token'] != $estimateObj->SyncToken) {
+                            $remoteLastUpdatedTime = strtotime($estimateObj->MetaData->LastUpdatedTime);
+                            $localLastUpdatedTime = strtotime($localEstimateData['last_updated_at']);
+                            if ($remoteLastUpdatedTime != $localLastUpdatedTime) {
                                 $estRecord = ORM::forTable('estimates')->hydrate();
                                 ++$updateCount;
                             } else {
