@@ -71,10 +71,6 @@ function erpLocalStorage(
         // writeData(key, value);
     };
 
-    var isDataValid = function() {
-        return cacheTs >= parseInt(sharedData.lastSyncAt);
-    };
-
     /**
      * Build a tree customers array by given flattern elements
      */

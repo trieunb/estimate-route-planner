@@ -68,13 +68,16 @@ function EditEstimateCtrl(
         maxItems: 1
     };
 
+    // Product and services list
     erpLocalStorage.getProductServices()
-        .then(function(data) {
-            angular.forEach(data, function(service) {
-                if (service.active == 1) {
-                    $scope.productServices.push(service);
+        .then(function(services) {
+            var activeServices = [];
+            for (var i = 0; i < services.length; i++) {
+                if (services[i].active == 1) {
+                    activeServices.push(services[i]);
                 }
-            });
+            }
+            angular.copy(activeServices, $scope.productServices);
         });
 
     // Load employees
@@ -103,7 +106,8 @@ function EditEstimateCtrl(
 
             // Assign line_num for the empty line as length of estimate lines
             var lineProductServiceIds = [];
-            angular.forEach(estimate.lines, function(line) {
+            for (var i = 0; i < estimate.lines.length; i++) {
+                var line = estimate.lines[i];
                 if (line.line_num === null) {
                     line.line_num = estimate.lines.length;
                 } else {
@@ -123,20 +127,16 @@ function EditEstimateCtrl(
                     line.total = parseFloat(lineTotal.toFixed(2));
                     lineProductServiceIds.push(line.product_service_id);
                 }
-            });
+            };
 
-            // Product and services list
-
+            // Check if the line is an inactive service
             erpLocalStorage.getProductServices()
-                .then(function(data) {
-                    angular.forEach(data, function(pd) {
-                        // Check for add inactive products to the dropdown
-                        // if a line has assigned with them
-                        if ((pd.active == 1) ||
-                            (lineProductServiceIds.indexOf(pd.id) !== -1)) {
-                            $scope.productServices.push(pd);
+                .then(function(services) {
+                    for (var i = 0; i < services.length; i++) {
+                        if ((services[i].active == 0) && (lineProductServiceIds.indexOf(services[i].id) !== -1)) {
+                            $scope.productServices.push(services[i]);
                         }
-                    });
+                    };
                 });
 
             // Order lines by line_num
@@ -144,8 +144,7 @@ function EditEstimateCtrl(
 
             // Load signature canvas
             if (estimate.customer_signature) {
-                $scope.signatureEncoded =
-                    $rootScope.baseERPPluginUrl + estimate.customer_signature;
+                $scope.signatureEncoded = $rootScope.baseERPPluginUrl + estimate.customer_signature;
             }
 
             $scope.estimate = estimate;
@@ -499,6 +498,9 @@ function EditEstimateCtrl(
     $scope.onSaveSignature = function(signature) {
         $scope.signatureEncoded = signature;
         $scope.isChangedSignature = true;
+        if (!$scope.estimate.date_of_signature) {
+            $scope.estimate.date_of_signature = new Date();
+        }
     };
 
     var reloadAttachments = function() {

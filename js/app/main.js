@@ -125,8 +125,7 @@ $http.get(ERPApp.baseAPIPath, {
             .value('sharedData',
                 {
                     companyInfo: response.data.companyInfo,
-                    currentUserName: response.data.userData.name,
-                    lastSyncAt: response.data.lastSyncAt
+                    currentUserName: response.data.userData.name
                 }
             );
         angular.element(document).ready(function() {
