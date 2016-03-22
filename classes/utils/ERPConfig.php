@@ -16,19 +16,6 @@ final class ERPConfig {
         return $hasToken && $tokenValid && ($diffToExpireDate <= self::RENEW_TOKEN_WITHIN);
     }
 
-    public static function isQuickbookAuthenticated() {
-        $prefs = ORM::forTable('preferences')->findOne();
-        if ($prefs) {
-            return $prefs->qbo_consumer_key
-                && $prefs->qbo_consumer_secret
-                && $prefs->qbo_oauth_token
-                && $prefs->qbo_oauth_secret
-                && $prefs->qbo_company_id;
-        } else {
-            return false;
-        }
-    }
-
     public function isOAuthTokenValid() {
         $prefs = ORM::forTable('preferences')->findOne();
         if ($prefs) {

@@ -39,6 +39,10 @@ class ERPLogger {
         } catch (Exeption $e) {
             // Do nothing
         }
+
+        if (php_sapi_name() === 'cli') {
+            echo $logLine;
+        }
     }
 
     /**

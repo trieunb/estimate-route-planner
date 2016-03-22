@@ -1,0 +1,17 @@
+<?php
+
+/* Debugging flag */
+erp_define_if_not('ERP_DEBUG', true);
+
+/* Quickbooks sandbox mode flag */
+erp_define_if_not('QB_SANDBOX_MODE', ERP_DEBUG);
+
+/* Plugin timezone */
+erp_define_if_not('ERP_TIMEZONE', 'UTC');
+
+/* Memcached server */
+erp_define_if_not('ERP_MEMCACHED_HOST', '127.0.0.1');
+erp_define_if_not('ERP_MEMCACHED_PORT', 11211);
+erp_define_if_not('ERP_CACHE_PREFIX', 'erpp');
+
+?>

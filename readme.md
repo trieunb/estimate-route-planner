@@ -32,11 +32,13 @@
     - Register a QBO account.
     - Create an QB app to get app consumer keys in development mode.
     - Create a sandbox company account.
-  - Plugin setup:
-    - Open `config/plugin.php` to fill appropriate values. It contains global constants of configurations the plugin:
-      - `ERP_DEBUG`: should set to `false` in production mode, always set to `true` in development
-      - `QB_SANDBOX_MODE`: defaultly same with `ERP_DEBUG`, but you are feell free to change it.
-      - `ERP_TIMEZONE`: do not change it!
+  - Plugin setup for development:
+    - All the plugin's configurations are in `config/plugin.php`. It contanits running configs for production mode as default.
+    - To override configs: copy `config/plugin.local.example` to `config/plugin.local.php` and fill appropriate values:
+      - `ERP_DEBUG`: should set set to `true` in development
+      - `QB_SANDBOX_MODE`: self explaination
+      - `ERP_TIMEZONE`: becareful if change it when the plugin has data
+
     - Login to WP admin area, navigate to any page of the plugin. A form to authorize with QB will appear.
     Enter your own consumer Key/Secret of your QB app.
     - After authorized with QB, you should trigger a manual synchronize in Quicbbook Sync tab.
@@ -44,7 +46,7 @@
 ### Coding Style Guide
   - Indent by 4 spaces for all languages in this project.
   - For PHP: recommend follow PRS-2 style.
-  - Each line of code should be no longer than 100 characters.
+  - Each line of code should not be longer than 100 characters.
   - Trailing spaces is not allowed.
   - Always end of file with a new line character.
   - Use Linux LF instead of CRLF
