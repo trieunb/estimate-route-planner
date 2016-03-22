@@ -20,13 +20,8 @@ class AppController extends BaseController {
             $companyInfo = [];
         }
 
-        $lastSyncAt = null;
-        $prefs = ORM::forTable('preferences')->findOne();
-        if ($prefs && $prefs->last_sync_at) {
-            $lastSyncAt = strtotime($prefs->last_sync_at);
-        }
         $this->renderJson(
-            compact('companyInfo', 'userData', 'lastSyncAt')
+            compact('companyInfo', 'userData')
         );
     }
 
