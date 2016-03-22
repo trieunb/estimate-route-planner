@@ -256,7 +256,8 @@ class Asynchronzier
             ->selectMany('id', 'sync_token')
             ->findMany();
         $loger->log('Local count: ' . count($localEstimates));
-        $updateCount = $createCount = 0;
+        $updateCount = $createCount = $deleteCount = 0;
+
         while (true) {
             $query = 'SELECT * FROM Estimate';
             if ($lastSyncedTime) {
@@ -335,8 +336,39 @@ class Asynchronzier
             }
             $startPos += self::QB_QUERY_SIZE;
         }
+
+        // Query for deleted estimates
+        if ($lastSyncedTime) {
+            $cdcRes = $this->dataService->CDC(['Estimate'], strtotime($lastSyncedTime));
+            $needDeleteIds = [];
+            if (isset($cdcRes->entities['Estimate'])) {
+                $hasUpdateEstimates = $cdcRes->entities['Estimate'];
+                foreach ($hasUpdateEstimates as $est) {
+                    // QB response with an`status` attributes in XML, but the parser of SDK not works,
+                    // so we could not use it. Here I do check nullify for SyncToken instead.
+                    if ($est && $est->Id && is_null($est->SyncToken) && is_null($est->BillAddr)) {
+                        $needDeleteIds[] = $est->Id;
+                    }
+                }
+            }
+
+            $deleteCount = count($needDeleteIds);
+            if ($needDeleteIds) {
+                ORM::forTable('estimates')
+                    ->whereIn('id', $needDeleteIds)
+                    ->deleteMany();
+                ORM::forTable('estimate_lines')
+                    ->whereIn('estimate_id', $needDeleteIds)
+                    ->deleteMany();
+                ORM::forTable('estimate_attachments')
+                    ->whereIn('estimate_id', $needDeleteIds)
+                    ->deleteMany();
+            }
+        }
+
         $loger->log("Update: $updateCount");
         $loger->log("Create: $createCount");
+        $loger->log("Delete: $deleteCount");
         $endAt = time();
         $loger->log('= Sync estimate done, taken: '.($endAt - $startedAt)." secs\n");
     }

@@ -1,6 +1,7 @@
 ## 1.8.6
   - Fix sync status for invoiced estimates
   - Auto fill signature date when customer signs
+  - Fix estimates deleted in QB are not being removed from plugin
 
 ## 1.8.5
   - Fix replicating service lines in a work order after changing or adding new estimates.
