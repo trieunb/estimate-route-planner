@@ -1013,14 +1013,20 @@ class DataService {
         $query = NULL;
         $uri = NULL;
 
-
-        $formattedChangedSince = date("Y-m-d\TH:m:sP", $this->verifyChangedSince($changedSince));
+        /**
+         * Edit by Lht
+         * Since the API does not response any updates if use offsets >= 0, eg: +0 or +1 .. in changedSince param
+         * So I have to forced to use an offset < 0 is -7
+         */
+        $currentTimezone = date_default_timezone_get();
+        date_default_timezone_set('America/Los_Angeles');
+        $formattedChangedSince = date("Y-m-d\TH:i:sP", $this->verifyChangedSince($changedSince));
+        date_default_timezone_set($currentTimezone);
         $query = "entities=" . $entityString . "&changedSince=" . $formattedChangedSince;
         $uri = "company/{1}/cdc?{2}";
         //$uri = str_replace("{0}", CoreConstants::VERSION, $uri);
         $uri = str_replace("{1}", $this->serviceContext->realmId, $uri);
         $uri = str_replace("{2}", $query, $uri);
-
         // Creates request parameters
         $requestParameters = $this->getGetRequestParameters($uri, CoreConstants::CONTENTTYPE_APPLICATIONXML);
         $restRequestHandler = new SyncRestHandler($this->serviceContext);
@@ -1037,13 +1043,11 @@ class DataService {
             $xmlObj = simplexml_load_string($responseBody);
             foreach ($xmlObj->CDCResponse->QueryResponse as $oneObj) {
                 $entities = $this->responseSerializer->Deserialize($oneObj->asXML(), FALSE);
-
                 $entityName = NULL;
                 foreach ($oneObj->children() as $oneObjChild) {
                     $entityName = (string) $oneObjChild->getName();
                     break;
                 }
-
                 $returnValue->entities[$entityName] = $entities;
             }
         } catch (Exception $e) {
