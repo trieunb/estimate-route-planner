@@ -354,7 +354,7 @@ class Asynchronzier
 
             $deleteCount = count($needDeleteIds);
             if ($needDeleteIds) {
-                $loger->log("Needed delete: ", implode(',', $needDeleteIds));
+                $loger->log("Needed delete: " . implode(',', $needDeleteIds));
                 ORM::forTable('estimates')
                     ->whereIn('id', $needDeleteIds)
                     ->deleteMany();
