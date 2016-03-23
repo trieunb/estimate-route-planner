@@ -8,7 +8,7 @@ angular
                 'boundary-links="true"' +
                 'max-size="10" class="pagination-md"' +
                 'total-items="total"' +
-                'items-per-page="30"' +
+                'items-per-page="15"' +
                 'ng-model="currentPage"' +
                 'ng-change="pageChanged()">' +
                 '</uib-pagination>'
