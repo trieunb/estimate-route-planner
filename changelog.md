@@ -1,3 +1,7 @@
+## 1.8.7
+  - Autofill signature date in add estimate page
+  - Fix pagination con crew routes
+
 ## 1.8.6
   - Fix sync status for invoiced estimates
   - Auto fill signature date when customer signs

@@ -311,6 +311,9 @@ function AddEstimateCtrl(
 
     $scope.onSaveSignature = function(signature) {
         $scope.signatureEncoded = signature;
+        if (!$scope.estimate.date_of_signature) {
+            $scope.estimate.date_of_signature = new Date();
+        }
     };
 
     var getJobFullAddress = function() {
