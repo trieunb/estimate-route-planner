@@ -94,8 +94,8 @@ angular
 
 angular
     .module('Erp')
-    .config(['$httpProvider', 'uiGmapGoogleMapApiProvider',
-        function($httpProvider, uiGmapGoogleMapApiProvider) {
+    .config(['$httpProvider', 'uiGmapGoogleMapApiProvider', '$provide',
+        function($httpProvider, uiGmapGoogleMapApiProvider, $provide) {
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
         $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
         $httpProvider.interceptors.push('erpHttpInterceptor');

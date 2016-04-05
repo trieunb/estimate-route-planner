@@ -52,7 +52,7 @@ function CompanyInfoCtrl($scope, $rootScope, companyInfoFactory, sharedData) {
                     if (response.success) {
                         $scope.photofile = null;
                         toastr.success(response.message);
-                        angular.element('#logo-form').get(0).reset();
+                        angular.element('#logo-form').closest('form').get(0).reset();
                         sharedData.companyInfo = response.data;
                     } else {
                         var msg = response.message || 'An error occurred while uploading logo';

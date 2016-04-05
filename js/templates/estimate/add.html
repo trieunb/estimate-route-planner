@@ -457,20 +457,25 @@
                             <selectize
                                 ng-model="line.product_service_id"
                                 ng-change="changeLineProductService(line)"
-                                config="productServicesSelectConfig"
+                                config="::productServicesSelectConfig"
                                 options="productServices">
                             </selectize>
                         </td>
-                        <td><textarea class="form-control" ng-model="line.description"/></textarea>
+                        <td><textarea class="form-control"
+                            ng-model="line.description"
+                            ng-model-options="{ updateOn: 'blur' }"
+                            /></textarea>
                         <td>
                             <input type="number"
                                 ng-pattern="/^\d+$/"
                                 ng-model="line.qty"
+                                ng-model-options="{ updateOn: 'blur' }"
                                 ng-change="updateTotal()"/>
                         </td>
                         <td>
                             <input type="number"
                                 ng-model="line.rate"
+                                ng-model-options="{ updateOn: 'blur' }"
                                 ng-change="updateTotal()"/>
                         </td>
                         <td>

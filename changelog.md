@@ -1,3 +1,9 @@
+## 1.9.0
+  - Fix issue with local timezone for displaying dates
+  - Update printing estimates
+    - Display space lines
+    - Hide total from description-only lines or has not rate
+
 ## 1.8.7
   - Autofill signature date in add estimate page
   - Fix pagination con crew routes

@@ -42,10 +42,10 @@ function EditJobRequestCtrl(
             .success(function(response) {
                 $scope.referral = response;
                 if ($scope.referral.date_requested) {
-                    $scope.referral.date_requested = new Date(response.date_requested);
+                    $scope.referral.date_requested = new Date(response.date_requested + " 00:00:00");
                 }
                 if ($scope.referral.date_service) {
-                    $scope.referral.date_service = new Date(response.date_service);
+                    $scope.referral.date_service = new Date(response.date_service + " 00:00:00");
                 }
                 // Load customers list
                 if ($scope.hasCap('erpp_restrict_client_dropdown')) {
@@ -134,8 +134,8 @@ function EditJobRequestCtrl(
     function saveReferral() {
         var referral = {};
         angular.copy($scope.referral, referral);
-        referral.date_service = ($filter('date')(referral.date_service, "yyyy-MM-dd"));
-        referral.date_requested = ($filter('date')(referral.date_requested, "yyyy-MM-dd"));
+        referral.date_service = $filter('date')(referral.date_service, "yyyy-MM-dd");
+        referral.date_requested = $filter('date')(referral.date_requested, "yyyy-MM-dd");
         jobRequestFactory.update(referral)
             .success(function(response) {
                 if (response.success) {

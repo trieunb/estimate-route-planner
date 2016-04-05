@@ -33,7 +33,7 @@
     - Create an QB app to get app consumer keys in development mode.
     - Create a sandbox company account.
   - Plugin setup for development:
-    - All the plugin's configurations are in `config/plugin.php`. It contanits running configs for production mode as default.
+    - All the plugin's configurations are in `config/plugin.php`. It containts running configs for production mode as default.
     - To override configs: copy `config/plugin.local.example` to `config/plugin.local.php` and fill appropriate values:
       - `ERP_DEBUG`: should set set to `true` in development
       - `QB_SANDBOX_MODE`: self explaination
