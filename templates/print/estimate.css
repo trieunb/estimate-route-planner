@@ -92,7 +92,7 @@ table.bordered-columns td:first-child { border-left: none; }
     font-weight: 600;
 }
 .lines .line-blank {
-    display: none;
+    height: 12px;
 }
 .lines table td li {
     padding-left: 7px;

@@ -150,8 +150,10 @@
                     ?>
                         <?php if ($blankLine) : ?>
                             <tr class="line-blank">
-                                <td colspan="4">
-                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         <?php else : ?>
                             <tr>
