@@ -233,7 +233,8 @@ function AddEstimateCtrl(
     $scope.updateTotal = function() {
         var total = 0.0;
         if ($scope.estimate.lines.length > 0) {
-            angular.forEach($scope.estimate.lines, function(line) {
+            for (var i = $scope.estimate.lines.length - 1; i >= 0; i--) {
+                var line = $scope.estimate.lines[i];
                 var rate = 0;
                 var qty = 0;
                 if (line.qty) {
@@ -242,12 +243,17 @@ function AddEstimateCtrl(
                 if (line.rate) {
                     rate = parseFloat(line.rate);
                 }
+
                 if (line.product_service_id) {
-                    var lineTotal = rate * qty;
-                    line.total = lineTotal;
-                    total += lineTotal;
+                    if (line.qty == null || line.rate == null) {
+                        line.total = null;
+                    } else {
+                        var lineTotal = rate * qty;
+                        line.total = lineTotal;
+                        total += lineTotal;
+                    }
                 }
-            });
+            }
         }
         $scope.estimate.total = parseFloat(total.toFixed(2));
     };

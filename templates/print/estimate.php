@@ -146,9 +146,10 @@
                     <?php
                         foreach ($lines as $line) {
                             $amount = $line['qty'] * $line['rate'];
-                            $blankLine = !$line['product_service_name'] && !$line['description'] && ($amount == 0);
+                            $isBlankLine = !$line['product_service_name'] && !$line['description'] && ($amount == 0);
+                            $isHideTotal = is_null($line['product_service_id']) || (is_null($line['rate']) && is_null($line['qty']));
                     ?>
-                        <?php if ($blankLine) : ?>
+                        <?php if ($isBlankLine) : ?>
                             <tr class="line-blank">
                                 <td></td>
                                 <td></td>
@@ -161,8 +162,8 @@
                                     <li><?php echo nl2br($line['description']) ?></li>
                                 </td>
                                 <td><span><?php echo $line['qty'] ?></span></td>
-                                <td><span><?php echo $line['rate'] ?></span></td>
-                                <td>$<span><?php echo $amount ?></span></td>
+                                <td><span><?php echo $isHideTotal ? '' : $line['rate'] ?></span></td>
+                                <td><span><?php echo $isHideTotal ? '' : ('$' . $amount) ?></span></td>
                             </tr>
                         <?php endif; ?>
                     <?php } ?>
@@ -210,7 +211,7 @@
         </div>
         <?php if ($_REQUEST['_do'] === 'printEstimate') : ?>
             <script type="text/javascript">
-                window.onload = function() { self.print(); }
+                // window.onload = function() { self.print(); }
             </script>
         <?php endif; ?>
     </body>

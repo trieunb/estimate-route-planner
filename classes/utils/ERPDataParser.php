@@ -73,12 +73,8 @@ final class ERPDataParser {
             switch ($entity->DetailType) {
                 case 'SalesItemLineDetail':
                     $saleItem = $entity->SalesItemLineDetail;
-                    if ($saleItem->Qty) {
-                        $qty = $saleItem->Qty;
-                    }
-                    if ($saleItem->UnitPrice) {
-                        $rate = $saleItem->UnitPrice;
-                    }
+                    $qty = $saleItem->Qty;
+                    $rate = $saleItem->UnitPrice;
                     $product_service_id = $saleItem->ItemRef;
                     break;
                 case 'DescriptionOnly':

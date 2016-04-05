@@ -459,18 +459,32 @@
                             <selectize
                                 ng-model="line.product_service_id"
                                 ng-change="changeLineProductService(line)"
-                                config="productServicesSelectConfig"
+                                config="::productServicesSelectConfig"
                                 options="productServices">
                             </selectize>
                         </td>
                         <td>
-                            <textarea class="form-control" ng-model="line.description" ng-readonly="::!hasCap('erpp_view_estimate_total')"/></textarea>
+                            <textarea class="form-control"
+                                ng-readonly="::!hasCap('erpp_view_estimate_total')"
+                                ng-model="line.description"
+                                ng-model-options="{ updateOn: 'blur' }"
+                                /></textarea>
                         </td>
                         <td>
-                            <input type="number" ng-pattern="/^\d+$/" ng-model="line.qty" ng-change="updateTotal()" ng-readonly="::!hasCap('erpp_view_estimate_total')"/>
+                            <input type="number"
+                                ng-readonly="::!hasCap('erpp_view_estimate_total')"
+                                ng-pattern="/^\d+$/"
+                                ng-model="line.qty"
+                                ng-change="updateTotal()"
+                                ng-model-options="{ updateOn: 'blur' }"
+                                />
                         </td>
                         <td ng-if="::hasCap('erpp_view_estimate_total')">
-                            <input type="number" ng-model="line.rate" ng-change="updateTotal()"/></td>
+                            <input type="number"
+                                ng-model="line.rate"
+                                ng-change="updateTotal()"
+                                ng-model-options="{ updateOn: 'blur' }"
+                                /></td>
                         <td ng-if="::hasCap('erpp_view_estimate_total')">
                             <span ng-bind="line.total"></span>
                         </td>
