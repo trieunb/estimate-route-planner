@@ -149,13 +149,13 @@ function EditEstimateCtrl(
 
             $scope.estimate = estimate;
             if ($scope.estimate.txn_date) {
-                $scope.estimate.txn_date = new Date(estimate.txn_date);
+                $scope.estimate.txn_date = new Date(estimate.txn_date + " 00:00:00");
             }
             if ($scope.estimate.expiration_date) {
-                $scope.estimate.expiration_date = new Date(estimate.expiration_date);
+                $scope.estimate.expiration_date = new Date(estimate.expiration_date + " 00:00:00");
             }
             if ($scope.estimate.date_of_signature) {
-                $scope.estimate.date_of_signature = new Date(estimate.date_of_signature);
+                $scope.estimate.date_of_signature = new Date(estimate.date_of_signature + " 00:00:00");
             }
             $scope.updateTotal();
 
