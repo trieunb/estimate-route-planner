@@ -12,6 +12,7 @@ angular
             '$filter',
             '$window',
             'erpGeoLocation',
+            'datetimeService',
             'erpOptions',
             EditJobRequestCtrl
         ]
@@ -27,6 +28,7 @@ function EditJobRequestCtrl(
     $filter,
     $window,
     erpGeoLocation,
+    datetimeService,
     erpOptions) {
 
     $scope.setPageTitle('Edit Job Request');
@@ -42,10 +44,10 @@ function EditJobRequestCtrl(
             .success(function(response) {
                 $scope.referral = response;
                 if ($scope.referral.date_requested) {
-                    $scope.referral.date_requested = new Date(response.date_requested + " 00:00:00");
+                    $scope.referral.date_requested = datetimeService.stringToDate(response.date_requested);
                 }
                 if ($scope.referral.date_service) {
-                    $scope.referral.date_service = new Date(response.date_service + " 00:00:00");
+                    $scope.referral.date_service = datetimeService.stringToDate(response.date_service);
                 }
                 // Load customers list
                 if ($scope.hasCap('erpp_restrict_client_dropdown')) {
