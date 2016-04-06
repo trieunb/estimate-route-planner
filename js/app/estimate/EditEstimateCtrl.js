@@ -16,6 +16,7 @@ angular
             'sharedData',
             'emailComposer',
             'erpOptions',
+            'datetimeService',
             '$ngBootbox',
             '$window',
             EditEstimateCtrl
@@ -36,6 +37,7 @@ function EditEstimateCtrl(
         sharedData,
         emailComposer,
         erpOptions,
+        datetimeService,
         $ngBootbox,
         $window) {
 
@@ -149,13 +151,13 @@ function EditEstimateCtrl(
 
             $scope.estimate = estimate;
             if ($scope.estimate.txn_date) {
-                $scope.estimate.txn_date = new Date(estimate.txn_date + " 00:00:00");
+                $scope.estimate.txn_date = datetimeService.stringToDate(estimate.txn_date);
             }
             if ($scope.estimate.expiration_date) {
-                $scope.estimate.expiration_date = new Date(estimate.expiration_date + " 00:00:00");
+                $scope.estimate.expiration_date = datetimeService.stringToDate(estimate.expiration_date);
             }
             if ($scope.estimate.date_of_signature) {
-                $scope.estimate.date_of_signature = new Date(estimate.date_of_signature + " 00:00:00");
+                $scope.estimate.date_of_signature = datetimeService.stringToDate(estimate.date_of_signature);
             }
             $scope.updateTotal();
 

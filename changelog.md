@@ -1,3 +1,6 @@
+## 1.9.1
+  - Fix date inputs broken in Safari
+
 ## 1.9.0
   - Fix issue with local timezone for displaying dates
   - Update printing estimates
