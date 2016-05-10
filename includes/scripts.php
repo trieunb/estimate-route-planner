@@ -115,7 +115,7 @@ function erp_enqueue_scripts($hook) {
         // Google map API js
         wp_register_script(
             'gmap-api-js',
-            'http://maps.googleapis.com/maps/api/js?v=3.exp',
+            '//maps.googleapis.com/maps/api/js?v=3.exp',
             [], null, false
         );
         wp_enqueue_script('gmap-api-js');
