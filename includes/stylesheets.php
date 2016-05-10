@@ -1,6 +1,6 @@
 <?php
-function erp_enqueue_stylesheets() {
-    if (is_plugin_page(ROOT_MENU_SLUG)) {
+function erp_enqueue_stylesheets($hook) {
+    if (strpos($hook, ROOT_MENU_SLUG) !== false) {
         $libCss = [
             'bootstrap' => 'css/lib/bootstrap.min.css',
             'toastr'    => 'css/lib/toastr.css',

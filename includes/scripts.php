@@ -1,7 +1,7 @@
 <?php
 
-function erp_enqueue_scripts() {
-    if (is_plugin_page(ROOT_MENU_SLUG)) {
+function erp_enqueue_scripts($hook) {
+    if (strpos($hook, ROOT_MENU_SLUG) !== false) {
         if (ERP_DEBUG) {
             // Note: The order is important for make the plugins work together
             $libJS = [
@@ -115,7 +115,7 @@ function erp_enqueue_scripts() {
         // Google map API js
         wp_register_script(
             'gmap-api-js',
-            'http://maps.googleapis.com/maps/api/js?v=3.exp',
+            '//maps.googleapis.com/maps/api/js?v=3.exp',
             [], null, false
         );
         wp_enqueue_script('gmap-api-js');

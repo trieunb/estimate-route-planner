@@ -7,8 +7,7 @@ function active_plugin() {
     /* Insert tables to DB */
     global $wpdb;
     $sql = file_get_contents(ERP_PLUGIN_DIR . '/db/install.sql');
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    // dbDelta($sql);
+    // $wpdb->query($sql);
 
     /* Add all plugin capabilities to all roles */
     $capsRegister = new ERPCapabilityRegister();
